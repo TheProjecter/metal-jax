@@ -1,0 +1,236 @@
+/**
+ * @copyright Jay Tang 2012
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ */
+(function() {
+	
+	(function() {
+		
+		var $setting = {
+			mainContext: "main",
+			mainFolder: "main",
+			crossFolder: "xd",
+			crossInterval: "3000"
+		};
+		var $source = {
+			name: "metal.jax.ClassLoader",
+			contentType: "context",
+			scope: { $public:{}, $protected:{}, $static:{}, $imports:{}, $setting:$setting },
+			setting: {
+				source: [
+					{ base:"${bootPath}", folder:"${bootFolder}", includes:"^metal[.]" },
+					{ base:"${basePath}", folder:"${mainFolder}" }
+				],
+				content: [
+					{ type:"class", "extends":"metal.jax.Object" },
+					{ type:"context", "extends":"metal.jax.Context" },
+					{ type:"model", "extends":"metal.jax.Model" },
+					{ type:"${faceType}", "extends":"metal.jax.Facet" }
+				]
+			}
+		};
+		var _originRE_ = /^([^\/]+:\/\/[^\/]*)/;
+		
+		function main() {
+			parseSetting($setting);
+			if (!this[$setting["bootFolder"]]) {
+				this[$setting["bootFolder"]] = {};
+				waitFor("load", function() {
+					$source.base = $setting["bootPath"];
+					$source.path = $setting["bootFolder"].concat("/", $source.name.split(".").join("/"), ".", $setting["classType"]);
+					loadback($source, parseSource);
+				});
+			}
+		}
+		
+		function parseSetting(setting) {
+			var parts = (this.document.URLUnencoded||this.document.URL).split("?");
+			setting["baseURL"] = parts[0];
+			setting["mainClass"] = parts[1] || "";
+			setting["baseScheme"] = setting["baseURL"].split(":")[0];
+			setting["baseOrigin"] = _originRE_.exec(setting["baseURL"])[1];
+			setting["basePath"] = splitPath(setting["baseURL"], -1, -1);
+			setting["faceType"] = splitPath(setting["baseURL"], -1, 1).split(".")[1] || "html";
+			var nodes = this.document.getElementsByTagName("script");
+			parts = nodes[nodes.length-1].src.split("?");
+			setting["bootURL"] = parts[0];
+			setting["mainContext"] = parts[1] || setting["mainContext"];
+			setting["mainFolder"] = splitPath(setting["mainContext"], -1, -1) || setting["mainFolder"];
+			setting["mainContext"] = splitPath(setting["mainContext"], -1, 1);
+			setting["mainFolder"] = splitPath(setting["mainClass"], -1, -1) || setting["mainFolder"];
+			setting["mainClass"] = splitPath(setting["mainClass"], -1, 1);
+			setting["bootPath"] = splitPath(setting["bootURL"], -3, -3);
+			setting["bootFolder"] = splitPath(setting["bootURL"], -3, 1);
+			parts = splitPath(setting["bootURL"], -2, 2).split(".");
+			setting["bootContext"] = parts[0].split("/").join(".");
+			setting["classType"] = parts[1];
+			var match = _originRE_.exec(setting["bootPath"]);
+			setting["bootOrigin"] = match ? match[1] : setting["baseOrigin"];
+			setting["bootPath"] = resolvePath(setting["bootPath"], setting["baseURL"]);
+		}
+		
+		function parseSource(source) {
+			if (source.content) {
+				$static.call(source);
+				source.holder = {};
+				source.holder[source.name] = source;
+				source.scope.$source = source;
+				source.scope.compile = $static;
+				source.scope.loadback = loadback;
+				source.scope.$static.splitPath = splitPath;
+				source.scope.$static.resolvePath = resolvePath;
+				source.scope.initClass_();
+				source.scope.waitFor(initContext);
+			} else {
+				throw Error("failed to load URL: " + source.url + ", error: " + source.error);
+			}
+		}
+		
+		function initContext() {
+			$source.context.loadClass($setting["mainContext"], function() {
+				var mainContext = $source.context.findClass($setting["mainContext"], true);
+				var context = mainContext ? mainContext.getContext() : $source.context;
+				context.loadClass($setting["mainClass"], function() {
+					var mainClass = context.findClass($setting["mainClass"], true) || mainContext;
+					if (mainClass) {
+						if (mainClass.main) mainClass.main.call();
+						else if (mainClass.extendsClass("metal.jax.Facet")) {
+							var parentNode = this.document.getElementById(mainClass.getName()) || this.document.body;
+							parentNode.appendChild(new mainClass().node);
+						}
+					}
+				});
+			});
+		}
+		
+		function waitFor(event, callback) {
+			if (this.addEventListener) {
+				this.addEventListener(event, callback, false);
+			} else if (this.attachEvent) {
+				this.attachEvent("on"+event, callback);
+			}
+		}
+		
+		function loadback(source, callback) {
+			var origin = _originRE_.exec(source.base)[1];
+			if (origin) {
+				var action = (origin == $setting["baseOrigin"]) ? loadSameOrigin : loadCrossOrigin;
+				action.call(this, source, callback);
+			} else {
+				throw Error("invalid URL: " + source.base);
+			}
+		}
+		
+		function loadSameOrigin(source, callback) {
+			var caller = this;
+			var request = requestSameOrigin(source, function() {
+				if (!request || request.readyState != 4) return;
+				if (request.status == 200 || request.status == 0) {
+					source.content = request.responseText;
+				} else {
+					source.status = request.status;
+					source.error = request.statusText;
+				}
+				callback.call(caller, source);
+			});
+			try {
+				request.send(null);
+			} catch (ex) {
+				throw Error("failed to load URL: " + source.url + ", error: " + ex.message);
+			}
+		}
+		
+		function requestSameOrigin(source, callback) {
+			var request;
+			if (typeof XMLHttpRequest != "undefined" && typeof ActiveXObject == "undefined") {
+				request = new XMLHttpRequest();
+			} else if (typeof XMLHttpRequest != "undefined" && typeof ActiveXObject != "undefined" && $setting["baseScheme"] != "file") {
+				request = new XMLHttpRequest();
+			} else if (typeof ActiveXObject != "undefined") {
+				request = new ActiveXObject("Microsoft.XMLHTTP");
+			} else {
+				throw Error("XHR not supported");
+			}
+			source.url = source.base.concat("/", source.path);
+			request.open("GET", source.url, true);
+			request.onreadystatechange = callback;
+			return request;
+		}
+		
+		function loadCrossOrigin(source, callback) {
+			var caller = this;
+			var request = requestCrossOrigin(source, function(response) {
+				if (!request || !request.node) return;
+				clearRequest(request);
+				if (typeof response != "object") {
+					source.error = "bad response";
+				} else if (response.error) {
+					source.error = response.error;
+				} else {
+					source.content = response.content;
+				}
+				callback.call(caller, source);
+			});
+		}
+		
+		function requestCrossOrigin(source, callback) {
+			var request = {};
+			request.url = source.url = source.base.concat("/", $setting["crossFolder"], "/", source.path);
+			this[$setting["bootFolder"]][request.url] = callback;
+			request.node = this.document.createElement("script");
+			request.node.src = request.url;
+			this.document.body.previousSibling.appendChild(request.node);
+			request.interval = setInterval(callback, parseInt($setting["crossInterval"]));
+			return request;
+		}
+		
+		function clearRequest(request) {
+			delete this[$setting["bootFolder"]][request.url];
+			this.document.body.previousSibling.removeChild(request.node);
+			clearInterval(request.interval);
+			delete request.node;
+		}
+		
+		function resolvePath(path, base) {
+			if (!_originRE_.exec(path)) {
+				if (path.charAt(0) == "/") {
+					path = _originRE_.exec(base)[1].concat(path);
+				} else {
+					base = splitPath(base, -1, -1) || base;
+					path = path ? base.concat("/", path) : base;
+				}
+			}
+			return path;
+		}
+		
+		function splitPath(path, index, count, delim) {
+			if (!path) return path;
+			delim = delim || "/";
+			var parts = path.split(delim);
+			index = index>=0 ? index : parts.length+index;
+			var keep = count < 0;
+			count = keep ? -count : count;
+			var parts2 = parts.splice(index, count);
+			return (keep ? parts : parts2).join(delim);
+		}
+		
+		main();
+		
+	})();
+	
+	function $static() {
+		this.scope.$private = this.scope;
+		with (this.scope.$static) {
+			with (this.scope.$protected) {
+				with (this.scope.$private) {
+					try { eval(this.content); }
+					finally { delete this.content; }
+				}
+			}
+		}
+	}
+	
+})();
