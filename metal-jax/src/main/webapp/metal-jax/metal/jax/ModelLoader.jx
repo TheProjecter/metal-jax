@@ -1,0 +1,167 @@
+/**
+ * @context metal.jax.ModelLoader
+ * @imports System
+ * 
+ * @copyright Jay Tang 2012
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ */
+
+//@private
+function initClass() {
+	this._callbacks = [];
+	this._pendingCount = 0;
+	this._pendingFlush = [];
+	this._holder = {};
+}
+
+//@public
+function find(key, positive) {
+	if (!key) return;
+	var source = getSource(key, this);
+	if (source) {
+		if (!source.error) {
+			return source.object;
+		} else if (positive) {
+			System.throwError("failed to load model: ${0}:${1}, error: ${2}", source.$class.getName(), key, source.error);
+		}
+	}
+}
+
+//@public
+function load(key, callback) {
+	try {
+		if (!key || getSource(key, this)) return;
+		_pendingCount++;
+		var source = putSource(initSource(key, this));
+		System.loadback(source, handleSource);
+	} catch (ex) {
+		_pendingCount--;
+		source.error = ex.message;
+		System.logError(ex);
+	} finally {
+		waitFor(callback);
+	}
+}
+
+//@private
+function getHolder(clazz) {
+	var name = clazz.getName();
+	if (!_holder[name]) {
+		_holder[name] = {};
+	}
+	return _holder[name];
+}
+
+//@private
+function getSource(key, clazz) {
+	return getHolder(clazz)[key];
+}
+
+//@private
+function putSource(source) {
+	getHolder(source.$class)[source.key] = source;
+	return source;
+}
+
+//@private
+function initSource(key, clazz) {
+	var source = {};
+	source.key = key;
+	source.$class = clazz;
+	source.type = clazz.$("model.type");
+	source.base = clazz.$("model.base");
+	source.path = clazz.$("model.folder").concat("/", clazz.getName().split(".").join("/"), ".", source.key, ".", source.type);
+	return source;
+}
+
+//@private
+function waitFor(callback) {
+	if (!callback) return;
+	if (_pendingCount) {
+		_callbacks.push(callback);
+	} else {
+		callback();
+	}
+}
+
+//@private
+function handleSource(source) {
+	if (source.content) {
+		try {
+			parseSource(source);
+		} catch (ex) {
+			source.error = ex.message;
+			System.logError(ex);
+		}
+	} else if (!source.error) {
+		source.error = "empty content";
+	}
+	if (source.status < 100) {
+		//error
+	} else {
+		_pendingCount--;
+		flush();
+	}
+}
+
+//@private
+function parseSource(source) {
+	source.contentType = source.type;
+	switch (source.contentType) {
+	case "json":
+		source.content = System.parseJSONFromText(source.content);
+		break;
+	case "xml":
+		source.content = System.parseJSONFromXML(source.content.documentElement);
+		break;
+	}
+	_pendingFlush.push(source);
+}
+
+//@private
+function flush() {
+	for (var i = 0; i < _pendingFlush.length; i++) {
+		if (_pendingCount) return;
+		flush_initModel(_pendingFlush[i]);
+	}
+	for (var i = 0; i < _pendingFlush.length; i++) {
+		if (_pendingCount) return;
+		flush_notifyModel(_pendingFlush[i]);
+	}
+	while (_callbacks.length) {
+		if (_pendingCount) return;
+		_callbacks.shift()();
+	}
+	for (var i = 0; i < _pendingFlush.length; ) {
+		if (_pendingCount) return;
+		if (_pendingFlush[i].flushStatus == 1) {
+			_pendingFlush.splice(i, 1);
+		} else i++;
+	}
+}
+
+//@private
+function flush_initModel(source) {
+	if (typeof source.flushStatus == "undefined") {
+		source.flushStatus = "busy 0";
+		source.object = new source.$class(source.$class);
+		if (source.$class.parseModel) {
+			source.$class.parseModel.call(source.object, source.content);
+		}
+		source.flushStatus = 0;
+	}
+}
+
+//@private
+function flush_notifyModel(source) {
+	if (source.flushStatus == 0) {
+		source.flushStatus = "busy 1";
+		if (source.$class.initModel) {
+			source.$class.initModel.call(source.object, source.content);
+		}
+		source.flushStatus = 1;
+	}
+}

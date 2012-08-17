@@ -1,0 +1,61 @@
+/**
+ * @test test.metal.jax.ObjectTest
+ * @imports metal.jax.Object
+ * @setting hello=hello
+ */
+
+//@private
+function initObject() {
+	this.hello = "hello";
+}
+
+//@public
+function test_initObject() {
+	assertEquals("hello", this.hello);
+}
+
+//@public
+function test_getClass() {
+	assertEquals(ObjectTest, this.getClass());
+}
+
+//@public
+function test_getSuperClass() {
+	assertEquals(TestCase, this.getClass().getSuperClass());
+}
+
+//@public
+function test_getName() {
+	assertEquals("test.metal.jax.ObjectTest", this.getClass().getName());
+}
+
+//@public
+function test_$() {
+	assertEquals("hello", $("hello"));
+	assertEquals("hello", ObjectTest.$("hello"));
+}
+
+//@public
+function test_newObject() {
+	assertEquals(Object, new Object().getClass());
+	assertEquals(Object, Object.newObject().getClass());
+}
+
+//@public
+function test_get() {
+	var object = new Object();
+	assertEquals(undefined, object.get());
+	assertEquals(undefined, object.get("hello"));
+}
+
+//@public
+function test_set() {
+	var object = new Object();
+	assertEquals(undefined, object.set());
+	assertEquals(undefined, object.set("hello"));
+	assertEquals(undefined, object.get("hello"));
+	assertEquals("world", object.set("hello", "world"));
+	assertEquals("world", object.get("hello"));
+	assertEquals(undefined, object.set("hello"));
+	assertEquals(undefined, object.get("hello"));
+}

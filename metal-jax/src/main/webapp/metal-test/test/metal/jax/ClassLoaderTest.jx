@@ -1,0 +1,83 @@
+/**
+ * @test test.metal.jax.ClassLoaderTest
+ * 
+ * @imports metal.jax.ClassLoader
+ * @imports metal.jax.Object
+ * @imports metal.jax.Object Object2
+ * @imports test.main mainContext
+ * 
+ * @setting classLoader=metal.jax.ClassLoader
+ * @setting classLoader1=${classLoader}
+ * @setting classLoader2=  ${classLoader}  ${classLoader}
+ */
+
+$imports.Object3 = "metal.jax.Object";
+$setting["classLoader3"] = "${classLoader}";
+
+//@private
+function initClass() {
+	this.initClassTested = true;
+}
+
+//@private
+function initObject() {
+	$private.initObjectTested = true;
+}
+
+//@public
+function test_initClass() {
+	assertEquals(true, initClassTested);
+}
+
+//@public
+function test_initObject() {
+	assertEquals(true, initObjectTested);
+}
+
+//@public
+function test_classSetting() {
+	assertEquals($context, mainContext.getContext());
+	assertEquals($imports, $private.$imports);
+	assertEquals($private, $private.$private);
+	assertEquals($protected, $private.$protected);
+	assertEquals($public, $private.$public);
+	assertEquals($setting, $private.$setting);
+	assertEquals($static, $private.$static);
+	assertEquals($super, $private.$super);
+	assertEquals($super.$protected, $private.$super.$protected);
+	assertEquals($super.$static, $private.$super.$static);
+	
+	assertEquals($("classLoader"), ClassLoader.getName());
+	assertEquals($("classLoader1"), ClassLoader.getName());
+	assertEquals($("classLoader2"), "  ".concat(ClassLoader.getName(), "  ", ClassLoader.getName()));
+	assertEquals($("classLoader3"), ClassLoader.getName());
+	
+	assertEquals(Object, Object2);
+	assertEquals(Object, Object3);
+}
+
+//@public
+function test_getSuperClass() {
+	assertEquals(Object, ClassLoader.getSuperClass());
+}
+
+//@public
+function test_newObject() {
+	assertEquals(ClassLoader, new ClassLoader().getClass());
+	assertEquals(ClassLoaderTest, new ClassLoaderTest().getClass());
+}
+
+//@public
+function test_loadClass() {
+	$context.loadClass("NoSuchClass", function() {
+		try {
+			$context.findClass("NoSuchClass", true);
+			fail("should fail");
+		} catch (ex) {}
+	});
+}
+
+//@public
+function test_findClass() {
+	assertEquals(ClassLoader, new ClassLoader().findClass(ClassLoader.getName()));
+}

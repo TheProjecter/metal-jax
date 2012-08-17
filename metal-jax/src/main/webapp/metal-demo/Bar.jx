@@ -1,0 +1,9 @@
+/**
+ * @model Bar
+ * @setting model.type=txt
+ */
+
+//@static
+function parseModel(content) {
+	this.content = content;
+}

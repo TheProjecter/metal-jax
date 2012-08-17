@@ -1,0 +1,16 @@
+/**
+ * @model Hello
+ * @imports Foo
+ * @imports Bar
+ */
+
+//@static
+function parseModel(content) {
+	this.foo = new Foo("foo", content.foo);
+	Bar.load(content.bar);
+}
+
+//@static
+function initModel(content) {
+	this.bar = Bar.find(content.bar);
+}

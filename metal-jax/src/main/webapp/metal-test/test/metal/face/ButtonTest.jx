@@ -1,0 +1,36 @@
+/**
+ * @context test.meta4.face.ButtonTest
+ * @imports meta4.face.Facet
+ * @imports meta4.face.Button
+ */
+
+//@protected
+function initObject() {
+	var bean;
+
+	// Facet with default face and default label
+	$beans["button0"] = new Facet();
+
+	// Facet with custom label
+	bean = $beans["button1"] = new Facet();
+	bean.setLabel("${name} with custom label");
+	
+	// Facet with info property
+	bean = $beans["button2"] = new Facet();
+	bean.setLabel("${name} with info property");
+	bean.setInfo("info: ${label}");
+	
+	// Facet with custom face
+	bean = $beans["button2"] = new Facet();
+	bean.setFace('<button type="button" style="display:block;background:yellow;"></button>');
+	bean.setLabel("${name} with custom face");
+	
+	// Facet with label node
+	bean = $beans["button2"] = new Facet();
+	bean.setFace('<button type="button" style="display:block;background:yellow;"><span id="label" style="background:orange;"></span></button>');
+	bean.setLabel("${name} with label node");
+	
+	// Facet with external face
+	bean = $beans["button2"] = new Button();
+	bean.setLabel("${name} with external face");
+}

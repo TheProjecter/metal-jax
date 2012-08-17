@@ -1,0 +1,33 @@
+/**
+ * @class HelloMetal
+ * @extends HelloMetal:html
+ * @imports PoweredBy
+ * @imports Hello
+ */
+
+//@private
+function initObject() {
+	$private.label = this.nodes.label;
+	$private.footer = this.nodes.footer;
+	$private.fontSizes = [ "10px", "13px", "16px", "18px", "24px", "32px" ];
+	$private.next = 0;
+	$private.flag = false;
+	
+	label.style.fontSize = fontSizes[next++];
+	setInterval(changeLabel, 200);
+	Hello.load("hello", onLoad);
+}
+
+//@private
+function changeLabel() {
+	label.style.fontSize = fontSizes[next];
+	if (!flag && next < fontSizes.length-1) next++;
+	else if (flag && next > 0) next--;
+	else flag = !flag;
+}
+
+//@private
+function onLoad() {
+	var hello = Hello.find("hello");
+	footer.innerHTML = "hello: { foo: \"".concat(hello.foo.content, "\", bar: \"", hello.bar.content, "\" }");
+}

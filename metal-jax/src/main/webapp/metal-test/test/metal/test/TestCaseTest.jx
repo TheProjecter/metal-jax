@@ -1,0 +1,27 @@
+/**
+ * @test test.metal.test.TestCaseTest
+ * @imports metal.jax.System
+ */
+
+var token;
+
+//@public
+function setUp() {
+	token = "secret";
+	System.println("--------setUp: ".concat(token));
+}
+
+//@public
+function tearDown() {
+	System.println("--------tearDown: ".concat(token));
+}
+
+//@public
+function testAssertEquals() {
+	assertEquals("hello", "hello", token);
+}
+
+//@public
+function testAssertEqualsFail() {
+	assertEquals("hello", "world", token);
+}

@@ -1,0 +1,326 @@
+/**
+ * @class metal.jax.System
+ * @imports ClassLoader
+ * 
+ * @copyright Jay Tang 2012
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ */
+
+//@private
+function initClass() {
+	if (this == $private) {
+		initClass.call();
+	} else {
+		System.window = this;
+		System.document = this.document;
+		System.formatText = ClassLoader.formatText;
+		System.splitPath = ClassLoader.splitPath;
+		System.resolvePath = ClassLoader.resolvePath;
+		System.parseBaseName = ClassLoader.parseBaseName;
+		System.parseSourceName = ClassLoader.parseSourceName;
+		System.parsePackageName = ClassLoader.parsePackageName;
+		Array.prototype.indexOf = Array.prototype.indexOf || indexOf;
+	}
+}
+
+//@static
+function callback() {
+	var target = this, args = arguments;
+	var action = Array.prototype.shift.call(arguments);
+	var callback = (typeof action == "string") ? target[action] : action;
+	if (callback) {
+		return function() {
+			Array.prototype.unshift.apply(arguments, args);
+			return callback.apply(target === System ? this : target, arguments);
+		};
+	}
+}
+
+//@static
+function throwError() {
+	throw logError(Error(System.formatText.apply(this, arguments)));
+}
+
+//@static
+function logError(ex) {
+	if (typeof console != "undefined") console.error(ex);
+	return ex;
+}
+
+//@private
+function indexOf(item, index) {
+	index = index || 0;
+	for ( ; index < this.length; index++) {
+		if (index in this && this[index] === item) {
+			return index;
+		}
+	};
+	return -1;
+}
+
+//@private
+var _originRE_ = /^([^\/]+:\/\/[^\/]*)/;
+
+//@static
+function loadback(source, callback) {
+	var origin = _originRE_.exec(source.base)[1];
+	if (origin) {
+		var action = (origin == $("baseOrigin")) ? loadSameOrigin : loadCrossOrigin;
+		action.call(this, source, callback);
+	} else {
+		System.throwError("invalid URL: ${0}", source.base);
+	}
+}
+
+//@private
+function loadSameOrigin(source, callback) {
+	var caller = this;
+	var request = requestSameOrigin(source, function() {
+		if (!request || request.readyState != 4) return;
+		try {
+			if (request.status == 200 || request.status == 0) {
+				source.content = isXML(source) ? request.responseXML.firstChild ?
+					checkXML(request.responseXML) : parseXML(request.responseText) : request.responseText;
+			} else {
+				source.status = request.status;
+				source.error = request.statusText;
+			}
+		} catch (ex) {
+			source.error = ex.message;
+		}
+		callback.call(caller, source);
+	});
+	try {
+		request.send(requestInput(source));
+	} catch (ex) {
+		System.throwError("failed to load URL: ${0}, error: ${1}", source.url, ex.message);
+	}
+}
+
+//@private
+function requestSameOrigin(source, callback) {
+	var request;
+	if (typeof XMLHttpRequest != "undefined" && typeof ActiveXObject == "undefined") {
+		request = new XMLHttpRequest();
+	} else if (typeof XMLHttpRequest != "undefined" && typeof ActiveXObject != "undefined" && $("baseScheme") != "file") {
+		request = new XMLHttpRequest();
+	} else if (typeof ActiveXObject != "undefined") {
+		request = new ActiveXObject("Microsoft.XMLHTTP");
+	} else {
+		System.throwError("XHR not supported");
+	}
+	source.url = source.base.concat("/", source.path);
+	switch (requestMethod(source)) {
+	case "GET":
+		request.open("GET", requestURL(source), true);
+		break;
+	case "POST":
+		request.open("POST", source.url, true);
+		request.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+		request.setRequestHeader("Content-Length", requestInput(source).length);
+		break;
+	}
+	request.onreadystatechange = callback;
+	return request;
+}
+
+//@private
+function loadCrossOrigin(source, callback) {
+	var caller = this;
+	var request = requestCrossOrigin(source, function(response) {
+		if (!request || !request.node) return;
+		clearRequest(request);
+		if (typeof response != "object") {
+			source.error = "bad response";
+		} else if (response.error) {
+			source.error = response.error;
+		} else {
+			try {
+				source.content = isXML(source) ?
+					parseXML(response.content) : response.content;
+			} catch (ex) {
+				source.error = ex.message;
+			}
+		}
+		callback.call(caller, source);
+	});
+}
+
+//@private
+function requestCrossOrigin(source, callback) {
+	var request = {};
+	request.url = source.url = source.base.concat("/", $("crossFolder"), "/", source.path);
+	System.window[$("bootFolder")][request.url] = callback;
+	request.node = System.document.createElement("script");
+	request.node.src = requestURL(source);
+	System.document.body.previousSibling.appendChild(request.node);
+	request.interval = setInterval(callback, parseInt($("crossInterval")));
+	return request;
+}
+
+//@private
+function clearRequest(request) {
+	delete System.window[$("bootFolder")][request.url];
+	System.document.body.previousSibling.removeChild(request.node);
+	clearInterval(request.interval);
+	delete request.node;
+}
+
+//@private
+function requestMethod(source) {
+	return source.method && source.method.toUpperCase() == "POST" ? "POST" : "GET";
+}
+
+//@private
+function requestInput(source) {
+	return requestMethod(source) == "POST" ? (source.input||"") : null;
+}
+
+//@private
+function requestURL(source) {
+	return source.input ? source.url.concat("?", source.input) : source.url;
+}
+
+//@static
+function parseJSONFromText(text) {
+	return eval("(".concat(text, ")"));
+}
+
+//@private
+var _spacesRE_ = /^\s*$/;
+
+//@static
+function parseJSONFromXML(node) {
+	switch (node.nodeType) {
+	case 1:
+		var isList = node.nodeName == "list";
+		var result = isList ? [] : {};
+		for (var i = 0; i < node.childNodes.length; i++) {
+			var childNode = node.childNodes[i];
+			if (childNode.nodeType == 1) {
+				var index = indexOfOnlyChild(childNode);
+				var value = index >= 0 ? parseJSONFromXML(childNode.childNodes[index]) : parseJSONFromXML(childNode);
+				if (isList) {
+					result.push(value);
+				} else {
+					result[childNode.nodeName] = value;
+				}
+			}
+		}
+		return result;
+	case 3:
+		return node.data;
+	}
+}
+
+//@static
+function indexOfOnlyChild(node) {
+	var index = 0, found;
+	for (var i = 0; i < node.childNodes.length; i++) {
+		if (node.childNodes[i].nodeType == 1) {
+			if (found) return -1;
+			found = true;
+			index = i;
+		}
+	}
+	return index;
+}
+
+//@static
+function parseXML(text) {
+	if (typeof DOMParser != "undefined") {
+		return checkXML(new DOMParser().parseFromString(text, "text/xml"));
+	} else if (typeof ActiveXObject != "undefined") {
+		var doc = new ActiveXObject("Microsoft.XMLDOM");
+		doc.async = false;
+		doc.loadXML(text);
+		return checkXML(doc);
+	} else {
+		System.throwError("XML parsing not supported");
+	}
+}
+
+//@private
+function checkXML(doc) {
+	var content, error;
+	if (doc.documentElement.nodeName == "parsererror") {
+		error = doc.documentElement.childNodes[0].data;
+		content = doc.documentElement.childNodes[1].childNodes[0].data;
+		System.throwError("XML Error: ${0}, content: ${1}", error, content);
+	} else if (doc.parseError && doc.parseError.errorCode) {
+		error = doc.parseError;
+		content = error.srcText;
+		System.throwError("XML Error: ${0}, at line: ${1}, column: ${2}, content: ${3}",
+				error.reason, error.line, error.linepos, content);
+	}
+	return doc;
+}
+
+//@private
+function isXML(source) {
+	return source.type == "xml" || source.contentType == "xml";
+}
+
+//@static
+function formatXML(doc) {
+	if (typeof XMLSerializer != "undefined") {
+		return new XMLSerializer().serializeToString(doc);
+	} else if (typeof doc.xml != "undefined") {
+		return doc.xml;
+	} else {
+		System.throwError("XML serialization not supported");
+	}
+}
+
+//@static
+function toggleEvent(event, target, callback, positive) {
+	positive = arguments.length == 3 || positive;
+	if (callback) {
+		if (target.addEventListener) {
+			if (positive) {
+				target.addEventListener(event, callback, false);
+			} else {
+				target.removeEventListener(event, callback, false);
+			}
+		} else if (target.attachEvent) {
+			event = "on"+event;
+			if (positive) {
+				target.attachEvent(event, callback);
+			} else {
+				target.detachEvent(event, callback);
+			}
+		} else {
+			System.throwError("event not supported: ${0}", event);
+		}
+	}
+	return callback;
+}
+
+//@static
+function println(message, color) {
+	var line = System.document.createElement("pre");
+	line.style.margin = "0px";
+	if (color) line.style.color = color;
+	line.innerHTML = formatHTML(message);
+	System.document.body.appendChild(line);
+}
+
+//@private
+var _tagRE_ = /[<>]/g;
+
+//@private
+function formatHTML(message) {
+	return message.toString().replace(_tagRE_, function(match) {
+		switch (match) {
+		case "<":
+			return "&lt;";
+		case ">":
+			return "&gt;";
+		default:
+			return match;
+		}
+	});
+}

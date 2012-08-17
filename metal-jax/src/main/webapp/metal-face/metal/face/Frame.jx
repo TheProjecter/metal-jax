@@ -1,0 +1,167 @@
+/**
+ * @class metal.face.Frame
+ * @extends Frame:html
+ * @imports metal.jax.System
+ */
+
+//@private
+function initObject() {
+	this.box = {};
+	for (var name in this.nodes) {
+		var node = this.nodes[name];
+		switch (node.id) {
+		case "frame":
+		case "topLeft":
+		case "top":
+		case "topRight":
+		case "bottomLeft":
+		case "bottom":
+		case "bottomRight":
+		case "leftTop":
+		case "left":
+		case "leftBottom":
+		case "rightTop":
+		case "right":
+		case "rightBottom":
+			this.toggleEvent("mousedown", node, dispatch);
+			break;
+		}
+	}
+}
+
+//@private
+function dispatch(event, node) {
+	switch (event.type) {
+	case "mousedown":
+		if (this.node == node) {
+			startMove.call(this, node, event);
+		} else {
+			startResize.call(this, node, event);
+		}
+		break;
+	case "mousemove":
+		if (this.node == node) {
+			doMove.call(this, node, event);
+		} else {
+			doResize.call(this, node, event);
+		}
+		break;
+	case "mouseup":
+		release.call(this, node, event);
+		break;
+	}
+}
+
+//@private
+function capture(node, event) {
+	System.toggleEvent("mousemove", System.document, this.bindings[node.id]);
+	System.toggleEvent("mouseup", System.document, this.bindings[node.id]);
+}
+
+//@private
+function release(node, event) {
+	System.toggleEvent("mousemove", System.document, this.bindings[node.id], false);
+	System.toggleEvent("mouseup", System.document, this.bindings[node.id], false);
+}
+
+/**
+ * Handles frame move event.
+ * Takes a profile snapshot
+ * and binds mouse events.
+ */
+//@private
+function startMove(node, event) {
+	this.box.x = event.clientX;
+	this.box.y = event.clientY;
+	this.box.top = this.node.offsetTop;
+	this.box.left = this.node.offsetLeft;
+	
+	capture.call(this, node, event);
+}
+
+//@private
+function doMove(node, event) {
+	var dx = event.clientX - this.box.x;
+	var dy = event.clientY - this.box.y;
+	this.node.style.top = "".concat(this.box.top + dy, "px");
+	this.node.style.left = "".concat(this.box.left + dx, "px");
+}
+
+/**
+ * Handles frame resize event.
+ * Takes a profile snapshot
+ * and binds resize/release.
+ */
+//@private
+function startResize(node, event) {
+	this.box.x = event.clientX;
+	this.box.y = event.clientY;
+	this.box.top = this.node.offsetTop;
+	this.box.left = this.node.offsetLeft;
+	this.box.width = this.node.offsetWidth;
+	this.box.height = this.node.offsetHeight;
+	this.box.topWidth = this.nodes.top.offsetWidth;
+	this.box.leftHeight = this.nodes.left.offsetHeight;
+	
+	capture.call(this, node, event);
+}
+
+//@private
+function doResize(node, event) {
+	var dx = event.clientX - this.box.x;
+	var dy = event.clientY - this.box.y;
+	
+	switch (node) {
+	case this.nodes.top:
+	case this.nodes.topLeft:
+	case this.nodes.topRight:
+	case this.nodes.leftTop:
+	case this.nodes.rightTop:
+		setHeight.call(this, -dy, true);
+		break;
+	case this.nodes.bottom:
+	case this.nodes.bottomLeft:
+	case this.nodes.bottomRight:
+	case this.nodes.leftBottom:
+	case this.nodes.rightBottom:
+		setHeight.call(this, dy);
+		break;
+	}
+	
+	switch (node) {
+	case this.nodes.left:
+	case this.nodes.leftTop:
+	case this.nodes.leftBottom:
+	case this.nodes.topLeft:
+	case this.nodes.bottomLeft:
+		setWidth.call(this, -dx, true);
+		break;
+	case this.nodes.right:
+	case this.nodes.rightTop:
+	case this.nodes.rightBottom:
+	case this.nodes.topRight:
+	case this.nodes.bottomRight:
+		setWidth.call(this, dx);
+		break;
+	}
+}
+
+//@private
+function setWidth(dx, isLeft) {
+	var topWidth = this.box.topWidth + dx;
+	if (topWidth <= 0) return;
+	this.node.style.width = "".concat(this.box.width + dx, "px");
+	if (isLeft) this.node.style.left = "".concat(this.box.left - dx, "px");
+	this.nodes.top.style.width = "".concat(topWidth, "px");
+	this.nodes.bottom.style.width = "".concat(topWidth, "px");
+}
+
+//@private
+function setHeight(dy, isTop) {
+	var leftHeight = this.box.leftHeight + dy;
+	if (leftHeight <= 0) return;
+	this.node.style.height = "".concat(this.box.height + dy, "px");
+	if (isTop) this.node.style.top = "".concat(this.box.top - dy, "px");
+	this.nodes.left.style.height = "".concat(leftHeight, "px");
+	this.nodes.right.style.height = "".concat(leftHeight, "px"); 
+}

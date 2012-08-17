@@ -1,0 +1,44 @@
+/**
+ * @class metal.jax.Object
+ * @imports metal.jax.ClassLoader
+ * 
+ * @copyright Jay Tang 2012
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ */
+
+//@private
+function initClass() {
+	$static.newObject = ClassLoader.newObject;
+}
+
+//@static
+function extendsClass(that) {
+	var clazz = this;
+	while (clazz) {
+		if (clazz == that || clazz.getName() == that) return true;
+		clazz = clazz.getSuperClass();
+	}
+}
+
+//@public
+function get(name) {
+	return valueOf.call(this, name);
+}
+
+//@public
+function set(name, value) {
+	return valueOf.call(this, name, value);
+}
+
+//@private
+function valueOf() {
+	this.$ = this.$ || {};
+	switch (arguments.length) {
+	case 0: return this.$;
+	case 1: return this.$[arguments[0]];
+	case 2: return this.$[arguments[0]] = arguments[1];
+	}
+}

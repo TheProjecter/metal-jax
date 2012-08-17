@@ -1,0 +1,16 @@
+/**
+ * @context test.main
+ * @imports metal.test.TestRunner
+ * @source base=${basePath} folder=${mainFolder} excludes=^metal[.]
+ * @content type=test extends=metal.test.TestCase
+ */
+
+//@private
+function initObject() {
+	this.set("testRunner", new TestRunner());
+}
+
+//@private
+function initContext() {
+	this.get("testRunner").run($context);
+}

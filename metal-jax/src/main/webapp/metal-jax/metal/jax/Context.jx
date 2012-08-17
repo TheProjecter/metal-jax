@@ -1,0 +1,44 @@
+/**
+ * @class metal.jax.Context
+ * @imports ClassLoader
+ * 
+ * @copyright Jay Tang 2012
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ */
+
+//@private
+function initClass() {
+	$public.loadClass = ClassLoader.getContext().loadClass;
+	$public.findClass = ClassLoader.getContext().findClass;
+}
+
+//@public
+function toggleEvent(event, callback, positive) {
+	positive = arguments.length == 2 || positive;
+	if (callback) {
+		var callbacks = this.bindings[event];
+		if (!callbacks) {
+			callbacks = this.bindings[event] = [];
+		}
+		if (positive) {
+			callbacks.push(callback);
+		} else {
+			var index = callbacks.indexOf(callback);
+			if (index >= 0) {
+				callbacks.splice(index, 1);
+			}
+		}
+	}
+	return callback;
+}
+
+//@public
+function bind(event, bean, action) {
+}
+
+//@public
+function notify(event) {
+}

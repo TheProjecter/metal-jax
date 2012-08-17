@@ -1,0 +1,94 @@
+/**
+ * @class test.meta4.core.SystemTest
+ * @extends meta4.test.TestCase
+ * @imports meta4.core.System
+ */
+
+//@public
+function test_callback() {
+	var object = new Object();
+	var callback = System.callback(function() {
+		return this;
+	});
+	assertEquals(System.context, callback());
+	assertEquals(object, callback.call(object));
+	
+	callback = System.callback.call(object, function() {
+		return this;
+	});
+	assertEquals(object, callback());
+	assertEquals(object, callback.call(object));
+}
+
+//@public
+function test_loadback() {
+	var source = { url:$("baseURL") };
+	System.loadback(source, function(source) {
+		assertEquals(true, source.content.length>0, "test_loadback");
+	});
+}
+
+//@public
+function test_formatText() {
+	assertEquals(undefined, System.formatText());
+	assertEquals("", System.formatText(""));
+	assertEquals("hello", System.formatText("hello"));
+	
+	assertEquals("hello undefined world", System.formatText("hello ${0} ${1}", undefined, "world"));
+	assertEquals("hello null world",      System.formatText("hello ${0} ${1}", null, "world"));
+	assertEquals("hello  world",          System.formatText("hello ${0} ${1}", "", "world"));
+	assertEquals("hello 0 world",         System.formatText("hello ${0} ${1}", 0,  "world"));
+	assertEquals("hello 0 ${2}",          System.formatText("hello ${0} ${2}", 0,  "world"));
+	assertEquals("hello 0 hello",         System.formatText("hello ${0} ${2:hello}", 0, "world"));
+	
+	assertEquals("hello undefined world", System.formatText("hello ${0} ${1}", {"0":undefined, "1":"world"}));
+	assertEquals("hello null world",      System.formatText("hello ${0} ${1}", {"0":null, "1":"world"}));
+	assertEquals("hello  world",          System.formatText("hello ${0} ${1}", {"0":"", "1":"world"}));
+	assertEquals("hello 0 world",         System.formatText("hello ${0} ${1}", {"0":0,  "1":"world"}));
+	assertEquals("hello 0 ${2}",          System.formatText("hello ${0} ${2}", {"0":0,  "1":"world"}));
+	assertEquals("hello 0 hello",         System.formatText("hello ${0} ${2:hello}", {"0":0, "1":"world"}));
+}
+
+//@public
+function test_resolvePath() {
+	var base = "http://host/base/root";
+	assertEquals("http://host/hello/world", System.resolvePath(base, "http://host/hello/world"));
+	assertEquals("http://host/hello/world", System.resolvePath(base, "/hello/world"));
+	assertEquals("http://host/base/hello/world", System.resolvePath(base, "hello/world"));
+	assertEquals("http://host/base", System.resolvePath(base, ""));
+}
+
+//@public
+function test_splicePath() {
+	var path = "a/b/c/d/e";
+	
+	assertEquals("a/b/c/d/e", System.splicePath(path, -2, 0));
+	assertEquals("a/b/c/d/e", System.splicePath(path, -1, 0));
+	assertEquals("a/b/c/d/e", System.splicePath(path, 0, 0));
+	assertEquals("a/b/c/d/e", System.splicePath(path, 1, 0));
+	assertEquals("a/b/c/d/e", System.splicePath(path, 2, 0));
+	
+	assertEquals("d/e", System.splicePath(path, -2, -2));
+	assertEquals("e", System.splicePath(path, -1, -2));
+	assertEquals("a/b", System.splicePath(path, 0, -2));
+	assertEquals("b/c", System.splicePath(path, 1, -2));
+	assertEquals("c/d", System.splicePath(path, 2, -2));
+	
+	assertEquals("d", System.splicePath(path, -2, -1));
+	assertEquals("e", System.splicePath(path, -1, -1));
+	assertEquals("a", System.splicePath(path, 0, -1));
+	assertEquals("b", System.splicePath(path, 1, -1));
+	assertEquals("c", System.splicePath(path, 2, -1));
+	
+	assertEquals("a/b/c/e", System.splicePath(path, -2, 1));
+	assertEquals("a/b/c/d", System.splicePath(path, -1, 1));
+	assertEquals("b/c/d/e", System.splicePath(path, 0, 1));
+	assertEquals("a/c/d/e", System.splicePath(path, 1, 1));
+	assertEquals("a/b/d/e", System.splicePath(path, 2, 1));
+	
+	assertEquals("a/b/c", System.splicePath(path, -2, 2));
+	assertEquals("a/b/c/d", System.splicePath(path, -1, 2));
+	assertEquals("c/d/e", System.splicePath(path, 0, 2));
+	assertEquals("a/d/e", System.splicePath(path, 1, 2));
+	assertEquals("a/b/e", System.splicePath(path, 2, 2));
+}

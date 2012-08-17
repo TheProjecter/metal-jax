@@ -1,0 +1,20 @@
+/**
+ * @class PoweredBy
+ * @extends PoweredBy:html
+ */
+
+//@private
+function initObject() {
+	$private.label = this.nodes.label;
+	label.style.color = "red";
+	setInterval(changeLabel, 1000);
+}
+
+//@private
+function changeLabel() {
+	if (label.style.color == "red") {
+		label.style.color = "blue";
+	} else {
+		label.style.color = "red";
+	}
+}

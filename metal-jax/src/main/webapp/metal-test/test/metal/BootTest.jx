@@ -1,0 +1,27 @@
+/**
+ * @test test.metal.BootTest
+ * @imports metal.jax.System
+ */
+
+//@public
+function test_bootSetting() {
+	var names = [
+		"baseURL",
+		"baseScheme",
+		"baseOrigin",
+		"basePath",
+		"bootURL",
+		"bootOrigin",
+		"bootPath",
+		"bootFolder",
+		"bootContext",
+		"mainFolder",
+		"mainContext",
+		"mainClass",
+		"classType",
+		"faceType"
+	];
+	for (var i = 0; i < names.length; i++) {
+		System.println("| ".concat(names[i], ": ", $(names[i])));
+	}
+}

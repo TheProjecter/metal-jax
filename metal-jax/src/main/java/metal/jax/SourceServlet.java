@@ -1,3 +1,10 @@
+/**
+ * @copyright Jay Tang 2012
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ */
 package metal.jax;
 
 import java.io.BufferedReader;
@@ -7,6 +14,8 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.io.Writer;
 
+import javax.servlet.ServletConfig;
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -16,10 +25,22 @@ import org.apache.commons.lang.StringEscapeUtils;
 /**
  * Serves source files across domain.
  */
-@SuppressWarnings("serial")
 public class SourceServlet extends HttpServlet {
 	
-	@Override
+	private static final String VERSION_NAME = "metal-jax-version";
+	private static final String VERSION_DEFAULT = "metal-jax";
+	private String version;
+	
+	public void init(ServletConfig config) throws ServletException {
+		super.init(config);
+		String value = config.getInitParameter(VERSION_NAME);
+		if (value != null && value.length() > 0) {
+			version = value;
+		} else {
+			version = VERSION_DEFAULT;
+		}
+	}
+
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		handleSourceHeaders(response);
 		handleSourceContent(response, getSourceReader(request), getSourceCallback(request));
@@ -53,9 +74,8 @@ public class SourceServlet extends HttpServlet {
 	private static final String THIS = "this";
 	private static final String OPEN = "[\"";
 	private static final String CLOSE = "\"]";
-	private static final String VERSION = "metal-jax-1.0.0";
-	private static String getSourceCallback(HttpServletRequest request) {
-		return new StringBuilder(THIS).append(OPEN).append(VERSION).append(CLOSE)
+	private String getSourceCallback(HttpServletRequest request) {
+		return new StringBuilder(THIS).append(OPEN).append(version).append(CLOSE)
 			.append(OPEN).append(request.getRequestURL()).append(CLOSE).toString();
 	}
 	

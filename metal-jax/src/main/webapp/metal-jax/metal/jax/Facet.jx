@@ -1,0 +1,157 @@
+/**
+ * @class metal.jax.Facet
+ * @imports System
+ * 
+ * @copyright Jay Tang 2012
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ */
+
+//@private
+function initClass() {
+	if (this.$content) {
+		var node = System.document.createElement("div");
+		node.innerHTML = this.$content;
+		parseNode.call(this, node);
+		var index = System.indexOfOnlyChild(node);
+		if (index >= 0) {
+			this.$content = node.childNodes[index];
+		} else {
+			this.$content = System.document.createDocumentFragment();
+			while (node.childNodes.length) {
+				this.$content.appendChild(node.childNodes[0]);
+			}
+		}
+	}
+}
+
+//@private
+function initObject(context) {
+	this.context = context;
+	this.nodes = {};
+	this.bindings = {};
+}
+
+//@protected
+function parseModel(content) {
+	if (content) {
+		this.node = content.cloneNode(true);
+		parseNode(this.node, this);
+	}
+}
+
+//@private
+function parseNode(node, facet) {
+	if (node.nodeType == 1) {
+		if (!facet) {
+			if (node.nodeName.toLowerCase() == "img") {
+				node.src = System.resolvePath(node.attributes.alt.value||node.attributes.src.value, this.$static.$("url"));
+				return;
+			} else if (node.nodeName.toLowerCase() == "link") {
+				node.href = System.resolvePath(node.attributes.href.value, this.$static.$("url"));
+				System.document.body.previousSibling.appendChild(node);
+				return;
+			}
+		}
+		if (node.id) {
+			var parts = node.id.split(":");
+			var className = parts[1], nodeId = parts[0];
+			if (facet) {
+				facet.nodes[nodeId] = node;
+				className = className && facet.getClass().$(className) || className;
+				var childClass = facet.getClass().getContext().findClass(className);
+				if (childClass && childClass.extendsClass(Facet)) {
+					while (node.childNodes.length) node.removeChild(node.childNodes[0]);
+					node.appendChild(new childClass().node);
+					return;
+				}
+			} else if (className) {
+				var baseName = System.parseBaseName(className);
+				className = System.parseSourceName(className, this.$static.getName(), $("faceType"));
+				this.$setting[baseName] = className;
+				this.$context.loadClass(className);
+			}
+		}
+	}
+	if (node.nodeType == 1 || node.nodeType == 11) {
+		for (var i = 0; i < node.childNodes.length; i++) {
+			var childNode = node.childNodes[i];
+			parseNode.call(this, childNode, facet);
+		}
+	}
+}
+
+//@public
+function get(name) {
+	switch (name) {
+	case "info":
+		return this.info;
+	case "label":
+		return this.label;
+	default:
+		return $super.get.apply(this, arguments);
+	}
+}
+
+//@public
+function set(name, value) {
+	switch (name) {
+	case "info":
+		if (this.nodes[name]) {
+			this.nodes[name].innerHTML = value;
+		} else {
+			this.node.title = value;
+		}
+		break;
+	case "label":
+		if (this.nodes[name]) {
+			this.nodes[name].innerHTML = value;
+		} else if (this.node.innerHTML.length == 0) {
+			this.node.innerHTML = value;
+		}
+	default:
+		if (this.nodes[name] && typeof value == "string") {
+			this.nodes[name].innerHTML = value;
+		} else if (value instanceof Facet) {
+			this.addChild(value);
+		}
+	}
+	return $super.set.apply(this, arguments);
+}
+
+//@private
+var _events_ = [
+	"keydown", "keypress", "keyup",
+	"click", "dblclick",
+	"mousedown", "mousemove", "mouseout", "mouseover", "mouseup"
+];
+
+//@public
+function toggleEvent(event, node, action) {
+	if (_events_.indexOf(event) < 0) return;
+	action = System.toggleEvent(event, node, System.callback.call(this, dispatch, action, node));
+	if (node.id) this.bindings[node.id] = action;
+	return action;
+}
+
+//@public
+function notify(target, event) {
+	this.context.notify(target, this);
+}
+
+//@private
+function dispatch(action, node, event) {
+	action.call(this, event, node);
+	
+	/*stop propagation*/
+	if (event.stopPropagation) event.stopPropagation();
+	event.cancelBubble = true;
+	
+	/*prevent default action in FF*/
+	if (event.preventDefault) event.preventDefault();
+	
+	/*false to prevent default action in IE*/
+	return false;
+}

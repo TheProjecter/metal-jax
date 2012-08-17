@@ -1,0 +1,8 @@
+/**
+ * @model Foo
+ */
+
+//@private
+function initObject(key, content) {
+	this.content = content;
+}
