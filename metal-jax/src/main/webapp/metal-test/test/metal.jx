@@ -1,5 +1,5 @@
 /**
- * @context test.main
+ * @context test.metal
  * @imports metal.test.TestRunner
  * @source base=${basePath} folder=${mainFolder} excludes=^metal[.]
  * @content type=test extends=metal.test.TestCase

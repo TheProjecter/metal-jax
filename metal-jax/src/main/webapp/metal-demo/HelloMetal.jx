@@ -3,6 +3,9 @@
  * @extends HelloMetal:html
  * @imports PoweredBy
  * @imports Hello
+ * @setting label.content=Hello, Well, Metal
+ * @setting poweredBy.title=Powered By MetalJax
+ * @setting footer.title=a model test example
  */
 
 //@private

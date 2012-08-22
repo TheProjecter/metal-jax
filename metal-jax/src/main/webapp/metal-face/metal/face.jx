@@ -1,4 +1,4 @@
 /**
- * @context main
+ * @context metal.face
  * @source base=${basePath} folder=${mainFolder} includes=^metal.face[.]
  */

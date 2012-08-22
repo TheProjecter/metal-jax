@@ -34,7 +34,7 @@ function initObject(context) {
 	this.bindings = {};
 }
 
-//@protected
+//@static
 function parseModel(content) {
 	if (content) {
 		this.node = content.cloneNode(true);
