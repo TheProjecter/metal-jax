@@ -15,8 +15,8 @@
 
 //@private
 function initClass() {
-	$static.load = ModelLoader.getContext().load;
-	$static.find = ModelLoader.getContext().find;
+	$static.load = ModelLoader.prototype.load;
+	$static.find = ModelLoader.prototype.find;
 }
 
 //@private

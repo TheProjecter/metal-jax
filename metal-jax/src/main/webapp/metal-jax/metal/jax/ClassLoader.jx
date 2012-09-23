@@ -237,6 +237,7 @@ $private._classSettingRE_ = /@(setting|source|content)[\t ]+([\S\t ]*\S+)[\t ]*$
 $private.parseModel = function parseModel(source) {
 	source.scope = { $public:{}, $protected:{}, $static:{}, $imports:{}, $setting:{} };
 	source.scope.$setting.folder = source.folder;
+	source.scope.$setting.path = source.path;
 	if (source.type != $("classType")) {
 		source.contentType = source.type;
 		source.scope.content = source.content;

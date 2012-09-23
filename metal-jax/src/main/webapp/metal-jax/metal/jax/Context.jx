@@ -13,6 +13,7 @@
 function initClass() {
 	$public.loadClass = ClassLoader.prototype.loadClass;
 	$public.findClass = ClassLoader.prototype.findClass;
+	$public.initObject = ClassLoader.prototype.initObject;
 }
 
 //@public

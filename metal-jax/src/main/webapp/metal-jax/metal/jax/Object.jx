@@ -1,6 +1,5 @@
 /**
  * @class metal.jax.Object
- * @imports metal.jax.ClassLoader
  * 
  * @copyright Jay Tang 2012
  * All rights reserved. This program and the accompanying materials

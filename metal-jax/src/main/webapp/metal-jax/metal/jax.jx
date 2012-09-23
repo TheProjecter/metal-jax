@@ -22,7 +22,7 @@
 			scope: { $public:{}, $protected:{}, $static:{}, $imports:{}, $setting:$setting },
 			setting: {
 				source: [
-					{ base:"${bootPath}", folder:"${bootFolder}", includes:"^metal[.]" },
+					{ base:"${bootPath}", folder:"${bootFolder}", includes:"^metal.jax[.]" },
 					{ base:"${basePath}", folder:"${mainFolder}" }
 				],
 				content: [
@@ -199,13 +199,14 @@
 			delete request.node;
 		}
 		
-		function resolvePath(path, base) {
+		function resolvePath(path, base, isFolder) {
 			if (!_originRE_.exec(path)) {
 				if (path.charAt(0) == "/") {
 					path = _originRE_.exec(base)[1].concat(path);
 				} else {
-					base = splitPath(base, -1, -1) || base;
-					path = path ? base.concat("/", path) : base;
+					var base2 = splitPath(base, -1, -1);
+					base = base2 || isFolder && base;
+					path = base ? base.concat("/", path) : path;
 				}
 			}
 			return path;

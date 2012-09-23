@@ -60,10 +60,11 @@ function initModel(node, clone) {
 function parseNode(node, scope) {
 	if (node.nodeType == 1) {
 		if (node.nodeName.toLowerCase() == "img") {
-			node.src = System.resolvePath(node.attributes["alt"].value||node.attributes["src"].value, scope.$static.$("folder"));
+			node.src = System.resolvePath(node.attributes["alt"].value||node.attributes["src"].value, scope.$static.$("folder"), true);
 			return;
 		} else if (node.nodeName.toLowerCase() == "link") {
-			node.href = System.resolvePath(node.attributes["href"].value, scope.$static.$("folder"));
+			var path = System.resolvePath(node.attributes["href"].value, scope.$static.$("path"));
+			node.href = System.resolvePath(path, scope.$static.$("folder"), true);
 			System.document.body.previousSibling.appendChild(node);
 			return;
 		}
@@ -101,7 +102,7 @@ function initNode(node, facet) {
 				if (index >= 0) {
 					childClass.newObject(node);
 				} else {
-					while (node.childNodes.length) node.removeChild(node.childNodes[0]);
+					while (node.firstChild) node.removeChild(node.firstChild);
 					node.appendChild(new childClass().node);
 				}
 				return;
