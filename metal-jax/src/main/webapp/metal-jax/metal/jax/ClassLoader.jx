@@ -73,7 +73,7 @@ $private.initSource = function initSource(name, context) {
 	source.context = setting.context;
 	source.base = setting.base;
 	source.folder = setting.folder;
-	source.path = source.folder.concat("/", nameOnly.split(".").join("/"), ".", source.type);
+	source.path = nameOnly.split(".").join("/").concat(".", source.type);
 	return source;
 };
 

@@ -112,7 +112,7 @@ function requestSameOrigin(source, callback) {
 	} else {
 		System.throwError("XHR not supported");
 	}
-	source.url = source.base.concat("/", source.path);
+	source.url = [source.base, source.folder, source.path].join("/");
 	switch (requestMethod(source)) {
 	case "GET":
 		request.open("GET", requestURL(source), true);
@@ -152,7 +152,7 @@ function loadCrossOrigin(source, callback) {
 //@private
 function requestCrossOrigin(source, callback) {
 	var request = {};
-	request.url = source.url = source.base.concat("/", $("crossFolder"), "/", source.path);
+	request.url = source.url = [source.base, $("crossFolder"), source.folder, source.path].join("/");
 	System.window[$("bootFolder")][request.url] = callback;
 	request.node = System.document.createElement("script");
 	request.node.src = requestURL(source);

@@ -74,7 +74,7 @@ function initSource(key, clazz) {
 	source.type = clazz.$("model.type");
 	source.base = clazz.$("model.base");
 	source.folder = clazz.$("model.folder");
-	source.path = source.folder.concat("/", clazz.getName().split(".").join("/"), ".", source.key, ".", source.type);
+	source.path = clazz.getName().split(".").join("/").concat(".", source.key, ".", source.type);
 	return source;
 }
 

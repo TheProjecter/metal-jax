@@ -43,7 +43,7 @@
 				waitFor("load", function() {
 					$source.base = $setting["bootPath"];
 					$source.folder = $setting["bootFolder"];
-					$source.path = $source.folder.concat("/", $source.name.split(".").join("/"), ".", $setting["classType"]);
+					$source.path = $source.name.split(".").join("/").concat(".", $setting["classType"]);
 					loadback($source, parseSource);
 				});
 			}
@@ -100,11 +100,10 @@
 				var model = Facet.parseModel.call($source.scope, this.document.body);
 				context.loadClass($setting["mainClass"], function() {
 					var mainClass = context.findClass($setting["mainClass"], true) || mainContext;
-					if (mainClass) {
-						if (mainClass.main) mainClass.main.call();
-						else if (mainClass.extendsClass(Facet)) {
-							this.document.body.appendChild(new mainClass().node);
-						}
+					if (mainClass && mainClass.main) {
+						mainClass.main.call();
+					} else if (mainClass && mainClass.extendsClass(Facet)) {
+						this.document.body.appendChild(new mainClass().node);
 					} else {
 						$root = Facet.newObject(model);
 					}
@@ -160,7 +159,7 @@
 			} else {
 				throw Error("XHR not supported");
 			}
-			source.url = source.base.concat("/", source.path);
+			source.url = [source.base, source.folder, source.path].join("/");
 			request.open("GET", source.url, true);
 			request.onreadystatechange = callback;
 			return request;
@@ -184,7 +183,7 @@
 		
 		function requestCrossOrigin(source, callback) {
 			var request = {};
-			request.url = source.url = source.base.concat("/", $setting["crossFolder"], "/", source.path);
+			request.url = source.url = [source.base, $setting["crossFolder"], source.folder, source.path].join("/");
 			this[$setting["bootFolder"]][request.url] = callback;
 			request.node = this.document.createElement("script");
 			request.node.src = request.url;
