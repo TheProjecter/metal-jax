@@ -11,19 +11,9 @@
 
 //@private
 function initClass() {
-	if (this.$content) {
-		var node = System.document.createElement("div");
-		node.innerHTML = this.$content;
-		parseNode.call(this, node);
-		var index = System.indexOfOnlyChild(node);
-		if (index >= 0) {
-			this.$content = node.childNodes[index];
-		} else {
-			this.$content = System.document.createDocumentFragment();
-			while (node.childNodes.length) {
-				this.$content.appendChild(node.childNodes[0]);
-			}
-		}
+	if (this.content) {
+		parseSource(this);
+		delete this.content;
 	}
 }
 
@@ -35,90 +25,94 @@ function initObject(context) {
 }
 
 //@static
-function parseModel(content) {
-	if (content) {
-		this.node = content.cloneNode(true);
-		parseNode(this.node, this);
-	}
+function newObject(model) {
+	var object = new this();
+	initModel.call(object, model, false);
+	return object;
 }
 
 //@private
-function parseNode(node, facet) {
+function parseSource(scope) {
+	var node = System.parseHTML(scope.content);
+	scope.$model = parseModel.call(scope, node);
+}
+
+//@static
+function parseModel(node) {
+	for (var i = 0; i < node.childNodes.length; i++) {
+		parseNode(node.childNodes[i], this);
+	}
+	var index = System.indexOfFirstChild(node, true);
+	if (index >= 0 && node.nodeType == 11) {
+		node = node.childNodes[index];
+	}
+	return node;
+}
+
+//@static
+function initModel(node, clone) {
+	clone = clone || arguments.length == 1;
+	this.node = clone ? node.cloneNode(true) : node;
+	initNode(this.node, this);
+}
+
+//@private
+function parseNode(node, scope) {
 	if (node.nodeType == 1) {
-		if (!facet) {
-			if (node.nodeName.toLowerCase() == "img") {
-				node.src = System.resolvePath(node.attributes.alt.value||node.attributes.src.value, this.$static.$("url"));
-				return;
-			} else if (node.nodeName.toLowerCase() == "link") {
-				node.href = System.resolvePath(node.attributes.href.value, this.$static.$("url"));
-				System.document.body.previousSibling.appendChild(node);
-				return;
-			}
+		if (node.nodeName.toLowerCase() == "img") {
+			node.src = System.resolvePath(node.attributes["alt"].value||node.attributes["src"].value, scope.$static.$("folder"));
+			return;
+		} else if (node.nodeName.toLowerCase() == "link") {
+			node.href = System.resolvePath(node.attributes["href"].value, scope.$static.$("folder"));
+			System.document.body.previousSibling.appendChild(node);
+			return;
 		}
 		if (node.id) {
 			var parts = node.id.split(":");
-			var className = parts[1], nodeId = parts[0];
-			if (facet) {
-				facet.nodes[nodeId] = node;
-				className = className && facet.getClass().$(className) || className;
-				var childClass = facet.getClass().getContext().findClass(className);
-				if (childClass && childClass.extendsClass(Facet)) {
-					while (node.childNodes.length) node.removeChild(node.childNodes[0]);
-					node.appendChild(new childClass().node);
-					return;
-				}
-			} else if (className) {
-				var baseName = System.parseBaseName(className);
-				className = System.parseSourceName(className, this.$static.getName(), $("faceType"));
-				this.$setting[baseName] = className;
-				this.$context.loadClass(className);
+			var nodeId = parts.shift(), className = parts.join(":");
+			var baseName = System.parseBaseName(className);
+			if (className) {
+				className = System.parseSourceName(className, scope.$static.getName(), $("faceType"));
+				scope.$setting[baseName] = className;
+				scope.$context.loadClass(className);
 			}
 		}
 	}
 	if (node.nodeType == 1 || node.nodeType == 11) {
 		for (var i = 0; i < node.childNodes.length; i++) {
-			var childNode = node.childNodes[i];
-			parseNode.call(this, childNode, facet);
+			parseNode(node.childNodes[i], scope);
 		}
 	}
 }
 
-//@public
-function get(name) {
-	switch (name) {
-	case "info":
-		return this.info;
-	case "label":
-		return this.label;
-	default:
-		return $super.get.apply(this, arguments);
-	}
-}
-
-//@public
-function set(name, value) {
-	switch (name) {
-	case "info":
-		if (this.nodes[name]) {
-			this.nodes[name].innerHTML = value;
-		} else {
-			this.node.title = value;
-		}
-		break;
-	case "label":
-		if (this.nodes[name]) {
-			this.nodes[name].innerHTML = value;
-		} else if (this.node.innerHTML.length == 0) {
-			this.node.innerHTML = value;
-		}
-	default:
-		if (this.nodes[name] && typeof value == "string") {
-			this.nodes[name].innerHTML = value;
-		} else if (value instanceof Facet) {
-			this.addChild(value);
+//@private
+function initNode(node, facet) {
+	if (node.nodeType == 1) {
+		if (node.id) {
+			var parts = node.id.split(":");
+			var nodeId = parts.shift(), className = parts.join(":");
+			var baseName = System.parseBaseName(className);
+			
+			facet.nodes[nodeId] = node;
+			className = className && facet.getClass().$(baseName) || className;
+			var childClass = facet.getClass().getContext().findClass(className);
+			if (childClass && childClass.extendsClass(Facet)) {
+				var index = System.indexOfFirstChild(node);
+				if (index >= 0) {
+					childClass.newObject(node);
+				} else {
+					while (node.childNodes.length) node.removeChild(node.childNodes[0]);
+					node.appendChild(new childClass().node);
+				}
+				return;
+			}
 		}
 	}
-	return $super.set.apply(this, arguments);
+	if (node.nodeType == 1 || node.nodeType == 11) {
+		for (var i = 0; i < node.childNodes.length; i++) {
+			initNode(node.childNodes[i], facet);
+		}
+	}
 }
 
 //@private
@@ -134,11 +128,6 @@ function toggleEvent(event, node, action) {
 	action = System.toggleEvent(event, node, System.callback.call(this, dispatch, action, node));
 	if (node.id) this.bindings[node.id] = action;
 	return action;
-}
-
-//@public
-function notify(target, event) {
-	this.context.notify(target, this);
 }
 
 //@private

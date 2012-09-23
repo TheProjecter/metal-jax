@@ -11,13 +11,13 @@
 
 //@private
 function initClass() {
-	$public.loadClass = ClassLoader.getContext().loadClass;
-	$public.findClass = ClassLoader.getContext().findClass;
+	$public.loadClass = ClassLoader.prototype.loadClass;
+	$public.findClass = ClassLoader.prototype.findClass;
 }
 
 //@public
 function toggleEvent(event, callback, positive) {
-	positive = arguments.length == 2 || positive;
+	positive = positive || arguments.length == 2;
 	if (callback) {
 		var callbacks = this.bindings[event];
 		if (!callbacks) {

@@ -9,9 +9,10 @@
 	
 	(function() {
 		
+		var $root;
 		var $setting = {
-			mainContext: "main",
 			mainFolder: "main",
+			mainContext: "main",
 			crossFolder: "xd",
 			crossInterval: "3000"
 		};
@@ -26,8 +27,9 @@
 				],
 				content: [
 					{ type:"class", "extends":"metal.jax.Object" },
-					{ type:"context", "extends":"metal.jax.Context" },
 					{ type:"model", "extends":"metal.jax.Model" },
+					{ type:"facet", "extends":"metal.jax.Facet" },
+					{ type:"context", "extends":"metal.jax.Context" },
 					{ type:"${faceType}", "extends":"metal.jax.Facet" }
 				]
 			}
@@ -40,7 +42,8 @@
 				this[$setting["bootFolder"]] = {};
 				waitFor("load", function() {
 					$source.base = $setting["bootPath"];
-					$source.path = $setting["bootFolder"].concat("/", $source.name.split(".").join("/"), ".", $setting["classType"]);
+					$source.folder = $setting["bootFolder"];
+					$source.path = $source.folder.concat("/", $source.name.split(".").join("/"), ".", $setting["classType"]);
 					loadback($source, parseSource);
 				});
 			}
@@ -93,14 +96,17 @@
 			$source.context.loadClass($setting["mainContext"], function() {
 				var mainContext = $source.context.findClass($setting["mainContext"], true);
 				var context = mainContext ? mainContext.getContext() : $source.context;
+				var Facet = context.findClass("metal.jax.Facet", true);
+				var model = Facet.parseModel.call($source.scope, this.document.body);
 				context.loadClass($setting["mainClass"], function() {
 					var mainClass = context.findClass($setting["mainClass"], true) || mainContext;
 					if (mainClass) {
 						if (mainClass.main) mainClass.main.call();
-						else if (mainClass.extendsClass("metal.jax.Facet")) {
-							var parentNode = this.document.getElementById(mainClass.getName()) || this.document.body;
-							parentNode.appendChild(new mainClass().node);
+						else if (mainClass.extendsClass(Facet)) {
+							this.document.body.appendChild(new mainClass().node);
 						}
+					} else {
+						$root = Facet.newObject(model);
 					}
 				});
 			});

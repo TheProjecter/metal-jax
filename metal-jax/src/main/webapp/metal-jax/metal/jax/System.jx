@@ -194,39 +194,55 @@ var _spacesRE_ = /^\s*$/;
 
 //@static
 function parseJSONFromXML(node) {
-	switch (node.nodeType) {
-	case 1:
-		var isList = node.nodeName == "list";
-		var result = isList ? [] : {};
-		for (var i = 0; i < node.childNodes.length; i++) {
-			var childNode = node.childNodes[i];
-			if (childNode.nodeType == 1) {
-				var index = indexOfOnlyChild(childNode);
-				var value = index >= 0 ? parseJSONFromXML(childNode.childNodes[index]) : parseJSONFromXML(childNode);
-				if (isList) {
-					result.push(value);
-				} else {
-					result[childNode.nodeName] = value;
-				}
-			}
+	var result = {};
+	for (var i = 0; i < node.childNodes.length; i++) {
+		var childNode = node.childNodes[i];
+		if (childNode.nodeType == 1) {
+			result[childNode.nodeName] = parseJSONValueFromXML(childNode);
 		}
-		return result;
-	case 3:
-		return node.data;
 	}
+	return result;
+}
+
+//@private
+function parseJSONValueFromXML(node) {
+	var index = node.childNodes.length == 1 ? 0 : indexOfFirstChild(node, true);
+	if (index >= 0) {
+		node = node.childNodes[index];
+		return (node.nodeType == 3) ? node.data : parseJSONFromXML(node);
+	}
+	var result = [];
+	for (var i = 0; i < node.childNodes.length; i++) {
+		var childNode = node.childNodes[i];
+		if (childNode.nodeType == 1) {
+			result.push(parseJSONFromXML(childNode));
+		}
+	}
+	return result;
 }
 
 //@static
-function indexOfOnlyChild(node) {
-	var index = 0, found;
+function indexOfFirstChild(node, only) {
+	var index = -1;
 	for (var i = 0; i < node.childNodes.length; i++) {
 		if (node.childNodes[i].nodeType == 1) {
-			if (found) return -1;
-			found = true;
+			if (!only) return i;
+			if (index >= 0) return -1;
 			index = i;
 		}
 	}
 	return index;
+}
+
+//@static
+function parseHTML(text) {
+	var node = System.document.createElement("div");
+	node.innerHTML = text;
+	var doc = System.document.createDocumentFragment();
+	while (node.firstChild) {
+		doc.appendChild(node.firstChild);
+	}
+	return doc;
 }
 
 //@static
@@ -277,7 +293,7 @@ function formatXML(doc) {
 
 //@static
 function toggleEvent(event, target, callback, positive) {
-	positive = arguments.length == 3 || positive;
+	positive = positive || arguments.length == 3;
 	if (callback) {
 		if (target.addEventListener) {
 			if (positive) {

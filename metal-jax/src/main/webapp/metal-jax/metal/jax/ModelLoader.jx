@@ -73,7 +73,8 @@ function initSource(key, clazz) {
 	source.$class = clazz;
 	source.type = clazz.$("model.type");
 	source.base = clazz.$("model.base");
-	source.path = clazz.$("model.folder").concat("/", clazz.getName().split(".").join("/"), ".", source.key, ".", source.type);
+	source.folder = clazz.$("model.folder");
+	source.path = source.folder.concat("/", clazz.getName().split(".").join("/"), ".", source.key, ".", source.type);
 	return source;
 }
 
@@ -125,11 +126,11 @@ function parseSource(source) {
 function flush() {
 	for (var i = 0; i < _pendingFlush.length; i++) {
 		if (_pendingCount) return;
-		flush_initModel(_pendingFlush[i]);
+		flush_parseModel(_pendingFlush[i]);
 	}
 	for (var i = 0; i < _pendingFlush.length; i++) {
 		if (_pendingCount) return;
-		flush_notifyModel(_pendingFlush[i]);
+		flush_initModel(_pendingFlush[i]);
 	}
 	while (_callbacks.length) {
 		if (_pendingCount) return;
@@ -144,7 +145,7 @@ function flush() {
 }
 
 //@private
-function flush_initModel(source) {
+function flush_parseModel(source) {
 	if (typeof source.flushStatus == "undefined") {
 		source.flushStatus = "busy 0";
 		source.object = new source.$class(source.$class);
@@ -156,7 +157,7 @@ function flush_initModel(source) {
 }
 
 //@private
-function flush_notifyModel(source) {
+function flush_initModel(source) {
 	if (source.flushStatus == 0) {
 		source.flushStatus = "busy 1";
 		if (source.$class.initModel) {

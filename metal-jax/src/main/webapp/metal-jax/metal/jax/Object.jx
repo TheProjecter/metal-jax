@@ -9,9 +9,11 @@
  * http://www.eclipse.org/legal/epl-v10.html
  */
 
-//@private
-function initClass() {
-	$static.newObject = ClassLoader.newObject;
+//@static
+function newObject() {
+	var object = new this(this);
+	$context.initObject.call(object, this, arguments);
+	return object;
 }
 
 //@static
