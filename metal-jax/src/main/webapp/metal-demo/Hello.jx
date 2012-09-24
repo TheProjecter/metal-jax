@@ -5,12 +5,12 @@
  */
 
 //@static
-function parseModel(content) {
-	this.foo = new Foo("foo", content.foo);
-	Bar.load(content.bar);
+function parseModel(model) {
+	this.foo = new Foo("foo", model.foo);
+	Bar.load(model.bar);
 }
 
 //@static
-function initModel(content) {
-	this.bar = Bar.find(content.bar);
+function initModel(model) {
+	this.bar = Bar.find(model.bar);
 }
