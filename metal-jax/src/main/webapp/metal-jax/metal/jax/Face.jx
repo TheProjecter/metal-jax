@@ -38,9 +38,9 @@ function parseSource(scope) {
 }
 
 //@static
-function parseModel(node) {
+function parseModel(node, resolved) {
 	for (var i = 0; i < node.childNodes.length; i++) {
-		parseNode(node.childNodes[i], this);
+		parseNode(node.childNodes[i], this, resolved);
 	}
 	var index = System.indexOfFirstChild(node, true);
 	if (index >= 0 && node.nodeType == 11) {
@@ -57,16 +57,18 @@ function initModel(node, clone) {
 }
 
 //@private
-function parseNode(node, scope) {
+function parseNode(node, scope, resolved) {
 	if (node.nodeType == 1) {
-		if (node.nodeName.toLowerCase() == "img") {
-			node.src = System.resolvePath(node.attributes["alt"].value||node.attributes["src"].value, scope.$static.$("folder"), true);
-			return;
-		} else if (node.nodeName.toLowerCase() == "link") {
-			var path = System.resolvePath(node.attributes["href"].value, scope.$static.$("path"));
-			node.href = System.resolvePath(path, scope.$static.$("folder"), true);
-			System.document.body.previousSibling.appendChild(node);
-			return;
+		if (!resolved) {
+			if (node.nodeName.toLowerCase() == "img") {
+				node.src = System.resolvePath(node.attributes["alt"].value||node.attributes["src"].value, scope.$static.$("folder"), true);
+				return;
+			} else if (node.nodeName.toLowerCase() == "link") {
+				var path = System.resolvePath(node.attributes["href"].value, scope.$static.$("path"));
+				node.href = System.resolvePath(path, scope.$static.$("folder"), true);
+				System.document.body.previousSibling.appendChild(node);
+				return;
+			}
 		}
 		if (node.id) {
 			var parts = node.id.split(":");
@@ -81,7 +83,7 @@ function parseNode(node, scope) {
 	}
 	if (node.nodeType == 1 || node.nodeType == 11) {
 		for (var i = 0; i < node.childNodes.length; i++) {
-			parseNode(node.childNodes[i], scope);
+			parseNode(node.childNodes[i], scope, resolved);
 		}
 	}
 }
