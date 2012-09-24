@@ -1,5 +1,5 @@
 /**
- * @class metal.jax.Facet
+ * @class metal.jax.Face
  * @imports System
  * 
  * @copyright Jay Tang 2012
@@ -87,17 +87,17 @@ function parseNode(node, scope) {
 }
 
 //@private
-function initNode(node, facet) {
+function initNode(node, object) {
 	if (node.nodeType == 1) {
 		if (node.id) {
 			var parts = node.id.split(":");
 			var nodeId = parts.shift(), className = parts.join(":");
 			var baseName = System.parseBaseName(className);
 			
-			facet.nodes[nodeId] = node;
-			className = className && facet.getClass().$(baseName) || className;
-			var childClass = facet.getClass().getContext().findClass(className);
-			if (childClass && childClass.extendsClass(Facet)) {
+			object.nodes[nodeId] = node;
+			className = className && object.getClass().$(baseName) || className;
+			var childClass = object.getClass().getContext().findClass(className);
+			if (childClass && childClass.extendsClass(Face)) {
 				var index = System.indexOfFirstChild(node);
 				if (index >= 0) {
 					childClass.newObject(node);
@@ -111,7 +111,7 @@ function initNode(node, facet) {
 	}
 	if (node.nodeType == 1 || node.nodeType == 11) {
 		for (var i = 0; i < node.childNodes.length; i++) {
-			initNode(node.childNodes[i], facet);
+			initNode(node.childNodes[i], object);
 		}
 	}
 }

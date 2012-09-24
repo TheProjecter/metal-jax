@@ -14,8 +14,8 @@ $static.$ = function $(name,value) { return name in $setting ? $setting[name] : 
 $private.ClassLoader = function ClassLoader() {};
 $imports.Context = "metal.jax.Context";
 $imports.Object = "metal.jax.Object";
-$imports.Facet = "metal.jax.Facet";
 $imports.System = "metal.jax.System";
+$imports.Face = "metal.jax.Face";
 
 //sets off flush
 //called after source compiled

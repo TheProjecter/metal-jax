@@ -9,7 +9,7 @@
 	
 	(function() {
 		
-		var $root;
+		var $face;
 		var $setting = {
 			mainFolder: "main",
 			mainContext: "main",
@@ -28,9 +28,9 @@
 				content: [
 					{ type:"class", "extends":"metal.jax.Object" },
 					{ type:"model", "extends":"metal.jax.Model" },
-					{ type:"facet", "extends":"metal.jax.Facet" },
+					{ type:"face", "extends":"metal.jax.Face" },
 					{ type:"context", "extends":"metal.jax.Context" },
-					{ type:"${faceType}", "extends":"metal.jax.Facet" }
+					{ type:"${faceType}", "extends":"metal.jax.Face" }
 				]
 			}
 		};
@@ -96,16 +96,16 @@
 			$source.context.loadClass($setting["mainContext"], function() {
 				var mainContext = $source.context.findClass($setting["mainContext"], true);
 				var context = mainContext ? mainContext.getContext() : $source.context;
-				var Facet = context.findClass("metal.jax.Facet", true);
-				var model = Facet.parseModel.call($source.scope, this.document.body);
+				var Face = context.findClass("metal.jax.Face", true);
+				var model = Face.parseModel.call($source.scope, this.document.body);
 				context.loadClass($setting["mainClass"], function() {
 					var mainClass = context.findClass($setting["mainClass"], true) || mainContext;
 					if (mainClass && mainClass.main) {
 						mainClass.main.call();
-					} else if (mainClass && mainClass.extendsClass(Facet)) {
+					} else if (mainClass && mainClass.extendsClass(Face)) {
 						this.document.body.appendChild(new mainClass().node);
 					} else {
-						$root = Facet.newObject(model);
+						$face = Face.newObject(model);
 					}
 				});
 			});
