@@ -1,5 +1,5 @@
 /**
- * @class HelloMetal
+ * @face HelloMetal
  * @extends HelloMetal:html
  * @imports PoweredBy
  * @imports Hello
