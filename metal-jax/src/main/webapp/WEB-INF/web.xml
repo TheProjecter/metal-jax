@@ -22,6 +22,6 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5">
 		<mime-type>text/plain</mime-type>
 	</mime-mapping>
 	<welcome-file-list>
-		<welcome-file>index-demo.html</welcome-file>
+		<welcome-file>metal-demo.html</welcome-file>
 	</welcome-file-list>
 </web-app>

@@ -27,9 +27,9 @@
 				],
 				content: [
 					{ type:"class", "extends":"metal.jax.Object" },
+					{ type:"context", "extends":"metal.jax.Context" },
 					{ type:"model", "extends":"metal.jax.Model" },
 					{ type:"face", "extends":"metal.jax.Face" },
-					{ type:"context", "extends":"metal.jax.Context" },
 					{ type:"${faceType}", "extends":"metal.jax.Face" }
 				]
 			}
@@ -99,7 +99,7 @@
 				var Face = context.findClass("metal.jax.Face", true);
 				var model = Face.parseModel.call($source.scope, this.document.body, true);
 				context.loadClass($setting["mainClass"], function() {
-					var mainClass = context.findClass($setting["mainClass"], true) || mainContext;
+					var mainClass = context.findClass($setting["mainClass"]) || mainContext;
 					if (mainClass && mainClass.main) {
 						mainClass.main.call();
 					} else if (mainClass && mainClass.extendsClass(Face)) {
@@ -204,8 +204,7 @@
 				if (path.charAt(0) == "/") {
 					path = _originRE_.exec(base)[1].concat(path);
 				} else {
-					var base2 = splitPath(base, -1, -1);
-					base = base2 || isFolder && base;
+					base = isFolder ? base : splitPath(base, -1, -1);
 					path = base ? base.concat("/", path) : path;
 				}
 			}
