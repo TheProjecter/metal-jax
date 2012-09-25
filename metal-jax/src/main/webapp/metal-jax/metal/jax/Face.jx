@@ -97,11 +97,12 @@ function initNode(node, object) {
 			var baseName = System.parseBaseName(className);
 			
 			object.nodes[nodeId] = node;
-			var title = object.getClass().$(nodeId+".title");
-			var value = object.getClass().$(nodeId+".value");
 			className = className && object.getClass().$(baseName) || className;
 			var childClass = object.getClass().getContext().findClass(className);
-			if (title) node.title = title;
+			if (node.title == nodeId) {
+				var title = object.getClass().$(nodeId+".title");
+				if (title) node.title = title;
+			}
 			if (childClass && childClass.extendsClass(Face)) {
 				var index = System.indexOfFirstChild(node);
 				if (index >= 0) {
@@ -111,8 +112,10 @@ function initNode(node, object) {
 					node.appendChild(new childClass().node);
 				}
 				return;
-			} else if (value && node.childNodes.length <= 1 && (!node.firstChild || node.firstChild.nodeType == 3)) {
+			} else if (node.childNodes.length == 1 && node.firstChild.nodeType == 3 && node.innerHTML == nodeId) {
+				var value = object.getClass().$(nodeId+".value");
 				node.innerHTML = value;
+				return;
 			}
 		}
 	}

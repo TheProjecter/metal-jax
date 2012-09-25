@@ -4,6 +4,6 @@
  */
 
 //@static
-function parseModel(content) {
-	this.content = content;
+function parseModel(value) {
+	this.value = value;
 }

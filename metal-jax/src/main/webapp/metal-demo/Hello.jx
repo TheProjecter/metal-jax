@@ -6,7 +6,7 @@
 
 //@static
 function parseModel(model) {
-	this.foo = new Foo("foo", model.foo);
+	this.foo = new Foo(model.foo);
 	Bar.load(model.bar);
 }
 

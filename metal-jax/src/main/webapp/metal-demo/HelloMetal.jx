@@ -3,7 +3,9 @@
  * @extends HelloMetal:html
  * @imports PoweredBy
  * @imports Hello
- * @setting label.value=Hello, Well, Metal
+ * 
+ * @setting label.title=Hello, Metal
+ * @setting label.value=Hello, Metal
  * @setting poweredBy.title=Powered By MetalJax
  * @setting footer.title=a model test example
  */
@@ -32,5 +34,5 @@ function changeLabel() {
 //@private
 function onLoad() {
 	var hello = Hello.find("hello");
-	footer.innerHTML = "hello: { foo: \"".concat(hello.foo.content, "\", bar: \"", hello.bar.content, "\" }");
+	footer.innerHTML = "hello: { foo: \"".concat(hello.foo.value, "\", bar: \"", hello.bar.value, "\" }");
 }

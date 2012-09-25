@@ -3,6 +3,6 @@
  */
 
 //@private
-function initObject(key, content) {
-	this.content = content;
+function initObject(value) {
+	this.value = value;
 }

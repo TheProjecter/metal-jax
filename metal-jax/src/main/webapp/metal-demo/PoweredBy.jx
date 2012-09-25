@@ -1,6 +1,8 @@
 /**
  * @face PoweredBy
  * @extends PoweredBy:html
+ * 
+ * @setting label.value=Powered by MetalJax
  */
 
 //@private
