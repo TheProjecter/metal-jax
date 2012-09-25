@@ -18,8 +18,3 @@ function initClass() {
 	$static.load = ModelLoader.prototype.load;
 	$static.find = ModelLoader.prototype.find;
 }
-
-//@private
-function initObject(key) {
-	this.key = key;
-}

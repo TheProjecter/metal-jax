@@ -61,11 +61,10 @@ function parseNode(node, scope, resolved) {
 	if (node.nodeType == 1) {
 		if (!resolved) {
 			if (node.nodeName.toLowerCase() == "img") {
-				node.src = System.resolvePath(node.attributes["alt"].value||node.attributes["src"].value, scope.$static.$("folder"), true);
+				node.src = resolvePath(node.attributes["alt"].value||node.attributes["src"].value, scope);
 				return;
 			} else if (node.nodeName.toLowerCase() == "link") {
-				var path = System.resolvePath(node.attributes["href"].value, scope.$static.$("path"));
-				node.href = System.resolvePath(path, scope.$static.$("folder"), true);
+				node.href = resolvePath(node.attributes["href"].value, scope);
 				System.document.body.previousSibling.appendChild(node);
 				return;
 			}
@@ -124,6 +123,13 @@ function initNode(node, object) {
 			initNode(node.childNodes[i], object);
 		}
 	}
+}
+
+//@private
+function resolvePath(path, scope) {
+	var fromBase = path && path.indexOf("../") == 0;
+	if (!fromBase) path = System.resolvePath(path, scope.$static.$("path"));
+	return System.resolvePath(path, scope.$static.$("folder"), true);
 }
 
 //@private
