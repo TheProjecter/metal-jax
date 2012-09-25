@@ -114,7 +114,7 @@ function initNode(node, object) {
 				return;
 			} else if (node.childNodes.length == 1 && node.firstChild.nodeType == 3 && node.innerHTML == nodeId) {
 				var value = object.getClass().$(nodeId+".value");
-				node.innerHTML = value;
+				if (value) node.innerHTML = value;
 				return;
 			}
 		}

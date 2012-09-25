@@ -94,7 +94,7 @@
 		
 		function initContext() {
 			$source.context.loadClass($setting["mainContext"], function() {
-				var mainContext = $source.context.findClass($setting["mainContext"], true);
+				var mainContext = $source.context.findClass($setting["mainContext"]);
 				var context = mainContext ? mainContext.getContext() : $source.context;
 				var Face = context.findClass("metal.jax.Face", true);
 				var model = Face.parseModel.call($source.scope, this.document.body, true);
