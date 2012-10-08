@@ -7,6 +7,7 @@
 //@private
 function initObject() {
 	this.box = {};
+	this.bindings = {};
 	for (var name in this.nodes) {
 		var node = this.nodes[name];
 		switch (node.id) {
@@ -23,14 +24,14 @@ function initObject() {
 		case "rightTop":
 		case "right":
 		case "rightBottom":
-			this.toggleEvent("mousedown", node, dispatch);
+			this.bindings[node.id] = this.bind(dispatch, node, "mousedown");
 			break;
 		}
 	}
 }
 
 //@private
-function dispatch(event, node) {
+function dispatch(node, event) {
 	switch (event.type) {
 	case "mousedown":
 		if (this.node == node) {

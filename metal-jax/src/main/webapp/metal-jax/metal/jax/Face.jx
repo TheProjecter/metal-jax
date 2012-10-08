@@ -18,10 +18,8 @@ function initClass() {
 }
 
 //@private
-function initObject(context) {
-	this.context = context;
+function initObject() {
 	this.nodes = {};
-	this.bindings = {};
 }
 
 //@static
@@ -64,8 +62,8 @@ function parseNode(node, scope, resolved) {
 				node.src = resolvePath(node.attributes["alt"].value||node.attributes["src"].value, scope);
 				return;
 			} else if (node.nodeName.toLowerCase() == "link") {
-				node.href = resolvePath(node.attributes["href"].value, scope);
 				System.document.body.previousSibling.appendChild(node);
+				node.href = resolvePath(node.attributes["href"].value, scope);
 				return;
 			}
 		}
@@ -140,16 +138,16 @@ var _events_ = [
 ];
 
 //@public
-function toggleEvent(event, node, action) {
-	if (_events_.indexOf(event) < 0) return;
-	action = System.toggleEvent(event, node, System.callback.call(this, dispatch, action, node));
-	if (node.id) this.bindings[node.id] = action;
-	return action;
+function bind(action, node, event) {
+	var binding = System.callback.call(this, dispatch, action, node);
+	if (node && event) System.toggleEvent(event, node, binding);
+	return binding;
 }
 
 //@private
 function dispatch(action, node, event) {
-	action.call(this, event, node);
+	var status = action.call(this, node, event);
+	if (status) return true;
 	
 	/*stop propagation*/
 	if (event.stopPropagation) event.stopPropagation();

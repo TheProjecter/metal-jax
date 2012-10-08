@@ -37,7 +37,7 @@ function toggleEvent(event, callback, positive) {
 }
 
 //@public
-function bind(event, bean, action) {
+function bind(action, bean, event) {
 }
 
 //@public

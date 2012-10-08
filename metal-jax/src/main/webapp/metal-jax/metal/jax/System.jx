@@ -50,7 +50,7 @@ function logError(ex) {
 	return ex;
 }
 
-//@private
+//@static
 function indexOf(item, index) {
 	index = index || 0;
 	for ( ; index < this.length; index++) {
@@ -59,6 +59,14 @@ function indexOf(item, index) {
 		}
 	};
 	return -1;
+}
+
+//@static
+function copyArray(items) {
+	//return Array.prototype.slice.call(items, 0);
+	var result = [];
+	for (var i = 0; i < items.length; i++) result.push(items[i]);
+	return result;
 }
 
 //@private
@@ -182,6 +190,23 @@ function requestInput(source) {
 //@private
 function requestURL(source) {
 	return source.input ? source.url.concat("?", source.input) : source.url;
+}
+
+//@static
+function parseValue(text, type) {
+	switch (type) {
+	case "boolean":
+		return text == "true";
+	case "date":
+		return Date.parse(text);
+	case "float":
+		return parseFloat(text);
+	case "integer":
+		return parseInt(text);
+	case "string":
+	default:
+		return text;
+	}
 }
 
 //@static
