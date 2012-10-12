@@ -11,6 +11,7 @@
 		
 		var $face;
 		var $setting = {
+			mainClass: "",
 			mainFolder: "main",
 			mainContext: "main",
 			crossFolder: "xd",
@@ -22,8 +23,7 @@
 			scope: { $public:{}, $protected:{}, $static:{}, $imports:{}, $setting:$setting },
 			setting: {
 				source: [
-					{ base:"${bootPath}", folder:"${bootFolder}", includes:"^metal.jax[.]" },
-					{ base:"${basePath}", folder:"${mainFolder}" }
+					{ base:"${bootPath}", folder:"${bootFolder}", includes:"^metal.jax[.]" }
 				],
 				content: [
 					{ type:"class", "extends":"metal.jax.Object" },
@@ -50,21 +50,26 @@
 		}
 		
 		function parseSetting(setting) {
-			var parts = (this.document.URLUnencoded||this.document.URL).split("?");
+			var parts = (this.document.URLUnencoded||this.document.URL).split("?"), baseParam = parts[1];
 			setting["baseURL"] = parts[0];
-			setting["mainClass"] = parts[1] || "";
 			setting["baseScheme"] = setting["baseURL"].split(":")[0];
 			setting["baseOrigin"] = _originRE_.exec(setting["baseURL"])[1];
 			setting["basePath"] = splitPath(setting["baseURL"], -1, -1);
 			setting["faceType"] = splitPath(setting["baseURL"], -1, 1).split(".")[1] || "html";
 			var nodes = this.document.getElementsByTagName("script");
 			parts = nodes[nodes.length-1].src.split("?");
+			var bootParam = parts[1];
 			setting["bootURL"] = parts[0];
-			setting["mainContext"] = parts[1] || setting["mainContext"];
-			setting["mainFolder"] = splitPath(setting["mainContext"], -1, -1) || setting["mainFolder"];
-			setting["mainContext"] = splitPath(setting["mainContext"], -1, 1);
-			setting["mainFolder"] = splitPath(setting["mainClass"], -1, -1) || setting["mainFolder"];
-			setting["mainClass"] = splitPath(setting["mainClass"], -1, 1);
+			if (bootParam) {
+				parts = bootParam.split("/");
+				setting["mainFolder"] = parts.length==1 ? bootParam : splitPath(bootParam, -1, -1);
+				setting["mainContext"] = parts.length==1 ? setting["mainContext"] : splitPath(bootParam, -1, 1);
+			}
+			if (baseParam) {
+				parts = baseParam.split("/");
+				setting["mainFolder"] = parts.length==1 ? setting["mainFolder"] : splitPath(baseParam, -1, -1);
+				setting["mainClass"] = parts.length==1 ? baseParam : splitPath(baseParam, -1, 1);
+			}
 			setting["bootPath"] = splitPath(setting["bootURL"], -3, -3);
 			setting["bootFolder"] = splitPath(setting["bootURL"], -3, 1);
 			parts = splitPath(setting["bootURL"], -2, 2).split(".");

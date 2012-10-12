@@ -70,9 +70,9 @@ $private.initSource = function initSource(name, context) {
 	var source = {};
 	source.name = name;
 	source.type = parseSourceType(name);
-	source.context = setting.context;
-	source.base = setting.base;
-	source.folder = setting.folder;
+	source.base = setting ? setting.base : $("basePath");
+	source.folder = setting ? setting.folder : $("mainFolder");
+	source.context = setting ? setting.context : context;
 	source.path = nameOnly.split(".").join("/").concat(".", source.type);
 	return source;
 };
@@ -81,7 +81,7 @@ $private.initSource = function initSource(name, context) {
 $private.findSource = function findSource(name, context) {
 	name = parseSourceName(name);
 	var setting = findSourceSetting(name, context);
-	return getSource(name, setting.context);
+	return getSource(name, setting ? setting.context : context);
 };
 
 //finds source setting in context hierarchy
@@ -106,10 +106,10 @@ $private.findSourceSetting = function findSourceSetting(name, context) {
 			}
 		}
 		if (result) return result;
-		if (context == $context) break;
-		context = context.getClass().getSuperClass().getContext();
+		var parent = context.getClass().getSuperClass().getContext();
+		if (context == parent) break;
+		context = parent;
 	}
-	System.throwError("failed to resolve context for source: ${0}", name);
 };
 
 //finds content setting in context hierarchy
@@ -122,8 +122,9 @@ $private.findContentSetting = function findContentSetting(type, context) {
 				return setting;
 			}
 		}
-		if (context == $context) break;
-		context = context.getClass().getSuperClass().getContext();
+		var parent = context.getClass().getSuperClass().getContext();
+		if (context == parent) break;
+		context = parent;
 	}
 	System.throwError("failed to resolve context for content type: ${0}", type);
 };
