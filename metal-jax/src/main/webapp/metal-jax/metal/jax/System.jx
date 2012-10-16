@@ -209,6 +209,18 @@ function parseValue(text, type) {
 	}
 }
 
+//@private
+var _lineRE_ = /(.*)(?:\r?\n)?/g;
+
+//@static
+function parseCSV(text, delimiter) {
+	var result = [], match;
+	while ((match = _lineRE_.exec(text)) && match[1]) {
+		result.push(match[1].split(delimiter));
+	}
+	return result;
+}
+
 //@static
 function parseJSONFromText(text) {
 	return eval("(".concat(text, ")"));
