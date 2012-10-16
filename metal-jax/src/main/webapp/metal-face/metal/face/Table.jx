@@ -1,6 +1,6 @@
 /**
  * @face metal.face.Table
- * @extends Table:html
+ * @imports Table:html
  * @imports metal.jax.System
  */
 
@@ -14,6 +14,7 @@ function initClass() {
 
 //@private
 function initObject() {
+	Table_html.call(this);
 	this.scroll = this.bind(scroll);
 	this.compare = System.callback.call(this, compare);
 	this.rows = System.copyArray(this.nodes["contentRows"].rows);
