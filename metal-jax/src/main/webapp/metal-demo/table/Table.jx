@@ -1,0 +1,12 @@
+/**
+ * @model table.Table
+ * @imports metal.jax.System
+ * 
+ * @setting model.type=csv
+ * @setting model.delimiter=,
+ */
+
+//@static
+function parseModel(value) {
+	this.value = System.parseCSV(value, this.getClass().$("model.delimiter"));
+}

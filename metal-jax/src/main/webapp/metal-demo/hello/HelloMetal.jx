@@ -1,0 +1,39 @@
+/**
+ * @face hello.HelloMetal
+ * @imports HelloMetal:html
+ * @imports PoweredBy
+ * @imports model.Hello
+ * @imports metal.jax.System
+ * 
+ * @setting label.title=Hello, Metal
+ * @setting label.value=Hello, Metal
+ * @setting poweredBy.title=Powered By MetalJax
+ * @setting footer.title=a model test example
+ */
+
+//@private
+var $fontSizes = [ "10px", "13px", "16px", "18px", "24px", "32px" ];
+
+//@private
+function initObject() {
+	this.next = 0;
+	this.flag = false;
+	HelloMetal_html.call(this);
+	this.nodes.label.style.fontSize = $fontSizes[this.next++];
+	setInterval(System.callback.call(this, changeLabel), 200);
+	Hello.load("hello", System.callback.call(this, initFooter));
+}
+
+//@private
+function changeLabel() {
+	this.nodes.label.style.fontSize = $fontSizes[this.next];
+	if (!this.flag && this.next < $fontSizes.length-1) this.next++;
+	else if (this.flag && this.next > 0) this.next--;
+	else this.flag = !this.flag;
+}
+
+//@private
+function initFooter() {
+	var hello = Hello.find("hello");
+	this.nodes.footer.innerHTML = "hello: { foo: \"".concat(hello.foo.value, "\", bar: \"", hello.bar.value, "\" }");
+}

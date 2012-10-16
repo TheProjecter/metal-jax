@@ -1,5 +1,5 @@
 /**
- * @model Hello
+ * @model model.Hello
  * @imports Foo
  * @imports Bar
  */

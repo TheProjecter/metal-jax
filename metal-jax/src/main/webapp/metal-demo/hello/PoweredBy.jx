@@ -1,0 +1,22 @@
+/**
+ * @face hello.PoweredBy
+ * @extends PoweredBy:html
+ * @imports metal.jax.System
+ * 
+ * @setting label.value=Powered by MetalJax
+ */
+
+//@private
+function initObject() {
+	this.nodes.label.style.color = "red";
+	setInterval(System.callback.call(this, changeLabel), 1000);
+}
+
+//@private
+function changeLabel() {
+	if (this.nodes.label.style.color == "red") {
+		this.nodes.label.style.color = "blue";
+	} else {
+		this.nodes.label.style.color = "red";
+	}
+}
