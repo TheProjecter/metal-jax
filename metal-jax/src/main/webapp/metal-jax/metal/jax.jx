@@ -221,7 +221,7 @@
 			delim = delim || "/";
 			var parts = path.split(delim);
 			index = index>=0 ? index : parts.length+index;
-			var keep = count < 0;
+			var keep = count <= 0;
 			count = keep ? -count : count;
 			var parts2 = parts.splice(index, count);
 			return (keep ? parts : parts2).join(delim);

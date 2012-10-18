@@ -122,8 +122,14 @@ function initNode(node, object) {
 //@private
 function resolvePath(path, scope) {
 	var fromBase = path && path.indexOf("../") == 0;
-	if (!fromBase) path = System.resolvePath(path, scope.$static.$("path"));
-	return System.resolvePath(path, scope.$static.$("folder"), true);
+	var sourceFolder = scope.$static.$("folder");
+	var sourcePath = scope.$static.$("path");
+	if (fromBase) {
+		path = System.splitPath(path, 0, 1 - sourcePath.split("/").length);
+	} else {
+		path = System.resolvePath(path, sourcePath);
+	}
+	return System.resolvePath(path, sourceFolder, true);
 }
 
 //@private
