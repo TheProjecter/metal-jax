@@ -12,7 +12,8 @@
 //@private
 function initClass() {
 	if (this.content) {
-		parseSource(this);
+		var node = System.parseHTML(this.content);
+		this.$model = parseModel.call(this, node);
 		delete this.content;
 	}
 }
@@ -22,12 +23,6 @@ function newObject(model) {
 	var object = new this();
 	initModel.call(object, model, false);
 	return object;
-}
-
-//@private
-function parseSource(scope) {
-	var node = System.parseHTML(scope.content);
-	scope.$model = parseModel.call(scope, node);
 }
 
 //@static
