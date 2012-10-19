@@ -17,8 +17,6 @@ $imports.Object = "metal.jax.Object";
 $imports.System = "metal.jax.System";
 $imports.Face = "metal.jax.Face";
 
-//sets off flush
-//called after source compiled
 $private.initClass_ = function initClass_() {
 	this.$source.baseName = "ClassLoader";
 	this.$source.superBase = "Object";
@@ -53,7 +51,6 @@ $private.getSource = function getSource(name, context) {
 };
 
 //puts named source into source.context
-//ensures context source gets in top holder
 $private.putSource = function putSource(source) {
 	getHolder(source.context)[source.name] = source;
 	if (source.contentType == "context") {
@@ -70,9 +67,9 @@ $private.initSource = function initSource(name, context) {
 	var source = {};
 	source.name = name;
 	source.type = parseSourceType(name);
+	source.context = setting ? setting.context : context;
 	source.base = setting ? setting.base : $("basePath");
 	source.folder = setting ? setting.folder : $("mainFolder");
-	source.context = setting ? setting.context : context;
 	source.path = nameOnly.split(".").join("/").concat(".", source.type);
 	return source;
 };
@@ -87,7 +84,6 @@ $private.findSource = function findSource(name, context) {
 //finds source setting in context hierarchy
 $private.findSourceSetting = function findSourceSetting(name, context) {
 	while (true) {
-		var result;
 		var settings = getSource(context.getClass().getName(), context).setting["source"];
 		for (var i = 0; i < settings.length; i++) {
 			var setting = settings[i];
@@ -101,11 +97,8 @@ $private.findSourceSetting = function findSourceSetting(name, context) {
 				if (!setting["excludes"].test(name)) {
 					return setting;
 				}
-			} else {
-				result = result || setting;
 			}
 		}
-		if (result) return result;
 		var parent = context.getClass().getSuperClass().getContext();
 		if (context == parent) break;
 		context = parent;
@@ -126,7 +119,6 @@ $private.findContentSetting = function findContentSetting(type, context) {
 		if (context == parent) break;
 		context = parent;
 	}
-	System.throwError("failed to resolve context for content type: ${0}", type);
 };
 
 //finds previously loaded class
@@ -200,10 +192,7 @@ $private._constructor_   = "$private.${0} = function ${0}() { $context.initObjec
 $private._initObject_    = "$private.initObject = function initObject() { initModel.call(this, $model); };\n";
 $private._memberRE_      = /^\/\/@(\S+)\s+(function|var)\s+([A-Za-z0-9_$]+)/gm;
 $private._classFooter_   = "\n//@ sourceURL=${0}\n";
-//+parses source setting
-//+formats source content
-//+compiles source
-//+loads dependent classes
+//parses/compiles source setting
 $private.parseSource = function parseSource(source) {
 	parseModel(source);
 	source.scope.$context = source.context;
@@ -232,9 +221,6 @@ $private.parseSource = function parseSource(source) {
 $private._classHeaderRE_ = /^\s*\/\*\*([\S\s]*?)\*\//;
 $private._classSettingRE_ = /@(setting|source|content)[\t ]+([\S\t ]*\S+)[\t ]*$|@([a-zA-Z]+)[\t ]+(\S+)[\t ]*([\S\t ]+)?[\t ]*$/gm;
 //parses source header to collect source settings
-//+contentType
-//+baseName
-//+superBase
 $private.parseModel = function parseModel(source) {
 	source.scope = { $public:{}, $protected:{}, $static:{}, $imports:{}, $setting:{} };
 	source.scope.$setting.folder = source.folder;
@@ -293,7 +279,8 @@ $private.parseModel = function parseModel(source) {
 	source.contentType = source.contentType || "class";
 	source.baseName = parseBaseName(source.name);
 	if (!source.superBase && source.name != $imports.Object) {
-		var superName = findContentSetting(source.contentType, source.context)["extends"] || $imports.Object;
+		var setting = findContentSetting(source.contentType, source.context);
+		var superName = setting && setting["extends"] || $imports.Object;
 		source.superBase = parseBaseName(superName);
 		source.scope.$imports[source.superBase] = superName;
 	}
@@ -391,11 +378,6 @@ $static.formatText = function formatText() {
 };
 
 //flushes after all dependencies are loaded
-//+init class
-//+notify class
-//+init context
-//+callback
-//+notify context
 $private.flush = function flush() {
 	for (var i = 0; i < _pendingFlush.length; i++) {
 		if (_pendingCount) return;
@@ -425,10 +407,6 @@ $private.flush = function flush() {
 	}
 };
 
-//+init class references
-//+init super class
-//+copy/init member
-//+load dependent classes
 $private.flush_initClass = function flush_initClass(source) {
 	if (typeof source.flushStatus == "undefined") {
 		source.flushStatus = "busy 0";
@@ -465,8 +443,6 @@ $private.flush_initClass = function flush_initClass(source) {
 	}
 };
 
-//+notify dependent classes
-//+notify init class
 $private.flush_notifyClass = function flush_notifyClass(source) {
 	if (source.flushStatus == 0) {
 		source.flushStatus = "busy 1";
@@ -491,8 +467,6 @@ $private.flush_notifyClass = function flush_notifyClass(source) {
 	}
 };
 
-//+init dependent contexts
-//+init context
 $private.flush_initContext = function flush_initContext(source) {
 	if (source.flushStatus == 1) {
 		source.flushStatus = "busy 2";
@@ -507,7 +481,6 @@ $private.flush_initContext = function flush_initContext(source) {
 	}
 };
 
-//notify context
 $private.flush_notifyContext = function flush_notifyContext(source) {
 	if (source.flushStatus == 2) {
 		source.flushStatus = "busy 3";
@@ -522,9 +495,6 @@ $private.flush_notifyContext = function flush_notifyContext(source) {
 	}
 };
 
-//+copy super members
-//+copy members
-//+normalize settings
 $private.flush_initMember = function flush_initMember(source, superSource) {
 	if (superSource) {
 		source.scope.$super = initMember({}, superSource.scope.$public);
@@ -545,7 +515,6 @@ $private.flush_initMember = function flush_initMember(source, superSource) {
 	flush_initSetting(source);
 };
 
-//normalizes settings
 $private.flush_initSetting = function flush_initSetting(source) {
 	initSetting(source.scope.$setting, source.$class);
 	if (source.contentType == "context") {
