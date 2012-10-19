@@ -118,6 +118,9 @@ function parseSource(source) {
 	case "xml":
 		source.content = System.parseJSONFromXML(source.content.documentElement);
 		break;
+	case "csv":
+		source.content = System.parseCSV(source.content, source.$class.$("model.delimiter"));
+		break;
 	}
 	_pendingFlush.push(source);
 }

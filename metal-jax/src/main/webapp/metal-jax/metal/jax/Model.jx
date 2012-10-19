@@ -5,6 +5,7 @@
  * @setting model.base=${basePath}
  * @setting model.folder=metal-model
  * @setting model.type=xml
+ * @setting model.delimiter=\t
  * 
  * @copyright Jay Tang 2012
  * All rights reserved. This program and the accompanying materials

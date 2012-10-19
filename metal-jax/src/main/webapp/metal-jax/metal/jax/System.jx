@@ -214,6 +214,7 @@ var _lineRE_ = /(.*)(?:\r?\n)?/g;
 
 //@static
 function parseCSV(text, delimiter) {
+	delimiter = delimiter || "\t";
 	var result = [], match;
 	while ((match = _lineRE_.exec(text)) && match[1]) {
 		result.push(match[1].split(delimiter));
