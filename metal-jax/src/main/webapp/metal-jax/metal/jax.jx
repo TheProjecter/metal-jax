@@ -38,6 +38,9 @@
 		
 		function main() {
 			parseSetting($setting);
+			if (console) {
+				console.log("baseURL: " + (this.document.URLUnencoded||this.document.URL));
+			}
 			if (!this[$setting["bootFolder"]]) {
 				this[$setting["bootFolder"]] = {};
 				waitFor("load", function() {
