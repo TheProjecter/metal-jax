@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Module>
 	<ModulePrefs title="Metal Demo"/>
-	<UserPref name="mainClass" display_name="Main Class" default_value="hello.HelloMetal"/>
 	<Content type="url" href="metal-demo.html?hello.HelloMetal"/>
 </Module>
