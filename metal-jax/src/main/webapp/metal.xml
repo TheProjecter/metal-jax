@@ -1,13 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Module>
 	<ModulePrefs title="Metal"/>
-	<UserPref name="base" default_value=""/>
-	<UserPref name="path"/>
+	<UserPref name="base" default_value="http://metal-jax.googlecode.com/git/metal-jax/src/main/webapp"/>
+	<UserPref name="path" default_value="/"/>
 	<Content type="html"><![CDATA[
 	<script type="text/javascript">
 		var prefs = new gadgets.Prefs();
+		var base = prefs.getString("base");
 		var path = prefs.getString("path");
-		window.location = path;
+		path = path.charAt(0) == "/" ? path : "/" + path;
+		window.location = base + path;
 	</script>
 ]]></Content>
 </Module>
