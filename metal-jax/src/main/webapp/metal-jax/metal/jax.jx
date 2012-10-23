@@ -12,7 +12,7 @@
 		var $face;
 		var $setting = {
 			mainClass: "",
-			mainFolder: "main",
+			mainFolder: "",
 			mainContext: "main",
 			crossFolder: "xd",
 			crossInterval: "3000"
@@ -64,6 +64,8 @@
 				parts = bootParam.split("/");
 				setting["mainFolder"] = parts.length==1 ? bootParam : splitPath(bootParam, -1, -1);
 				setting["mainContext"] = parts.length==1 ? setting["mainContext"] : splitPath(bootParam, -1, 1);
+			} else {
+				setting["mainContext"] = "";
 			}
 			if (baseParam) {
 				parts = baseParam.split("/");
