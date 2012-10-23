@@ -37,6 +37,7 @@
 		var _originRE_ = /^([^\/]+:\/\/[^\/]*)/;
 		
 		function main() {
+			if (console) console.log(this.document.URLUnencoded||this.document.URL);
 			parseSetting($setting);
 			if (!this[$setting["bootFolder"]]) {
 				this[$setting["bootFolder"]] = {};
