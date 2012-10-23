@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Module>
 	<ModulePrefs title="Metal"/>
+	<UserPref name="base" default_value=""/>
 	<UserPref name="path"/>
 	<Content type="html"><![CDATA[
 	<script type="text/javascript">
 		var prefs = new gadgets.Prefs();
 		var path = prefs.getString("path");
-		alert(path);
+		alert(location);
 	</script>
 ]]></Content>
 </Module>
