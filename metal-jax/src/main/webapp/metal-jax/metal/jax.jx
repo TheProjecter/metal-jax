@@ -59,7 +59,7 @@
 			var nodes = this.document.getElementsByTagName("script");
 			parts = nodes[nodes.length-1].src.split("?");
 			var bootParam = parts[1];
-			setting["bootURL"] = parts[0];
+			setting["bootURL"] = resolvePath(parts[0], setting["baseURL"]);
 			if (bootParam) {
 				parts = bootParam.split("/");
 				setting["mainFolder"] = parts.length==1 ? bootParam : splitPath(bootParam, -1, -1);
@@ -79,7 +79,6 @@
 			setting["classType"] = parts[1];
 			var match = _originRE_.exec(setting["bootPath"]);
 			setting["bootOrigin"] = match ? match[1] : setting["baseOrigin"];
-			setting["bootPath"] = resolvePath(setting["bootPath"], setting["baseURL"]);
 		}
 		
 		function parseSource(source) {
