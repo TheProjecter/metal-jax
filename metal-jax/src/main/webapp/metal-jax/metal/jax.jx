@@ -9,7 +9,6 @@
 	
 	(function() {
 		
-		var $face;
 		var $setting = {
 			mainClass: "",
 			mainFolder: "",
@@ -111,7 +110,7 @@
 					} else if (mainClass && mainClass.extendsClass(Face)) {
 						this.document.body.appendChild(new mainClass().node);
 					} else {
-						$face = Face.newObject(model);
+						this[$setting["bootFolder"]]["face"] = Face.newObject(model);
 					}
 				});
 			});
