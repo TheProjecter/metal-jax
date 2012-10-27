@@ -15,7 +15,7 @@
 		gadgets.io.makeRequest(base+path, handleContent, params);
 	}
 	function handleContent(content) {
-		document.getElementById("content").innerHTML = content.text;
+		document.getElementById("content").appendChild(document.createTextNode(content.text));
 	}
 	gadgets.util.registerOnLoadHandler(getContent);		
 	</script>
