@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Module>
 	<ModulePrefs title="Metal"/>
-	<UserPref name="base" default_value="/git/metal-jax/src/main/webapp"/>
+	<UserPref name="base" default_value="https://metal-jax.googlecode.com/git/metal-jax/src/main/webapp"/>
 	<UserPref name="path" default_value="/"/>
 	<UserPref name="contentType" default_value=""/>
 	<Content type="html"><![CDATA[
