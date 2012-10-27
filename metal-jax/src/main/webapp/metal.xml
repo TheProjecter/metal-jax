@@ -1,15 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Module>
 	<ModulePrefs title="Metal"/>
-	<UserPref name="base" default_value="http://metal-jax.appspot.com"/>
+	<UserPref name="base" default_value="http://metal-jax.googlecode.com/git/metal-jax/src/main/webapp"/>
 	<UserPref name="path" default_value="/"/>
 	<Content type="html"><![CDATA[
 	<script type="text/javascript">
+	function getContent() {
 		var prefs = new gadgets.Prefs();
 		var base = prefs.getString("base");
 		var path = prefs.getString("path");
 		path = path.charAt(0) == "/" ? path : "/" + path;
-		window.location = base + path;
+		var params = {};
+		params[gadgets.io.RequestParameters.CONTENT_TYPE] = gadgets.io.ContentType.TEXT;
+		gadgets.io.makeRequest(base+path, handleContent, params);
+	}
+	function handleContent(content) {
+		document.getElementById("content").innerHTML = content.text;
+	}
+	gadgets.util.registerOnLoadHandler(getHtml);		
 	</script>
+	<pre id="content"></pre>
 ]]></Content>
 </Module>
