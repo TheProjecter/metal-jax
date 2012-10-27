@@ -52,7 +52,7 @@ function parseNode(node, scope, resolved) {
 				node.src = resolvePath(node.attributes["alt"].value||node.attributes["src"].value, scope);
 				return;
 			} else if (node.nodeName.toLowerCase() == "link") {
-				System.document.body.previousSibling.appendChild(node);
+				System.docHead.appendChild(node);
 				node.href = resolvePath(node.attributes["href"].value, scope);
 				return;
 			}

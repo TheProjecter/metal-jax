@@ -16,6 +16,7 @@ function initClass() {
 	} else {
 		System.window = this;
 		System.document = this.document;
+		System.docHead = this.document.firstChild.firstChild;
 		System.formatText = ClassLoader.formatText;
 		System.splitPath = ClassLoader.splitPath;
 		System.resolvePath = ClassLoader.resolvePath;
@@ -164,7 +165,7 @@ function requestCrossOrigin(source, callback) {
 	System.window[$("bootFolder")][request.url] = callback;
 	request.node = System.document.createElement("script");
 	request.node.src = requestURL(source);
-	System.document.body.previousSibling.appendChild(request.node);
+	System.docHead.appendChild(request.node);
 	request.interval = setInterval(callback, parseInt($("crossInterval")));
 	return request;
 }
@@ -172,7 +173,7 @@ function requestCrossOrigin(source, callback) {
 //@private
 function clearRequest(request) {
 	delete System.window[$("bootFolder")][request.url];
-	System.document.body.previousSibling.removeChild(request.node);
+	System.docHead.removeChild(request.node);
 	clearInterval(request.interval);
 	delete request.node;
 }

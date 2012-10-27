@@ -193,14 +193,14 @@
 			this[$setting["bootFolder"]][request.url] = callback;
 			request.node = this.document.createElement("script");
 			request.node.src = request.url;
-			this.document.body.previousSibling.appendChild(request.node);
+			this.document.firstChild.firstChild.appendChild(request.node);
 			request.interval = setInterval(callback, parseInt($setting["crossInterval"]));
 			return request;
 		}
 		
 		function clearRequest(request) {
 			delete this[$setting["bootFolder"]][request.url];
-			this.document.body.previousSibling.removeChild(request.node);
+			this.document.firstChild.firstChild.removeChild(request.node);
 			clearInterval(request.interval);
 			delete request.node;
 		}
