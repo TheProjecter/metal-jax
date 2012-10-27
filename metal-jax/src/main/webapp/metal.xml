@@ -6,30 +6,26 @@
 	<UserPref name="contentType" default_value=""/>
 	<Content type="html"><![CDATA[
 	<script type="text/javascript">
-	var prefs = new gadgets.Prefs();
 	function getContent() {
+		var prefs = new gadgets.Prefs();
 		var base = prefs.getString("base");
 		var path = prefs.getString("path");
-		path = path.charAt(0) == "/" ? path : "/" + path;
-		var params = {};
-		params[gadgets.io.RequestParameters.CONTENT_TYPE] = gadgets.io.ContentType.TEXT;
-		gadgets.io.makeRequest(base+path, handleContent, params);
+		var url = base.concat(path.charAt(0) == "/" ? "" : "/", path);
+		var contentType = prefs.getString("contentType");
+		if (contentType == "text") {
+			var params = {};
+			params[gadgets.io.RequestParameters.CONTENT_TYPE] = gadgets.io.ContentType.TEXT;
+			gadgets.io.makeRequest(url, handleContent, params);
+		} else {
+			window.location = url;
+		}
 	}
 	function handleContent(content) {
-		var contentType = prefs.getString("contentType"), contentNode;
-		switch (contentType) {
-		case "text":
-			contentNode = document.createElement("pre");
-			contentNode.appendChild(document.createTextNode(content.text));
-			break;
-		default:
-			contentNode = document.createElement("div");
-			contentNode.innerHTML = content.text;
-			break;
-		}
+		var contentNode = document.createElement("pre");
+		contentNode.appendChild(document.createTextNode(content.text));
 		document.body.appendChild(contentNode);
 	}
-	gadgets.util.registerOnLoadHandler(getContent);		
+	getContent();
 	</script>
 ]]></Content>
 </Module>
