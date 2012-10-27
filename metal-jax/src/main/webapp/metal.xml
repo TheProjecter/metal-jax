@@ -3,10 +3,11 @@
 	<ModulePrefs title="Metal"/>
 	<UserPref name="base" default_value="http://metal-jax.googlecode.com/git/metal-jax/src/main/webapp"/>
 	<UserPref name="path" default_value="/"/>
+	<UserPref name="contentType" default_value=""/>
 	<Content type="html"><![CDATA[
 	<script type="text/javascript">
+	var prefs = new gadgets.Prefs();
 	function getContent() {
-		var prefs = new gadgets.Prefs();
 		var base = prefs.getString("base");
 		var path = prefs.getString("path");
 		path = path.charAt(0) == "/" ? path : "/" + path;
@@ -15,10 +16,20 @@
 		gadgets.io.makeRequest(base+path, handleContent, params);
 	}
 	function handleContent(content) {
-		document.getElementById("content").appendChild(document.createTextNode(content.text));
+		var contentType = prefs.getString("contentType"), contentNode;
+		switch (contentType) {
+		case "text":
+			contentNode = document.createElement("pre");
+			contentNode.appendChild(document.createTextNode(content.text));
+			break;
+		default:
+			contentNode = document.createElement("div");
+			contentNode.innerHTML = content.text;
+			break;
+		}
+		document.body.appendChild(contentNode);
 	}
 	gadgets.util.registerOnLoadHandler(getContent);		
 	</script>
-	<pre id="content"></pre>
 ]]></Content>
 </Module>
