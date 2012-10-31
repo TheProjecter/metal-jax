@@ -1,7 +1,7 @@
 /**
  * @context test.metal
  * @imports metal.test.TestSuite
- * @source base=${basePath} folder=${mainFolder} excludes=^metal[.]
+ * @source base=${baseURL} folder=${mainFolder} excludes=^metal[.]
  * @content type=test extends=metal.test.TestCase
  */
 

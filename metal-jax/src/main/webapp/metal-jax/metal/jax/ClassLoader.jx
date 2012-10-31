@@ -68,7 +68,7 @@ $private.initSource = function initSource(name, context) {
 	source.name = name;
 	source.type = parseSourceType(name);
 	source.context = setting ? setting.context : context;
-	source.base = setting ? setting.base : $("basePath");
+	source.base = setting ? setting.base : $("baseURL");
 	source.folder = setting ? setting.folder : $("mainFolder");
 	source.path = nameOnly.split(".").join("/").concat(".", source.type);
 	return source;

@@ -14,16 +14,16 @@
 			mainFolder: "",
 			mainContext: "main",
 			crossFolder: "xd",
-			crossInterval: "3000"
+			crossInterval: "3000",
+			classType: "jx",
+			faceType: "html"
 		};
 		var $source = {
 			name: "metal.jax.ClassLoader",
 			contentType: "context",
 			scope: { $public:{}, $protected:{}, $static:{}, $imports:{}, $setting:$setting },
 			setting: {
-				source: [
-					{ base:"${bootPath}", folder:"${bootFolder}", includes:"^metal.jax[.]" }
-				],
+				source: [{ base:"${bootURL}", folder:"${bootFolder}", includes:"^metal.jax[.]" }],
 				content: [
 					{ type:"class", "extends":"metal.jax.Object" },
 					{ type:"context", "extends":"metal.jax.Context" },
@@ -33,14 +33,14 @@
 				]
 			}
 		};
-		var _originRE_ = /^([^\/]+:\/\/[^\/]*)/;
+		var _urlRE_ = /(?:([^\/:]+:\/\/[^\/]*)?([^?#]+)?)(?:\?([^#]+))?(?:#(.+))?/;
 		
 		function main() {
 			parseSetting($setting);
 			if (!this[$setting["bootFolder"]]) {
 				this[$setting["bootFolder"]] = {};
 				waitFor("load", function() {
-					$source.base = $setting["bootPath"];
+					$source.base = $setting["bootURL"];
 					$source.folder = $setting["bootFolder"];
 					$source.path = $source.name.split(".").join("/").concat(".", $setting["classType"]);
 					loadback($source, parseSource);
@@ -49,36 +49,19 @@
 		}
 		
 		function parseSetting(setting) {
-			var parts = (this.document.URLUnencoded||this.document.URL).split("?"), baseParam = parts[1];
-			setting["baseURL"] = parts[0];
-			setting["baseScheme"] = setting["baseURL"].split(":")[0];
-			setting["baseOrigin"] = _originRE_.exec(setting["baseURL"])[1];
-			setting["basePath"] = splitPath(setting["baseURL"], -1, -1);
-			setting["faceType"] = splitPath(setting["baseURL"], -1, 1).split(".")[1] || "html";
+			var parts = _urlRE_.exec(this.document.URLUnencoded||this.document.URL);
+			setting["baseOrigin"] = parts[1];
+			setting["baseScheme"] = parts[1].split(":")[0];
+			setting["baseURL"] = splitPath(parts[1] + parts[2], -1, -1);
+			setting["mainClass"] = parts[4] || setting["mainClass"];
 			var nodes = this.document.getElementsByTagName("script");
-			parts = nodes[nodes.length-1].src.split("?");
-			var bootParam = parts[1];
-			setting["bootURL"] = resolvePath(parts[0], setting["baseURL"]);
-			if (bootParam) {
-				parts = bootParam.split("/");
-				setting["mainFolder"] = parts.length==1 ? bootParam : splitPath(bootParam, -1, -1);
-				setting["mainContext"] = parts.length==1 ? setting["mainContext"] : splitPath(bootParam, -1, 1);
-			} else {
-				setting["mainFolder"] = "";
-				setting["mainContext"] = "";
-			}
-			if (baseParam) {
-				parts = baseParam.split("/");
-				setting["mainFolder"] = parts.length==1 ? setting["mainFolder"] : splitPath(baseParam, -1, -1);
-				setting["mainClass"] = parts.length==1 ? baseParam : splitPath(baseParam, -1, 1);
-			}
-			setting["bootPath"] = splitPath(setting["bootURL"], -3, -3);
-			setting["bootFolder"] = splitPath(setting["bootURL"], -3, 1);
-			parts = splitPath(setting["bootURL"], -2, 2).split(".");
-			setting["bootContext"] = parts[0].split("/").join(".");
-			setting["classType"] = parts[1];
-			var match = _originRE_.exec(setting["bootPath"]);
-			setting["bootOrigin"] = match ? match[1] : setting["baseOrigin"];
+			var parts = _urlRE_.exec(resolvePath(nodes[nodes.length-1].src, setting["baseURL"], true));
+			setting["bootOrigin"] = parts[1];
+			setting["bootURL"] = splitPath(parts[1] + parts[2], -3, -3);
+			setting["bootFolder"] = splitPath(parts[2], -3, 1);
+			setting["bootContext"] = splitPath(parts[2], -2, 2).split(".")[0].split("/").join(".");
+			setting["mainFolder"] = parts[3] || setting["mainFolder"];
+			setting["mainContext"] = parts[4] || setting["mainContext"];
 		}
 		
 		function parseSource(source) {
@@ -105,13 +88,20 @@
 				var Face = context.findClass("metal.jax.Face", true);
 				var model = Face.parseModel.call($source.scope, this.document.body, true);
 				context.loadClass($setting["mainClass"], function() {
-					var mainClass = context.findClass($setting["mainClass"]) || mainContext;
-					if (mainClass && mainClass.main) {
-						mainClass.main.call();
-					} else if (mainClass && mainClass.extendsClass(Face)) {
-						this.document.body.appendChild(new mainClass().node);
-					} else {
-						this[$setting["bootFolder"]]["face"] = Face.newObject(model);
+					this[$setting["bootFolder"]]["face"] = Face.newObject(model);
+					var mainClass = context.findClass($setting["mainClass"]);
+					if (mainContext) {
+						if (mainContext.main) {
+							mainContext.main.call();
+						} else if (mainContext.extendsClass(Face)) {
+							this.document.body.appendChild(new mainContext().node);
+						}
+					} else if (mainClass) {
+						if (mainClass.main) {
+							mainClass.main.call();
+						} else if (mainClass.extendsClass(Face)) {
+							this.document.body.appendChild(new mainClass().node);
+						}
 					}
 				});
 			});
@@ -126,7 +116,7 @@
 		}
 		
 		function loadback(source, callback) {
-			var origin = _originRE_.exec(source.base)[1];
+			var origin = _urlRE_.exec(source.base)[1];
 			if (origin) {
 				var action = (origin == $setting["baseOrigin"]) ? loadSameOrigin : loadCrossOrigin;
 				action.call(this, source, callback);
@@ -206,9 +196,9 @@
 		}
 		
 		function resolvePath(path, base, isFolder) {
-			if (!_originRE_.exec(path)) {
+			if (!_urlRE_.exec(path)[1]) {
 				if (path.charAt(0) == "/") {
-					path = _originRE_.exec(base)[1].concat(path);
+					path = _urlRE_.exec(base)[1].concat(path);
 				} else {
 					base = isFolder ? base : splitPath(base, -1, -1);
 					path = base ? base.concat("/", path) : path;
