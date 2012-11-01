@@ -22,6 +22,7 @@
 	}
 	function handleContent(content) {
 		var contentNode = document.createElement("pre");
+		contentNode.style.margin = "0px";
 		contentNode.appendChild(document.createTextNode(content.text));
 		document.body.appendChild(contentNode);
 	}
