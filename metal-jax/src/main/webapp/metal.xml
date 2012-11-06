@@ -22,7 +22,8 @@
 	}
 	function handleContent(content) {
 		var contentNode = document.createElement("pre");
-		contentNode.style.margin = "0px";
+		contentNode.style.marginBottom = "6px";
+		contentNode.style.background = "#eeeeee";
 		contentNode.appendChild(document.createTextNode(content.text));
 		document.body.appendChild(contentNode);
 	}
