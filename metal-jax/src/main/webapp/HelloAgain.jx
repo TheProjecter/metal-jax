@@ -6,6 +6,6 @@
 
 //@static
 function main() {
-	HelloWorld.main();
-	new Hello().say("Hello Again!");
+    HelloWorld.main();
+    new Hello().say("Hello Again!");
 }
