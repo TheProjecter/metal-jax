@@ -71,13 +71,13 @@ function copyArray(items) {
 }
 
 //@private
-var _originRE_ = /^([^\/]+:\/\/[^\/]*)/;
+var _originRE_ = /^([^\/:]+:\/\/[^\/]*)/;
 
 //@static
 function loadback(source, callback) {
 	var origin = _originRE_.exec(source.base)[1];
 	if (origin) {
-		var action = (origin == $("baseOrigin")) ? loadSameOrigin : loadCrossOrigin;
+		var action = (origin == $("baseOrigin")) ? loadSameDomain : loadCrossDomain;
 		action.call(this, source, callback);
 	} else {
 		System.throwError("invalid URL: ${0}", source.base);
@@ -85,9 +85,9 @@ function loadback(source, callback) {
 }
 
 //@private
-function loadSameOrigin(source, callback) {
+function loadSameDomain(source, callback) {
 	var caller = this;
-	var request = requestSameOrigin(source, function() {
+	var request = requestSameDomain(source, function() {
 		if (!request || request.readyState != 4) return;
 		try {
 			if (request.status == 200 || request.status == 0) {
@@ -110,7 +110,7 @@ function loadSameOrigin(source, callback) {
 }
 
 //@private
-function requestSameOrigin(source, callback) {
+function requestSameDomain(source, callback) {
 	var request;
 	if (typeof XMLHttpRequest != "undefined" && typeof ActiveXObject == "undefined") {
 		request = new XMLHttpRequest();
@@ -137,9 +137,9 @@ function requestSameOrigin(source, callback) {
 }
 
 //@private
-function loadCrossOrigin(source, callback) {
+function loadCrossDomain(source, callback) {
 	var caller = this;
-	var request = requestCrossOrigin(source, function(response) {
+	var request = requestCrossDomain(source, function(response) {
 		if (!request || !request.node) return;
 		clearRequest(request);
 		if (typeof response != "object") {
@@ -159,7 +159,7 @@ function loadCrossOrigin(source, callback) {
 }
 
 //@private
-function requestCrossOrigin(source, callback) {
+function requestCrossDomain(source, callback) {
 	var request = {};
 	request.url = source.url = [source.base, $("crossDomain"), source.module, source.path].join("/");
 	System.window[$("bootModule")][request.url] = callback;

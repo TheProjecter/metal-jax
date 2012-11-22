@@ -118,16 +118,16 @@
 		function loadback(source, callback) {
 			var origin = _urlRE_.exec(source.base)[1];
 			if (origin) {
-				var action = (origin == $setting["baseOrigin"]) ? loadSameOrigin : loadCrossOrigin;
+				var action = (origin == $setting["baseOrigin"]) ? loadSameDomain : loadCrossDomain;
 				action.call(this, source, callback);
 			} else {
 				throw Error("invalid URL: " + source.base);
 			}
 		}
 		
-		function loadSameOrigin(source, callback) {
+		function loadSameDomain(source, callback) {
 			var caller = this;
-			var request = requestSameOrigin(source, function() {
+			var request = requestSameDomain(source, function() {
 				if (!request || request.readyState != 4) return;
 				if (request.status == 200 || request.status == 0) {
 					source.content = request.responseText;
@@ -144,7 +144,7 @@
 			}
 		}
 		
-		function requestSameOrigin(source, callback) {
+		function requestSameDomain(source, callback) {
 			var request;
 			if (typeof XMLHttpRequest != "undefined" && typeof ActiveXObject == "undefined") {
 				request = new XMLHttpRequest();
@@ -161,9 +161,9 @@
 			return request;
 		}
 		
-		function loadCrossOrigin(source, callback) {
+		function loadCrossDomain(source, callback) {
 			var caller = this;
-			var request = requestCrossOrigin(source, function(response) {
+			var request = requestCrossDomain(source, function(response) {
 				if (!request || !request.node) return;
 				clearRequest(request);
 				if (typeof response != "object") {
@@ -177,7 +177,7 @@
 			});
 		}
 		
-		function requestCrossOrigin(source, callback) {
+		function requestCrossDomain(source, callback) {
 			var request = {};
 			request.url = source.url = [source.base, $setting["crossDomain"], source.module, source.path].join("/");
 			this[$setting["bootModule"]][request.url] = callback;
