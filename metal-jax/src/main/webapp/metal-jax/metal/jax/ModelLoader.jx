@@ -73,7 +73,7 @@ function initSource(key, clazz) {
 	source.$class = clazz;
 	source.type = clazz.$("model.type");
 	source.base = clazz.$("model.base");
-	source.folder = clazz.$("model.folder");
+	source.module = clazz.$("model.module");
 	source.path = clazz.getName().split(".").join("/").concat(".", source.key, ".", source.type);
 	return source;
 }

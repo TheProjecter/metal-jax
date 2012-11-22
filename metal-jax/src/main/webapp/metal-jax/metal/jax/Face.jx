@@ -117,14 +117,14 @@ function initNode(node, object) {
 //@private
 function resolvePath(path, scope) {
 	var fromBase = path && path.indexOf("../") == 0;
-	var sourceFolder = scope.$static.$("folder");
+	var sourceModule = scope.$static.$("module");
 	var sourcePath = scope.$static.$("path");
 	if (fromBase) {
 		path = System.splitPath(path, 0, 1 - sourcePath.split("/").length);
 	} else {
 		path = System.resolvePath(path, sourcePath);
 	}
-	return System.resolvePath(path, sourceFolder, true);
+	return System.resolvePath(path, sourceModule, true);
 }
 
 //@private

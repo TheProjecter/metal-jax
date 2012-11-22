@@ -3,7 +3,7 @@
  * @imports ModelLoader
  * 
  * @setting model.base=${baseURL}
- * @setting model.folder=metal-model
+ * @setting model.module=metal-model
  * @setting model.type=xml
  * @setting model.delimiter=\t
  * 

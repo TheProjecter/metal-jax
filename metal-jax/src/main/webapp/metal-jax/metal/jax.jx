@@ -11,9 +11,9 @@
 		
 		var $setting = {
 			mainClass: "",
-			mainFolder: "",
+			mainModule: "",
 			mainContext: "main",
-			crossFolder: "xd",
+			crossDomain: "xd",
 			crossInterval: "3000",
 			classType: "jx",
 			faceType: "html"
@@ -23,7 +23,7 @@
 			contentType: "context",
 			scope: { $public:{}, $protected:{}, $static:{}, $imports:{}, $setting:$setting },
 			setting: {
-				source: [{ base:"${bootURL}", folder:"${bootFolder}", includes:"^metal.jax[.]" }],
+				source: [{ base:"${bootURL}", module:"${bootModule}", includes:"^metal.jax[.]" }],
 				content: [
 					{ type:"class", "extends":"metal.jax.Object" },
 					{ type:"context", "extends":"metal.jax.Context" },
@@ -37,11 +37,11 @@
 		
 		function main() {
 			parseSetting($setting);
-			if (!this[$setting["bootFolder"]]) {
-				this[$setting["bootFolder"]] = {};
+			if (!this[$setting["bootModule"]]) {
+				this[$setting["bootModule"]] = {};
 				waitFor("load", function() {
 					$source.base = $setting["bootURL"];
-					$source.folder = $setting["bootFolder"];
+					$source.module = $setting["bootModule"];
 					$source.path = $source.name.split(".").join("/").concat(".", $setting["classType"]);
 					loadback($source, parseSource);
 				});
@@ -58,9 +58,9 @@
 			var parts = _urlRE_.exec(resolvePath(nodes[nodes.length-1].src, setting["baseURL"], true));
 			setting["bootOrigin"] = parts[1];
 			setting["bootURL"] = splitPath(parts[1] + parts[2], -3, -3);
-			setting["bootFolder"] = splitPath(parts[2], -3, 1);
+			setting["bootModule"] = splitPath(parts[2], -3, 1);
 			setting["bootContext"] = splitPath(parts[2], -2, 2).split(".")[0].split("/").join(".");
-			setting["mainFolder"] = parts[3] || setting["mainFolder"];
+			setting["mainModule"] = parts[3] || setting["mainModule"];
 			setting["mainContext"] = parts[4] || setting["mainContext"];
 		}
 		
@@ -88,7 +88,7 @@
 				var Face = context.findClass("metal.jax.Face", true);
 				var model = Face.parseModel.call($source.scope, this.document.body, true);
 				context.loadClass($setting["mainClass"], function() {
-					this[$setting["bootFolder"]]["face"] = Face.newObject(model);
+					this[$setting["bootModule"]]["face"] = Face.newObject(model);
 					var mainClass = context.findClass($setting["mainClass"]);
 					if (mainContext) {
 						if (mainContext.main) {
@@ -155,7 +155,7 @@
 			} else {
 				throw Error("XHR not supported");
 			}
-			source.url = [source.base, source.folder, source.path].join("/");
+			source.url = [source.base, source.module, source.path].join("/");
 			request.open("GET", source.url, true);
 			request.onreadystatechange = callback;
 			return request;
@@ -179,8 +179,8 @@
 		
 		function requestCrossOrigin(source, callback) {
 			var request = {};
-			request.url = source.url = [source.base, $setting["crossFolder"], source.folder, source.path].join("/");
-			this[$setting["bootFolder"]][request.url] = callback;
+			request.url = source.url = [source.base, $setting["crossDomain"], source.module, source.path].join("/");
+			this[$setting["bootModule"]][request.url] = callback;
 			request.node = this.document.createElement("script");
 			request.node.src = request.url;
 			this.document.firstChild.firstChild.appendChild(request.node);
@@ -189,7 +189,7 @@
 		}
 		
 		function clearRequest(request) {
-			delete this[$setting["bootFolder"]][request.url];
+			delete this[$setting["bootModule"]][request.url];
 			this.document.firstChild.firstChild.removeChild(request.node);
 			clearInterval(request.interval);
 			delete request.node;

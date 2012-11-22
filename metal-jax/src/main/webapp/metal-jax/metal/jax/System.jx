@@ -121,7 +121,7 @@ function requestSameOrigin(source, callback) {
 	} else {
 		System.throwError("XHR not supported");
 	}
-	source.url = [source.base, source.folder, source.path].join("/");
+	source.url = [source.base, source.module, source.path].join("/");
 	switch (requestMethod(source)) {
 	case "GET":
 		request.open("GET", requestURL(source), true);
@@ -161,8 +161,8 @@ function loadCrossOrigin(source, callback) {
 //@private
 function requestCrossOrigin(source, callback) {
 	var request = {};
-	request.url = source.url = [source.base, $("crossFolder"), source.folder, source.path].join("/");
-	System.window[$("bootFolder")][request.url] = callback;
+	request.url = source.url = [source.base, $("crossDomain"), source.module, source.path].join("/");
+	System.window[$("bootModule")][request.url] = callback;
 	request.node = System.document.createElement("script");
 	request.node.src = requestURL(source);
 	System.docHead.appendChild(request.node);
@@ -172,7 +172,7 @@ function requestCrossOrigin(source, callback) {
 
 //@private
 function clearRequest(request) {
-	delete System.window[$("bootFolder")][request.url];
+	delete System.window[$("bootModule")][request.url];
 	System.docHead.removeChild(request.node);
 	clearInterval(request.interval);
 	delete request.node;

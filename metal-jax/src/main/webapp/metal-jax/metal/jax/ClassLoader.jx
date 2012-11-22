@@ -69,7 +69,7 @@ $private.initSource = function initSource(name, context) {
 	source.type = parseSourceType(name);
 	source.context = setting ? setting.context : context;
 	source.base = setting ? setting.base : $("baseURL");
-	source.folder = setting ? setting.folder : $("mainFolder");
+	source.module = setting ? setting.module : $("mainModule");
 	source.path = nameOnly.split(".").join("/").concat(".", source.type);
 	return source;
 };
@@ -223,7 +223,7 @@ $private._classSettingRE_ = /@(setting|source|content)[\t ]+([\S\t ]*\S+)[\t ]*$
 //parses source header to collect source settings
 $private.parseModel = function parseModel(source) {
 	source.scope = { $public:{}, $protected:{}, $static:{}, $imports:{}, $setting:{} };
-	source.scope.$setting.folder = source.folder;
+	source.scope.$setting.module = source.module;
 	source.scope.$setting.path = source.path;
 	if (source.type != $("classType")) {
 		source.contentType = source.type;
