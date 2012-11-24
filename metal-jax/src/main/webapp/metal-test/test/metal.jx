@@ -1,7 +1,7 @@
 /**
  * @context test.metal
  * @imports metal.test.TestSuite
- * @source base=${baseURL} module=${mainModule} excludes=^metal[.]
+ * @source base=${baseURL} module=${baseModule} excludes=^metal[.]
  * @content type=test extends=metal.test.TestCase
  */
 

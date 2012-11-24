@@ -6,16 +6,18 @@
 //@public
 function test_bootSetting() {
 	var names = [
-		"baseURL",
 		"baseScheme",
+		"baseURL",
 		"baseOrigin",
+		"baseModule",
+		"baseContext",
 		"bootURL",
 		"bootOrigin",
 		"bootModule",
 		"bootContext",
-		"mainModule",
-		"mainContext",
-		"mainClass",
+		"bootClass",
+		"crossDomain",
+		"crossInterval",
 		"classType",
 		"faceType"
 	];

@@ -69,7 +69,7 @@ $private.initSource = function initSource(name, context) {
 	source.type = parseSourceType(name);
 	source.context = setting ? setting.context : context;
 	source.base = setting ? setting.base : $("baseURL");
-	source.module = setting ? setting.module : $("mainModule");
+	source.module = setting ? setting.module : $("baseModule");
 	source.path = nameOnly.split(".").join("/").concat(".", source.type);
 	return source;
 };

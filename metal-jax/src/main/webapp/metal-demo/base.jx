@@ -1,4 +1,4 @@
 /**
- * @context main
+ * @context base
  * @source base=${bootURL} module=metal-face includes=^metal.face[.]
  */

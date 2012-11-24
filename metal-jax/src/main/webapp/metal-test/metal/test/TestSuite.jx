@@ -11,7 +11,7 @@
 
 //@public
 function run(context) {
-	var runner = this, testName = $("mainClass");
+	var runner = this, testName = $("bootClass");
 	if (!testName) {
 		runAll.call(runner, context);
 	} else {

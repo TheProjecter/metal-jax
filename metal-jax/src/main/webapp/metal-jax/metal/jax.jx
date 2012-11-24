@@ -10,9 +10,9 @@
 	(function() {
 		
 		var $setting = {
-			mainClass: "",
-			mainModule: "",
-			mainContext: "main",
+			bootClass: "",
+			baseModule: "",
+			baseContext: "base",
 			crossDomain: "xd",
 			crossInterval: "3000",
 			classType: "jx",
@@ -53,15 +53,15 @@
 			setting["baseOrigin"] = parts[1];
 			setting["baseScheme"] = parts[1].split(":")[0];
 			setting["baseURL"] = splitPath(parts[1] + parts[2], -1, -1);
-			setting["mainClass"] = parts[4] || setting["mainClass"];
+			setting["bootClass"] = parts[4] || setting["bootClass"];
 			var nodes = this.document.getElementsByTagName("script");
-			var parts = _urlRE_.exec(resolvePath(nodes[nodes.length-1].src, setting["baseURL"], true));
+			var parts = _urlRE_.exec(resolvePath(nodes[nodes.length-1].src, setting["baseURL"] + "/"));
 			setting["bootOrigin"] = parts[1];
 			setting["bootURL"] = splitPath(parts[1] + parts[2], -3, -3);
 			setting["bootModule"] = splitPath(parts[2], -3, 1);
 			setting["bootContext"] = splitPath(parts[2], -2, 2).split(".")[0].split("/").join(".");
-			setting["mainModule"] = parts[3] || setting["mainModule"];
-			setting["mainContext"] = parts[4] || setting["mainContext"];
+			setting["baseModule"] = parts[3] || setting["baseModule"];
+			setting["baseContext"] = parts[4] || setting["baseContext"];
 		}
 		
 		function parseSource(source) {
@@ -82,25 +82,25 @@
 		}
 		
 		function initContext() {
-			$source.context.loadClass($setting["mainContext"], function() {
-				var mainContext = $source.context.findClass($setting["mainContext"]);
-				var context = mainContext ? mainContext.getContext() : $source.context;
+			$source.context.loadClass($setting["baseContext"], function() {
+				var baseContext = $source.context.findClass($setting["baseContext"]);
+				var context = baseContext ? baseContext.getContext() : $source.context;
 				var Face = context.findClass("metal.jax.Face", true);
 				var model = Face.parseModel.call($source.scope, this.document.body, true);
-				context.loadClass($setting["mainClass"], function() {
+				context.loadClass($setting["bootClass"], function() {
 					this[$setting["bootModule"]]["face"] = Face.newObject(model);
-					var mainClass = context.findClass($setting["mainClass"]);
-					if (mainContext) {
-						if (mainContext.main) {
-							mainContext.main.call();
-						} else if (mainContext.extendsClass(Face)) {
-							this.document.body.appendChild(new mainContext().node);
+					var bootClass = context.findClass($setting["bootClass"]);
+					if (baseContext) {
+						if (baseContext.main) {
+							baseContext.main.call();
+						} else if (baseContext.extendsClass(Face)) {
+							this.document.body.appendChild(new baseContext().node);
 						}
-					} else if (mainClass) {
-						if (mainClass.main) {
-							mainClass.main.call();
-						} else if (mainClass.extendsClass(Face)) {
-							this.document.body.appendChild(new mainClass().node);
+					} else if (bootClass) {
+						if (bootClass.main) {
+							bootClass.main.call();
+						} else if (bootClass.extendsClass(Face)) {
+							this.document.body.appendChild(new bootClass().node);
 						}
 					}
 				});
@@ -195,12 +195,12 @@
 			delete request.node;
 		}
 		
-		function resolvePath(path, base, isFolder) {
+		function resolvePath(path, base) {
 			if (!_urlRE_.exec(path)[1]) {
 				if (path.charAt(0) == "/") {
 					path = _urlRE_.exec(base)[1].concat(path);
 				} else {
-					base = isFolder ? base : splitPath(base, -1, -1);
+					base = splitPath(base, -1, -1);
 					path = base ? base.concat("/", path) : path;
 				}
 			}

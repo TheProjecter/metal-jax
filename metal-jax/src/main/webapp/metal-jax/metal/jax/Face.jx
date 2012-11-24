@@ -124,7 +124,7 @@ function resolvePath(path, scope) {
 	} else {
 		path = System.resolvePath(path, sourcePath);
 	}
-	return System.resolvePath(path, sourceModule, true);
+	return System.resolvePath(path, sourceModule + "/");
 }
 
 //@private
