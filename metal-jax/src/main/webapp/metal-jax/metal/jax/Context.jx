@@ -15,31 +15,3 @@ function initClass() {
 	$public.findClass = ClassLoader.prototype.findClass;
 	$public.initObject = ClassLoader.prototype.initObject;
 }
-
-//@public
-function toggleEvent(event, callback, positive) {
-	positive = positive || arguments.length == 2;
-	if (callback) {
-		var callbacks = this.bindings[event];
-		if (!callbacks) {
-			callbacks = this.bindings[event] = [];
-		}
-		if (positive) {
-			callbacks.push(callback);
-		} else {
-			var index = callbacks.indexOf(callback);
-			if (index >= 0) {
-				callbacks.splice(index, 1);
-			}
-		}
-	}
-	return callback;
-}
-
-//@public
-function bind(action, bean, event) {
-}
-
-//@public
-function notify(event) {
-}
