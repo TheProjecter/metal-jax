@@ -85,11 +85,11 @@
 			$source.context.loadClass($setting["baseContext"], function() {
 				var baseContext = $source.context.findClass($setting["baseContext"]);
 				var context = baseContext ? baseContext.getContext() : $source.context;
-				var Face = context.findClass("metal.jax.Face", true);
-				var model = Face.parseModel.call($source.scope, this.document.body, true);
+				var Face = context.findClass("metal.jax.Face");
+				var faceModel = Face && Face.parseModel.call($source.scope, this.document.body, true);
 				context.loadClass($setting["bootClass"], function() {
 					var bootClass = context.findClass($setting["bootClass"]);
-					var rootFace = this[$setting["bootModule"]]["rootFace"] = Face.newObject(model);
+					var rootFace = Face && Face.newObject(faceModel);
 					if (baseContext) {
 						if (baseContext.main) {
 							bootClass = baseContext;

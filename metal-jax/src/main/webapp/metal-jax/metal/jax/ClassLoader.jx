@@ -15,7 +15,6 @@ $private.ClassLoader = function ClassLoader() {};
 $imports.Context = "metal.jax.Context";
 $imports.Object = "metal.jax.Object";
 $imports.System = "metal.jax.System";
-$imports.Face = "metal.jax.Face";
 
 $private.initClass_ = function initClass_() {
 	this.$source.baseName = "ClassLoader";

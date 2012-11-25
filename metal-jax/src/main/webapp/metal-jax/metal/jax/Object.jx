@@ -18,7 +18,7 @@ function newObject() {
 //@static
 function extendsClass(that) {
 	var clazz = this;
-	while (clazz) {
+	while (clazz && that) {
 		if (clazz == that || clazz.getName() == that) return true;
 		clazz = clazz.getSuperClass();
 	}
