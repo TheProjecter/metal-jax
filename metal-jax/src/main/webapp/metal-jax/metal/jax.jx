@@ -88,19 +88,20 @@
 				var Face = context.findClass("metal.jax.Face", true);
 				var model = Face.parseModel.call($source.scope, this.document.body, true);
 				context.loadClass($setting["bootClass"], function() {
-					this[$setting["bootModule"]]["face"] = Face.newObject(model);
 					var bootClass = context.findClass($setting["bootClass"]);
+					var rootFace = this[$setting["bootModule"]]["rootFace"] = Face.newObject(model);
 					if (baseContext) {
 						if (baseContext.main) {
-							baseContext.main.call();
+							bootClass = baseContext;
 						} else if (baseContext.extendsClass(Face)) {
-							this.document.body.appendChild(new baseContext().node);
+							bootClass = baseContext;
 						}
-					} else if (bootClass) {
+					}
+					if (bootClass) {
 						if (bootClass.main) {
 							bootClass.main.call();
-						} else if (bootClass.extendsClass(Face)) {
-							this.document.body.appendChild(new bootClass().node);
+						} else if (bootClass.extendsClass(Face) && !rootFace.faces) {
+							rootFace.node.appendChild(new bootClass().node);
 						}
 					}
 				});

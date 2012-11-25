@@ -92,13 +92,17 @@ function initNode(node, object) {
 				if (title) node.title = title;
 			}
 			if (childClass && childClass.extendsClass(Face)) {
+				var face;
 				var index = System.indexOfFirstChild(node);
 				if (index >= 0) {
-					childClass.newObject(node);
+					face = childClass.newObject(node);
 				} else {
 					while (node.firstChild) node.removeChild(node.firstChild);
-					node.appendChild(new childClass().node);
+					face = new childClass();
+					node.appendChild(face.node);
 				}
+				object.faces = object.faces || {};
+				object.faces[nodeId] = face;
 				return;
 			} else if (node.childNodes.length == 1 && node.firstChild.nodeType == 3 && node.innerHTML == nodeId) {
 				var value = object.getClass().$(nodeId+".value");
