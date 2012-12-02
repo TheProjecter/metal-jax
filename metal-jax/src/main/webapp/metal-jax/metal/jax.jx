@@ -101,7 +101,7 @@
 					if (bootClass) {
 						if (bootClass.main) {
 							bootClass.main.call();
-						} else if (bootClass.extendsClass(Face) && !rootFace.faces) {
+						} else if (bootClass.extendsClass(Face) && !this.document.body.firstChild) {
 							rootFace = new bootClass(this.document.body);
 						}
 					}
