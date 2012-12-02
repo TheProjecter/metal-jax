@@ -14,7 +14,7 @@
 			baseModule: "",
 			baseContext: "base",
 			crossDomain: "xd",
-			crossInterval: "3000",
+			crossTimeout: "3000",
 			classType: "jx",
 			faceType: "html"
 		};
@@ -186,14 +186,14 @@
 			request.node = this.document.createElement("script");
 			request.node.src = request.url;
 			this.document.firstChild.firstChild.appendChild(request.node);
-			request.interval = setInterval(callback, parseInt($setting["crossInterval"]));
+			request.timeout = setInterval(callback, parseInt($setting["crossTimeout"]));
 			return request;
 		}
 		
 		function clearRequest(request) {
 			delete this[$setting["bootModule"]][request.url];
 			this.document.firstChild.firstChild.removeChild(request.node);
-			clearInterval(request.interval);
+			clearInterval(request.timeout);
 			delete request.node;
 		}
 		
