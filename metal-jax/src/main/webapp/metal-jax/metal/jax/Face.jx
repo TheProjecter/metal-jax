@@ -12,17 +12,10 @@
 //@private
 function initClass() {
 	if (this.content) {
-		var node = System.parseHTML(this.content);
-		this.$model = parseModel.call(this, node);
+		this.$model = System.parseHTML(this.content);
+		parseModel.call(this, this.$model);
 		delete this.content;
 	}
-}
-
-//@static
-function newObject(model) {
-	var object = new this();
-	initModel.call(object, model, false);
-	return object;
 }
 
 //@static
@@ -30,18 +23,28 @@ function parseModel(node, resolved) {
 	for (var i = 0; i < node.childNodes.length; i++) {
 		parseNode(node.childNodes[i], this, resolved);
 	}
-	var index = System.indexOfFirstChild(node, true);
-	if (index >= 0 && node.nodeType == 11) {
-		node = node.childNodes[index];
-	}
-	return node;
 }
 
 //@static
-function initModel(node, clone) {
-	clone = clone || arguments.length == 1;
-	this.node = clone ? node.cloneNode(true) : node;
-	initNode(this.node, this);
+function initModel(node, args) {
+	if (this.node) return;
+	if (!args || args.length == 0) {
+		if (node) {
+			this.node = node.cloneNode(true);
+			initNode(this.node, this);
+		}
+	} else {
+		this.node = args[0];
+		var index = System.indexOfFirstChild(this.node);
+		if (index >= 0) {
+			initNode(this.node, this);
+		} else if (node) {
+			node = node.cloneNode(true);
+			initNode(node, this);
+			System.clearHTML(this.node);
+			this.node.appendChild(node);
+		}
+	}
 }
 
 //@private
@@ -94,13 +97,8 @@ function initNode(node, object) {
 			if (childClass && childClass.extendsClass(Face)) {
 				var face;
 				var index = System.indexOfFirstChild(node);
-				if (index >= 0) {
-					face = childClass.newObject(node);
-				} else {
-					while (node.firstChild) node.removeChild(node.firstChild);
-					face = new childClass();
-					node.appendChild(face.node);
-				}
+				if (index < 0) System.clearHTML(node);
+				face = new childClass(node);
 				object.faces = object.faces || {};
 				object.faces[nodeId] = face;
 				return;

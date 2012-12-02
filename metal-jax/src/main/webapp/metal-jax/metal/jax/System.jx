@@ -273,11 +273,21 @@ function indexOfFirstChild(node, only) {
 function parseHTML(text) {
 	var node = System.document.createElement("div");
 	node.innerHTML = text;
+	return moveHTML(node);
+}
+
+//@static
+function moveHTML(node) {
 	var doc = System.document.createDocumentFragment();
 	while (node.firstChild) {
 		doc.appendChild(node.firstChild);
 	}
 	return doc;
+}
+
+//@static
+function clearHTML(node) {
+	while (node.firstChild) node.removeChild(node.firstChild);
 }
 
 //@static

@@ -86,10 +86,11 @@
 				var baseContext = $source.context.findClass($setting["baseContext"]);
 				var context = baseContext ? baseContext.getContext() : $source.context;
 				var Face = context.findClass("metal.jax.Face");
-				var faceModel = Face && Face.parseModel.call($source.scope, this.document.body, true);
+				Face && Face.parseModel.call($source.scope, this.document.body, true);
 				context.loadClass($setting["bootClass"], function() {
 					var bootClass = context.findClass($setting["bootClass"]);
-					var rootFace = Face && Face.newObject(faceModel);
+					var rootFace = Face && new Face();
+					Face && Face.initModel.call(rootFace, null, [this.document.body]);
 					if (baseContext) {
 						if (baseContext.main) {
 							bootClass = baseContext;
@@ -101,7 +102,7 @@
 						if (bootClass.main) {
 							bootClass.main.call();
 						} else if (bootClass.extendsClass(Face) && !rootFace.faces) {
-							rootFace.node.appendChild(new bootClass().node);
+							rootFace = new bootClass(this.document.body);
 						}
 					}
 				});

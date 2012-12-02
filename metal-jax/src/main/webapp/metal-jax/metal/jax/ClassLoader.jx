@@ -188,7 +188,7 @@ $private._getSetting0_   = "$static.$ = function $(name,value) { return name in 
 $private._getSetting1_   = "$static.$ = function $(name,value) { return name in $setting ? $setting[name] : $super.$static.$(name,value); };\n";
 $private._getSetting2_   = "$static.$ = function $(name,value) { var v; return name in $setting ? $setting[name] : (v=$super.$static.$(name,value),v===value?$context.getClass().$(name,value):v); };\n";
 $private._constructor_   = "$private.${0} = function ${0}() { $context.initObject.call(this, ${0}, arguments); };\n";
-$private._initObject_    = "$private.initObject = function initObject() { initModel.call(this, $model); };\n";
+$private._initObject_    = "$private.initObject = function initObject() { initModel.call(this, $model, arguments); };\n";
 $private._memberRE_      = /^\/\/@(\S+)\s+(function|var)\s+([A-Za-z0-9_$]+)/gm;
 $private._classFooter_   = "\n//@ sourceURL=${0}\n";
 //parses/compiles source setting

@@ -16,9 +16,9 @@ var $fontSizes = [ "10px", "13px", "16px", "18px", "24px", "32px" ];
 
 //@private
 function initObject() {
+	HelloMetal_html.apply(this, arguments);
 	this.next = 0;
 	this.flag = false;
-	HelloMetal_html.call(this);
 	this.nodes.label.style.fontSize = $fontSizes[this.next++];
 	setInterval(System.callback.call(this, changeLabel), 200);
 	Hello.load("hello", System.callback.call(this, initFooter));
