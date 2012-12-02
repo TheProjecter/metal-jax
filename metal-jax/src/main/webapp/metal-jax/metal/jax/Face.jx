@@ -28,12 +28,10 @@ function parseModel(node, resolved) {
 //@static
 function initModel(node, args) {
 	if (this.node) return;
-	if (!args || args.length == 0) {
-		if (node) {
-			this.node = node.cloneNode(true);
-			initNode(this.node, this);
-		}
-	} else {
+	if ((!args || args.length == 0) && node) {
+		this.node = node.cloneNode(true);
+		initNode(this.node, this);
+	} else if (args.length > 0) {
 		this.node = args[0];
 		var index = System.indexOfFirstChild(this.node);
 		if (index >= 0) {
@@ -61,8 +59,8 @@ function parseNode(node, scope, resolved) {
 			}
 		}
 		if (node.id) {
-			var parts = node.id.split(":");
-			var nodeId = parts.shift(), className = parts.join(":");
+			var parts = node.id.split(":"), nodeId = parts.shift();
+			var className = parts.join(":");
 			var baseName = System.parseBaseName(className);
 			if (className) {
 				className = System.parseSourceName(className, scope.$static.getName(), $("faceType"));
@@ -82,8 +80,8 @@ function parseNode(node, scope, resolved) {
 function initNode(node, object) {
 	if (node.nodeType == 1) {
 		if (node.id) {
-			var parts = node.id.split(":");
-			var nodeId = parts.shift(), className = parts.join(":");
+			var parts = node.id.split(":"), nodeId = parts.shift();
+			var className = parts.join(":");
 			var baseName = System.parseBaseName(className);
 			
 			object.nodes = object.nodes || {};
@@ -95,12 +93,10 @@ function initNode(node, object) {
 				if (title) node.title = title;
 			}
 			if (childClass && childClass.extendsClass(Face)) {
-				var face;
 				var index = System.indexOfFirstChild(node);
 				if (index < 0) System.clearHTML(node);
-				face = new childClass(node);
 				object.faces = object.faces || {};
-				object.faces[nodeId] = face;
+				object.faces[nodeId] = new childClass(node);
 				return;
 			} else if (node.childNodes.length == 1 && node.firstChild.nodeType == 3 && node.innerHTML == nodeId) {
 				var value = object.getClass().$(nodeId+".value");
