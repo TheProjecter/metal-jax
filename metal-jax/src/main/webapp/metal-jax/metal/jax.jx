@@ -94,14 +94,14 @@
 					if (baseContext) {
 						if (baseContext.main) {
 							bootClass = baseContext;
-						} else if (baseContext.extendsClass(Face)) {
+						} else if (baseContext.extendsClass("metal.jax.Face")) {
 							bootClass = baseContext;
 						}
 					}
 					if (bootClass) {
 						if (bootClass.main) {
 							bootClass.main.call();
-						} else if (bootClass.extendsClass(Face) && !this.document.body.firstChild) {
+						} else if (bootClass.extendsClass("metal.jax.Face") && !this.document.body.firstChild) {
 							rootFace = new bootClass(this.document.body);
 						}
 					}
