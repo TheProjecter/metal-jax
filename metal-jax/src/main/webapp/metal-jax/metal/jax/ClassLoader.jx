@@ -21,6 +21,7 @@ $private.initClass_ = function initClass_() {
 	this.$source.superBase = "Object";
 	this.$source.$class = this.$source.scope[this.$source.baseName];
 	this._callbacks = [];
+	this._busyCount = 0;
 	this._pendingCount = 0;
 	this._pendingFlush = [];
 	this._pendingFlush.push(this.$source);
@@ -390,6 +391,7 @@ $private.flush = function flush() {
 		if (_pendingCount) return;
 		flush_initContext(_pendingFlush[i]);
 	}
+	if (_busyCount) return;
 	while (_callbacks.length) {
 		if (_pendingCount) return;
 		_callbacks.shift()();
@@ -409,6 +411,7 @@ $private.flush = function flush() {
 $private.flush_initClass = function flush_initClass(source) {
 	if (typeof source.flushStatus == "undefined") {
 		source.flushStatus = "busy 0";
+		_busyCount++;
 		if (source.context) {
 			source.scope[source.superBase] = source.context.findClass(source.scope.$imports[source.superBase], true);
 			if (source.contentType != "context") {
@@ -435,6 +438,7 @@ $private.flush_initClass = function flush_initClass(source) {
 				source.context.loadClass(source.scope.$imports[name]);
 			}
 		}
+		_busyCount--;
 		source.flushStatus = 0;
 		if (source.contentType != "context") {
 			flush_notifyClass(source);
@@ -445,6 +449,7 @@ $private.flush_initClass = function flush_initClass(source) {
 $private.flush_notifyClass = function flush_notifyClass(source) {
 	if (source.flushStatus == 0) {
 		source.flushStatus = "busy 1";
+		_busyCount++;
 		if (source.contentType == "context") {
 			for (var name in source.scope.$imports) {
 				var clazz = source.scope[name] = source.context.findClass(source.scope.$imports[name], true);
@@ -462,6 +467,7 @@ $private.flush_notifyClass = function flush_notifyClass(source) {
 				source.scope.initClass();
 			}
 		}
+		_busyCount--;
 		source.flushStatus = 1;
 	}
 };
@@ -469,6 +475,7 @@ $private.flush_notifyClass = function flush_notifyClass(source) {
 $private.flush_initContext = function flush_initContext(source) {
 	if (source.flushStatus == 1) {
 		source.flushStatus = "busy 2";
+		_busyCount++;
 		for (var name in source.scope.$imports) {
 			var clazz = source.scope[name];
 			flush_initContext(getSource(clazz.getName(), clazz.getContext()));
@@ -476,6 +483,7 @@ $private.flush_initContext = function flush_initContext(source) {
 		if (source.contentType == "context" && source.scope.initObject) {
 			source.scope.initObject.call(source.context);
 		}
+		_busyCount--;
 		source.flushStatus = 2;
 	}
 };
@@ -483,6 +491,7 @@ $private.flush_initContext = function flush_initContext(source) {
 $private.flush_notifyContext = function flush_notifyContext(source) {
 	if (source.flushStatus == 2) {
 		source.flushStatus = "busy 3";
+		_busyCount++;
 		for (var name in source.scope.$imports) {
 			var clazz = source.scope[name];
 			flush_notifyContext(getSource(clazz.getName(), clazz.getContext()));
@@ -490,6 +499,7 @@ $private.flush_notifyContext = function flush_notifyContext(source) {
 		if (source.contentType == "context" && source.scope.initContext) {
 			source.scope.initContext.call(source.context);
 		}
+		_busyCount--;
 		source.flushStatus = 3;
 	}
 };
