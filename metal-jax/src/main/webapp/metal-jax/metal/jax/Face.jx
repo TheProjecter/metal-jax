@@ -57,7 +57,7 @@ function initModel_(node) {
 	for (var i = 0; i < node.childNodes.length; i++) {
 		var childNode = node.childNodes[i];
 		if (childNode.nodeType == 1) {
-			if (!initNode.call(this, childNode)) {
+			if (!this.getClass().initNode.call(this, childNode)) {
 				initModel_.call(this, childNode);
 			}
 		}
@@ -87,7 +87,7 @@ function parseNode(node) {
 	}
 }
 
-//@private
+//@static
 function initNode(node) {
 	if (node.id) {
 		var parts = node.id.split(":"), nodeId = parts.shift();
