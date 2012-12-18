@@ -44,7 +44,7 @@ function initModel(node, args) {
 		}
 	}
 	if (node) {
-		initModel.call(this, node);
+		initModel_.call(this, node);
 		if (index < 0) {
 			System.clearHTML(this.node);
 			this.node.appendChild(node);
@@ -53,12 +53,12 @@ function initModel(node, args) {
 }
 
 //@private
-function initModel(node) {
+function initModel_(node) {
 	for (var i = 0; i < node.childNodes.length; i++) {
 		var childNode = node.childNodes[i];
 		if (childNode.nodeType == 1) {
 			if (!initNode.call(this, childNode)) {
-				initModel.call(this, childNode);
+				initModel_.call(this, childNode);
 			}
 		}
 	}
