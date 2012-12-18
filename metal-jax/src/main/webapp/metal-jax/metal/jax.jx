@@ -86,7 +86,7 @@
 				var baseContext = $source.context.findClass($setting["baseContext"]);
 				var context = baseContext ? baseContext.getContext() : $source.context;
 				var Face = context.findClass("metal.jax.Face");
-				Face && Face.parseModel.call($source.scope, this.document.body, true);
+				Face && Face.parseModel.call($source.scope, this.document.body);
 				context.loadClass($setting["bootClass"], function() {
 					var bootClass = context.findClass($setting["bootClass"]);
 					var rootFace = Face && new Face();
