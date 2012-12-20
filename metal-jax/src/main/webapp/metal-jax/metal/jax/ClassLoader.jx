@@ -40,6 +40,17 @@ $public.initObject = function initObject(clazz, args) {
 	}
 };
 
+$public.findResource = function findResource(name) {
+	var context = this;
+	while (context != $context) {
+		var source = getSource(context.getClass().getName(), context);
+		if (name in source.scope.$resource) {
+			return source.scope.$resource[name];
+		}
+		context = context.getClass().getSuperClass().getContext();
+	}
+};
+
 //gets source holder of given context
 $private.getHolder = function getHolder(context) {
 	return $source.holder[context.getClass().getName()].holder;
@@ -222,7 +233,7 @@ $private._classHeaderRE_ = /^\s*\/\*\*([\S\s]*?)\*\//;
 $private._classSettingRE_ = /@(setting|source|content)[\t ]+([\S\t ]*\S+)[\t ]*$|@([a-zA-Z]+)[\t ]+(\S+)[\t ]*([\S\t ]+)?[\t ]*$/gm;
 //parses source header to collect source settings
 $private.parseModel = function parseModel(source) {
-	source.scope = { $public:{}, $protected:{}, $static:{}, $imports:{}, $setting:{} };
+	source.scope = { $public:{}, $protected:{}, $static:{}, $imports:{}, $requires:{}, $setting:{} };
 	source.scope.$setting.module = source.module;
 	source.scope.$setting.path = source.path;
 	if (source.type != $("classType")) {
@@ -250,6 +261,10 @@ $private.parseModel = function parseModel(source) {
 					source.scope.$imports[value] = name;
 					source.scope.$setting[value] = name;
 					break;
+				case "requires":
+					value = parseBaseName(name, value);
+					source.scope.$requires[value] = name;
+					break;
 				case "setting":
 					parseSetting(source.scope.$setting, match);
 					break;
@@ -269,6 +284,7 @@ $private.parseModel = function parseModel(source) {
 					}
 					if (source.contentType == "context") {
 						source.holder = {};
+						source.scope.$resource = {};
 						source.setting = { source:[], content:[] };
 					}
 					break;
@@ -522,6 +538,7 @@ $private.flush_initMember = function flush_initMember(source, superSource) {
 		putSource(source);
 	}
 	flush_initSetting(source);
+	flush_initResource(source);
 };
 
 $private.flush_initSetting = function flush_initSetting(source) {
@@ -545,6 +562,12 @@ $private.flush_initSetting = function flush_initSetting(source) {
 			initSetting(setting, source.$class);
 			setting.context = source.context;
 		}
+	}
+};
+
+$private.flush_initResource = function flush_initResource(source) {
+	for (var name in source.scope.$requires) {
+		source.scope[name] = source.context.findResource(source.scope.$requires[name]);
 	}
 };
 

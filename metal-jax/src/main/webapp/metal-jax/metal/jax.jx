@@ -21,7 +21,7 @@
 		var $source = {
 			name: "metal.jax.ClassLoader",
 			contentType: "context",
-			scope: { $public:{}, $protected:{}, $static:{}, $imports:{}, $setting:$setting },
+			scope: { $public:{}, $protected:{}, $static:{}, $imports:{}, $requires:{}, $resource:{}, $setting:$setting },
 			setting: {
 				source: [{ base:"${bootURL}", module:"${bootModule}", includes:"^metal.jax[.]" }],
 				content: [
