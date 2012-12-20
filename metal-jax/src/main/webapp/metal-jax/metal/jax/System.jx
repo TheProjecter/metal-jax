@@ -1,5 +1,5 @@
 /**
- * @class metal.jax.System
+ * @class System
  * @imports ClassLoader
  * 
  * @copyright Jay Tang 2012

@@ -264,7 +264,7 @@ $private.parseModel = function parseModel(source) {
 				default:
 					if (source.contentType) break;
 					source.contentType = settingTag;
-					if (source.name != name) {
+					if (source.name != parseSourceName(name, source.name)) {
 						System.throwError("incorrect ${0} name declared: ${1}", settingTag, name);
 					}
 					if (source.contentType == "context") {

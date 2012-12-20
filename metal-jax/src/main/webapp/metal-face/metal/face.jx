@@ -1,4 +1,4 @@
 /**
- * @context metal.face
+ * @context face
  * @imports metal.jax.Face
  */

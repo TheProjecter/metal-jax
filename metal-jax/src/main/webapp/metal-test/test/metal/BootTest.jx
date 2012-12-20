@@ -1,5 +1,5 @@
 /**
- * @test test.metal.BootTest
+ * @test BootTest
  * @imports metal.jax.System
  */
 

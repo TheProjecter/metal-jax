@@ -1,5 +1,5 @@
 /**
- * @context metal.jax.ModelLoader
+ * @context ModelLoader
  * @imports System
  * 
  * @copyright Jay Tang 2012

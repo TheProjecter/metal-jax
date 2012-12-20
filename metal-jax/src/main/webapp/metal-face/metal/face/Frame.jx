@@ -1,5 +1,5 @@
 /**
- * @face metal.face.Frame
+ * @face Frame
  * @extends Frame:html
  * @imports metal.jax.System
  */

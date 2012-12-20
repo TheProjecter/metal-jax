@@ -1,5 +1,5 @@
 /**
- * @test test.metal.jax.ClassLoaderTest
+ * @test ClassLoaderTest
  * 
  * @imports metal.jax.ClassLoader
  * @imports metal.jax.Object

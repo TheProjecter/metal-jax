@@ -1,5 +1,5 @@
 /**
- * @context test.meta4.face.ButtonTest
+ * @context ButtonTest
  * @imports meta4.face.Face
  * @imports meta4.face.Button
  */

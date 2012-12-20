@@ -1,5 +1,5 @@
 /**
- * @class test.meta4.core.SystemTest
+ * @class SystemTest
  * @extends meta4.test.TestCase
  * @imports meta4.core.System
  */

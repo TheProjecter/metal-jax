@@ -1,5 +1,5 @@
 /**
- * @face hello.HelloMetal
+ * @face HelloMetal
  * @imports HelloMetal:html
  * @imports PoweredBy
  * @imports model.Hello

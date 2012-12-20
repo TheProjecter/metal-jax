@@ -1,5 +1,5 @@
 /**
- * @class metal.jax.Model
+ * @class Model
  * @imports ModelLoader
  * 
  * @setting model.base=${baseURL}
