@@ -1,5 +1,6 @@
 /**
  * @class Object
+ * @imports ClassLoader
  * 
  * @copyright Jay Tang 2012
  * All rights reserved. This program and the accompanying materials
@@ -7,6 +8,11 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  */
+
+//@private
+function initClass() {
+	$static.$ = ClassLoader.prototype.$;
+}
 
 //@static
 function newObject() {

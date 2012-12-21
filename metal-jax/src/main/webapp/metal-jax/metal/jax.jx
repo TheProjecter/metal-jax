@@ -40,9 +40,10 @@
 			if (!this[$setting["bootModule"]]) {
 				this[$setting["bootModule"]] = {};
 				waitFor("load", function() {
+					$source.type = $setting["classType"];
 					$source.base = $setting["bootURL"];
 					$source.module = $setting["bootModule"];
-					$source.path = $source.name.split(".").join("/").concat(".", $setting["classType"]);
+					$source.path = $source.name.split(".").join("/").concat(".", $source.type);
 					loadback($source, parseSource);
 				});
 			}
