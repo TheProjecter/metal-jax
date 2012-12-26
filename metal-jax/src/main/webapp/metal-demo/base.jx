@@ -1,5 +1,6 @@
 /**
  * @context base
  * @imports metal.jax.Face
+ * @resource service.Echo service.echo
  * @source base=${bootURL} module=metal-face includes=^metal.face[.]
  */

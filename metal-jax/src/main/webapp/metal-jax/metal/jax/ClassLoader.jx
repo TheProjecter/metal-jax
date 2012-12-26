@@ -283,6 +283,12 @@ $private.parseModel = function parseModel(source) {
 				case "setting":
 					parseSetting(source.scope.$setting, match);
 					break;
+				case "resource":
+					if (source.contentType == "context") {
+						source.scope.$imports[parseBaseName(name)] = name;
+						source.scope.$resource[value] = name;
+					}
+					break;
 				case "source":
 				case "content":
 					if (source.contentType == "context") {
@@ -511,6 +517,9 @@ $private.flush_initContext = function flush_initContext(source) {
 			var clazz = source.scope[name];
 			flush_initContext(getSource(clazz.getName(), clazz.getContext()));
 		}
+		if (source.contentType == "context") {
+			initResource(source);
+		}
 		if (source.contentType == "context" && source.scope.initObject) {
 			source.scope.initObject.call(source.context);
 		}
@@ -614,6 +623,12 @@ $private.initSetting = function initSetting(setting, clazz) {
 		for (var name in setting) {
 			setting[name] = formatText(setting[name], clazz);
 		}
+	}
+};
+
+$private.initResource = function initResource(source) {
+	for (var name in source.scope.$resource) {
+		source.scope.$resource[name] = source.context.findClass(source.scope.$resource[name], true).newObject();
 	}
 };
 

@@ -28,6 +28,7 @@
 					{ type:"class", "extends":"metal.jax.Object" },
 					{ type:"context", "extends":"metal.jax.Context" },
 					{ type:"model", "extends":"metal.jax.Model" },
+					{ type:"service", "extends":"metal.jax.Service" },
 					{ type:"face", "extends":"metal.jax.Face" },
 					{ type:"${faceType}", "extends":"metal.jax.Face" }
 				]

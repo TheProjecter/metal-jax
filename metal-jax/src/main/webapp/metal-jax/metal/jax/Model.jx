@@ -34,3 +34,8 @@ function get(name) {
 function set(name, value) {
 	return this.value ? this.value.set(name, value) : $super.set.call(this, name, value);
 }
+
+//@public
+function serialize() {
+	return "<greeting>hello</greeting>";
+}
