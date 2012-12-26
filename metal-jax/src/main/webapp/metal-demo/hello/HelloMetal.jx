@@ -35,5 +35,9 @@ function changeLabel() {
 //@private
 function initFooter() {
 	var hello = Hello.find("hello");
-	this.nodes.footer.innerHTML = "hello: { foo: \"".concat(hello.foo.value, "\", bar: \"", hello.bar.value, "\" }");
+	this.nodes.footer.innerHTML =
+		"hello: {" +
+			"foo: \"" + hello.get("foo").value + "\", " +
+			"bar: \"" + hello.get("bar").value +
+		"\" }";
 }

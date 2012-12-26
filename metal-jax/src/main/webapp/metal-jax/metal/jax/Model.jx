@@ -19,3 +19,18 @@ function initClass() {
 	$static.load = ModelLoader.prototype.load;
 	$static.find = ModelLoader.prototype.find;
 }
+
+//@private
+function initObject(value) {
+	this.value = value || this;
+}
+
+//@public
+function get(name) {
+	return this.value ? this.value.get(name) : $super.get.call(this, name);
+}
+
+//@public
+function set(name, value) {
+	return this.value ? this.value.set(name, value) : $super.set.call(this, name, value);
+}

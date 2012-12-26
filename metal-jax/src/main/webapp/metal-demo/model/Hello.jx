@@ -6,11 +6,11 @@
 
 //@static
 function parseModel(model) {
-	this.foo = new Foo(model.foo);
+	this.set("foo", new Foo(model.foo));
 	Bar.load(model.bar);
 }
 
 //@static
 function initModel(model) {
-	this.bar = Bar.find(model.bar);
+	this.set("bar", Bar.find(model.bar));
 }
