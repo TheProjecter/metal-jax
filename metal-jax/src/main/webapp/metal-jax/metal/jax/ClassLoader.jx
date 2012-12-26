@@ -285,6 +285,7 @@ $private.parseModel = function parseModel(source) {
 					break;
 				case "resource":
 					if (source.contentType == "context") {
+						value = value || name;
 						source.scope.$imports[parseBaseName(name)] = name;
 						source.scope.$resource[value] = name;
 					}
