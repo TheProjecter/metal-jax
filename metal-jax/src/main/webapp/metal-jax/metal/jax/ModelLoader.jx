@@ -32,10 +32,16 @@ function find(key, positive) {
 
 //@public
 function load(key, callback) {
+	if (!key || getSource(key, this)) return;
+	$public.call.call(this, key, callback);
+}
+
+//@public
+function call(param, callback) {
 	try {
-		if (!key || getSource(key, this)) return;
 		_pendingCount++;
-		var source = putSource(initSource(key, this));
+		var source = (this.initSource||initSource)(param, this);
+		putSource(source);
 		System.loadback(source, handleSource);
 	} catch (ex) {
 		_pendingCount--;
