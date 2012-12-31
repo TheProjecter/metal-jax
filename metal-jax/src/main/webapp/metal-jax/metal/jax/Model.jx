@@ -22,7 +22,7 @@ function initClass() {
 
 //@private
 function initObject(value) {
-	this.value = value || this;
+	this.value = value;
 }
 
 //@public
