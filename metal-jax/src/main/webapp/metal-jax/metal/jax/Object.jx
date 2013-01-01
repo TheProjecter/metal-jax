@@ -11,7 +11,7 @@
 
 //@private
 function initClass() {
-	$static.$ = ClassLoader.prototype.$;
+	$static.$ = ClassLoader.$;
 }
 
 //@static

@@ -17,7 +17,7 @@ function initClass() {
 	this._holder = {};
 }
 
-//@public
+//@static
 function find(key, positive) {
 	if (!key) return;
 	var source = getSource(key, this);
@@ -30,25 +30,24 @@ function find(key, positive) {
 	}
 }
 
-//@public
+//@static
 function load(key, callback) {
 	if (!key || getSource(key, this)) return;
-	$public.call.call(this, key, callback);
+	var source = putSource(initSource.call(this, key));
+	call.call(this, source, callback);
 }
 
-//@public
-function call(param, callback) {
+//@static
+function call(source, callback) {
 	try {
 		_pendingCount++;
-		var source = (this.initSource||initSource)(param, this);
-		putSource(source);
 		System.loadback(source, handleSource);
 	} catch (ex) {
 		_pendingCount--;
 		source.error = ex.message;
 		System.logError(ex);
 	} finally {
-		waitFor(callback);
+		if (callback) waitFor(System.callback(notify, callback, source));
 	}
 }
 
@@ -73,14 +72,14 @@ function putSource(source) {
 }
 
 //@private
-function initSource(key, clazz) {
+function initSource(key) {
 	var source = {};
 	source.key = key;
-	source.$class = clazz;
-	source.type = clazz.$("model.type");
-	source.base = clazz.$("model.base");
-	source.module = clazz.$("model.module");
-	source.path = clazz.getName().split(".").join("/").concat(".", source.type, "#", source.key);
+	source.$class = this;
+	source.type = this.$("model.type");
+	source.base = this.$("model.base");
+	source.module = this.$("model.module");
+	source.path = this.getName().split(".").join("/").concat(".", source.type, "#", source.key);
 	return source;
 }
 
@@ -92,6 +91,11 @@ function waitFor(callback) {
 	} else {
 		callback();
 	}
+}
+
+//@private
+function notify(callback, source) {
+	callback(source.object);
 }
 
 //@private

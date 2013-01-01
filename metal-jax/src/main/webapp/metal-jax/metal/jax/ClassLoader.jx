@@ -10,7 +10,6 @@ $public.getClass = function getClass() { return ClassLoader; };
 $static.getSuperClass = function getSuperClass() { return null; };
 $static.getContext = function getContext() { return $context; };
 $static.getName = function getName() { return "metal.jax.ClassLoader"; };
-$static.$ = function $(name,value) { return name in $setting ? $setting[name] : value; };
 $private.ClassLoader = function ClassLoader() {};
 $imports.Context = "metal.jax.Context";
 $imports.Object = "metal.jax.Object";
@@ -40,7 +39,7 @@ $public.initObject = function initObject(clazz, args) {
 };
 
 //findSetting
-$public.$ = function $(name, value) {
+$static.$ = function $(name, value) {
 	var clazz = this;
 	while (clazz) {
 		var source = getSource(clazz.getName(), clazz.getContext());
