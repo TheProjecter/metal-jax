@@ -1,6 +1,6 @@
 /**
  * @class Context
- * @imports ClassLoader
+ * @extends ClassLoader
  * 
  * @copyright Jay Tang 2012
  * All rights reserved. This program and the accompanying materials
@@ -8,11 +8,3 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  */
-
-//@private
-function initClass() {
-	$public.loadClass = ClassLoader.prototype.loadClass;
-	$public.findClass = ClassLoader.prototype.findClass;
-	$public.initObject = ClassLoader.prototype.initObject;
-	$public.findResource = ClassLoader.prototype.findResource;
-}
