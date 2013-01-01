@@ -1,6 +1,6 @@
 /**
  * @class Object
- * @imports ClassLoader
+ * @imports Context
  * 
  * @copyright Jay Tang 2012
  * All rights reserved. This program and the accompanying materials
@@ -11,8 +11,8 @@
 
 //@private
 function initClass() {
-	$static.$ = ClassLoader.$;
-	$static.extendsClass = ClassLoader.extendsClass;
+	$static.$ = Context.$;
+	$static.extendsClass = Context.extendsClass;
 }
 
 //@static

@@ -19,18 +19,18 @@
 			faceType: "html"
 		};
 		var $source = {
-			name: "metal.jax.ClassLoader",
 			contentType: "context",
+			name: "metal.jax.ClassLoader",
 			scope: { $public:{}, $protected:{}, $static:{}, $imports:{}, $requires:{}, $resource:{}, $setting:$setting },
 			setting: {
 				source: [{ base:"${bootURL}", module:"${bootModule}", includes:"^metal.jax[.]" }],
 				content: [
-					{ type:"class", "extends":"metal.jax.Object" },
-					{ type:"context", "extends":"metal.jax.Context" },
-					{ type:"model", "extends":"metal.jax.Model" },
-					{ type:"service", "extends":"metal.jax.Service" },
-					{ type:"face", "extends":"metal.jax.Face" },
-					{ type:"${faceType}", "extends":"metal.jax.Face" }
+					{ type:"class",			"extends":"metal.jax.Object" },
+					{ type:"context",		"extends":"metal.jax.Context" },
+					{ type:"face",			"extends":"metal.jax.Face" },
+					{ type:"${faceType}",	"extends":"metal.jax.Face" },
+					{ type:"model",			"extends":"metal.jax.Model" },
+					{ type:"service",		"extends":"metal.jax.Service" }
 				]
 			}
 		};
@@ -71,9 +71,9 @@
 				$static.call(source);
 				source.holder = {};
 				source.holder[source.name] = source;
-				source.scope.$source = source;
-				source.scope.compile = $static;
-				source.scope.loadback = loadback;
+				source.scope.$private.$source = source;
+				source.scope.$private.compile = $static;
+				source.scope.$private.loadback = loadback;
 				source.scope.$static.splitPath = splitPath;
 				source.scope.$static.resolvePath = resolvePath;
 				source.scope.initClass_();
