@@ -1,6 +1,6 @@
 /**
  * @class System
- * @imports Context
+ * @extends Context
  * 
  * @copyright Jay Tang 2012
  * All rights reserved. This program and the accompanying materials
@@ -14,12 +14,6 @@ function initClass() {
 	System.window = window;
 	System.document = window.document;
 	System.docHead = window.document.firstChild.firstChild;
-	System.formatText = Context.formatText;
-	System.splitPath = Context.splitPath;
-	System.resolvePath = Context.resolvePath;
-	System.parseBaseName = Context.parseBaseName;
-	System.parseSourceName = Context.parseSourceName;
-	System.parsePackageName = Context.parsePackageName;
 	Array.prototype.indexOf = Array.prototype.indexOf || indexOf;
 }
 

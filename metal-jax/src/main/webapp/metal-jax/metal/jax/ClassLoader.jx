@@ -26,15 +26,14 @@ $private.initClass_ = function initClass_() {
 	flush();
 };
 
-//calls each initObject in class hierarchy
-$public.initObject = function initObject(clazz, args) {
-	if (args.length == 1 && args[0] == clazz) return;
-	if (clazz.getSuperClass()) {
-		arguments.callee.call(this, clazz.getSuperClass(), args);
+$static.initObject = function initObject(object, args) {
+	if (args && args.length == 1 && args[0] == this) return;
+	if (this.getSuperClass()) {
+		arguments.callee.call(this.getSuperClass(), object, args);
 	}
-	var source = getSource(clazz.getName(), clazz.getContext());
+	var source = getSource(this.getName(), this.getContext());
 	if (source.scope.initObject) {
-		source.scope.initObject.apply(this, args);
+		source.scope.initObject.apply(object, args);
 	}
 };
 
@@ -46,7 +45,6 @@ $static.extendsClass = function extendsClass(that) {
 	}
 };
 
-//findSetting
 $static.$ = function $(name, value) {
 	var clazz = this;
 	while (clazz) {
@@ -77,17 +75,14 @@ $public.findResource = function findResource(name) {
 	}
 };
 
-//gets source holder of given context
 $private.getHolder = function getHolder(context) {
 	return $source.holder[context.getClass().getName()].holder;
 };
 
-//gets named source from given context
 $private.getSource = function getSource(name, context) {
 	return getHolder(context)[name];
 };
 
-//puts named source into source.context
 $private.putSource = function putSource(source) {
 	getHolder(source.context)[source.name] = source;
 	if (source.contentType == "context") {
@@ -96,10 +91,9 @@ $private.putSource = function putSource(source) {
 	return source;
 };
 
-//populates source object to be loaded
 $private.initSource = function initSource(name, context) {
 	name = parseSourceName(name);
-	var setting = findSourceSetting.call(context, name);
+	var setting = findSourceSetting(name, context);
 	var nameOnly = parseSourceName(name, "", "");
 	var source = {};
 	source.name = name;
@@ -111,16 +105,14 @@ $private.initSource = function initSource(name, context) {
 	return source;
 };
 
-//finds named source in context hierarchy
 $private.findSource = function findSource(name, context) {
 	name = parseSourceName(name);
-	var setting = findSourceSetting.call(context, name);
+	var setting = findSourceSetting(name, context);
 	return getSource(name, setting ? setting.context : context);
 };
 
-//finds source setting in context hierarchy
-$private.findSourceSetting = function findSourceSetting(name) {
-	var clazz = this.getClass();
+$private.findSourceSetting = function findSourceSetting(name, context) {
+	var clazz = context.getClass();
 	while (clazz) {
 		var settings = getSource(clazz.getName(), clazz.getContext()).setting["source"];
 		for (var i = 0; i < settings.length; i++) {
@@ -142,9 +134,8 @@ $private.findSourceSetting = function findSourceSetting(name) {
 	}
 };
 
-//finds content setting in context hierarchy
-$private.findContentSetting = function findContentSetting(type) {
-	var clazz = this.getClass();
+$private.findContentSetting = function findContentSetting(type, context) {
+	var clazz = context.getClass();
 	while (clazz) {
 		var settings = getSource(clazz.getName(), clazz.getContext()).setting["content"];
 		for (var i = 0; i < settings.length; i++) {
@@ -158,7 +149,6 @@ $private.findContentSetting = function findContentSetting(type) {
 	}
 };
 
-//finds previously loaded class
 $public.findClass = function findClass(name, positive) {
 	if (!name) return;
 	var source = findSource(name, this);
@@ -171,7 +161,6 @@ $public.findClass = function findClass(name, positive) {
 	}
 };
 
-//loads named class
 $public.loadClass = function loadClass(name, callback) {
 	try {
 		if (!name || findSource(name, this)) return;
@@ -187,7 +176,6 @@ $public.loadClass = function loadClass(name, callback) {
 	}
 };
 
-//calls back after pending class load
 $private.waitFor = function waitFor(callback) {
 	if (!callback) return;
 	if (_pendingCount) {
@@ -197,7 +185,6 @@ $private.waitFor = function waitFor(callback) {
 	}
 };
 
-//handles/flushes loaded source
 $private.handleSource = function handleSource(source) {
 	if (source.content) {
 		try {
@@ -222,11 +209,10 @@ $private._getClass_      = "$public.getClass = function getClass() { return ${0}
 $private._getSuperClass_ = "$static.getSuperClass = function getSuperClass() { return ${0}; };\n";
 $private._getContext_    = "$static.getContext = function getContext() { return $context; };\n";
 $private._getName_       = "$static.getName = function getName() { return \"${0}\"; };\n";
-$private._constructor_   = "$private.${0} = function ${0}() { $context.initObject.call(this, ${0}, arguments); };\n";
+$private._constructor_   = "$private.${0} = function ${0}() { ${0}.initObject(this, arguments); };\n";
 $private._initObject_    = "$private.initObject = function initObject() { initModel.call(this, $model, arguments); };\n";
 $private._memberRE_      = /^\/\/@(\S+)\s+(function|var)\s+([A-Za-z0-9_$]+)/gm;
 $private._classFooter_   = "\n//@ sourceURL=${0}\n";
-//parses/compiles source setting
 $private.parseSource = function parseSource(source) {
 	parseModel(source);
 	source.scope.$context = source.context;
@@ -253,7 +239,6 @@ $private.parseSource = function parseSource(source) {
 
 $private._classHeaderRE_ = /^\s*\/\*\*([\S\s]*?)\*\//;
 $private._classSettingRE_ = /@(setting|source|content)[\t ]+([\S\t ]*\S+)[\t ]*$|@([a-zA-Z]+)[\t ]+(\S+)[\t ]*([\S\t ]+)?[\t ]*$/gm;
-//parses source header to collect source settings
 $private.parseModel = function parseModel(source) {
 	source.scope = { $public:{}, $protected:{}, $static:{}, $imports:{}, $requires:{}, $setting:{} };
 	source.scope.$setting.module = source.module;
@@ -324,7 +309,7 @@ $private.parseModel = function parseModel(source) {
 	source.contentType = source.contentType || "class";
 	source.baseName = parseBaseName(source.name);
 	if (!source.superBase && source.name != $imports.Object) {
-		var setting = findContentSetting.call(source.context, source.contentType);
+		var setting = findContentSetting(source.contentType, source.context);
 		var superName = setting && setting["extends"] || $imports.Object;
 		source.superBase = parseBaseName(superName);
 		source.scope.$imports[source.superBase] = superName;
@@ -361,13 +346,8 @@ $static.parseBaseName = function parseBaseName(name, value) {
 	return (!parts[1] || parts[1] == $("classType")) ? parts[0] : parts.join("_");
 };
 
-$static.parsePackageName = function parsePackageName(name) {
-	return splitPath(name, -1, -1, ".");
-};
-
 $private._settingRE_ = /([^=\t ]+)=(.+)/;
 $private._settingsRE_ = /([^=\t ]+)=(\S+)/g;
-//parses source setting
 $private.parseSetting = function parseSetting(setting, match) {
 	var input = match[0], settingTag = match[1], content = match[2], found;
 	switch (settingTag) {
@@ -395,14 +375,12 @@ $private._members_ = {
 	"var": "$${0}.${2}",
 	"function": "$${0}.${2} = ${1} ${2}"
 };
-//formats class members
 $private.formatMember = function formatMember(match, memberTag, memberType, name) {
 	return (memberType in _members_) ? formatText(_members_[memberType], memberTag, memberType, name) : match;
 };
 
 $private._NULL_ = {};
 $private._formatRE_ = /\$\{([^\s\}:]+)(:[^\}]*)?\}/g;
-//replaces macro references in text
 $static.formatText = function formatText() {
 	var args = arguments;
 	var text = Array.prototype.shift.call(arguments);
@@ -422,7 +400,6 @@ $static.formatText = function formatText() {
 	});
 };
 
-//flushes after all dependencies are loaded
 $private.flush = function flush() {
 	for (var i = 0; i < _pendingFlush.length; i++) {
 		if (_pendingCount) return;
@@ -603,7 +580,6 @@ $private.flush_initResource = function flush_initResource(source) {
 	}
 };
 
-//copies source members to target
 $private.initMember = function initMember(target, source, override) {
 	if (source && target) {
 		for (var name in source) {
@@ -625,7 +601,6 @@ $private.initMember = function initMember(target, source, override) {
 	return target;
 };
 
-//normalizes setting values
 $private.initSetting = function initSetting(setting, clazz) {
 	if (setting) {
 		for (var name in setting) {

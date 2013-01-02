@@ -11,14 +11,15 @@
 
 //@private
 function initClass() {
-	$static.$ = Context.$;
-	$static.extendsClass = Context.extendsClass;
+	$static.$ = Object.$ = Context.$;
+	$static.initObject = Object.initObject = Context.initObject;
+	$static.extendsClass = Object.extendsClass = Context.extendsClass;
 }
 
 //@static
 function newObject() {
 	var object = new this(this);
-	$context.initObject.call(object, this, arguments);
+	initObject.call(this, object, arguments);
 	return object;
 }
 
