@@ -1,5 +1,5 @@
 /**
- * @context ModelLoader
+ * @class ModelLoader
  * @imports System
  * 
  * @copyright Jay Tang 2012
@@ -12,6 +12,7 @@
 //@private
 function initClass() {
 	this._callbacks = [];
+	this._busyCount = 0;
 	this._pendingCount = 0;
 	this._pendingFlush = [];
 	this._holder = {};
@@ -37,7 +38,7 @@ function load(key, callback) {
 	call.call(this, source, callback);
 }
 
-//@static
+//@protected
 function call(source, callback) {
 	try {
 		_pendingCount++;
@@ -79,7 +80,8 @@ function initSource(key) {
 	source.type = this.$("model.type");
 	source.base = this.$("model.base");
 	source.module = this.$("model.module");
-	source.path = this.getName().split(".").join("/").concat(".", source.type, "#", source.key);
+	source.path = this.getName().split(".").join("/").concat(".", source.type);
+	if (source.base.indexOf("file") != 0) source.path = source.path.concat("#", source.key);
 	return source;
 }
 
@@ -145,6 +147,7 @@ function flush() {
 		if (_pendingCount) return;
 		flush_initModel(_pendingFlush[i]);
 	}
+	if (_busyCount) return;
 	while (_callbacks.length) {
 		if (_pendingCount) return;
 		_callbacks.shift()();
@@ -161,10 +164,12 @@ function flush() {
 function flush_parseModel(source) {
 	if (typeof source.flushStatus == "undefined") {
 		source.flushStatus = "busy 0";
+		_busyCount++;
 		source.object = new source.$class(source.$class);
 		if (source.$class.parseModel) {
 			source.$class.parseModel.call(source.object, source.content);
 		}
+		_busyCount--;
 		source.flushStatus = 0;
 	}
 }
@@ -173,9 +178,11 @@ function flush_parseModel(source) {
 function flush_initModel(source) {
 	if (source.flushStatus == 0) {
 		source.flushStatus = "busy 1";
+		_busyCount++;
 		if (source.$class.initModel) {
 			source.$class.initModel.call(source.object, source.content);
 		}
+		_busyCount--;
 		source.flushStatus = 1;
 	}
 }
