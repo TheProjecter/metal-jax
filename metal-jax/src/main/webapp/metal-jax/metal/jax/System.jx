@@ -130,7 +130,7 @@ function requestSameDomain(source, callback) {
 function loadCrossDomain(source, callback) {
 	var caller = this;
 	var request = requestCrossDomain(source, function(response) {
-		if (!request || !request.node) return;
+		if (arguments.length == 0) return;
 		clearRequest(request);
 		if (typeof response != "object") {
 			source.error = "bad response";
@@ -146,6 +146,7 @@ function loadCrossDomain(source, callback) {
 		}
 		callback.call(caller, source);
 	});
+	System.docHead.appendChild(request.node);
 }
 
 //@private
@@ -155,7 +156,6 @@ function requestCrossDomain(source, callback) {
 	System.window[$("bootModule")][request.url] = callback;
 	request.node = System.document.createElement("script");
 	request.node.src = requestURL(source);
-	System.docHead.appendChild(request.node);
 	request.timeout = setInterval(callback, parseInt($("crossTimeout")));
 	return request;
 }
