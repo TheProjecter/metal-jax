@@ -1,22 +1,34 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-xmlns="http://java.sun.com/xml/ns/javaee"
+<web-app xmlns="http://java.sun.com/xml/ns/javaee"
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
-xsi:schemaLocation="http://java.sun.com/xml/ns/javaee
-http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5">
+xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+version="2.5">
 	<display-name>metal-jax</display-name>
 	<servlet>
-		<servlet-name>sourceServlet</servlet-name>
-		<servlet-class>metal.jax.SourceServlet</servlet-class>
-		<init-param>
-			<param-name>metal-jax-version</param-name>
-			<param-value>metal-jax</param-value>
-		</init-param>
+		<servlet-name>jax.crossDomainRequestHandler</servlet-name>
+		<servlet-class>org.springframework.web.context.support.HttpRequestHandlerServlet</servlet-class>
 	</servlet>
 	<servlet-mapping>
-		<servlet-name>sourceServlet</servlet-name>
+		<servlet-name>jax.crossDomainRequestHandler</servlet-name>
 		<url-pattern>/xd/*</url-pattern>
 	</servlet-mapping>
+	<servlet>
+		<servlet-name>jax.serviceRequestHandler</servlet-name>
+		<servlet-class>org.springframework.web.context.support.HttpRequestHandlerServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>jax.serviceRequestHandler</servlet-name>
+		<url-pattern>/service/*</url-pattern>
+		<url-pattern>/model/*</url-pattern>
+	</servlet-mapping>
+	<listener>
+		<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+	</listener>
+	<context-param>
+		<param-name>contextConfigLocation</param-name>
+		<param-value>classpath:conf/spring/config.xml</param-value>
+	</context-param>
 	<mime-mapping>
 		<extension>jx</extension>
 		<mime-type>text/plain</mime-type>
