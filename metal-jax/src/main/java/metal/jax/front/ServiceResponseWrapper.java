@@ -5,22 +5,22 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package metal.jax.web.handler;
+package metal.jax.front;
 
 import java.io.IOException;
 import java.io.PrintWriter;
 
 import javax.servlet.http.HttpServletResponse;
 
-import org.springframework.remoting.support.RemoteInvocationResult;
-
 public class ServiceResponseWrapper extends BaseResponseWrapper {
 	
-	private RemoteInvocationResult result;
+	private Object value;
+	private Throwable error;
 	
-	public ServiceResponseWrapper(HttpServletResponse response, RemoteInvocationResult result) {
+	public ServiceResponseWrapper(HttpServletResponse response, Object value, Throwable error) {
 		super(response);
-		this.result = result;
+		this.value = value;
+		this.error = error;
 	}
 	
 	@Override

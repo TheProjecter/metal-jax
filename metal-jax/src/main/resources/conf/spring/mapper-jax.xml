@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+
+	<bean id="jax.modelMap" class="metal.jax.config.MapUnion">
+		<property name="sourceMap">
+			<map>
+				<entry key="/demo"><ref bean="demo.modelMap"/></entry>
+			</map>
+		</property>
+	</bean>
+	
+	<bean id="jax.marshaller" class="org.springframework.oxm.jaxb.Jaxb2Marshaller">
+		<!--property name="schema" value="classpath:org/springframework/oxm/schema.xsd"/-->
+		<property name="classesToBeBound">
+			<list>
+				<value>demo.model.HelloModel</value>
+			</list>
+		</property>
+	</bean>
+	
+</beans>

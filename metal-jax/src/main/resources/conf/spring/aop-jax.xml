@@ -5,9 +5,9 @@ xmlns:aop="http://www.springframework.org/schema/aop"
 xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
 http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.0.xsd">
 
-	<bean id="jax.InvocationAdvice" class="metal.jax.aop.InvocationAdvice"/>
+	<bean id="jax.invocationAdvice" class="metal.jax.aop.InvocationAdvice"/>
 	<aop:config>
-		<aop:aspect id="jax.serviceInvocation" ref="jax.InvocationAdvice">
+		<aop:aspect id="jax.serviceInvocation" ref="jax.invocationAdvice">
 			<aop:pointcut id="serviceExecution" expression="execution(public * metal.jax.service..*.*(..))"/>
 			<aop:around pointcut-ref="serviceExecution" method="invoke"/>
 		</aop:aspect>

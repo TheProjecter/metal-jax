@@ -3,6 +3,6 @@
 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
 
-    <bean id="jax.ModelService" name="/jax/Model" class="metal.jax.service.ModelImpl"/>
+    <bean id="jax.modelService" name="/jax/model" class="metal.jax.service.ModelImpl"/>
 	
 </beans>

@@ -9,11 +9,25 @@ package demo.model;
 
 import java.io.Serializable;
 
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+
+@XmlRootElement(name = "coffee")
 @SuppressWarnings("serial")
 public class HelloModel implements Serializable {
 	
+	@NotNull
+	@Size(min = 2, max = 16)
 	private String name1;
+
+	@NotNull
+	@Size(min = 2, max = 16)
 	private String name2;
+
+	@NotNull
+	@Size(min = 2, max = 16)
 	private String name3;
 	
 	public String getName1() {

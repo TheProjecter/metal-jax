@@ -5,7 +5,7 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package metal.jax.web.handler;
+package metal.jax.front;
 
 import java.io.IOException;
 
