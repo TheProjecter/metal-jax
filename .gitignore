@@ -1,3 +1,4 @@
+metal-core/target/
+metal-jax/target/
 metal-jax/src/main/webapp/WEB-INF/classes/
 metal-jax/src/main/webapp/WEB-INF/lib/
-metal-jax/target/

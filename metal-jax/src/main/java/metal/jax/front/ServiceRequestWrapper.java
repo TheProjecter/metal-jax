@@ -25,6 +25,7 @@ public class ServiceRequestWrapper extends BaseRequestWrapper {
 	private String baseName;
 	private String extName;
 	private boolean methodAsBaseName;
+	private Object[] values;
 	
 	public ServiceRequestWrapper(HttpServletRequest request) {
 		super(request);
@@ -81,14 +82,18 @@ public class ServiceRequestWrapper extends BaseRequestWrapper {
 		if (value == null) value = super.getPathInfo();
 		return value;
 	}
-
+	
+	public void setValues(Object[] values) {
+		this.values = values;
+	}
+	
 	public Object[] getValues() {
 //		Document doc = parseInput(request.getInputStream());
 //		RemoteInvocation i = new ServiceInvocation();
 //		i.setMethodName(baseName);
 //		i.setParameterTypes(new Class[]{HelloModel.class});
 //		i.setArguments(new Object[]{new HelloModel()});
-		return null;
+		return values;
 	}
 
 	protected Document parseInput(InputStream input) throws ServletException, IOException {

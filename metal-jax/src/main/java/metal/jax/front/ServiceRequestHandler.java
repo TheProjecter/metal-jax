@@ -47,29 +47,29 @@ public class ServiceRequestHandler extends HttpInvokerServiceExporter implements
 		new ServiceResponseWrapper(response, result.getValue(), result.getException()).flushBuffer();
 	}
 
-	protected ServiceResolver getServiceResolver(ServiceRequestWrapper request) throws ServiceRequestException {
+	protected ServiceResolver getServiceResolver(ServiceRequestWrapper request) {
 		String key = request.getServletPath();
 		ServiceResolver resolver = serviceMap != null ? serviceMap.get(key) : null;
 		if (resolver == null) {
-			throw new ServiceRequestException("Unknown service type: " + key);
+			throw new FrontException("Unknown service type: " + key);
 		}
 		return resolver;
 	}
 	
-	protected Object resolveService(ServiceResolver resolver, ServiceRequestWrapper request) throws ServiceRequestException {
+	protected Object resolveService(ServiceResolver resolver, ServiceRequestWrapper request) {
 		String key = resolver.resolveServicePath(request);
 		try {
 			return context.getBean(key);
 		} catch (Exception e) {
-			throw new ServiceRequestException("No service found for path: " + key, e);
+			throw new FrontException("No service found for path: " + key, e);
 		}
 	}
 	
-	protected RemoteInvocation resolveInvocation(ServiceResolver resolver, ServiceRequestWrapper request) throws IOException {
-		String methodName = resolver.resolveServiceMethod(request);
-		Class<?>[] parameterTypes = resolver.parseParameters(request);
-		Object[] arguments = request.getValues();
-		return new RemoteInvocation(methodName, parameterTypes, arguments);
+	protected RemoteInvocation resolveInvocation(ServiceResolver resolver, ServiceRequestWrapper requestWrapper) throws IOException {
+		Request request = resolver.parseRequest(requestWrapper);
+		String methodName = request.getMethod();
+		methodName = (methodName != null && methodName.length() != 0) ? methodName : resolver.resolveServiceMethod(requestWrapper);
+		return new RemoteInvocation(methodName, request.getParameterTypes(), request.getParameterValues());
 	}
 	
 }

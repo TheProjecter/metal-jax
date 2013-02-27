@@ -1,0 +1,64 @@
+/**
+ * @face Form
+ * @imports metal.jax.System
+ */
+
+//@private
+var $count = 0;
+
+//@static
+function initNode(node) {
+	this.nodes = this.nodes || {};
+	this.inputs = this.inputs || {};
+	switch (node.nodeName.toLowerCase()) {
+	case "form":
+		node.name = System.parseBaseName(this.getClass().getName()).concat($count++);
+		this.nodes["form"] = node;
+		break;
+	case "fieldset":
+		this.nodes["fieldset"] = node;
+		break;
+	case "legend":
+		this.bind(toggleForm, node, "click");
+		break;
+	case "label":
+		node.htmlFor = this.nodes["form"].name.concat(".", node.htmlFor);
+		break;
+	case "input":
+	case "select":
+	case "textarea":
+		this.inputs[node.name] = node;
+	case "button":
+		node.id = this.nodes["form"].name.concat(".", node.name);
+		this.nodes[node.name] = node;
+		break;
+	default:
+		return $super.$static.initNode.call(this, node);
+	}
+}
+
+//@public
+function get(name) {
+	if (this.inputs[name]) {
+		return this.inputs[name].value;
+	}
+	return $super.get.apply(this, arguments);
+}
+
+//@public
+function set(name, value) {
+	if (this.inputs[name]) {
+		return this.inputs[name].value = value;
+	}
+	return $super.set.apply(this, arguments);
+}
+
+//@private
+function toggleForm() {
+	var fieldset = this.nodes["fieldset"];
+	if (fieldset.className == "expanded") {
+		fieldset.className = "collapsed";
+	} else {
+		fieldset.className = "expanded";
+	}
+}

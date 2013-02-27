@@ -7,36 +7,33 @@
  */
 package metal.jax.front;
 
+import java.io.IOException;
 import java.util.Map;
 
-import org.springframework.oxm.jaxb.Jaxb2Marshaller;
+import metal.jax.mapper.Mapper;
 
 public class ServiceResolver {
 
 	private String servicePath;
 	private Map<String,String> methodMap;
 	private Map<String,String> modelMap;
-	private Jaxb2Marshaller marshaller;
+	private Mapper mapper;
 	
 	public void setServicePath(String servicePath) {
 		this.servicePath = servicePath;
 	}
 
-
 	public void setMethodMap(Map<String, String> methodMap) {
 		this.methodMap = methodMap;
 	}
-
 
 	public void setModelMap(Map<String, String> modelMap) {
 		this.modelMap = modelMap;
 	}
 
-
-	public void setMarshaller(Jaxb2Marshaller marshaller) {
-		this.marshaller = marshaller;
+	public void setMapper(Mapper mapper) {
+		this.mapper = mapper;
 	}
-
 
 	public String resolveServicePath(ServiceRequestWrapper request) {
 		if (servicePath != null) return servicePath;
@@ -51,8 +48,8 @@ public class ServiceResolver {
 		return method;
 	}
 	
-	public Class<?>[] parseParameters(ServiceRequestWrapper request) {
-		return null;
+	public Request parseRequest(ServiceRequestWrapper request) throws IOException {
+		return mapper.unmarshal(Request.class, request.getInputStream());
 	}
 	
 }

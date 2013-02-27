@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+
+	<bean id="metal-jax.xmlMarshaller" class="metal.jax.mapper.XmlMarshaller">
+		<property name="modelMap" ref="metal-jax.modelMap"/>
+		<property name="validationEventHandler">
+			<bean class="metal.jax.mapper.PropertyAdapter.EventHandler"/>
+		</property>
+		<property name="adapters">
+			<list>
+				<bean class="metal.jax.mapper.PropertyAdapter">
+					<property name="marshaller" ref="metal-jax.xmlMarshaller"/>
+				</bean>
+			</list>
+		</property>
+	</bean>
+	
+	<bean id="metal-jax.xmlMapper" class="metal.jax.mapper.XmlMapper">
+		<property name="marshaller" ref="metal-jax.xmlMarshaller"/>
+		<property name="unmarshaller" ref="metal-jax.xmlMarshaller"/>
+	</bean>
+	
+</beans>

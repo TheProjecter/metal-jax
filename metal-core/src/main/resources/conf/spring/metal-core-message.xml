@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+
+	<bean id="metal-core.validator" class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean"/>
+	
+	<bean id="metal-core.messageMapper" class="metal.core.message.MessageMapper">
+		<property name="messageSource">
+			<bean class="org.springframework.context.support.ResourceBundleMessageSource"/>
+		</property>
+		<property name="resourceMap">
+			<map>
+				<entry key="message" value="classpath*:message/*.properties"/>
+			</map>
+		</property>
+	</bean>
+	
+	<bean id="metal-core.logger" class="metal.core.message.Logger">
+		<property name="errorEnabled" value="true"/>
+		<property name="warnEnabled" value="true"/>
+		<property name="infoEnabled" value="true"/>
+		<property name="debugEnabled" value="false"/>
+		<property name="traceEnabled" value="false"/>
+	</bean>
+	
+</beans>

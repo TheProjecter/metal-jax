@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+
+	<bean id="metal-jax.crossDomainRequestHandler" class="metal.jax.front.CrossDomainRequestHandler">
+		<property name="version" value="metal-jax"/>
+	</bean>
+	
+	<bean id="metal-jax.serviceRequestHandler" class="metal.jax.front.ServiceRequestHandler">
+		<property name="serviceMap">
+			<map>
+				<entry key="/service"><bean class="metal.jax.front.ServiceResolver"/></entry>
+				<entry key="/model">
+					<bean class="metal.jax.front.ServiceResolver">
+						<property name="servicePath" value="/metal-core/model"/>
+						<property name="mapper" ref="metal-jax.xmlMapper"/>
+						<property name="modelMap" ref="metal-jax.modelMap"/>
+						<property name="methodMap">
+							<map>
+								<entry key="GET" value="load"/>
+							</map>
+						</property>
+					</bean>
+				</entry>
+			</map>
+		</property>
+    </bean>
+	
+</beans>

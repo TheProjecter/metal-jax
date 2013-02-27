@@ -1,0 +1,11 @@
+/**
+ * @model HelloModel
+ */
+
+//@static
+function parseModel(model) {
+}
+
+//@static
+function initModel(model) {
+}

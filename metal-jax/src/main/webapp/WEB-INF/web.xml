@@ -6,19 +6,19 @@ xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns
 version="2.5">
 	<display-name>metal-jax</display-name>
 	<servlet>
-		<servlet-name>jax.crossDomainRequestHandler</servlet-name>
+		<servlet-name>metal-jax.crossDomainRequestHandler</servlet-name>
 		<servlet-class>org.springframework.web.context.support.HttpRequestHandlerServlet</servlet-class>
 	</servlet>
 	<servlet-mapping>
-		<servlet-name>jax.crossDomainRequestHandler</servlet-name>
+		<servlet-name>metal-jax.crossDomainRequestHandler</servlet-name>
 		<url-pattern>/xd/*</url-pattern>
 	</servlet-mapping>
 	<servlet>
-		<servlet-name>jax.serviceRequestHandler</servlet-name>
+		<servlet-name>metal-jax.serviceRequestHandler</servlet-name>
 		<servlet-class>org.springframework.web.context.support.HttpRequestHandlerServlet</servlet-class>
 	</servlet>
 	<servlet-mapping>
-		<servlet-name>jax.serviceRequestHandler</servlet-name>
+		<servlet-name>metal-jax.serviceRequestHandler</servlet-name>
 		<url-pattern>/service/*</url-pattern>
 		<url-pattern>/model/*</url-pattern>
 	</servlet-mapping>
@@ -27,7 +27,7 @@ version="2.5">
 	</listener>
 	<context-param>
 		<param-name>contextConfigLocation</param-name>
-		<param-value>classpath:conf/spring/config-jax.xml</param-value>
+		<param-value>classpath*:conf/spring/*.xml</param-value>
 	</context-param>
 	<mime-mapping>
 		<extension>jx</extension>
