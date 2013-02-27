@@ -12,6 +12,7 @@ import static org.junit.Assert.assertEquals;
 import org.apache.commons.lang.StringUtils;
 import org.junit.Assert;
 
+import java.io.IOException;
 import java.io.InputStream;
 
 import org.junit.runner.RunWith;
@@ -22,8 +23,10 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 @ContextConfiguration(locations="classpath*:conf/spring/*.xml")
 public class TestBase {
 
-	protected InputStream source(String name) {
-		return this.getClass().getResourceAsStream(name);
+	protected InputStream source(String name) throws IOException {
+		InputStream in = this.getClass().getResourceAsStream(name);
+		if (in != null) return in;
+		throw new IOException("not found: " + name);
 	}
 	
 	protected static void fail(Throwable error) {
