@@ -15,7 +15,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
-import org.apache.catalina.Globals;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
@@ -71,14 +70,14 @@ public class ServiceRequestWrapper extends BaseRequestWrapper {
 
 	@Override
 	public String getServletPath() {
-		String value = (String)getAttribute(Globals.INCLUDE_SERVLET_PATH_ATTR);
+		String value = (String)getAttribute(INCLUDE_SERVLET_PATH_ATTR);
 		if (value == null) value = super.getServletPath();
 		return value;
 	}
 
 	@Override
 	public String getPathInfo() {
-		String value = (String)getAttribute(Globals.INCLUDE_PATH_INFO_ATTR);
+		String value = (String)getAttribute(INCLUDE_PATH_INFO_ATTR);
 		if (value == null) value = super.getPathInfo();
 		return value;
 	}
