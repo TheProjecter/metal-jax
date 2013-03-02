@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project-modules id="moduleCoreId" project-version="1.5.0">
+    <wb-module deploy-name="metal-jax-web">
+        <wb-resource deploy-path="/" source-path="/src/main/webapp" tag="defaultRootSource"/>
+        <dependent-module archiveName="metal-core.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/metal-core/metal-core">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="metal-jax.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/metal-jax/metal-jax">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <property name="context-root" value="metal-jax"/>
+        <property name="java-output-path" value="/metal-jax-web/target/classes"/>
+    </wb-module>
+</project-modules>

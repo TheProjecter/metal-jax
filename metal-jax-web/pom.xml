@@ -2,8 +2,8 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<artifactId>metal-jax</artifactId>
-	<packaging>jar</packaging>
+	<artifactId>metal-jax-web</artifactId>
+	<packaging>war</packaging>
 
 	<parent>
 		<groupId>metal.jax</groupId>
@@ -23,6 +23,11 @@
 			<version>1.0.0</version>
 			<type>test-jar</type>
 			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>metal.jax</groupId>
+			<artifactId>metal-jax</artifactId>
+			<version>1.0.0</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
