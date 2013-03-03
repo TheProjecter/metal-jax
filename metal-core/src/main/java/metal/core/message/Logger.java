@@ -19,6 +19,7 @@ public class Logger {
 	private boolean infoEnabled = true;
 	private boolean debugEnabled = false;
 	private boolean traceEnabled = false;
+	private boolean stackTraceEnabled = false;
 
 	public void setDebugEnabled(boolean debugEnabled) {
 		this.debugEnabled = debugEnabled;
@@ -30,6 +31,10 @@ public class Logger {
 
 	public void setInfoEnabled(boolean infoEnabled) {
 		this.infoEnabled = infoEnabled;
+	}
+
+	public void setStackTraceEnabled(boolean stackTraceEnabled) {
+		this.stackTraceEnabled = stackTraceEnabled;
 	}
 
 	public void setTraceEnabled(boolean traceEnabled) {
@@ -48,7 +53,11 @@ public class Logger {
 		if (errorEnabled) {
 			org.slf4j.Logger logger = getLogger(target);
 			if (logger.isErrorEnabled()) {
-				logger.error("exception while calling " + method, ex);
+				if (stackTraceEnabled) {
+					logger.error("exception while calling " + method, ex);
+				} else {
+					logger.error("exception while calling " + method, ex.getMessage());
+				}
 			}
 		}
 	}

@@ -22,6 +22,7 @@ xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.sprin
 		<property name="infoEnabled" value="true"/>
 		<property name="debugEnabled" value="false"/>
 		<property name="traceEnabled" value="false"/>
+		<property name="stackTraceEnabled" value="false"/>
 	</bean>
 	
 </beans>

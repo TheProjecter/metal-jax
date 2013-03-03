@@ -9,6 +9,7 @@ package metal.core.aop;
 
 import javax.annotation.Resource;
 
+import metal.core.message.Logger;
 import metal.core.service.ServiceException;
 import metal.core.service.TestService;
 import metal.core.test.TestBase;
@@ -20,9 +21,13 @@ public class ExceptionAdviceTest extends TestBase {
 	@Resource(name="test-core.testService")
 	private TestService service;
 	
+	@Resource(name="metal-core.logger")
+	private Logger logger;
+	
 	@Test
 	public void testServiceException() {
 		try {
+			logger.logInfo(this, "testServiceException", "test ERROR with service exception");
 			service.throwsServiceException();
 		} catch (ServiceException e) {
 			// success
@@ -34,6 +39,7 @@ public class ExceptionAdviceTest extends TestBase {
 	@Test
 	public void testUnhandledException() {
 		try {
+			logger.logInfo(this, "testUnhandledException", "test ERROR with runtime exception");
 			service.throwsRuntimeException();
 		} catch (AopException e) {
 			// success
