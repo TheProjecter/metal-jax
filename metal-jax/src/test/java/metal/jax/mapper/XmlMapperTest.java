@@ -29,7 +29,7 @@ public class XmlMapperTest extends TestBase {
 	public void testMapper() {
 		TestModel model = null;
 		try {
-			model = mapper.unmarshal(TestModel.class, source("testModel.xml"));
+			model = mapper.read(TestModel.class, source("testModel.xml"));
 		} catch (Exception e) {
 			fail(e);
 		}
@@ -45,7 +45,7 @@ public class XmlMapperTest extends TestBase {
 		
 		try {
 			ByteArrayOutputStream out = new ByteArrayOutputStream();
-			mapper.marshal(model, out);
+			mapper.write(model, out);
 			String expected = IOUtils.toString(source("testModel.xml"));
 			String actual = new String(out.toByteArray());
 			assertEqualsIgnoreWhitespace(expected, actual);

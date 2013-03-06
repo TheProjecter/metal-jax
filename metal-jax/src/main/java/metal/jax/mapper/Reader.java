@@ -7,6 +7,10 @@
  */
 package metal.jax.mapper;
 
-public interface Mapper extends Reader, Writer {
-	// empty for now
+import java.io.InputStream;
+
+public interface Reader {
+	
+	<T> T read(Class<T> type, InputStream input);
+	
 }

@@ -36,7 +36,7 @@ public class XmlMapper implements Mapper {
 		this.unmarshaller = unmarshaller;
 	}
 
-	public void marshal(Object object, OutputStream output) {
+	public void write(Object object, OutputStream output) {
 		if (marshaller.supports(object.getClass()) || parent == null) {
 			try {
 				marshaller.marshal(object, new StreamResult(output));
@@ -44,12 +44,12 @@ public class XmlMapper implements Mapper {
 				throw new MapperException("UnexpectedException", ex);
 			}
 		} else {
-			parent.marshal(object, output);
+			parent.write(object, output);
 		}
 	}
 	
 	@SuppressWarnings("unchecked")
-	public <T> T unmarshal(Class<T> type, InputStream input) {
+	public <T> T read(Class<T> type, InputStream input) {
 		Object object = null;
 		try {
 			object = unmarshaller.unmarshal(new StreamSource(input));

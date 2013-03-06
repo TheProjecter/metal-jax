@@ -5,9 +5,12 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package metal.jax.mapper;
+package metal.jax.model;
 
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+
+import metal.jax.mapper.PropertyAdapter;
+import metal.jax.mapper.PropertyType;
 
 @XmlJavaTypeAdapter(PropertyAdapter.class)
 public class Property {
@@ -32,8 +35,16 @@ public class Property {
 		return type;
 	}
 
+	public void setType(String type) {
+		this.type = null;
+	}
+
 	public Object getValue() {
 		return value;
+	}
+
+	public void setValue(Object value) {
+		this.value = value;
 	}
 
 }

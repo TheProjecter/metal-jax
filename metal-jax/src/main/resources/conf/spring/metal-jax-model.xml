@@ -6,7 +6,7 @@ xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.sprin
 http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.0.xsd">
 	
 	<util:map id="metal-jax.modelMap">
-		<entry key="/metal-jax/property" value="metal.jax.mapper.Property"/>
+		<entry key="/metal-jax/property" value="metal.jax.model.Property"/>
 	</util:map>
 	
 </beans>

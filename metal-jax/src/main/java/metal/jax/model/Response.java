@@ -5,28 +5,26 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package metal.jax.front;
+package metal.jax.model;
 
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
-import metal.jax.mapper.Model;
-
 @XmlRootElement
-@XmlType(propOrder={"method", "properties"})
-public class Request extends Model {
+@XmlType(propOrder={"status", "properties"})
+public class Response extends Model {
 	
-	private String method;
+	private String status;
 	
-	public String getMethod() {
-		return method;
+	public String getStatus() {
+		return status;
 	}
 
-	public void setMethod(String method) {
-		this.method = method;
+	public void setStatus(String status) {
+		this.status = status;
 	}
 	
-	public Class<?>[] getParameterTypes() {
+	public Class<?>[] getResultTypes() {
 		Class<?>[] types = new Class[properties.length];
 		for (int i = 0; i < properties.length; i++) {
 			types[i] = properties[i].getType();
@@ -34,7 +32,7 @@ public class Request extends Model {
 		return types;
 	}
 	
-	public Object[] getParameterValues() {
+	public Object[] getResultValues() {
 		Object[] values = new Object[properties.length];
 		for (int i = 0; i < properties.length; i++) {
 			values[i] = properties[i].getValue();

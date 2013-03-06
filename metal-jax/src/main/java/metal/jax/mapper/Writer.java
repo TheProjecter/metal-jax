@@ -7,14 +7,10 @@
  */
 package metal.jax.mapper;
 
-import java.util.Map;
+import java.io.OutputStream;
 
-import org.springframework.http.converter.json.MappingJacksonHttpMessageConverter;
-
-public class JsonMarshaller extends MappingJacksonHttpMessageConverter {
+public interface Writer {
 	
-	public void setModelMap(Map<String,Class<?>> modelMap) {
-//		super.setClassesToBeBound(modelMap.values().toArray(new Class<?>[0]));
-	}
+	void write(Object object, OutputStream output);
 	
 }

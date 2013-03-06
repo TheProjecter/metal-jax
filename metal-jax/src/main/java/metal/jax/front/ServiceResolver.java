@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.util.Map;
 
 import metal.jax.mapper.Mapper;
+import metal.jax.model.Request;
 
 public class ServiceResolver {
 
@@ -49,7 +50,7 @@ public class ServiceResolver {
 	}
 	
 	public Request parseRequest(ServiceRequestWrapper request) throws IOException {
-		return mapper.unmarshal(Request.class, request.getInputStream());
+		return mapper.read(Request.class, request.getInputStream());
 	}
 	
 }

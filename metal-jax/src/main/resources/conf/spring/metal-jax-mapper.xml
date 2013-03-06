@@ -22,4 +22,7 @@ xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.sprin
 		<property name="unmarshaller" ref="metal-jax.xmlMarshaller"/>
 	</bean>
 	
+	<bean id="metal-jax.jsonMapper" class="metal.jax.mapper.JsonMapper">
+	</bean>
+
 </beans>

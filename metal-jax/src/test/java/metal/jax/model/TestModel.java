@@ -10,9 +10,6 @@ package metal.jax.model;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
-import metal.jax.mapper.Model;
-import metal.jax.mapper.Property;
-
 @XmlRootElement(name = "model")
 @XmlType(propOrder={"property1", "property2", "properties"})
 public class TestModel extends Model {
@@ -40,4 +37,8 @@ public class TestModel extends Model {
 		return properties;
 	}
 	
+	public void setProperties(Property[] properties) {
+		this.properties = properties;
+	}
+
 }
