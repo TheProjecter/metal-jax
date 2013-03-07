@@ -73,10 +73,10 @@ public class JsonMapperTest extends TestBase {
 		assertNotNull(model);
 		assertTrue("property1".equals(model.getProperty1()));
 		assertTrue("property2".equals(model.getProperty2()));
-		assertNotNull(model.getProperties());
-		assertTrue(model.getProperties().length == 9);
-		assertEquals(4, model.getProperties()[0].getValue());
-		assertTrue(model.getProperties()[8].getValue() instanceof TestObject);
-		assertEquals("value1", ((TestObject)model.getProperties()[8].getValue()).getName1());
+		assertNotNull(model.getModelProperties());
+		assertTrue(model.getModelProperties().length == 9);
+		assertEquals(4, model.getModelProperties()[0].getValue());
+		assertTrue(model.getModelProperties()[8].getValue() instanceof TestObject);
+		assertEquals("value1", ((TestObject)model.getModelProperties()[8].getValue()).getName1());
 	}
 }

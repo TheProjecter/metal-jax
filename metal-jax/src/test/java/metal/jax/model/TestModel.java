@@ -7,11 +7,13 @@
  */
 package metal.jax.model;
 
+import javax.xml.bind.annotation.XmlAnyElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
 @XmlRootElement(name = "model")
-@XmlType(propOrder={"property1", "property2", "properties"})
+@XmlType(propOrder={"property1", "property2", "modelProperties"})
 public class TestModel extends Model {
 
 	private String property1;
@@ -33,11 +35,13 @@ public class TestModel extends Model {
 		this.property2 = property2;
 	}
 
-	public Property[] getProperties() {
+	@XmlAnyElement
+	@XmlElementWrapper
+	public Property[] getModelProperties() {
 		return properties;
 	}
 	
-	public void setProperties(Property[] properties) {
+	public void setModelProperties(Property[] properties) {
 		this.properties = properties;
 	}
 
