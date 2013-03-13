@@ -11,7 +11,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-public enum PropertyType {
+public enum ObjectType {
 	INT("int", Integer.class),
 	LONG("long", Long.class),
 	DOUBLE("double", Double.class),
@@ -20,22 +20,25 @@ public enum PropertyType {
 	DATE("date", Date.class),
 	LIST("list", List.class),
 	MAP("map", Map.class),
+	NULL("null", Object.class),
 	OBJECT("object", Object.class);
 	
 	public final String name;
 	public final Class<?> type;
-	private PropertyType(String name, Class<?> type) { this.name = name; this.type = type; }
-	private static final PropertyType[] values = PropertyType.values();
+	private ObjectType(String name, Class<?> type) { this.name = name; this.type = type; }
+	private static final ObjectType[] values = ObjectType.values();
 	
-	public static PropertyType typeOf(String name) {
-		for (PropertyType value : values) {
+	public static ObjectType typeOf(String name) {
+		for (ObjectType value : values) {
 			if (value.name.equals(name)) return value;
 		}
 		return OBJECT;
 	}
 	
-	public static PropertyType typeOf(Class<?> type) {
-		for (PropertyType value : values) {
+	public static ObjectType typeOf(Object object) {
+		if (object == null) return NULL;
+		Class<?> type = object.getClass();
+		for (ObjectType value : values) {
 			if (value.type == type || value.type.isAssignableFrom(type)) return value;
 		}
 		return OBJECT;

@@ -6,11 +6,11 @@ xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.sprin
 	<bean id="test-jax.xmlMarshaller" class="metal.jax.mapper.XmlMarshaller">
 		<property name="modelMap" ref="test-jax.modelMap"/>
 		<property name="validationEventHandler">
-			<bean class="metal.jax.mapper.PropertyAdapter.EventHandler"/>
+			<bean class="metal.jax.mapper.ObjectAdapter.EventHandler"/>
 		</property>
 		<property name="adapters">
 			<list>
-				<bean class="metal.jax.mapper.PropertyAdapter">
+				<bean class="metal.jax.mapper.ObjectAdapter">
 					<property name="marshaller" ref="test-jax.xmlMarshaller"/>
 				</bean>
 			</list>
@@ -24,8 +24,8 @@ xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.sprin
 	</bean>
 	
 	<bean id="test-jax.jsonMapper" class="metal.jax.mapper.DefaultMapper">
-		<property name="reader" ref="metal-jax.jsonMapper"/>
-		<property name="writer" ref="metal-jax.jsonMapper"/>
+		<property name="serializer" ref="metal-jax.jsonMapper"/>
+		<property name="deserializer" ref="metal-jax.jsonMapper"/>
 	</bean>
 
 </beans>

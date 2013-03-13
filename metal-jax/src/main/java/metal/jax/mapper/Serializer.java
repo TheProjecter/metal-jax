@@ -9,8 +9,10 @@ package metal.jax.mapper;
 
 import java.io.OutputStream;
 
-public interface Writer {
+public interface Serializer {
 	
-	void write(Object object, OutputStream output);
+	String serialize(Object object);
+
+	void serialize(Object object, OutputStream output);
 	
 }

@@ -10,36 +10,36 @@ package metal.jax.mapper;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-public class DefaultMapper implements Mapper {
+public class DefaultMapper extends BaseMapper implements Mapper {
 	
-	private Reader reader;
-	
-	private Writer writer;
+	private Serializer serializer;
 
-	public Reader getReader() {
-		return reader;
+	private Deserializer deserializer;
+
+	public Serializer getSerializer() {
+		return serializer;
 	}
 
-	public void setReader(Reader reader) {
-		this.reader = reader;
+	public void setSerializer(Serializer serializer) {
+		this.serializer = serializer;
 	}
 
-	public Writer getWriter() {
-		return writer;
+	public Deserializer getDeserializer() {
+		return deserializer;
 	}
 
-	public void setWriter(Writer writer) {
-		this.writer = writer;
+	public void setDeserializer(Deserializer deserializer) {
+		this.deserializer = deserializer;
 	}
 
 	@Override
-	public <T> T read(Class<T> type, InputStream input) {
-		return getReader().read(type, input);
+	public <T> T deserialize(Class<T> type, InputStream input) {
+		return getDeserializer().deserialize(type, input);
 	}
 	
 	@Override
-	public void write(Object object, OutputStream output) {
-		getWriter().write(object, output);
+	public void serialize(Object object, OutputStream output) {
+		getSerializer().serialize(object, output);
 	}
 
 }

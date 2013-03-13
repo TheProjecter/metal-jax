@@ -10,6 +10,8 @@ http://www.springframework.org/schema/util http://www.springframework.org/schema
 			<map>
 				<entry key="/test/testModel" value="metal.jax.model.TestModel"/>
 				<entry key="/test/testObject" value="metal.jax.model.TestObject"/>
+				<entry key="/test/baseObject" value="metal.jax.model.BaseObject"/>
+				<entry key="/test/genericObject" value="metal.jax.model.GenericObject"/>
 			</map>
 		</property>
 	</bean>

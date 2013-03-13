@@ -10,7 +10,7 @@ package metal.jax.model;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import metal.jax.mapper.PropertyAdapter;
-import metal.jax.mapper.PropertyType;
+import metal.jax.mapper.ObjectType;
 
 @XmlJavaTypeAdapter(PropertyAdapter.class)
 public class Property {
@@ -26,8 +26,8 @@ public class Property {
 		this.value = value;
 	}
 
-	public Property(PropertyType type, Object value) {
-		this.type = type != PropertyType.OBJECT ? type.type : value != null ? value.getClass() : null;
+	public Property(ObjectType type, Object value) {
+		this.type = type != ObjectType.OBJECT ? type.type : value != null ? value.getClass() : null;
 		this.value = value;
 	}
 

@@ -7,54 +7,49 @@
  */
 package metal.jax.model;
 
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
+import java.util.List;
+import java.util.Map;
+
 import javax.xml.bind.annotation.XmlRootElement;
 
-@XmlRootElement(name = "object")
-public class TestObject {
+@XmlRootElement
+public class TestObject extends BaseObject {
 
-	@NotNull
-	@Size(min = 6, max = 16)
-	private String name1;
+	private Object objectValue;
+	private Object[] arrayValue;
+	private List<?> listValue;
+	private Map<?, ?> mapValue;
 
-	@NotNull
-	@Size(min = 6, max = 16)
-	private String name2;
-
-	@NotNull
-	@Size(min = 6, max = 16)
-	private String name3;
-
-	public TestObject() {}
-	public TestObject(String name1, String name2, String name3) {
-		this.name1 = name1;
-		this.name2 = name2;
-		this.name3 = name3;
-	}
-	
-	public String getName1() {
-		return name1;
+	public Object getObjectValue() {
+		return objectValue;
 	}
 
-	public void setName1(String name1) {
-		this.name1 = name1;
+	public void setObjectValue(Object objectValue) {
+		this.objectValue = objectValue;
 	}
 
-	public String getName2() {
-		return name2;
+	public Object[] getArrayValue() {
+		return arrayValue;
 	}
 
-	public void setName2(String name2) {
-		this.name2 = name2;
+	public void setArrayValue(Object[] arrayValue) {
+		this.arrayValue = arrayValue;
 	}
 
-	public String getName3() {
-		return name3;
+	public List<?> getListValue() {
+		return listValue;
 	}
 
-	public void setName3(String name3) {
-		this.name3 = name3;
+	public void setListValue(List<?> listValue) {
+		this.listValue = listValue;
+	}
+
+	public Map<?, ?> getMapValue() {
+		return mapValue;
+	}
+
+	public void setMapValue(Map<?, ?> mapValue) {
+		this.mapValue = mapValue;
 	}
 
 }

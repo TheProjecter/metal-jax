@@ -7,6 +7,6 @@
  */
 package metal.jax.mapper;
 
-public interface Mapper extends Reader, Writer {
+public interface Mapper extends Serializer, Deserializer {
 	// empty for now
 }

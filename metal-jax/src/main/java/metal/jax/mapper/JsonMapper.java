@@ -11,17 +11,22 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 import org.codehaus.jackson.map.ObjectMapper;
+import org.codehaus.jackson.map.SerializationConfig.Feature;
+import org.codehaus.jackson.xc.JaxbAnnotationIntrospector;
 
-public class JsonMapper implements Mapper {
+public class JsonMapper extends BaseMapper implements Mapper {
 	
 	private ObjectMapper mapper = new ObjectMapper();
 	
 	public JsonMapper() {
-		mapper.getJsonFactory();
+		JaxbAnnotationIntrospector introspector = new JaxbAnnotationIntrospector();
+//		mapper.getSerializationConfig().enable(Feature.WRAP_ROOT_VALUE);
+//		mapper.getSerializationConfig().setAnnotationIntrospector(introspector);
+//		mapper.getDeserializationConfig().setAnnotationIntrospector(introspector);
 	}
 	
 	@Override
-	public <T> T read(Class<T> type, InputStream input) {
+	public <T> T deserialize(Class<T> type, InputStream input) {
 		try {
 			return mapper.readValue(input, type);
 		} catch (Exception ex) {
@@ -30,7 +35,7 @@ public class JsonMapper implements Mapper {
 	}
 
 	@Override
-	public void write(Object object, OutputStream output) {
+	public void serialize(Object object, OutputStream output) {
 		try {
 			mapper.writeValue(output, object);
 		} catch (Exception ex) {

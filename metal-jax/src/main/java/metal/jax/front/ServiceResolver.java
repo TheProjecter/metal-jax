@@ -50,7 +50,7 @@ public class ServiceResolver {
 	}
 	
 	public Request parseRequest(ServiceRequestWrapper request) throws IOException {
-		return mapper.read(Request.class, request.getInputStream());
+		return mapper.deserialize(Request.class, request.getInputStream());
 	}
 	
 }

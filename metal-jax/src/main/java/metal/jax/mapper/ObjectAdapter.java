@@ -15,9 +15,11 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import javax.xml.bind.JAXBElement;
 import javax.xml.bind.ValidationEvent;
 import javax.xml.bind.ValidationEventHandler;
 import javax.xml.bind.annotation.adapters.XmlAdapter;
+import javax.xml.namespace.QName;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -31,7 +33,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-public class PropertyAdapter extends XmlAdapter<Object,Property> {
+public class ObjectAdapter extends XmlAdapter<Object,Object> {
 
 	public static final class EventHandler implements ValidationEventHandler {
 		@Override
@@ -43,8 +45,8 @@ public class PropertyAdapter extends XmlAdapter<Object,Property> {
 	private XmlMarshaller marshaller;
 	private DocumentBuilder documentBuilder;
 	
-	public PropertyAdapter() {}
-
+	public ObjectAdapter() {}
+	
 	public void setMarshaller(XmlMarshaller marshaller) {
 		this.marshaller = marshaller;
 	}
@@ -57,18 +59,14 @@ public class PropertyAdapter extends XmlAdapter<Object,Property> {
 	}
 	
 	@Override
-	public Object marshal(Property property) throws Exception {
-		ObjectType type = ObjectType.typeOf(property.getType());
-		if (marshaller != null) {
-			return marshal(type, property.getValue(), getDocumentBuilder().newDocument());
-		} else {
-			return marshal(type, property.getValue());
-		}
+	public Element marshal(Object object) throws Exception {
+		ObjectType type = ObjectType.typeOf(object);
+		return marshal(type, object, getDocumentBuilder().newDocument());
 	}
 	
 	@SuppressWarnings("unchecked")
 	protected Element marshal(ObjectType type, Object value, Document doc) {
-		Element element = null;
+		Element element, wrapper = doc.createElement("wrapper");
 		switch (type) {
 		case INT:
 		case LONG:
@@ -77,11 +75,17 @@ public class PropertyAdapter extends XmlAdapter<Object,Property> {
 		case STRING:
 			element = doc.createElement(type.name);
 			element.appendChild(doc.createTextNode(String.valueOf(value)));
-			return element;
+			wrapper.appendChild(element);
+			return wrapper;
 		case DATE:
 			element = doc.createElement(type.name);
 			element.appendChild(doc.createTextNode(String.valueOf(((Date)value).getTime())));
-			return element;
+			wrapper.appendChild(element);
+			return wrapper;
+		case NULL:
+			element = doc.createElement(type.name);
+			wrapper.appendChild(element);
+			return wrapper;
 		case LIST:
 			return marshalList((List<Object>)value, doc);
 		case MAP:
@@ -118,10 +122,10 @@ public class PropertyAdapter extends XmlAdapter<Object,Property> {
 
 	protected Element marshalList(List<Object> list, Document doc) {
 		Element element = doc.createElement(ObjectType.LIST.name);
-		for (Object item : list) {
-			ObjectType type = ObjectType.typeOf(item);
-			element.appendChild((marshal(type, item, doc)));
-		}
+//		for (Object item : list) {
+//			ObjectType type = ObjectType.typeOf(item);
+//			element.appendChild((marshal(type, item, doc)));
+//		}
 		return element;
 	}
 	
@@ -138,12 +142,12 @@ public class PropertyAdapter extends XmlAdapter<Object,Property> {
 	protected Element marshalMap(Map<String,Object> map, Document doc) {
 		Element element = doc.createElement(ObjectType.MAP.name);
 		Set<Entry<String,Object>> entries = map.entrySet();
-		for (Entry<String,Object> entry : entries) {
-			Element child = doc.createElement(entry.getKey());
-			ObjectType type = ObjectType.typeOf(entry.getValue());
-			child.appendChild(marshal(type, entry.getValue(), doc));
-			element.appendChild(child);
-		}
+//		for (Entry<String,Object> entry : entries) {
+//			Element child = doc.createElement(entry.getKey());
+//			ObjectType type = ObjectType.typeOf(entry.getValue());
+//			child.appendChild(marshal(type, entry.getValue(), doc));
+//			element.appendChild(child);
+//		}
 		return element;
 	}
 	
@@ -161,19 +165,20 @@ public class PropertyAdapter extends XmlAdapter<Object,Property> {
 	}
 	
 	@Override
-	public Property unmarshal(Object element) throws Exception {
-		ObjectType type = null;
-		Object value = null;
-		if (marshaller != null) {
-			type = ObjectType.typeOf(((Element)element).getNodeName());
-			value = unmarshal(type, (Element)element);
-		} else {
-			Map<String,Object> map = (Map) element;
-			Map.Entry<String,Object> entry = map.entrySet().iterator().next();
-			type = ObjectType.typeOf(entry.getKey());
-			value = unmarshal(type, entry.getValue());
-		}
-		return new Property(type , value);
+	public Object unmarshal(Object element) throws Exception {
+		return element;
+//		ObjectType type = null;
+//		Object value = null;
+//		if (marshaller != null) {
+//			type = ObjectType.typeOf(((Element)element).getNodeName());
+//			value = unmarshal(type, (Element)element);
+//		} else {
+//			Map<String,Object> map = (Map) element;
+//			Map.Entry<String,Object> entry = map.entrySet().iterator().next();
+//			type = ObjectType.typeOf(entry.getKey());
+//			value = unmarshal(type, entry.getValue());
+//		}
+//		return new Property(type , value);
 	}
 	
 	protected Object unmarshal(ObjectType type, Node element) throws Exception {

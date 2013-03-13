@@ -9,8 +9,10 @@ package metal.jax.mapper;
 
 import java.io.InputStream;
 
-public interface Reader {
+public interface Deserializer {
 	
-	<T> T read(Class<T> type, InputStream input);
+	<T> T deserialize(Class<T> type, String input);
+
+	<T> T deserialize(Class<T> type, InputStream input);
 	
 }

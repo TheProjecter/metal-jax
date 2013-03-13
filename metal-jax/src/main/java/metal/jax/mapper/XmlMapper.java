@@ -16,7 +16,7 @@ import javax.xml.transform.stream.StreamSource;
 import org.springframework.oxm.Marshaller;
 import org.springframework.oxm.Unmarshaller;
 
-public class XmlMapper implements Mapper {
+public class XmlMapper extends BaseMapper implements Mapper {
 	
 	private XmlMapper parent;
 	
@@ -36,7 +36,7 @@ public class XmlMapper implements Mapper {
 		this.unmarshaller = unmarshaller;
 	}
 
-	public void write(Object object, OutputStream output) {
+	public void serialize(Object object, OutputStream output) {
 		if (marshaller.supports(object.getClass()) || parent == null) {
 			try {
 				marshaller.marshal(object, new StreamResult(output));
@@ -44,12 +44,12 @@ public class XmlMapper implements Mapper {
 				throw new MapperException("UnexpectedException", ex);
 			}
 		} else {
-			parent.write(object, output);
+			parent.serialize(object, output);
 		}
 	}
 	
 	@SuppressWarnings("unchecked")
-	public <T> T read(Class<T> type, InputStream input) {
+	public <T> T deserialize(Class<T> type, InputStream input) {
 		Object object = null;
 		try {
 			object = unmarshaller.unmarshal(new StreamSource(input));
