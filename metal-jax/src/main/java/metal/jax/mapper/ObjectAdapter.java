@@ -8,6 +8,7 @@
 package metal.jax.mapper;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -15,6 +16,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import javax.xml.bind.DatatypeConverter;
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.ValidationEvent;
 import javax.xml.bind.ValidationEventHandler;
@@ -59,13 +61,13 @@ public class ObjectAdapter extends XmlAdapter<Object,Object> {
 	}
 	
 	@Override
-	public Element marshal(Object object) throws Exception {
+	public Object marshal(Object object) throws Exception {
 		ObjectType type = ObjectType.typeOf(object);
 		return marshal(type, object, getDocumentBuilder().newDocument());
 	}
 	
 	@SuppressWarnings("unchecked")
-	protected Element marshal(ObjectType type, Object value, Document doc) {
+	protected Object marshal(ObjectType type, Object value, Document doc) {
 		Element element, wrapper = doc.createElement("wrapper");
 		switch (type) {
 		case INT:
@@ -79,7 +81,9 @@ public class ObjectAdapter extends XmlAdapter<Object,Object> {
 			return wrapper;
 		case DATE:
 			element = doc.createElement(type.name);
-			element.appendChild(doc.createTextNode(String.valueOf(((Date)value).getTime())));
+			Calendar cal = Calendar.getInstance();
+			cal.setTime((Date)value);
+			element.appendChild(doc.createTextNode(DatatypeConverter.printDateTime(cal)));
 			wrapper.appendChild(element);
 			return wrapper;
 		case NULL:
@@ -91,8 +95,8 @@ public class ObjectAdapter extends XmlAdapter<Object,Object> {
 		case MAP:
 			return marshalMap((Map<String,Object>)value, doc);
 		default:
-			marshaller.marshal(value, new DOMResult(doc));
-			return doc.getDocumentElement();
+			marshaller.marshal(value, new DOMResult(wrapper));
+			return wrapper;
 		}
 	}
 

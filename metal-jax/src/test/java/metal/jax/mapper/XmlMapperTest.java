@@ -78,6 +78,7 @@ public class XmlMapperTest extends TestBase {
 		try {
 			// create object, then serialize
 			object = TestHelper.initBase(new GenericObject());
+			object.setObjectValue(TestHelper.initBase(new BaseObject()));
 			xml = xmlMapper.serialize(object);
 			
 			// de-serialize object, then serialize

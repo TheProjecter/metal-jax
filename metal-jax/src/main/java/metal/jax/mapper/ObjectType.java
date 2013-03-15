@@ -20,8 +20,8 @@ public enum ObjectType {
 	DATE("date", Date.class),
 	LIST("list", List.class),
 	MAP("map", Map.class),
-	NULL("null", Object.class),
-	OBJECT("object", Object.class);
+	OBJECT("object", Object.class),
+	NULL("null", Object.class);
 	
 	public final String name;
 	public final Class<?> type;
@@ -39,7 +39,9 @@ public enum ObjectType {
 		if (object == null) return NULL;
 		Class<?> type = object.getClass();
 		for (ObjectType value : values) {
-			if (value.type == type || value.type.isAssignableFrom(type)) return value;
+			if (value.type == type || value.type.isAssignableFrom(type)) {
+				return value;
+			}
 		}
 		return OBJECT;
 	}

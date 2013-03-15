@@ -18,7 +18,7 @@ public class TestHelper {
 
 	public static <T extends BaseObject> T initBase(T object) {
 		object.setIntValue(4);
-		object.setLongValue(5);
+		object.setLongValue(5L);
 		object.setDoubleValue(7.123);
 		object.setBooleanValue(true);
 		object.setStringValue("ABC");
@@ -29,7 +29,7 @@ public class TestHelper {
 	
 	public static <T extends GenericObject> T initBase(T object) {
 		object.setIntValue(4);
-		object.setLongValue(5);
+		object.setLongValue(5L);
 		object.setDoubleValue(7.123);
 		object.setBooleanValue(true);
 		object.setStringValue("ABC");

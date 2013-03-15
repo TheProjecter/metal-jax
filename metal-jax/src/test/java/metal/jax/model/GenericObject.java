@@ -23,6 +23,7 @@ public class GenericObject {
 	private Object dateValue;
 	private Object defaultValue;
 	private Object nullValue;
+	private Object objectValue;
 
 	@XmlJavaTypeAdapter(ObjectAdapter.class)
 	public Object getIntValue() {
@@ -94,6 +95,15 @@ public class GenericObject {
 
 	public void setNullValue(Object nullValue) {
 		this.nullValue = nullValue;
+	}
+
+	@XmlJavaTypeAdapter(ObjectAdapter.class)
+	public Object getObjectValue() {
+		return objectValue;
+	}
+
+	public void setObjectValue(Object objectValue) {
+		this.objectValue = objectValue;
 	}
 
 }
