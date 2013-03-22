@@ -5,13 +5,13 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package metal.jax.mapper;
+package metal.core.mapper;
 
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-public enum ObjectType {
+public enum JavaType {
 	INT("int", Integer.class),
 	LONG("long", Long.class),
 	DOUBLE("double", Double.class),
@@ -25,20 +25,20 @@ public enum ObjectType {
 	
 	public final String name;
 	public final Class<?> type;
-	private ObjectType(String name, Class<?> type) { this.name = name; this.type = type; }
-	private static final ObjectType[] values = ObjectType.values();
+	private JavaType(String name, Class<?> type) { this.name = name; this.type = type; }
+	private static final JavaType[] values = JavaType.values();
 	
-	public static ObjectType typeOf(String name) {
-		for (ObjectType value : values) {
+	public static JavaType typeOf(String name) {
+		for (JavaType value : values) {
 			if (value.name.equals(name)) return value;
 		}
 		return OBJECT;
 	}
 	
-	public static ObjectType typeOf(Object object) {
+	public static JavaType typeOf(Object object) {
 		if (object == null) return NULL;
 		Class<?> type = object.getClass();
-		for (ObjectType value : values) {
+		for (JavaType value : values) {
 			if (value.type == type || value.type.isAssignableFrom(type)) {
 				return value;
 			}

@@ -5,7 +5,7 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package metal.jax.mapper;
+package metal.core.mapper;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -13,15 +13,15 @@ import java.io.ByteArrayOutputStream;
 public abstract class BaseMapper implements Mapper {
 
 	@Override
-	public String serialize(Object object) {
-		ByteArrayOutputStream out = new ByteArrayOutputStream();
-		serialize(object, out);
-		return new String(out.toByteArray());
+	public <T> T read(Class<T> type, String input) {
+		return read(type, new ByteArrayInputStream(input.getBytes()));
 	}
-	
+
 	@Override
-	public <T> T deserialize(Class<T> type, String input) {
-		return deserialize(type, new ByteArrayInputStream(input.getBytes()));
+	public String write(Object object) {
+		ByteArrayOutputStream out = new ByteArrayOutputStream();
+		write(object, out);
+		return new String(out.toByteArray());
 	}
 
 }

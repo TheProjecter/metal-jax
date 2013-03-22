@@ -5,8 +5,14 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package metal.jax.mapper;
+package metal.core.mapper;
 
-public interface Mapper extends Serializer, Deserializer {
-	// empty for now
+import java.io.OutputStream;
+
+public interface Writer {
+
+	void write(Object object, OutputStream output);
+
+	String write(Object object);
+
 }

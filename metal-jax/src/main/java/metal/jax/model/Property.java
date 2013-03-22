@@ -9,8 +9,8 @@ package metal.jax.model;
 
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
+import metal.core.mapper.ObjectType;
 import metal.jax.mapper.PropertyAdapter;
-import metal.jax.mapper.ObjectType;
 
 @XmlJavaTypeAdapter(PropertyAdapter.class)
 public class Property {

@@ -24,6 +24,8 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.dom.DOMResult;
 import javax.xml.transform.dom.DOMSource;
 
+import metal.core.mapper.ObjectType;
+import metal.core.mapper.XmlMapper;
 import metal.jax.model.Property;
 
 import org.w3c.dom.Document;
@@ -40,12 +42,12 @@ public class PropertyAdapter extends XmlAdapter<Object,Property> {
 		}
 	}
 	
-	private XmlMarshaller marshaller;
+	private XmlMapper marshaller;
 	private DocumentBuilder documentBuilder;
 	
 	public PropertyAdapter() {}
 
-	public void setMarshaller(XmlMarshaller marshaller) {
+	public void setMapper(XmlMapper marshaller) {
 		this.marshaller = marshaller;
 	}
 	
@@ -87,7 +89,7 @@ public class PropertyAdapter extends XmlAdapter<Object,Property> {
 		case MAP:
 			return marshalMap((Map<String,Object>)value, doc);
 		default:
-			marshaller.marshal(value, new DOMResult(doc));
+			marshaller.write(value, doc);
 			return doc.getDocumentElement();
 		}
 	}
@@ -196,7 +198,7 @@ public class PropertyAdapter extends XmlAdapter<Object,Property> {
 		case MAP:
 			return unmarshalMap(element);
 		default:
-			return marshaller.unmarshal(new DOMSource(element));
+			return marshaller.read(type.type, element);
 		}
 	}
 	

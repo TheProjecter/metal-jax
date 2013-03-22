@@ -5,14 +5,12 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package metal.jax.mapper;
+package metal.core.mapper;
 
-import java.io.InputStream;
+public interface Adapter<V,B> {
 
-public interface Deserializer {
-	
-	<T> T deserialize(Class<T> type, String input);
+	public V marshal(B object) throws Exception;
 
-	<T> T deserialize(Class<T> type, InputStream input);
-	
+	public B unmarshal(V value) throws Exception;
+
 }

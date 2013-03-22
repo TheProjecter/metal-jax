@@ -19,4 +19,13 @@ http://www.springframework.org/schema/util http://www.springframework.org/schema
 		</property>
 	</bean>
 	
+	<bean id="test-core.modelMap" class="metal.core.config.MapUnion">
+		<property name="sourceMap">
+			<map>
+				<entry key="/test/baseObject" value="metal.core.model.BaseObject"/>
+				<entry key="/test/genericObject" value="metal.core.model.GenericObject"/>
+			</map>
+		</property>
+	</bean>
+	
 </beans>

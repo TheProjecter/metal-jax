@@ -12,6 +12,8 @@ import java.util.Map;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
+import metal.core.model.BaseObject;
+
 @XmlRootElement
 public class TestObject extends BaseObject {
 

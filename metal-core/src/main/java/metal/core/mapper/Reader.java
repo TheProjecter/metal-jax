@@ -5,14 +5,14 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package metal.jax.mapper;
+package metal.core.mapper;
 
-import java.io.OutputStream;
+import java.io.InputStream;
 
-public interface Serializer {
-	
-	String serialize(Object object);
+public interface Reader {
 
-	void serialize(Object object, OutputStream output);
-	
+	<T> T read(Class<T> type, InputStream input);
+
+	<T> T read(Class<T> type, String input);
+
 }
