@@ -1,0 +1,13 @@
+{
+	"intValue":4,
+	"longValue":5,
+	"doubleValue":7.123,
+	"booleanValue":true,
+	"intObject":4,
+	"longObject":5,
+	"doubleObject":7.123,
+	"booleanObject":true,
+	"stringObject":"ABC",
+	"dateObject":1388466000000,
+	"defaultObject":""
+}

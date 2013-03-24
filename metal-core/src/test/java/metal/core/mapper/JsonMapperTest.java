@@ -47,50 +47,50 @@ public class JsonMapperTest extends TestBase {
 		assertEqualsIgnoreWhitespace(json, json2);
 	}
 	
-//	@Test
+	@Test
 	public void testBaseObject_read() {
 		BaseObject object = null, object2 = null;
-		String xml = null, xml2 = null;
+		String json = null, json2 = null;
 
 		try {
 			object = TestHelper.init(new BaseObject());
-			xml = IOUtils.toString(source("baseObject.xml"));
+			json = IOUtils.toString(source("baseObject.json"));
 		} catch (Exception e) {
 			fail(e);
 		}
 
 		try {
-			object2 = xmlMapper.read(BaseObject.class, xml);
-			xml2 = xmlMapper.write(object2);
+			object2 = jsonMapper.read(BaseObject.class, json);
+			json2 = jsonMapper.write(object2);
 		} catch (Exception e) {
 			fail(e);
 		}
 
 		TestHelper.assertEquals(object, object2);
-		assertEqualsIgnoreWhitespace(xml, xml2);
+		assertEqualsIgnoreWhitespace(json, json2);
 	}
 	
-//	@Test
+	@Test
 	public void testGenericObject_write() {
 		GenericObject object = null, object2 = null;
-		String xml = null, xml2 = null;
+		String json = null, json2 = null;
 
 		try {
 			object = TestHelper.init(new GenericObject());
-			xml = xmlMapper.write(object);
+			json = jsonMapper.write(object);
 		} catch (Exception e) {
 			fail(e);
 		}
 		
 		try {
-			object2 = xmlMapper.read(GenericObject.class, xml);
-			xml2 = xmlMapper.write(object2);
+			object2 = jsonMapper.read(GenericObject.class, json);
+			json2 = jsonMapper.write(object2);
 		} catch (Exception e) {
 			fail(e);
 		}
 		
 		TestHelper.assertEquals(object, object2);
-		assertEqualsIgnoreWhitespace(xml, xml2);
+		assertEqualsIgnoreWhitespace(json, json2);
 	}
 	
 //	@Test

@@ -74,7 +74,7 @@ public class XmlMapper extends BaseMapper implements Mapper, Adapter<Node, Objec
 		}
 		if (type == null || object == null || type.isInstance(object))
 			return (T) object;
-		throw new MapperException("UnexpectedType", object.getClass(), type);
+		throw new MapperException("UnexpectedType", type, object.getClass());
 	}
 
 	@Override
@@ -210,29 +210,37 @@ public class XmlMapper extends BaseMapper implements Mapper, Adapter<Node, Objec
 
 	protected Object unmarshalList(Node source, JavaType type) {
 		List<Object> list = new ArrayList<Object>();
-		Node item = ensureElement(source.getFirstChild());
+		Node item = ensureElementOrNull(source.getFirstChild());
 		while (item != null) {
 			list.add(unmarshalInternal(item));
-			item = ensureElement(item.getNextSibling());
+			item = ensureElementOrNull(item.getNextSibling());
 		}
 		return list;
 	}
 
 	protected Object unmarshalMap(Node source, JavaType type) {
 		Map<String, Object> map = new LinkedHashMap<String, Object>();
-		Node item = ensureElement(source.getFirstChild());
+		Node item = ensureElementOrNull(source.getFirstChild());
 		while (item != null) {
 			map.put(item.getNodeName(),
 					unmarshalInternal(ensureElement(item.getFirstChild())));
-			item = ensureElement(item.getNextSibling());
+			item = ensureElementOrNull(item.getNextSibling());
 		}
 		return map;
 	}
 
 	protected Node ensureElement(Node node) {
-		while (node != null && node.getNodeType() != Node.ELEMENT_NODE)
-			node = node.getNextSibling();
-		return node;
+		Node next = ensureElementOrNull(node);
+		if (next == null) {
+			throw new MapperException("ContentModel", node.getParentNode().getNodeName());
+		}
+		return next;
 	}
 
+	protected Node ensureElementOrNull(Node node) {
+		Node next = node;
+		while (next != null && next.getNodeType() != Node.ELEMENT_NODE)
+			next = next.getNextSibling();
+		return next;
+	}
 }

@@ -23,6 +23,7 @@ http://www.springframework.org/schema/util http://www.springframework.org/schema
 		<property name="sourceMap">
 			<map>
 				<entry key="/test/baseObject" value="metal.core.model.BaseObject"/>
+				<entry key="/test/annotatedObject" value="metal.core.model.AnnotatedObject"/>
 				<entry key="/test/genericObject" value="metal.core.model.GenericObject"/>
 			</map>
 		</property>

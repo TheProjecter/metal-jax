@@ -9,6 +9,7 @@ package metal.core.mapper;
 
 import javax.annotation.Resource;
 
+import metal.core.model.AnnotatedObject;
 import metal.core.model.BaseObject;
 import metal.core.model.GenericObject;
 import metal.core.test.TestBase;
@@ -58,6 +59,52 @@ public class XmlMapperTest extends TestBase {
 
 		try {
 			object2 = xmlMapper.read(BaseObject.class, xml);
+			xml2 = xmlMapper.write(object2);
+		} catch (Exception e) {
+			fail(e);
+		}
+
+		TestHelper.assertEquals(object, object2);
+		assertEqualsIgnoreWhitespace(xml, xml2);
+	}
+	
+	@Test
+	public void testAnnotatedObject_write() {
+		AnnotatedObject object = null, object2 = null;
+		String xml = null, xml2 = null;
+
+		try {
+			object = TestHelper.init(new AnnotatedObject());
+			xml = xmlMapper.write(object);
+		} catch (Exception e) {
+			fail(e);
+		}
+		
+		try {
+			object2 = xmlMapper.read(AnnotatedObject.class, xml);
+			xml2 = xmlMapper.write(object2);
+		} catch (Exception e) {
+			fail(e);
+		}
+		
+		TestHelper.assertEquals(object, object2);
+		assertEqualsIgnoreWhitespace(xml, xml2);
+	}
+	
+	@Test
+	public void testAnnotatedObject_read() {
+		AnnotatedObject object = null, object2 = null;
+		String xml = null, xml2 = null;
+
+		try {
+			object = TestHelper.init(new AnnotatedObject());
+			xml = IOUtils.toString(source("annotatedObject.xml"));
+		} catch (Exception e) {
+			fail(e);
+		}
+
+		try {
+			object2 = xmlMapper.read(AnnotatedObject.class, xml);
 			xml2 = xmlMapper.write(object2);
 		} catch (Exception e) {
 			fail(e);

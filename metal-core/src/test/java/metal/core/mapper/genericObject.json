@@ -1,0 +1,94 @@
+{
+  "intObject": { "int": 4},
+  "longObject":"5",
+  "doubleObject":"7.123",
+  "booleanObject":"true",
+  "stringObject":"ABC",
+  "dateObject":"1388466000000",
+  "defaultObject":"",
+  "listObject":null,
+  "mapObject":null,
+  "objectObject":null,
+  "nullObject":null
+}
+
+
+
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<genericObject>
+	<booleanObject><boolean>true</boolean></booleanObject>
+	<dateObject><date>2013-12-31T00:00:00-05:00</date></dateObject>
+	<defaultObject><string/></defaultObject>
+	<doubleObject><double>7.123</double></doubleObject>
+	<intObject><int>4</int></intObject>
+	<listObject>
+		<list>
+			<int>4</int>
+			<long>5</long>
+			<double>7.123</double>
+			<boolean>true</boolean>
+			<string>ABC</string>
+			<date>2013-12-31T00:00:00-05:00</date>
+			<string/>
+			<null/>
+			<baseObject>
+				<booleanObject>true</booleanObject>
+				<booleanValue>true</booleanValue>
+				<dateObject>2013-12-31T00:00:00-05:00</dateObject>
+				<defaultObject/>
+				<doubleObject>7.123</doubleObject>
+				<doubleValue>7.123</doubleValue>
+				<intObject>4</intObject>
+				<intValue>4</intValue>
+				<longObject>5</longObject>
+				<longValue>5</longValue>
+				<stringObject>ABC</stringObject>
+			</baseObject>
+		</list>
+	</listObject>
+	<longObject><long>5</long></longObject>
+	<mapObject>
+		<map>
+			<intObject><int>4</int></intObject>
+			<longObject><long>5</long></longObject>
+			<doubleObject><double>7.123</double></doubleObject>
+			<booleanObject><boolean>true</boolean></booleanObject>
+			<stringObject><string>ABC</string></stringObject>
+			<dateObject><date>2013-12-31T00:00:00-05:00</date></dateObject>
+			<defaultObject><string/></defaultObject>
+			<nullObject><null/></nullObject>
+			<objectObject>
+				<baseObject>
+					<booleanObject>true</booleanObject>
+					<booleanValue>true</booleanValue>
+					<dateObject>2013-12-31T00:00:00-05:00</dateObject>
+					<defaultObject/>
+					<doubleObject>7.123</doubleObject>
+					<doubleValue>7.123</doubleValue>
+					<intObject>4</intObject>
+					<intValue>4</intValue>
+					<longObject>5</longObject>
+					<longValue>5</longValue>
+					<stringObject>ABC</stringObject>
+				</baseObject>
+			</objectObject>
+		</map>
+	</mapObject>
+	<nullObject><null/></nullObject>
+	<objectObject>
+		<baseObject>
+			<booleanObject>true</booleanObject>
+			<booleanValue>true</booleanValue>
+			<dateObject>2013-12-31T00:00:00-05:00</dateObject>
+			<defaultObject/>
+			<doubleObject>7.123</doubleObject>
+			<doubleValue>7.123</doubleValue>
+			<intObject>4</intObject>
+			<intValue>4</intValue>
+			<longObject>5</longObject>
+			<longValue>5</longValue>
+			<stringObject>ABC</stringObject>
+		</baseObject>
+	</objectObject>
+	<stringObject><string>ABC</string></stringObject>
+</genericObject>

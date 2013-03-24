@@ -18,6 +18,7 @@ import org.apache.commons.lang.time.DateUtils;
 
 import org.junit.Assert;
 
+import metal.core.model.AnnotatedObject;
 import metal.core.model.BaseObject;
 import metal.core.model.GenericObject;
 
@@ -28,6 +29,17 @@ public class TestHelper {
 		object.setLongValue(5L);
 		object.setDoubleValue(7.123);
 		object.setBooleanValue(true);
+		object.setIntObject(4);
+		object.setLongObject(5L);
+		object.setDoubleObject(7.123);
+		object.setBooleanObject(true);
+		object.setStringObject("ABC");
+		object.setDateObject(dateValue("20131231", "yyyyMMdd"));
+		object.setDefaultObject("");
+		return object;
+	}
+	
+	public static AnnotatedObject init(AnnotatedObject object) {
 		object.setIntObject(4);
 		object.setLongObject(5L);
 		object.setDoubleObject(7.123);
@@ -84,6 +96,16 @@ public class TestHelper {
 		Assert.assertTrue(o1.getLongValue() == o2.getLongValue());
 		Assert.assertTrue(o1.getDoubleValue() == o2.getDoubleValue());
 		Assert.assertTrue(o1.getBooleanValue() == o2.getBooleanValue());
+		Assert.assertTrue(o1.getIntObject().equals(o2.getIntObject()));
+		Assert.assertTrue(o1.getLongObject().equals(o2.getLongObject()));
+		Assert.assertTrue(o1.getDoubleObject().equals(o2.getDoubleObject()));
+		Assert.assertTrue(o1.getBooleanObject().equals(o2.getBooleanObject()));
+		Assert.assertTrue(o1.getStringObject().equals(o2.getStringObject()));
+		Assert.assertTrue(o1.getDateObject().equals(o2.getDateObject()));
+		Assert.assertTrue(o1.getDefaultObject().equals(o2.getDefaultObject()));
+	}
+	
+	public static void assertEquals(AnnotatedObject o1, AnnotatedObject o2) {
 		Assert.assertTrue(o1.getIntObject().equals(o2.getIntObject()));
 		Assert.assertTrue(o1.getLongObject().equals(o2.getLongObject()));
 		Assert.assertTrue(o1.getDoubleObject().equals(o2.getDoubleObject()));
