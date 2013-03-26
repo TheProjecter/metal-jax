@@ -8,23 +8,28 @@
 package metal.core.aop;
 
 import metal.core.common.AnyException;
+import metal.core.message.MessageCode;
 
 @SuppressWarnings("serial")
 public class AopException extends AnyException {
 
-	public AopException(String code) {
+	enum AopMessageCode implements MessageCode {
+		UnhandledException
+	}
+	
+	public AopException(MessageCode code) {
 		super(code);
 	}
 
-	public AopException(String code, Object... args) {
+	public AopException(MessageCode code, Object... args) {
 		super(code, args);
 	}
 
-	public AopException(String code, Throwable cause) {
+	public AopException(MessageCode code, Throwable cause) {
 		super(code, cause);
 	}
 
-	public AopException(String code, Throwable cause, Object... args) {
+	public AopException(MessageCode code, Throwable cause, Object... args) {
 		super(code, cause, args);
 	}
 

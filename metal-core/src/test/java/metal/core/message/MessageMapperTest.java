@@ -7,6 +7,7 @@
  */
 package metal.core.message;
 
+import static metal.core.message.MessageMapperTest.MessageMapperTestMessageCode.*;
 import static org.junit.Assert.assertEquals;
 
 import javax.annotation.Resource;
@@ -19,13 +20,18 @@ import org.junit.Test;
 
 public class MessageMapperTest extends TestBase {
 
+	enum MessageMapperTestMessageCode implements MessageCode {
+		GenericException,
+		SpecificException
+	}
+	
 	@Resource(name="metal-core-messageMapper")
 	private MessageMapper mapper;
 	
 	@Test
 	public void testErrorMessage() {
-		assertEquals("GenericException: a, b and c", mapper.getMessage(new AnyException("GenericException", "a", "b", "c")));
-		assertEquals("MoreSpecificException: a, b and c", mapper.getMessage(new AnyException("SpecificException", "a", "b", "c")));
+		assertEquals("GenericException: a, b and c", mapper.getMessage(new AnyException(GenericException, "a", "b", "c")));
+		assertEquals("MoreSpecificException: a, b and c", mapper.getMessage(new AnyException(SpecificException, "a", "b", "c")));
 	}
 
 }

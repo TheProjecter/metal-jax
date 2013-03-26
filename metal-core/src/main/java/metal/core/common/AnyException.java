@@ -8,6 +8,7 @@
 package metal.core.common;
 
 import metal.core.message.Message;
+import metal.core.message.MessageCode;
 
 @SuppressWarnings("serial")
 public class AnyException extends RuntimeException implements Message {
@@ -15,31 +16,29 @@ public class AnyException extends RuntimeException implements Message {
 	private String[] codes;
 	private Object[] arguments;
 
-	public AnyException(String code) {
-		super(code);
+	public AnyException(MessageCode code) {
+		super(code.name());
 		setCodes(code);
 	}
 
-	public AnyException(String code, Object... args) {
-		super(code);
-		setCodes(code);
+	public AnyException(MessageCode code, Object... args) {
+		this(code);
 		this.arguments = args;
 	}
 
-	public AnyException(String code, Throwable cause) {
-		super(code, cause);
+	public AnyException(MessageCode code, Throwable cause) {
+		super(code.name(), cause);
 		setCodes(code);
 	}
 
-	public AnyException(String code, Throwable cause, Object... args) {
-		super(code, cause);
-		setCodes(code);
+	public AnyException(MessageCode code, Throwable cause, Object... args) {
+		this(code, cause);
 		this.arguments = args;
 	}
 
-	private void setCodes(String code) {
+	private void setCodes(MessageCode code) {
 		String qualifiedCode = new StringBuilder(getClass().getPackage().getName()).append(".").append(code).toString();
-		this.codes = new String[]{qualifiedCode, code};
+		this.codes = new String[]{qualifiedCode, code.name()};
 	}
 	
 	@Override

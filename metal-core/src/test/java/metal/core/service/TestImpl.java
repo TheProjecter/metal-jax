@@ -7,14 +7,22 @@
  */
 package metal.core.service;
 
+import static metal.core.service.TestImpl.TestServiceMessageCode.*;
+
+import metal.core.message.MessageCode;
+
 public class TestImpl implements TestService {
 	
+	enum TestServiceMessageCode implements MessageCode {
+		test
+	}
+	
 	public void throwsServiceException() {
-		throw new ServiceException("test");
+		throw new ServiceException(test);
 	}
 	
 	public void throwsRuntimeException() {
-		throw new RuntimeException("test");
+		throw new RuntimeException(test.name());
 	}
 	
 }

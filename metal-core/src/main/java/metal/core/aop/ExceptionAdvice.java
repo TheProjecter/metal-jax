@@ -7,7 +7,7 @@
  */
 package metal.core.aop;
 
-import static metal.core.message.MessageCode.UnhandledException;
+import static metal.core.aop.AopException.AopMessageCode.*;
 
 import metal.core.common.AnyException;
 

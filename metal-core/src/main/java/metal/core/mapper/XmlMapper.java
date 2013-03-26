@@ -7,6 +7,8 @@
  */
 package metal.core.mapper;
 
+import static metal.core.mapper.MapperException.MapperMessageCode.*;
+
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
@@ -58,7 +60,7 @@ public class XmlMapper extends BaseMapper implements Mapper, Adapter<Node, Objec
 				documentBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
 			}
 		} catch (Exception ex) {
-			throw new MapperException("UnexpectedException", ex);
+			throw new MapperException(UnexpectedException, ex);
 		}
 		return documentBuilder;
 	}
@@ -70,11 +72,11 @@ public class XmlMapper extends BaseMapper implements Mapper, Adapter<Node, Objec
 		try {
 			object = marshaller.unmarshal(new StreamSource(input));
 		} catch (Exception ex) {
-			throw new MapperException("UnexpectedException", ex);
+			throw new MapperException(UnexpectedException, ex);
 		}
 		if (type == null || object == null || type.isInstance(object))
 			return (T) object;
-		throw new MapperException("UnexpectedType", type, object.getClass());
+		throw new MapperException(UnexpectedType, type, object.getClass());
 	}
 
 	@Override
@@ -83,7 +85,7 @@ public class XmlMapper extends BaseMapper implements Mapper, Adapter<Node, Objec
 			try {
 				marshaller.marshal(object, new StreamResult(output));
 			} catch (Exception ex) {
-				throw new MapperException("UnexpectedException", ex);
+				throw new MapperException(UnexpectedException, ex);
 			}
 		} else {
 			parent.write(object, output);
@@ -232,7 +234,7 @@ public class XmlMapper extends BaseMapper implements Mapper, Adapter<Node, Objec
 	protected Node ensureElement(Node node) {
 		Node next = ensureElementOrNull(node);
 		if (next == null) {
-			throw new MapperException("ContentModel", node.getParentNode().getNodeName());
+			throw new MapperException(ContentModel, node.getParentNode().getNodeName());
 		}
 		return next;
 	}

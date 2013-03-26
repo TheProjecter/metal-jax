@@ -8,23 +8,24 @@
 package metal.jax.mapper;
 
 import metal.core.common.AnyException;
+import metal.core.message.MessageCode;
 
 @SuppressWarnings("serial")
 public class MapperException extends AnyException {
 
-	public MapperException(String code) {
+	public MapperException(MessageCode code) {
 		super(code);
 	}
 
-	public MapperException(String code, Object... args) {
+	public MapperException(MessageCode code, Object... args) {
 		super(code, args);
 	}
 
-	public MapperException(String code, Throwable cause) {
+	public MapperException(MessageCode code, Throwable cause) {
 		super(code, cause);
 	}
 
-	public MapperException(String code, Throwable cause, Object... args) {
+	public MapperException(MessageCode code, Throwable cause, Object... args) {
 		super(code, cause, args);
 	}
 

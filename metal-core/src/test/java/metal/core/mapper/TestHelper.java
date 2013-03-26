@@ -7,6 +7,8 @@
  */
 package metal.core.mapper;
 
+import static metal.core.mapper.MapperException.MapperMessageCode.*;
+
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
@@ -158,7 +160,7 @@ public class TestHelper {
 		try {
 			return DateUtils.parseDate(value, new String[]{format});
 		} catch (ParseException e) {
-			throw new MapperException("UnexpectedException", e.getMessage());
+			throw new MapperException(UnexpectedException, e.getMessage());
 		}
 	}
 	

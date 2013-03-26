@@ -7,6 +7,8 @@
  */
 package metal.core.mapper;
 
+import static metal.core.mapper.MapperException.MapperMessageCode.*;
+
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Date;
@@ -60,7 +62,7 @@ public class JsonMapper extends BaseMapper implements Mapper, Adapter<Object, Ob
 		try {
 			return mapper.readValue(input, type);
 		} catch (Exception ex) {
-			throw new MapperException("UnexpectedException", ex);
+			throw new MapperException(UnexpectedException, ex);
 		}
 	}
 
@@ -69,7 +71,7 @@ public class JsonMapper extends BaseMapper implements Mapper, Adapter<Object, Ob
 		try {
 			mapper.writeValue(output, object);
 		} catch (Exception ex) {
-			throw new MapperException("UnexpectedException", ex);
+			throw new MapperException(UnexpectedException, ex);
 		}
 	}
 	

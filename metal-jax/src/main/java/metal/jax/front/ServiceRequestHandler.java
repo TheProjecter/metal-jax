@@ -7,6 +7,8 @@
  */
 package metal.jax.front;
 
+import static metal.jax.front.FrontException.FrontMessageCode.*;
+
 import java.io.IOException;
 import java.util.Map;
 
@@ -53,7 +55,7 @@ public class ServiceRequestHandler extends HttpInvokerServiceExporter implements
 		String key = request.getServletPath();
 		ServiceResolver resolver = serviceMap != null ? serviceMap.get(key) : null;
 		if (resolver == null) {
-			throw new FrontException("Unknown service type: " + key);
+			throw new FrontException(UnknownService, key);
 		}
 		return resolver;
 	}
@@ -63,7 +65,7 @@ public class ServiceRequestHandler extends HttpInvokerServiceExporter implements
 		try {
 			return context.getBean(key);
 		} catch (Exception e) {
-			throw new FrontException("No service found for path: " + key, e);
+			throw new FrontException(UnknownServicePath, e, key);
 		}
 	}
 	

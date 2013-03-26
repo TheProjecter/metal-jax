@@ -24,7 +24,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.dom.DOMResult;
 import javax.xml.transform.dom.DOMSource;
 
-import metal.core.mapper.ObjectType;
+import metal.core.mapper.JavaType;
 import metal.core.mapper.XmlMapper;
 import metal.jax.model.Property;
 
@@ -60,7 +60,7 @@ public class PropertyAdapter extends XmlAdapter<Object,Property> {
 	
 	@Override
 	public Object marshal(Property property) throws Exception {
-		ObjectType type = ObjectType.typeOf(property.getType());
+		JavaType type = JavaType.typeOf(property.getType());
 		if (marshaller != null) {
 			return marshal(type, property.getValue(), getDocumentBuilder().newDocument());
 		} else {
@@ -69,7 +69,7 @@ public class PropertyAdapter extends XmlAdapter<Object,Property> {
 	}
 	
 	@SuppressWarnings("unchecked")
-	protected Element marshal(ObjectType type, Object value, Document doc) {
+	protected Element marshal(JavaType type, Object value, Document doc) {
 		Element element = null;
 		switch (type) {
 		case INT:
@@ -89,12 +89,11 @@ public class PropertyAdapter extends XmlAdapter<Object,Property> {
 		case MAP:
 			return marshalMap((Map<String,Object>)value, doc);
 		default:
-			marshaller.write(value, doc);
-			return doc.getDocumentElement();
+			return (Element)marshaller.marshal(value);
 		}
 	}
 
-	protected String marshal(ObjectType type, Object value) {
+	protected String marshal(JavaType type, Object value) {
 		StringBuilder buffer = new StringBuilder();
 		switch (type) {
 		case INT:
@@ -119,9 +118,9 @@ public class PropertyAdapter extends XmlAdapter<Object,Property> {
 	}
 
 	protected Element marshalList(List<Object> list, Document doc) {
-		Element element = doc.createElement(ObjectType.LIST.name);
+		Element element = doc.createElement(JavaType.LIST.name);
 		for (Object item : list) {
-			ObjectType type = ObjectType.typeOf(item);
+			JavaType type = JavaType.typeOf(item);
 			element.appendChild((marshal(type, item, doc)));
 		}
 		return element;
@@ -129,20 +128,20 @@ public class PropertyAdapter extends XmlAdapter<Object,Property> {
 	
 	protected String marshalList(List<Object> list) {
 		return null;
-//		Element element = doc.createElement(ObjectType.LIST.name);
+//		Element element = doc.createElement(JavaType.LIST.name);
 //		for (Object item : list) {
-//			ObjectType type = ObjectType.typeOf(item.getClass());
+//			JavaType type = JavaType.typeOf(item.getClass());
 //			element.appendChild((marshal(type, item, doc)));
 //		}
 //		return element;
 	}
 	
 	protected Element marshalMap(Map<String,Object> map, Document doc) {
-		Element element = doc.createElement(ObjectType.MAP.name);
+		Element element = doc.createElement(JavaType.MAP.name);
 		Set<Entry<String,Object>> entries = map.entrySet();
 		for (Entry<String,Object> entry : entries) {
 			Element child = doc.createElement(entry.getKey());
-			ObjectType type = ObjectType.typeOf(entry.getValue());
+			JavaType type = JavaType.typeOf(entry.getValue());
 			child.appendChild(marshal(type, entry.getValue(), doc));
 			element.appendChild(child);
 		}
@@ -151,11 +150,11 @@ public class PropertyAdapter extends XmlAdapter<Object,Property> {
 	
 	protected String marshalMap(Map<String,Object> map) {
 		return null;
-//		Element element = doc.createElement(ObjectType.MAP.name);
+//		Element element = doc.createElement(JavaType.MAP.name);
 //		Set<Entry<String,Object>> entries = map.entrySet();
 //		for (Entry<String,Object> entry : entries) {
 //			Element child = doc.createElement(entry.getKey());
-//			ObjectType type = ObjectType.typeOf(entry.getValue().getClass());
+//			JavaType type = JavaType.typeOf(entry.getValue().getClass());
 //			child.appendChild(marshal(type, entry.getValue(), doc));
 //			element.appendChild(child);
 //		}
@@ -164,21 +163,21 @@ public class PropertyAdapter extends XmlAdapter<Object,Property> {
 	
 	@Override
 	public Property unmarshal(Object element) throws Exception {
-		ObjectType type = null;
+		JavaType type = null;
 		Object value = null;
 		if (marshaller != null) {
-			type = ObjectType.typeOf(((Element)element).getNodeName());
+			type = JavaType.typeOf(((Element)element).getNodeName());
 			value = unmarshal(type, (Element)element);
 		} else {
 			Map<String,Object> map = (Map) element;
 			Map.Entry<String,Object> entry = map.entrySet().iterator().next();
-			type = ObjectType.typeOf(entry.getKey());
+			type = JavaType.typeOf(entry.getKey());
 			value = unmarshal(type, entry.getValue());
 		}
 		return new Property(type , value);
 	}
 	
-	protected Object unmarshal(ObjectType type, Node element) throws Exception {
+	protected Object unmarshal(JavaType type, Node element) throws Exception {
 		String value = element.getChildNodes().getLength() == 1 ? element.getFirstChild().getNodeValue() : null;
 		switch (type) {
 		case INT:
@@ -198,11 +197,11 @@ public class PropertyAdapter extends XmlAdapter<Object,Property> {
 		case MAP:
 			return unmarshalMap(element);
 		default:
-			return marshaller.read(type.type, element);
+			return marshaller.unmarshal(element);
 		}
 	}
 	
-	protected Object unmarshal(ObjectType type, Object object) throws Exception {
+	protected Object unmarshal(JavaType type, Object object) throws Exception {
 		String value = object.toString();
 		switch (type) {
 		case INT:
@@ -235,7 +234,7 @@ public class PropertyAdapter extends XmlAdapter<Object,Property> {
 		for (int i = 0; i < childNodes.getLength(); i++) {
 			Node node = childNodes.item(i);
 			if (node.getNodeType() == Node.ELEMENT_NODE) {
-				ObjectType type = ObjectType.typeOf(node.getNodeName());
+				JavaType type = JavaType.typeOf(node.getNodeName());
 				value.add(unmarshal(type, node));
 			}
 		}
@@ -249,7 +248,7 @@ public class PropertyAdapter extends XmlAdapter<Object,Property> {
 			Node node = childNodes.item(i);
 			if (node.getNodeType() == Node.ELEMENT_NODE) {
 				Node child = getFirstChild(node);
-				ObjectType type = ObjectType.typeOf(child.getNodeName());
+				JavaType type = JavaType.typeOf(child.getNodeName());
 				value.put(node.getNodeName(), unmarshal(type, child));
 			}
 		}

@@ -8,23 +8,29 @@
 package metal.jax.front;
 
 import metal.core.common.AnyException;
+import metal.core.message.MessageCode;
 
 @SuppressWarnings("serial")
 public class FrontException extends AnyException {
 
-	public FrontException(String code) {
+	enum FrontMessageCode implements MessageCode {
+		UnknownService,
+		UnknownServicePath
+	}
+	
+	public FrontException(MessageCode code) {
 		super(code);
 	}
 
-	public FrontException(String code, Object... args) {
+	public FrontException(MessageCode code, Object... args) {
 		super(code, args);
 	}
 
-	public FrontException(String code, Throwable cause) {
+	public FrontException(MessageCode code, Throwable cause) {
 		super(code, cause);
 	}
 
-	public FrontException(String code, Throwable cause, Object... args) {
+	public FrontException(MessageCode code, Throwable cause, Object... args) {
 		super(code, cause, args);
 	}
 

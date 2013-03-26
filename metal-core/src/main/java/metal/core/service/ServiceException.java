@@ -8,23 +8,24 @@
 package metal.core.service;
 
 import metal.core.common.AnyException;
+import metal.core.message.MessageCode;
 
 @SuppressWarnings("serial")
 public class ServiceException extends AnyException {
 
-	public ServiceException(String code) {
+	public ServiceException(MessageCode code) {
 		super(code);
 	}
 
-	public ServiceException(String code, Object... args) {
+	public ServiceException(MessageCode code, Object... args) {
 		super(code, args);
 	}
 
-	public ServiceException(String code, Throwable cause) {
+	public ServiceException(MessageCode code, Throwable cause) {
 		super(code, cause);
 	}
 
-	public ServiceException(String code, Throwable cause, Object... args) {
+	public ServiceException(MessageCode code, Throwable cause, Object... args) {
 		super(code, cause, args);
 	}
 

@@ -8,5 +8,5 @@
 package metal.core.message;
 
 public interface MessageCode {
-	String UnhandledException = "UnhandledException";
+	String name();
 }

@@ -8,23 +8,24 @@
 package metal.core.model;
 
 import metal.core.common.AnyException;
+import metal.core.message.MessageCode;
 
 @SuppressWarnings("serial")
 public class ModelException extends AnyException {
 
-	public ModelException(String code) {
+	public ModelException(MessageCode code) {
 		super(code);
 	}
 
-	public ModelException(String code, Object... args) {
+	public ModelException(MessageCode code, Object... args) {
 		super(code, args);
 	}
 
-	public ModelException(String code, Throwable cause) {
+	public ModelException(MessageCode code, Throwable cause) {
 		super(code, cause);
 	}
 
-	public ModelException(String code, Throwable cause, Object... args) {
+	public ModelException(MessageCode code, Throwable cause, Object... args) {
 		super(code, cause, args);
 	}
 

@@ -10,6 +10,8 @@ package metal.core.config;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import metal.core.message.MessageCode;
+
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.TypeConverter;
 import org.springframework.beans.factory.config.MapFactoryBean;
@@ -38,7 +40,9 @@ public class MapUnion extends MapFactoryBean {
 	protected Map createInstance() {
 		Map result = null;
 		if (this.sourceMap == null) {
-			throw new ConfigException("'sourceMap' is required");
+			throw new ConfigException(new MessageCode() {
+				public String name() { return "'sourceMap' is required"; }
+			});
 		}
 		if (this.targetMapClass != null) {
 			result = (Map) BeanUtils.instantiateClass(this.targetMapClass);
