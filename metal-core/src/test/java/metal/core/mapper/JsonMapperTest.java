@@ -9,6 +9,7 @@ package metal.core.mapper;
 
 import javax.annotation.Resource;
 
+import metal.core.model.AnnotatedObject;
 import metal.core.model.BaseObject;
 import metal.core.model.GenericObject;
 import metal.core.test.TestBase;
@@ -61,6 +62,52 @@ public class JsonMapperTest extends TestBase {
 
 		try {
 			object2 = jsonMapper.read(BaseObject.class, json);
+			json2 = jsonMapper.write(object2);
+		} catch (Exception e) {
+			fail(e);
+		}
+
+		TestHelper.assertEquals(object, object2);
+		assertEqualsIgnoreWhitespace(json, json2);
+	}
+	
+	@Test
+	public void testAnnotatedObject_write() {
+		AnnotatedObject object = null, object2 = null;
+		String json = null, json2 = null;
+
+		try {
+			object = TestHelper.init(new AnnotatedObject());
+			json = jsonMapper.write(object);
+		} catch (Exception e) {
+			fail(e);
+		}
+		
+		try {
+			object2 = jsonMapper.read(AnnotatedObject.class, json);
+			json2 = jsonMapper.write(object2);
+		} catch (Exception e) {
+			fail(e);
+		}
+		
+		TestHelper.assertEquals(object, object2);
+		assertEqualsIgnoreWhitespace(json, json2);
+	}
+	
+	@Test
+	public void testAnnotatedObject_read() {
+		AnnotatedObject object = null, object2 = null;
+		String json = null, json2 = null;
+
+		try {
+			object = TestHelper.init(new AnnotatedObject());
+			json = IOUtils.toString(source("annotatedObject.json"));
+		} catch (Exception e) {
+			fail(e);
+		}
+
+		try {
+			object2 = jsonMapper.read(AnnotatedObject.class, json);
 			json2 = jsonMapper.write(object2);
 		} catch (Exception e) {
 			fail(e);
