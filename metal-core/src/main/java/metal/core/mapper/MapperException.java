@@ -13,12 +13,6 @@ import metal.core.message.MessageCode;
 @SuppressWarnings("serial")
 public class MapperException extends AnyException {
 
-	enum MapperMessageCode implements MessageCode {
-		UnexpectedException,
-		UnexpectedType,
-		ContentModel
-	}
-	
 	public MapperException(MessageCode code) {
 		super(code);
 	}

@@ -13,11 +13,6 @@ import metal.core.message.MessageCode;
 @SuppressWarnings("serial")
 public class FrontException extends AnyException {
 
-	enum FrontMessageCode implements MessageCode {
-		UnknownService,
-		UnknownServicePath
-	}
-	
 	public FrontException(MessageCode code) {
 		super(code);
 	}

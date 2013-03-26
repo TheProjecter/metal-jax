@@ -13,10 +13,6 @@ import metal.core.message.MessageCode;
 @SuppressWarnings("serial")
 public class AopException extends AnyException {
 
-	enum AopMessageCode implements MessageCode {
-		UnhandledException
-	}
-	
 	public AopException(MessageCode code) {
 		super(code);
 	}

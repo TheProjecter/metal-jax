@@ -7,7 +7,7 @@
  */
 package metal.core.mapper;
 
-import static metal.core.mapper.MapperException.MapperMessageCode.*;
+import static metal.core.mapper.MapperMessageCode.*;
 
 import java.text.ParseException;
 import java.util.ArrayList;

@@ -7,7 +7,7 @@
  */
 package metal.core.aop;
 
-import static metal.core.aop.AopException.AopMessageCode.*;
+import static metal.core.aop.AopMessageCode.*;
 
 import metal.core.common.AnyException;
 

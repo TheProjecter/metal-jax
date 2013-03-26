@@ -7,7 +7,7 @@
  */
 package metal.jax.front;
 
-import static metal.jax.front.FrontException.FrontMessageCode.*;
+import static metal.jax.front.FrontMessageCode.*;
 
 import java.io.IOException;
 import java.util.Map;
