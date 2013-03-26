@@ -3,9 +3,9 @@
 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
 
-	<bean id="metal-core.validator" class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean"/>
+	<bean id="metal-core-validator" class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean"/>
 	
-	<bean id="metal-core.messageMapper" class="metal.core.message.MessageMapper">
+	<bean id="metal-core-messageMapper" class="metal.core.message.MessageMapper">
 		<property name="messageSource">
 			<bean class="org.springframework.context.support.ResourceBundleMessageSource"/>
 		</property>
@@ -16,7 +16,7 @@ xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.sprin
 		</property>
 	</bean>
 	
-	<bean id="metal-core.logger" class="metal.core.message.Logger">
+	<bean id="metal-core-logger" class="metal.core.message.Logger">
 		<property name="errorEnabled" value="true"/>
 		<property name="warnEnabled" value="true"/>
 		<property name="infoEnabled" value="true"/>

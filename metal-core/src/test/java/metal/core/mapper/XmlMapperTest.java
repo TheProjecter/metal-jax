@@ -19,7 +19,7 @@ import org.junit.Test;
 
 public class XmlMapperTest extends TestBase {
 
-	@Resource(name="test-core.xmlMapper")
+	@Resource(name="test-core-xmlMapper")
 	private Mapper xmlMapper;
 	
 	@Test

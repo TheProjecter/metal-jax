@@ -21,7 +21,7 @@ import org.junit.Test;
 
 public class MapUnionTest extends TestBase {
 
-	@Resource(name="test-core.testMapUnion")
+	@Resource(name="test-core-testMapUnion")
 	private Map<String,String> map;
 	
 	@Test

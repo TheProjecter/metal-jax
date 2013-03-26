@@ -26,10 +26,10 @@ import org.junit.Test;
 
 public class ValidationMessageTest extends TestBase {
 
-	@Resource(name="metal-core.messageMapper")
+	@Resource(name="metal-core-messageMapper")
 	private MessageMapper mapper;
 	
-	@Resource(name="metal-core.validator")
+	@Resource(name="metal-core-validator")
 	private Validator validator;
 	
 	@Test

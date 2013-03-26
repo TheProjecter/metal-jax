@@ -19,10 +19,10 @@ import org.junit.Test;
 
 public class JsonMapperTest extends TestBase {
 
-	@Resource(name="test-core.xmlMapper")
+	@Resource(name="test-core-xmlMapper")
 	private Mapper xmlMapper;
 	
-	@Resource(name="test-core.jsonMapper")
+	@Resource(name="test-core-jsonMapper")
 	private Mapper jsonMapper;
 	
 	@Test

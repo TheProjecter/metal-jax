@@ -3,14 +3,14 @@
 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
 
-	<bean id="test-core.xmlMapper" class="metal.core.mapper.XmlMapper">
-		<property name="parent" ref="metal-core.xmlMapper"/>
-		<property name="modelMap" ref="test-core.modelMap"/>
+	<bean id="test-core-xmlMapper" class="metal.core.mapper.XmlMapper">
+		<property name="parent" ref="metal-core-xmlMapper"/>
+		<property name="modelMap" ref="test-core-modelMap"/>
 	</bean>
 	
-	<bean id="test-core.jsonMapper" class="metal.core.mapper.DefaultMapper">
-		<property name="reader" ref="metal-core.jsonMapper"/>
-		<property name="writer" ref="metal-core.jsonMapper"/>
+	<bean id="test-core-jsonMapper" class="metal.core.mapper.DefaultMapper">
+		<property name="reader" ref="metal-core-jsonMapper"/>
+		<property name="writer" ref="metal-core-jsonMapper"/>
 	</bean>
 
 </beans>

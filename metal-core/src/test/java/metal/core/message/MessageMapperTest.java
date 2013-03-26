@@ -19,7 +19,7 @@ import org.junit.Test;
 
 public class MessageMapperTest extends TestBase {
 
-	@Resource(name="metal-core.messageMapper")
+	@Resource(name="metal-core-messageMapper")
 	private MessageMapper mapper;
 	
 	@Test
