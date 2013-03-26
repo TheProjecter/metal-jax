@@ -21,14 +21,14 @@ public class AnyException extends RuntimeException implements Message {
 		setCodes(code);
 	}
 
-	public AnyException(MessageCode code, Object... args) {
-		this(code);
-		this.arguments = args;
-	}
-
 	public AnyException(MessageCode code, Throwable cause) {
 		super(code.name(), cause);
 		setCodes(code);
+	}
+
+	public AnyException(MessageCode code, Object... args) {
+		this(code);
+		this.arguments = args;
 	}
 
 	public AnyException(MessageCode code, Throwable cause, Object... args) {
@@ -37,7 +37,7 @@ public class AnyException extends RuntimeException implements Message {
 	}
 
 	private void setCodes(MessageCode code) {
-		String qualifiedCode = new StringBuilder(getClass().getPackage().getName()).append(".").append(code).toString();
+		String qualifiedCode = new StringBuilder(code.getClass().getPackage().getName()).append(".").append(code.name()).toString();
 		this.codes = new String[]{qualifiedCode, code.name()};
 	}
 	
