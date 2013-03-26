@@ -17,12 +17,12 @@ public class AopException extends AnyException {
 		super(code);
 	}
 
-	public AopException(MessageCode code, Object... args) {
-		super(code, args);
-	}
-
 	public AopException(MessageCode code, Throwable cause) {
 		super(code, cause);
+	}
+
+	public AopException(MessageCode code, Object... args) {
+		super(code, args);
 	}
 
 	public AopException(MessageCode code, Throwable cause, Object... args) {

@@ -17,12 +17,12 @@ public class ServiceException extends AnyException {
 		super(code);
 	}
 
-	public ServiceException(MessageCode code, Object... args) {
-		super(code, args);
-	}
-
 	public ServiceException(MessageCode code, Throwable cause) {
 		super(code, cause);
+	}
+
+	public ServiceException(MessageCode code, Object... args) {
+		super(code, args);
 	}
 
 	public ServiceException(MessageCode code, Throwable cause, Object... args) {

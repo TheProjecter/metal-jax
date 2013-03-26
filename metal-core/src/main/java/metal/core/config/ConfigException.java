@@ -17,12 +17,12 @@ public class ConfigException extends AnyException {
 		super(code);
 	}
 
-	public ConfigException(MessageCode code, Object... args) {
-		super(code, args);
-	}
-
 	public ConfigException(MessageCode code, Throwable cause) {
 		super(code, cause);
+	}
+
+	public ConfigException(MessageCode code, Object... args) {
+		super(code, args);
 	}
 
 	public ConfigException(MessageCode code, Throwable cause, Object... args) {

@@ -17,12 +17,12 @@ public class MapperException extends AnyException {
 		super(code);
 	}
 
-	public MapperException(MessageCode code, Object... args) {
-		super(code, args);
-	}
-
 	public MapperException(MessageCode code, Throwable cause) {
 		super(code, cause);
+	}
+
+	public MapperException(MessageCode code, Object... args) {
+		super(code, args);
 	}
 
 	public MapperException(MessageCode code, Throwable cause, Object... args) {

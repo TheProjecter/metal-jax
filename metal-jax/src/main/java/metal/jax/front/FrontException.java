@@ -17,12 +17,12 @@ public class FrontException extends AnyException {
 		super(code);
 	}
 
-	public FrontException(MessageCode code, Object... args) {
-		super(code, args);
-	}
-
 	public FrontException(MessageCode code, Throwable cause) {
 		super(code, cause);
+	}
+
+	public FrontException(MessageCode code, Object... args) {
+		super(code, args);
 	}
 
 	public FrontException(MessageCode code, Throwable cause, Object... args) {

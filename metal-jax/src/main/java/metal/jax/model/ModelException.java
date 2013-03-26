@@ -17,12 +17,12 @@ public class ModelException extends AnyException {
 		super(code);
 	}
 
-	public ModelException(MessageCode code, Object... args) {
-		super(code, args);
-	}
-
 	public ModelException(MessageCode code, Throwable cause) {
 		super(code, cause);
+	}
+
+	public ModelException(MessageCode code, Object... args) {
+		super(code, args);
 	}
 
 	public ModelException(MessageCode code, Throwable cause, Object... args) {
