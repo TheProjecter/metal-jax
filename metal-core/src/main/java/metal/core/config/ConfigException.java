@@ -8,24 +8,23 @@
 package metal.core.config;
 
 import metal.core.common.AnyException;
-import metal.core.message.MessageCode;
 
 @SuppressWarnings("serial")
 public class ConfigException extends AnyException {
 
-	public ConfigException(MessageCode code) {
+	public ConfigException(ConfigMessageCode code) {
 		super(code);
 	}
 
-	public ConfigException(MessageCode code, Throwable cause) {
+	public ConfigException(ConfigMessageCode code, Throwable cause) {
 		super(code, cause);
 	}
 
-	public ConfigException(MessageCode code, Object... args) {
+	public ConfigException(ConfigMessageCode code, Object... args) {
 		super(code, args);
 	}
 
-	public ConfigException(MessageCode code, Throwable cause, Object... args) {
+	public ConfigException(ConfigMessageCode code, Throwable cause, Object... args) {
 		super(code, cause, args);
 	}
 
