@@ -13,17 +13,18 @@ import metal.core.message.MessageCode;
 @SuppressWarnings("serial")
 public class AnyException extends RuntimeException implements Message {
 
+	private MessageCode code;
 	private String[] codes;
 	private Object[] arguments;
 
 	public AnyException(MessageCode code) {
 		super(code.name());
-		setCodes(code);
+		setCode(code);
 	}
 
 	public AnyException(MessageCode code, Throwable cause) {
 		super(code.name(), cause);
-		setCodes(code);
+		setCode(code);
 	}
 
 	public AnyException(MessageCode code, Object... args) {
@@ -36,9 +37,14 @@ public class AnyException extends RuntimeException implements Message {
 		this.arguments = args;
 	}
 
-	private void setCodes(MessageCode code) {
+	private void setCode(MessageCode code) {
 		String qualifiedCode = new StringBuilder(code.getClass().getPackage().getName()).append(".").append(code.name()).toString();
 		this.codes = new String[]{qualifiedCode, code.name()};
+		this.code = code;
+	}
+
+	public MessageCode getCode() {
+		return code;
 	}
 	
 	@Override
