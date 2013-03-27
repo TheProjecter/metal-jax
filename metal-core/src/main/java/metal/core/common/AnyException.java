@@ -39,7 +39,7 @@ public class AnyException extends RuntimeException implements Message {
 
 	private void setCode(MessageCode code) {
 		this.code = code;
-		this.codes = new String[]{messageCode(code), code.name()};
+		this.codes = new String[]{MessageCode.Format.format(code), code.name()};
 	}
 
 	public MessageCode getCode() {
@@ -61,8 +61,4 @@ public class AnyException extends RuntimeException implements Message {
 		return getMessage();
 	}
 
-	private String messageCode(MessageCode code) {
-		return new StringBuilder(code.getClass().getPackage().getName().replace('.', '-')).append('-').append(code.name()).toString();
-	}
-	
 }

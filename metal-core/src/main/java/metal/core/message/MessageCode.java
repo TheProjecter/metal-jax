@@ -8,5 +8,13 @@
 package metal.core.message;
 
 public interface MessageCode {
+
 	String name();
+
+	final class Format {
+		public static String format(MessageCode code) {
+			return new StringBuilder(code.getClass().getPackage().getName().replace('.', '-')).append('-').append(code.name()).toString();
+		}
+	}
+
 }

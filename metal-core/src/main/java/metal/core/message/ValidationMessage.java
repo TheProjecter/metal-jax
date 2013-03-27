@@ -7,24 +7,28 @@
  */
 package metal.core.message;
 
+import static metal.core.message.ValidationMessageCode.*;
+
 import javax.validation.ConstraintViolation;
 
 public class ValidationMessage implements Message {
 
+	private MessageCode code;
 	private String[] codes;
 	private Object[] arguments;
 	
 	public ValidationMessage(ConstraintViolation<?> violation) {
-		this(ValidationMessage.class.getSimpleName(), violation);
+		this(ValidationFailed, violation);
 	}
 	
-	public ValidationMessage(String code, ConstraintViolation<?> violation) {
-		setCodes(code, violation);
+	public ValidationMessage(MessageCode code, ConstraintViolation<?> violation) {
+		setCode(code, violation);
 		setArguments(violation);
 	}
 	
-	private void setCodes(String code, ConstraintViolation<?> violation) {
-		this.codes = new String[]{ code, violation.getMessageTemplate() };
+	private void setCode(MessageCode code, ConstraintViolation<?> violation) {
+		this.code = code;
+		this.codes = new String[]{ MessageCode.Format.format(code), code.name(), violation.getMessageTemplate() };
 	}
 	
 	private void setArguments(ConstraintViolation<?> violation) {
@@ -36,6 +40,10 @@ public class ValidationMessage implements Message {
 		};
 	}
 	
+	public MessageCode getCode() {
+		return code;
+	}
+
 	@Override
 	public String[] getCodes() {
 		return codes;

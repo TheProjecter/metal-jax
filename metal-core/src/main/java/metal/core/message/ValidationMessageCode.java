@@ -7,8 +7,8 @@
  */
 package metal.core.message;
 
-import org.springframework.context.MessageSourceResolvable;
+import metal.core.message.MessageCode;
 
-public interface Message extends MessageSourceResolvable {
-	MessageCode getCode();
+public enum ValidationMessageCode implements MessageCode {
+	ValidationFailed
 }
