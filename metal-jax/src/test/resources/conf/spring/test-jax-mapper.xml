@@ -5,7 +5,9 @@ xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.sprin
 
 	<bean id="test-jax-xmlMapper" class="metal.jax.mapper.XmlMapper">
 		<property name="parent" ref="metal-jax-xmlMapper"/>
-		<property name="modelMap" ref="test-jax-modelMap"/>
+		<property name="modelClasses">
+			<list></list>
+		</property>
 	</bean>
 	
 	<bean id="test-jax-jsonMapper" class="metal.jax.mapper.DefaultMapper">

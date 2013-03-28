@@ -5,15 +5,4 @@ xmlns:util="http://www.springframework.org/schema/util"
 xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
 http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.0.xsd">
 	
-	<bean id="test-jax-modelMap" class="metal.core.config.MapUnion">
-		<property name="sourceMap">
-			<map>
-				<entry key="/test/testModel" value="metal.jax.model.TestModel"/>
-				<entry key="/test/testObject" value="metal.jax.model.TestObject"/>
-				<entry key="/test/baseObject" value="metal.jax.model.BaseObject"/>
-				<entry key="/test/genericObject" value="metal.jax.model.GenericObject"/>
-			</map>
-		</property>
-	</bean>
-	
 </beans>

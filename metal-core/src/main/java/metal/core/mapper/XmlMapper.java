@@ -46,8 +46,8 @@ public class XmlMapper extends BaseMapper implements Mapper, Adapter<Node, Objec
 		this.parent = parent;
 	}
 
-	public void setModelMap(Map<String, Class<?>> modelMap) {
-		this.marshaller.setClassesToBeBound(modelMap.values().toArray(new Class<?>[0]));
+	public void setModelClasses(List<Class<?>> modelClasses) {
+		this.marshaller.setClassesToBeBound(modelClasses.toArray(new Class<?>[0]));
 	}
 
 	public void setDocumentBuilder(DocumentBuilder documentBuilder) {

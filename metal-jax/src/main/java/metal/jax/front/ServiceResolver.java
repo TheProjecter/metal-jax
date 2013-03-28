@@ -17,7 +17,6 @@ public class ServiceResolver {
 
 	private String servicePath;
 	private Map<String,String> methodMap;
-	private Map<String,String> modelMap;
 	private Mapper mapper;
 	
 	public void setServicePath(String servicePath) {
@@ -26,10 +25,6 @@ public class ServiceResolver {
 
 	public void setMethodMap(Map<String, String> methodMap) {
 		this.methodMap = methodMap;
-	}
-
-	public void setModelMap(Map<String, String> modelMap) {
-		this.modelMap = modelMap;
 	}
 
 	public void setMapper(Mapper mapper) {

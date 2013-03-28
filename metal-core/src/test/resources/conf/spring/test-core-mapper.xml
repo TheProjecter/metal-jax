@@ -5,7 +5,13 @@ xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.sprin
 
 	<bean id="test-core-xmlMapper" class="metal.core.mapper.XmlMapper">
 		<property name="parent" ref="metal-core-xmlMapper"/>
-		<property name="modelMap" ref="test-core-modelMap"/>
+		<property name="modelClasses">
+			<list>
+				<value>metal.core.model.BaseObject</value>
+				<value>metal.core.model.GenericObject</value>
+				<value>metal.core.model.AnnotatedObject</value>
+			</list>
+		</property>
 	</bean>
 	
 	<bean id="test-core-jsonMapper" class="metal.core.mapper.DefaultMapper">
