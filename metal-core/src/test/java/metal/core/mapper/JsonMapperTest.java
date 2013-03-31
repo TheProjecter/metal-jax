@@ -19,9 +19,6 @@ import org.junit.Test;
 
 public class JsonMapperTest extends TestBase {
 
-	@Resource(name="test-core-xmlMapper")
-	private Mapper xmlMapper;
-	
 	@Resource(name="test-core-jsonMapper")
 	private Mapper jsonMapper;
 	
@@ -140,27 +137,27 @@ public class JsonMapperTest extends TestBase {
 		assertEqualsIgnoreWhitespace(json, json2);
 	}
 	
-//	@Test
+	@Test
 	public void testGenericObject_read() {
 		GenericObject object = null, object2 = null;
-		String xml = null, xml2 = null;
+		String json = null, json2 = null;
 
 		try {
 			object = TestHelper.init(new GenericObject());
-			xml = IOUtils.toString(source("genericObject.xml"));
+			json = IOUtils.toString(source("genericObject.json"));
 		} catch (Exception e) {
 			fail(e);
 		}
 
 		try {
-			object2 = xmlMapper.read(GenericObject.class, xml);
-			xml2 = xmlMapper.write(object2);
+			object2 = jsonMapper.read(GenericObject.class, json);
+			json2 = jsonMapper.write(object2);
 		} catch (Exception e) {
 			fail(e);
 		}
 
 		TestHelper.assertEquals(object, object2);
-		assertEqualsIgnoreWhitespace(xml, xml2);
+		assertEqualsIgnoreWhitespace(json, json2);
 	}
 
 }

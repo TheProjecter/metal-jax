@@ -4,14 +4,11 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
 
 	<bean id="metal-core-xmlMapper" class="metal.core.mapper.XmlMapper">
-		<property name="modelClasses">
-			<list>
-				<value>metal.core.model.BaseModel</value>
-			</list>
-		</property>
+		<property name="modelClasses" ref="metal-core-modelClasses"/>
 	</bean>
 	
 	<bean id="metal-core-jsonMapper" class="metal.core.mapper.JsonMapper">
+		<property name="modelClasses" ref="metal-core-modelClasses"/>
 	</bean>
 
 </beans>

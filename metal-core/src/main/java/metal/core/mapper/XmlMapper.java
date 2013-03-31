@@ -33,21 +33,17 @@ import org.w3c.dom.Node;
 public class XmlMapper extends BaseMapper implements Mapper, Adapter<Node, Object> {
 
 	private DocumentBuilder documentBuilder;
-	private Jaxb2Marshaller marshaller;
-	private XmlMapper parent;
+	private Jaxb2Marshaller mapper;
 
 	public XmlMapper() {
-		this.marshaller = new Jaxb2Marshaller();
-		this.marshaller.setValidationEventHandler(new DefaultAdapter.EventHandler());
-		this.marshaller.setAdapters(new DefaultAdapter[] { new DefaultAdapter(this) });
-	}
-
-	public void setParent(XmlMapper parent) {
-		this.parent = parent;
+		mapper = new Jaxb2Marshaller();
+		mapper.setValidationEventHandler(new DefaultAdapter.EventHandler());
+		mapper.setAdapters(new DefaultAdapter[] { new DefaultAdapter(this) });
 	}
 
 	public void setModelClasses(List<Class<?>> modelClasses) {
-		this.marshaller.setClassesToBeBound(modelClasses.toArray(new Class<?>[0]));
+		super.setModelClasses(modelClasses);
+		mapper.setClassesToBeBound(modelClasses.toArray(new Class<?>[0]));
 	}
 
 	public void setDocumentBuilder(DocumentBuilder documentBuilder) {
@@ -70,25 +66,21 @@ public class XmlMapper extends BaseMapper implements Mapper, Adapter<Node, Objec
 	public <T> T read(Class<T> type, InputStream input) {
 		Object object = null;
 		try {
-			object = marshaller.unmarshal(new StreamSource(input));
+			object = mapper.unmarshal(new StreamSource(input));
 		} catch (Exception ex) {
 			throw new MapperException(UnexpectedException, ex);
 		}
 		if (type == null || object == null || type.isInstance(object))
 			return (T) object;
-		throw new MapperException(UnexpectedType, type, object.getClass());
+		throw new MapperException(UnexpectedType, type.getName(), object.getClass().getName());
 	}
 
 	@Override
 	public void write(Object object, OutputStream output) {
-		if (marshaller.supports(object.getClass()) || parent == null) {
-			try {
-				marshaller.marshal(object, new StreamResult(output));
-			} catch (Exception ex) {
-				throw new MapperException(UnexpectedException, ex);
-			}
-		} else {
-			parent.write(object, output);
+		try {
+			mapper.marshal(object, new StreamResult(output));
+		} catch (Exception ex) {
+			throw new MapperException(UnexpectedException, ex);
 		}
 	}
 
@@ -107,23 +99,17 @@ public class XmlMapper extends BaseMapper implements Mapper, Adapter<Node, Objec
 	protected void marshalInternal(Object object, Node result) {
 		JavaType type = JavaType.typeOf(object);
 		switch (type) {
-		case INT:
-		case LONG:
-		case DOUBLE:
-		case BOOLEAN:
-		case STRING:
-		case DATE:
-		case NULL:
-			marshalSimple(object, type, result);
-			break;
 		case LIST:
-			marshalList((List<Object>) object, type, result);
+			marshalList((List<Object>) object, result);
 			break;
 		case MAP:
-			marshalMap((Map<String, Object>) object, type, result);
+			marshalMap((Map<String, Object>) object, result);
+			break;
+		case OBJECT:
+			mapper.marshal(object, new DOMResult(result));
 			break;
 		default:
-			marshaller.marshal(object, new DOMResult(result));
+			marshalSimple(object, type, result);
 			break;
 		}
 	}
@@ -131,45 +117,37 @@ public class XmlMapper extends BaseMapper implements Mapper, Adapter<Node, Objec
 	protected Object unmarshalInternal(Node source) {
 		JavaType type = JavaType.typeOf(source.getNodeName());
 		switch (type) {
-		case INT:
-		case LONG:
-		case DOUBLE:
-		case BOOLEAN:
-		case STRING:
-		case DATE:
-		case NULL:
-			return unmarshalSimple(source, type);
 		case LIST:
-			return unmarshalList(source, type);
+			return unmarshalList(source);
 		case MAP:
-			return unmarshalMap(source, type);
+			return unmarshalMap(source);
+		case OBJECT:
+			return mapper.unmarshal(new DOMSource(source));
 		default:
-			return marshaller.unmarshal(new DOMSource(source));
+			return unmarshalSimple(source, type);
 		}
 	}
 
 	protected void marshalSimple(Object object, JavaType type, Node result) {
 		Document doc = result.getOwnerDocument();
 		Node node = result.appendChild(doc.createElement(type.name));
-		if (object != null) {
-			String value;
-			switch (type) {
-			case DATE:
-				Calendar cal = Calendar.getInstance();
-				cal.setTime((Date) object);
-				value = DatatypeConverter.printDateTime(cal);
-				break;
-			default:
-				value = String.valueOf(object);
-				break;
-			}
-			node.appendChild(doc.createTextNode(value));
+		switch (type) {
+		case DATE:
+			Calendar cal = Calendar.getInstance();
+			cal.setTime((Date) object);
+			node.appendChild(doc.createTextNode(DatatypeConverter.printDateTime(cal)));
+			break;
+		case NULL:
+			break;
+		default:
+			node.appendChild(doc.createTextNode(String.valueOf(object)));
+			break;
 		}
 	}
 
-	protected void marshalList(List<Object> list, JavaType type, Node result) {
+	protected void marshalList(List<Object> list, Node result) {
 		Document doc = result.getOwnerDocument();
-		Node node = result.appendChild(doc.createElement(type.name));
+		Node node = result.appendChild(doc.createElement(JavaType.LIST.name));
 		if (list != null) {
 			for (Object item : list) {
 				marshalInternal(item, node);
@@ -177,9 +155,9 @@ public class XmlMapper extends BaseMapper implements Mapper, Adapter<Node, Objec
 		}
 	}
 
-	protected void marshalMap(Map<String, Object> map, JavaType type, Node result) {
+	protected void marshalMap(Map<String, Object> map, Node result) {
 		Document doc = result.getOwnerDocument();
-		Node node = result.appendChild(doc.createElement(type.name));
+		Node node = result.appendChild(doc.createElement(JavaType.MAP.name));
 		if (map != null) {
 			for (Map.Entry<String, Object> item : map.entrySet()) {
 				marshalInternal(item.getValue(), node.appendChild(doc.createElement(item.getKey())));
@@ -210,7 +188,7 @@ public class XmlMapper extends BaseMapper implements Mapper, Adapter<Node, Objec
 		}
 	}
 
-	protected Object unmarshalList(Node source, JavaType type) {
+	protected Object unmarshalList(Node source) {
 		List<Object> list = new ArrayList<Object>();
 		Node item = ensureElementOrNull(source.getFirstChild());
 		while (item != null) {
@@ -220,7 +198,7 @@ public class XmlMapper extends BaseMapper implements Mapper, Adapter<Node, Objec
 		return list;
 	}
 
-	protected Object unmarshalMap(Node source, JavaType type) {
+	protected Object unmarshalMap(Node source) {
 		Map<String, Object> map = new LinkedHashMap<String, Object>();
 		Node item = ensureElementOrNull(source.getFirstChild());
 		while (item != null) {
@@ -245,4 +223,5 @@ public class XmlMapper extends BaseMapper implements Mapper, Adapter<Node, Objec
 			next = next.getNextSibling();
 		return next;
 	}
+
 }

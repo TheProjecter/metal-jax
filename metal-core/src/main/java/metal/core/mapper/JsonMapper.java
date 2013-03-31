@@ -11,8 +11,10 @@ import static metal.core.mapper.MapperMessageCode.*;
 
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -24,7 +26,7 @@ import org.codehaus.jackson.xc.JaxbAnnotationIntrospector;
 
 public class JsonMapper extends BaseMapper implements Mapper, Adapter<Object, Object> {
 	
-	private ObjectMapper mapper = new ObjectMapper();
+	private ObjectMapper mapper;
 	
 	public JsonMapper() {
 		final JsonMapper _this = this;
@@ -37,22 +39,8 @@ public class JsonMapper extends BaseMapper implements Mapper, Adapter<Object, Ob
 				}
 				return adapter;
 			}
-
-			/*@Override
-			public String findRootName(AnnotatedClass ac) {
-				String name = super.findRootName(ac);
-				if (StringUtils.isEmpty(name)) {
-					name = ac.getAnnotated().getSimpleName();
-					if (Character.isUpperCase(name.charAt(0))) {
-						char[] chars = name.toCharArray();
-						chars[0] = Character.toLowerCase(chars[0]);
-						name = new String(chars);
-					}
-				}
-				return name;
-			}*/
 		};
-		//mapper.getSerializationConfig().enable(Feature.WRAP_ROOT_VALUE);
+		mapper = new ObjectMapper();
 		mapper.getSerializationConfig().setAnnotationIntrospector(introspector);
 		mapper.getDeserializationConfig().setAnnotationIntrospector(introspector);
 	}
@@ -75,143 +63,129 @@ public class JsonMapper extends BaseMapper implements Mapper, Adapter<Object, Ob
 		}
 	}
 	
+	@SuppressWarnings("unchecked")
 	public Object marshal(Object object) {
-		return marshalInternal(object);
-	}
-	
-	public Object unmarshal(Object source) {
-		return unmarshalInternal(source);
-	}
-	
-	protected Object marshalInternal(Object object) {
 		JavaType type = JavaType.typeOf(object);
 		switch (type) {
-		case INT:
 		case LONG:
-		case DOUBLE:
-		case BOOLEAN:
-		case STRING:
 		case DATE:
-		case NULL:
+		case OBJECT:
 			return marshalSimple(object, type);
 		case LIST:
-			return marshalList((List<Object>) object, type);
+			return marshalList((List<Object>) object);
 		case MAP:
-			return marshalMap((Map<String, Object>) object, type);
+			return marshalMap((Map<String, Object>) object);
 		default:
 			return object;
 		}
 	}
 	
-	protected Object unmarshalInternal(Object source) {
+	@SuppressWarnings("unchecked")
+	public Object unmarshal(Object source) {
 		JavaType type = JavaType.typeOf(source);
 		switch (type) {
-		case INT:
-		case LONG:
-		case DOUBLE:
-		case BOOLEAN:
-		case STRING:
-		case DATE:
-		case NULL:
-			return unmarshalSimple(source, type);
 		case LIST:
-			return unmarshalList((List)source);
+			return unmarshalList((List<Object>)source);
 		case MAP:
-			return unmarshalMap((Map)source);
+			Object result = unmarshalSimple((Map<String, Object>)source);
+			if (result != null) {
+				return result;
+			} else {
+				return unmarshalMap((Map<String, Object>)source);
+			}
 		default:
 			return source;
 		}
 	}
 	
 	protected Object marshalSimple(Object object, JavaType type) {
-		Map<String,Object> map;
+		Map<String,Object> result = new HashMap<String,Object>();
 		switch (type) {
 		case LONG:
-			map = new HashMap<String,Object>();
-			map.put(type.name, object);
-			return map;
+			result.put(type.name, String.valueOf(object));
+			break;
 		case DATE:
-			map = new HashMap<String,Object>();
-			map.put(type.name, ((Date)object).getTime());
-			return map;
+			result.put(type.name, String.valueOf(((Date)object).getTime()));
+			break;
+		case OBJECT:
 		default:
-			return object;
+			String name = modelName(object.getClass());
+			if (name == null) return object;
+			result.put(name, object);
+			break;
 		}
+		return result;
 	}
 
-	protected Object marshalList(List<Object> list, JavaType type) {
+	protected Object marshalList(List<Object> list) {
+		List<Object> result = null;
 		if (list != null) {
-			for (int i = 0; i < list.size(); i++) {
-				list.set(i, marshalInternal(list.get(i)));
+			result = new ArrayList<Object>();
+			for (Object item : list) {
+				result.add(marshal(item));
 			}
 		}
-		return list;
+		return result;
 	}
 	
-	protected Object marshalMap(Map<String, Object> map, JavaType type) {
+	protected Object marshalMap(Map<String, Object> map) {
+		Map<String, Object> result = null;
 		if (map != null) {
+			result = new LinkedHashMap<String, Object>();
 			for (Map.Entry<String, Object> item : map.entrySet()) {
-				item.setValue(marshalInternal(item.getValue()));
+				result.put(item.getKey(), marshal(item.getValue()));
 			}
 		}
-		return map;
+		return result;
 	}
 	
-	protected Object unmarshalSimple(Object source, JavaType type) {
-		return source;
-		/*
-		String text = source.getChildNodes().getLength() == 1 ? source.getFirstChild().getNodeValue() : null;
-		if (text == null)
-			return (type == JavaType.STRING) ? "" : null;
-		switch (type) {
-		case INT:
-			return Integer.valueOf(text);
-		case LONG:
-			return Long.valueOf(text);
-		case DOUBLE:
-			return Double.valueOf(text);
-		case BOOLEAN:
-			return Boolean.valueOf(text);
-		case STRING:
-			return String.valueOf(text);
-		case DATE:
-			return DatatypeConverter.parseDateTime(text).getTime();
-		case NULL:
-		default:
+	protected Object unmarshalSimple(Map<String, Object> map) {
+		JavaType type;
+		Object source;
+		Class<?> modelClass = null;
+		if (map.size() == 1) {
+			Map.Entry<String, Object> entry = map.entrySet().iterator().next();
+			source = entry.getValue();
+			type = JavaType.typeOf(entry.getKey());
+			if (type == JavaType.OBJECT) {
+				modelClass = modelClass(entry.getKey());
+				if (modelClass == null) return null;
+			}
+		} else {
 			return null;
-		}*/
+		}
+		
+		switch (type) {
+		case LONG:
+			return Long.valueOf(String.valueOf(source));
+		case DATE:
+			return new Date(Long.valueOf(String.valueOf(source)));
+		case OBJECT:
+		default:
+			return mapper.convertValue(source, modelClass);
+		}
 	}
 	
-	protected Object unmarshalList(List list) {
+	protected Object unmarshalList(List<Object> list) {
+		List<Object> result = null;
 		if (list != null) {
-			for (int i = 0; i < list.size(); i++) {
-				list.set(i, unmarshalInternal(list.get(i)));
+			result = new ArrayList<Object>();
+			for (Object item : list) {
+				result.add(unmarshal(item));
 			}
 		}
-		return list;
+		return result;
 	}
 	
-	protected Object unmarshalMap(Map map) {
-		Map.Entry entry = (Map.Entry)map.entrySet().iterator().next();
-		JavaType type = JavaType.typeOf(entry.getKey().toString());
-		Object value = entry.getValue();
-		switch (type) {
-		case INT:
-			return Integer.valueOf(String.valueOf(value));
-		case LONG:
-			return Long.valueOf(String.valueOf(value));
-		case DOUBLE:
-			return Double.valueOf(String.valueOf(value));
-		case BOOLEAN:
-			return Boolean.valueOf(String.valueOf(value));
-		case STRING:
-			return String.valueOf(value);
-		case DATE:
-			return new Date(Long.valueOf(String.valueOf(value)));
-		case NULL:
-		default:
-			return null;
+	protected Object unmarshalMap(Map<String, Object> map) {
+		Map<String, Object> result = null;
+		if (map != null) {
+			result = new LinkedHashMap<String, Object>();
+			for (Map.Entry<String, Object> item : map.entrySet()) {
+				result.put(item.getKey(), unmarshal(item.getValue()));
+			}
 		}
+		return result;
 	}
 	
 }

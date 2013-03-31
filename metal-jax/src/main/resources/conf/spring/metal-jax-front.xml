@@ -15,11 +15,6 @@ xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.sprin
 					<bean class="metal.jax.front.ServiceResolver">
 						<property name="servicePath" value="/metal-core/model"/>
 						<property name="mapper" ref="metal-jax-xmlMapper"/>
-						<property name="modelClasses">
-							<list>
-								<value>metal.jax.model.Property</value>
-							</list>
-						</property>
 						<property name="methodMap">
 							<map>
 								<entry key="GET" value="load"/>

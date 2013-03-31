@@ -19,4 +19,10 @@ http://www.springframework.org/schema/util http://www.springframework.org/schema
 		</property>
 	</bean>
 	
+	<util:list id="test-core-modelClasses">
+		<value>metal.core.model.BaseObject</value>
+		<value>metal.core.model.AnnotatedObject</value>
+		<value>metal.core.model.GenericObject</value>
+	</util:list>
+	
 </beans>
