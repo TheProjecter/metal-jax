@@ -11,7 +11,7 @@ import javax.xml.bind.ValidationEvent;
 import javax.xml.bind.ValidationEventHandler;
 import javax.xml.bind.annotation.adapters.XmlAdapter;
 
-public class DefaultAdapter extends XmlAdapter<Object,Object> implements Adapter<Object,Object> {
+public class JavaTypeAdapter extends XmlAdapter<Object,Object> implements Adapter<Object,Object> {
 
 	public static final class EventHandler implements ValidationEventHandler {
 		public boolean handleEvent(ValidationEvent event) {
@@ -21,10 +21,10 @@ public class DefaultAdapter extends XmlAdapter<Object,Object> implements Adapter
 	
 	private Adapter<Object,Object> adapter;
 	
-	public DefaultAdapter() {}
+	public JavaTypeAdapter() {}
 	
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	public DefaultAdapter(Adapter adapter) {
+	public JavaTypeAdapter(Adapter adapter) {
 		this.adapter = adapter;
 	}
 	

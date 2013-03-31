@@ -30,15 +30,15 @@ import org.springframework.oxm.jaxb.Jaxb2Marshaller;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 
-public class XmlMapper extends BaseMapper implements Mapper, Adapter<Node, Object> {
+public class XmlMapper extends BaseMapper implements Adapter<Node, Object> {
 
 	private DocumentBuilder documentBuilder;
 	private Jaxb2Marshaller mapper;
 
 	public XmlMapper() {
 		mapper = new Jaxb2Marshaller();
-		mapper.setValidationEventHandler(new DefaultAdapter.EventHandler());
-		mapper.setAdapters(new DefaultAdapter[] { new DefaultAdapter(this) });
+		mapper.setValidationEventHandler(new JavaTypeAdapter.EventHandler());
+		mapper.setAdapters(new JavaTypeAdapter[] { new JavaTypeAdapter(this) });
 	}
 
 	public void setModelClasses(List<Class<?>> modelClasses) {

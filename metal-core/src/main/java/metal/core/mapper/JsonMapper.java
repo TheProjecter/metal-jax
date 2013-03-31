@@ -24,7 +24,7 @@ import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.map.introspect.Annotated;
 import org.codehaus.jackson.xc.JaxbAnnotationIntrospector;
 
-public class JsonMapper extends BaseMapper implements Mapper, Adapter<Object, Object> {
+public class JsonMapper extends BaseMapper implements Adapter<Object, Object> {
 	
 	private ObjectMapper mapper;
 	
@@ -34,8 +34,8 @@ public class JsonMapper extends BaseMapper implements Mapper, Adapter<Object, Ob
 			@Override
 			protected XmlAdapter<Object, Object> findAdapter(Annotated am, boolean forSerialization) {
 				XmlAdapter<Object,Object> adapter = super.findAdapter(am, forSerialization);
-				if (adapter instanceof DefaultAdapter) {
-					((DefaultAdapter)adapter).setAdapter(_this);
+				if (adapter instanceof JavaTypeAdapter) {
+					((JavaTypeAdapter)adapter).setAdapter(_this);
 				}
 				return adapter;
 			}
