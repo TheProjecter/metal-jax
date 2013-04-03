@@ -39,7 +39,7 @@ public class XmlMapper extends BaseMapper implements Adapter<Node, Object> {
 	public XmlMapper() {
 		mapper = new Jaxb2Marshaller();
 		mapper.setValidationEventHandler(new MapperEventHandler());
-		mapper.setAdapters(new BaseAdapter[] { new ValueAdapter(this), new PropertyListAdapter(this) });
+		mapper.setAdapters(new BaseAdapter[] { new ValueAdapter<Node, Object>(this), new PropertyListAdapter<Node, Object>(this) });
 	}
 
 	public void setModelClasses(List<Class<?>> modelClasses) {
@@ -63,7 +63,6 @@ public class XmlMapper extends BaseMapper implements Adapter<Node, Object> {
 	}
 
 	@Override
-	@SuppressWarnings("unchecked")
 	public <T> T read(Class<T> type, InputStream input) {
 		Object object = null;
 		try {
@@ -101,7 +100,6 @@ public class XmlMapper extends BaseMapper implements Adapter<Node, Object> {
 		}
 	}
 
-	@SuppressWarnings("unchecked")
 	protected void marshalInternal(Kind kind, Object object, Node result) {
 		JavaType type = JavaType.typeOf(object);
 		switch (type) {
@@ -151,7 +149,6 @@ public class XmlMapper extends BaseMapper implements Adapter<Node, Object> {
 		}
 	}
 
-	@SuppressWarnings("unchecked")
 	protected void marshalList(Kind kind, List<Object> list, Node result) {
 		Document doc = result.getOwnerDocument();
 		switch (kind) {

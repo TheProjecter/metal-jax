@@ -9,18 +9,17 @@ package metal.core.mapper;
 
 import javax.xml.bind.annotation.adapters.XmlAdapter;
 
-public abstract class BaseAdapter extends XmlAdapter<Object, Object> {
+public abstract class BaseAdapter<V, B> extends XmlAdapter<V, B> {
 
-	protected Adapter<Object, Object> adapter;
+	protected Adapter<V, B> adapter;
 
 	protected BaseAdapter() {}
 
-	@SuppressWarnings({ "rawtypes", "unchecked" })
-	protected BaseAdapter(Adapter adapter) {
+	protected BaseAdapter(Adapter<V, B> adapter) {
 		this.adapter = adapter;
 	}
 
-	public void setAdapter(Adapter<Object, Object> adapter) {
+	public void setAdapter(Adapter<V, B> adapter) {
 		this.adapter = adapter;
 	}
 

@@ -31,7 +31,6 @@ public class MapperTest extends TestBase {
 	@Resource(name = "test-core-xmlMapper")
 	private Mapper xmlMapper;
 
-	@SuppressWarnings("unchecked")
 	@Test
 	public void testXmlMapper_write() {
 		TestModel model = null, model2 = null;

@@ -10,7 +10,6 @@ package metal.core.model;
 import metal.core.common.AnyException;
 import metal.core.message.MessageCode;
 
-@SuppressWarnings("serial")
 public class ModelException extends AnyException {
 
 	public ModelException(MessageCode code) {

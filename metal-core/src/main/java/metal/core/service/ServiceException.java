@@ -10,7 +10,6 @@ package metal.core.service;
 import metal.core.common.AnyException;
 import metal.core.message.MessageCode;
 
-@SuppressWarnings("serial")
 public class ServiceException extends AnyException {
 
 	public ServiceException(MessageCode code) {

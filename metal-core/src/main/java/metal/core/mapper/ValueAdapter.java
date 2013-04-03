@@ -9,22 +9,21 @@ package metal.core.mapper;
 
 import static metal.core.mapper.Adapter.Kind.VALUE;
 
-public class ValueAdapter extends BaseAdapter {
+public class ValueAdapter<V, B> extends BaseAdapter<V, B> {
 
 	public ValueAdapter() {}
 	
-	@SuppressWarnings("rawtypes")
-	public ValueAdapter(Adapter adapter) {
+	public ValueAdapter(Adapter<V, B> adapter) {
 		super(adapter);
 	}
 	
 	@Override
-	public Object marshal(Object object) throws Exception {
+	public V marshal(B object) throws Exception {
 		return adapter.marshal(VALUE, object);
 	}
 
 	@Override
-	public Object unmarshal(Object value) throws Exception {
+	public B unmarshal(V value) throws Exception {
 		return adapter.unmarshal(VALUE, value);
 	}
 	

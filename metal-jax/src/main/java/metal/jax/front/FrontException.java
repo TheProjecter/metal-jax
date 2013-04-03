@@ -9,7 +9,6 @@ package metal.jax.front;
 
 import metal.core.common.AnyException;
 
-@SuppressWarnings("serial")
 public class FrontException extends AnyException {
 
 	public FrontException(FrontMessageCode code) {

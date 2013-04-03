@@ -9,7 +9,6 @@ package metal.core.mapper;
 
 import metal.core.common.AnyException;
 
-@SuppressWarnings("serial")
 public class MapperException extends AnyException {
 
 	public MapperException(MapperMessageCode code) {

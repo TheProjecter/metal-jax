@@ -71,7 +71,6 @@ public class JsonMapper extends BaseMapper implements Adapter<Object, Object> {
 		return unmarshalInternal(source);
 	}
 	
-	@SuppressWarnings("unchecked")
 	public Object marshalInternal(Object object) {
 		JavaType type = JavaType.typeOf(object);
 		switch (type) {
@@ -88,7 +87,6 @@ public class JsonMapper extends BaseMapper implements Adapter<Object, Object> {
 		}
 	}
 	
-	@SuppressWarnings("unchecked")
 	public Object unmarshalInternal(Object source) {
 		JavaType type = JavaType.typeOf(source);
 		switch (type) {

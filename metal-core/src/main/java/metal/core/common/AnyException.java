@@ -10,7 +10,6 @@ package metal.core.common;
 import metal.core.message.Message;
 import metal.core.message.MessageCode;
 
-@SuppressWarnings("serial")
 public class AnyException extends RuntimeException implements Message {
 
 	private MessageCode code;

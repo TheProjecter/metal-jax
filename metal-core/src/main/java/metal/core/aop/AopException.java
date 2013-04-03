@@ -9,7 +9,6 @@ package metal.core.aop;
 
 import metal.core.common.AnyException;
 
-@SuppressWarnings("serial")
 public class AopException extends AnyException {
 
 	public AopException(AopMessageCode code) {

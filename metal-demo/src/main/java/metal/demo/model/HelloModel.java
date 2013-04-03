@@ -14,7 +14,6 @@ import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement(name = "hello")
-@SuppressWarnings("serial")
 public class HelloModel implements Serializable {
 	
 	@NotNull

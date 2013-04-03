@@ -9,22 +9,21 @@ package metal.core.mapper;
 
 import static metal.core.mapper.Adapter.Kind.PROPERTYLIST;
 
-public class PropertyListAdapter extends BaseAdapter {
+public class PropertyListAdapter<V, B> extends BaseAdapter<V, B> {
 
 	public PropertyListAdapter() {}
 	
-	@SuppressWarnings("rawtypes")
-	public PropertyListAdapter(Adapter adapter) {
+	public PropertyListAdapter(Adapter<V, B> adapter) {
 		super(adapter);
 	}
 	
 	@Override
-	public Object marshal(Object object) throws Exception {
+	public V marshal(B object) throws Exception {
 		return adapter.marshal(PROPERTYLIST, object);
 	}
 
 	@Override
-	public Object unmarshal(Object value) throws Exception {
+	public B unmarshal(V value) throws Exception {
 		return adapter.unmarshal(PROPERTYLIST, value);
 	}
 	

@@ -6,7 +6,6 @@ xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.sprin
 http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.0.xsd">
 	
 	<util:list id="metal-core-modelClasses">
-		<value>metal.core.model.BaseModel</value>
 	</util:list>
 	
 </beans>

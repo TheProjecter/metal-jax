@@ -9,7 +9,6 @@ package metal.core.config;
 
 import metal.core.common.AnyException;
 
-@SuppressWarnings("serial")
 public class ConfigException extends AnyException {
 
 	public ConfigException(ConfigMessageCode code) {
