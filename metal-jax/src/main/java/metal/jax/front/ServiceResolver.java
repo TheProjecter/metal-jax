@@ -11,7 +11,6 @@ import java.io.IOException;
 import java.util.Map;
 
 import metal.core.mapper.Mapper;
-import metal.jax.model.Request;
 
 public class ServiceResolver {
 

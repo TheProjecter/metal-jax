@@ -4,6 +4,7 @@
 	<dateObject><date>2013-12-31T00:00:00-05:00</date></dateObject>
 	<defaultObject><string/></defaultObject>
 	<doubleObject><double>7.123</double></doubleObject>
+	<intList><list><int>1</int><int>2</int><int>3</int></list></intList>
 	<intObject><int>4</int></intObject>
 	<longObject><long>5</long></longObject>
 	<stringObject><string>ABC</string></stringObject>

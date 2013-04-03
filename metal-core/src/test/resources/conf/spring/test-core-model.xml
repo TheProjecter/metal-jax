@@ -23,6 +23,7 @@ http://www.springframework.org/schema/util http://www.springframework.org/schema
 		<value>metal.core.model.BaseObject</value>
 		<value>metal.core.model.AnnotatedObject</value>
 		<value>metal.core.model.GenericObject</value>
+		<value>metal.core.model.TestModel</value>
 	</util:list>
 	
 </beans>

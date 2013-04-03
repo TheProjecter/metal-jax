@@ -34,8 +34,8 @@ public class JsonMapper extends BaseMapper implements Adapter<Object, Object> {
 			@Override
 			protected XmlAdapter<Object, Object> findAdapter(Annotated am, boolean forSerialization) {
 				XmlAdapter<Object,Object> adapter = super.findAdapter(am, forSerialization);
-				if (adapter instanceof JavaTypeAdapter) {
-					((JavaTypeAdapter)adapter).setAdapter(_this);
+				if (adapter instanceof BaseAdapter) {
+					((BaseAdapter)adapter).setAdapter(_this);
 				}
 				return adapter;
 			}
@@ -63,8 +63,16 @@ public class JsonMapper extends BaseMapper implements Adapter<Object, Object> {
 		}
 	}
 	
+	public Object marshal(Kind kind, Object object) {
+		return marshalInternal(object);
+	}
+	
+	public Object unmarshal(Kind kind, Object source) {
+		return unmarshalInternal(source);
+	}
+	
 	@SuppressWarnings("unchecked")
-	public Object marshal(Object object) {
+	public Object marshalInternal(Object object) {
 		JavaType type = JavaType.typeOf(object);
 		switch (type) {
 		case LONG:
@@ -81,7 +89,7 @@ public class JsonMapper extends BaseMapper implements Adapter<Object, Object> {
 	}
 	
 	@SuppressWarnings("unchecked")
-	public Object unmarshal(Object source) {
+	public Object unmarshalInternal(Object source) {
 		JavaType type = JavaType.typeOf(source);
 		switch (type) {
 		case LIST:
@@ -122,7 +130,7 @@ public class JsonMapper extends BaseMapper implements Adapter<Object, Object> {
 		if (list != null) {
 			result = new ArrayList<Object>();
 			for (Object item : list) {
-				result.add(marshal(item));
+				result.add(marshalInternal(item));
 			}
 		}
 		return result;
@@ -133,7 +141,7 @@ public class JsonMapper extends BaseMapper implements Adapter<Object, Object> {
 		if (map != null) {
 			result = new LinkedHashMap<String, Object>();
 			for (Map.Entry<String, Object> item : map.entrySet()) {
-				result.put(item.getKey(), marshal(item.getValue()));
+				result.put(item.getKey(), marshalInternal(item.getValue()));
 			}
 		}
 		return result;
@@ -171,7 +179,7 @@ public class JsonMapper extends BaseMapper implements Adapter<Object, Object> {
 		if (list != null) {
 			result = new ArrayList<Object>();
 			for (Object item : list) {
-				result.add(unmarshal(item));
+				result.add(unmarshalInternal(item));
 			}
 		}
 		return result;
@@ -182,7 +190,7 @@ public class JsonMapper extends BaseMapper implements Adapter<Object, Object> {
 		if (map != null) {
 			result = new LinkedHashMap<String, Object>();
 			for (Map.Entry<String, Object> item : map.entrySet()) {
-				result.put(item.getKey(), unmarshal(item.getValue()));
+				result.put(item.getKey(), unmarshalInternal(item.getValue()));
 			}
 		}
 		return result;

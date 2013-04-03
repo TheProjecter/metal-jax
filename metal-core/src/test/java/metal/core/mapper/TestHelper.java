@@ -11,6 +11,7 @@ import static metal.core.mapper.MapperMessageCode.*;
 
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -49,6 +50,7 @@ public class TestHelper {
 		object.setStringObject("ABC");
 		object.setDateObject(dateValue("20131231", "yyyyMMdd"));
 		object.setDefaultObject("");
+		object.setIntList(Arrays.asList(1, 2, 3));
 		return object;
 	}
 	
@@ -115,6 +117,7 @@ public class TestHelper {
 		Assert.assertTrue(o1.getStringObject().equals(o2.getStringObject()));
 		Assert.assertTrue(o1.getDateObject().equals(o2.getDateObject()));
 		Assert.assertTrue(o1.getDefaultObject().equals(o2.getDefaultObject()));
+		Assert.assertTrue(o1.getIntList().equals(o2.getIntList()));
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -156,7 +159,7 @@ public class TestHelper {
 		assertEquals((BaseObject)o1.get("objectObject"), (BaseObject)o2.get("objectObject"));
 	}
 	
-	private static Date dateValue(String value, String format) {
+	public static Date dateValue(String value, String format) {
 		try {
 			return DateUtils.parseDate(value, new String[]{format});
 		} catch (ParseException e) {

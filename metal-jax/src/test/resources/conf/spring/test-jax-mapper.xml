@@ -3,11 +3,11 @@
 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
 
-	<bean id="test-jax-xmlMapper" class="metal.jax.mapper.XmlMapper">
+	<bean id="test-jax-xmlMapper" class="metal.core.mapper.XmlMapper">
 		<property name="modelClasses" ref="test-jax-modelClasses"/>
 	</bean>
 	
-	<bean id="test-jax-jsonMapper" class="metal.jax.mapper.JsonMapper">
+	<bean id="test-jax-jsonMapper" class="metal.core.mapper.JsonMapper">
 		<property name="modelClasses" ref="test-jax-modelClasses"/>
 	</bean>
 

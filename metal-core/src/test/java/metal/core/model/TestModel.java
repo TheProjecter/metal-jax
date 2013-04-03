@@ -5,19 +5,22 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package metal.jax.model;
+package metal.core.model;
 
-import javax.xml.bind.annotation.XmlAnyElement;
-import javax.xml.bind.annotation.XmlElementWrapper;
+import java.util.List;
+
 import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlType;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+
+import metal.core.mapper.PropertyListAdapter;
+import metal.core.mapper.Property;
 
 @XmlRootElement(name = "model")
-@XmlType(propOrder={"property1", "property2", "modelProperties"})
-public class TestModel extends Model {
+public class TestModel {
 
 	private String property1;
 	private String property2;
+	private List<Property<Class<?>,Object>> properties;
 
 	public String getProperty1() {
 		return property1;
@@ -35,13 +38,12 @@ public class TestModel extends Model {
 		this.property2 = property2;
 	}
 
-	@XmlAnyElement
-	@XmlElementWrapper
-	public Property[] getModelProperties() {
+	@XmlJavaTypeAdapter(PropertyListAdapter.class)
+	public List<Property<Class<?>,Object>> getProperties() {
 		return properties;
 	}
-	
-	public void setModelProperties(Property[] properties) {
+
+	public void setProperties(List<Property<Class<?>,Object>> properties) {
 		this.properties = properties;
 	}
 

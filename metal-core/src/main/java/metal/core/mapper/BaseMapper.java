@@ -12,6 +12,8 @@ import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.xml.bind.ValidationEvent;
+import javax.xml.bind.ValidationEventHandler;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import org.apache.commons.lang.StringUtils;
@@ -19,19 +21,25 @@ import org.springframework.core.annotation.AnnotationUtils;
 
 public abstract class BaseMapper implements Mapper {
 
+	public static final class MapperEventHandler implements ValidationEventHandler {
+		public boolean handleEvent(ValidationEvent event) {
+			return false;
+		}
+	}
+	
 	private static final String DEFAULT = "##default";
 
-	private List<KeyValue<String, Class<?>>> modelClasses;
+	private List<Property<String, Class<?>>> modelClasses;
 
 	protected BaseMapper() {
-		this.modelClasses = new ArrayList<KeyValue<String, Class<?>>>();
+		this.modelClasses = new ArrayList<Property<String, Class<?>>>();
 	}
 
 	public void setModelClasses(List<Class<?>> modelClasses) {
 		for (Class<?> modelClass : modelClasses) {
 			XmlRootElement model = AnnotationUtils.findAnnotation(modelClass, XmlRootElement.class);
 			String name = ensureName((model != null) ? model.name() : DEFAULT, modelClass.getSimpleName());
-			this.modelClasses.add(new KeyValue<String, Class<?>>(name, modelClass));
+			this.modelClasses.add(new Property<String, Class<?>>(name, modelClass));
 		}
 	}
 
@@ -47,20 +55,20 @@ public abstract class BaseMapper implements Mapper {
 		return new String(out.toByteArray());
 	}
 
-	protected String modelName(Class<?> modelClass) {
-		for (KeyValue<String, Class<?>> keyValue : modelClasses) {
-			if (keyValue.getValue().equals(modelClass))
-				return keyValue.getKey();
+	protected String modelName(Class<?> clazz) {
+		for (Property<String, Class<?>> modelClass : modelClasses) {
+			if (modelClass.getValue().equals(clazz))
+				return modelClass.getKey();
 		}
-		return null;
+		return JavaType.typeOf(clazz).name;
 	}
 
 	protected Class<?> modelClass(String name) {
-		for (KeyValue<String, Class<?>> keyValue : modelClasses) {
-			if (keyValue.getKey().equals(name))
-				return keyValue.getValue();
+		for (Property<String, Class<?>> modelClass : modelClasses) {
+			if (modelClass.getKey().equals(name))
+				return modelClass.getValue();
 		}
-		return null;
+		return JavaType.typeOf(name).type;
 	}
 
 	private String ensureName(String name, String defaultName) {

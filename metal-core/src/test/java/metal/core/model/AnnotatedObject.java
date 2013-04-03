@@ -8,11 +8,12 @@
 package metal.core.model;
 
 import java.util.Date;
+import java.util.List;
 
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
-import metal.core.mapper.JavaTypeAdapter;
+import metal.core.mapper.ValueAdapter;
 
 @XmlRootElement
 public class AnnotatedObject {
@@ -24,55 +25,63 @@ public class AnnotatedObject {
 	private String stringObject;
 	private Date dateObject;
 	private String defaultObject;
+	private List<Integer> intList;
 	
-	@XmlJavaTypeAdapter(JavaTypeAdapter.class)
+	@XmlJavaTypeAdapter(ValueAdapter.class)
 	public Integer getIntObject() {
 		return intObject;
 	}
 	public void setIntObject(Integer intObject) {
 		this.intObject = intObject;
 	}
-	@XmlJavaTypeAdapter(JavaTypeAdapter.class)
+	@XmlJavaTypeAdapter(ValueAdapter.class)
 	public Long getLongObject() {
 		return longObject;
 	}
 	public void setLongObject(Long longObject) {
 		this.longObject = longObject;
 	}
-	@XmlJavaTypeAdapter(JavaTypeAdapter.class)
+	@XmlJavaTypeAdapter(ValueAdapter.class)
 	public Double getDoubleObject() {
 		return doubleObject;
 	}
 	public void setDoubleObject(Double doubleObject) {
 		this.doubleObject = doubleObject;
 	}
-	@XmlJavaTypeAdapter(JavaTypeAdapter.class)
+	@XmlJavaTypeAdapter(ValueAdapter.class)
 	public Boolean getBooleanObject() {
 		return booleanObject;
 	}
 	public void setBooleanObject(Boolean booleanObject) {
 		this.booleanObject = booleanObject;
 	}
-	@XmlJavaTypeAdapter(JavaTypeAdapter.class)
+	@XmlJavaTypeAdapter(ValueAdapter.class)
 	public String getStringObject() {
 		return stringObject;
 	}
 	public void setStringObject(String stringObject) {
 		this.stringObject = stringObject;
 	}
-	@XmlJavaTypeAdapter(JavaTypeAdapter.class)
+	@XmlJavaTypeAdapter(ValueAdapter.class)
 	public Date getDateObject() {
 		return dateObject;
 	}
 	public void setDateObject(Date dateObject) {
 		this.dateObject = dateObject;
 	}
-	@XmlJavaTypeAdapter(JavaTypeAdapter.class)
+	@XmlJavaTypeAdapter(ValueAdapter.class)
 	public String getDefaultObject() {
 		return defaultObject;
 	}
 	public void setDefaultObject(String defaultObject) {
 		this.defaultObject = defaultObject;
+	}
+	@XmlJavaTypeAdapter(ValueAdapter.class)
+	public List<Integer> getIntList() {
+		return intList;
+	}
+	public void setIntList(List<Integer> intList) {
+		this.intList = intList;
 	}
 	
 }

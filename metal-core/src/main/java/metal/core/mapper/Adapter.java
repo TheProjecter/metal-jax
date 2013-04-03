@@ -7,10 +7,12 @@
  */
 package metal.core.mapper;
 
-public interface Adapter<V,B> {
+public interface Adapter<V, B> {
 
-	public V marshal(B object) throws Exception;
+	enum Kind { PROPERTYLIST, VALUE }
 
-	public B unmarshal(V value) throws Exception;
+	public V marshal(Kind kind, B object) throws Exception;
+
+	public B unmarshal(Kind kind, V value) throws Exception;
 
 }

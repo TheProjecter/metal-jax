@@ -36,8 +36,11 @@ public enum JavaType {
 	}
 	
 	public static JavaType typeOf(Object object) {
-		if (object == null) return NULL;
-		Class<?> type = object.getClass();
+		return typeOf(object==null ? null : object.getClass());
+	}
+	
+	public static JavaType typeOf(Class<?> type) {
+		if (type == null) return NULL;
 		for (JavaType value : values) {
 			if (value.type == type || value.type.isAssignableFrom(type)) {
 				return value;
