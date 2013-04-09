@@ -20,6 +20,8 @@ import java.util.List;
 import java.util.Map;
 
 import javax.xml.bind.DatatypeConverter;
+import javax.xml.bind.ValidationEvent;
+import javax.xml.bind.ValidationEventHandler;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.transform.dom.DOMResult;
@@ -38,8 +40,14 @@ public class XmlMapper extends BaseMapper implements Adapter<Node, Object> {
 
 	public XmlMapper() {
 		mapper = new Jaxb2Marshaller();
-		mapper.setValidationEventHandler(new MapperEventHandler());
-		mapper.setAdapters(new BaseAdapter[] { new ValueAdapter<Node, Object>(this), new PropertyListAdapter<Node, Object>(this) });
+		mapper.setAdapters(new BaseAdapter[] {
+			new ValueAdapter<Node, Object>(this),
+			new PropertyListAdapter<Node, Object>(this)
+		});
+		mapper.setValidationEventHandler(new ValidationEventHandler() {
+			@Override
+			public boolean handleEvent(ValidationEvent event) { return false; }
+		});
 	}
 
 	public void setModelClasses(List<Class<?>> modelClasses) {
@@ -52,17 +60,18 @@ public class XmlMapper extends BaseMapper implements Adapter<Node, Object> {
 	}
 
 	protected DocumentBuilder getDocumentBuilder() {
-		try {
-			if (documentBuilder == null) {
+		if (documentBuilder == null) {
+			try {
 				documentBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+			} catch (Exception ex) {
+				throw new MapperException(UnexpectedException, ex);
 			}
-		} catch (Exception ex) {
-			throw new MapperException(UnexpectedException, ex);
 		}
 		return documentBuilder;
 	}
 
 	@Override
+	@SuppressWarnings("unchecked")
 	public <T> T read(Class<T> type, InputStream input) {
 		Object object = null;
 		try {
@@ -70,7 +79,7 @@ public class XmlMapper extends BaseMapper implements Adapter<Node, Object> {
 		} catch (Exception ex) {
 			throw new MapperException(UnexpectedException, ex);
 		}
-		if (type == null || object == null || type.isInstance(object))
+		if (type == null || object == null || type.isAssignableFrom(object.getClass()))
 			return (T) object;
 		throw new MapperException(UnexpectedType, type.getName(), object.getClass().getName());
 	}
@@ -86,7 +95,7 @@ public class XmlMapper extends BaseMapper implements Adapter<Node, Object> {
 
 	public Node marshal(Kind kind, Object object) {
 		Node result = getDocumentBuilder().newDocument().createElement("result");
-		marshalInternal(kind, object, result);
+		marshalValue(kind, object, null, result);
 		return result;
 	}
 
@@ -96,12 +105,13 @@ public class XmlMapper extends BaseMapper implements Adapter<Node, Object> {
 			return unmarshalList(kind, source);
 		case VALUE:
 		default:
-			return unmarshalInternal(kind, ensureElement(source.getFirstChild()));
+			return unmarshalValue(kind, ensureElement(source.getFirstChild()));
 		}
 	}
 
-	protected void marshalInternal(Kind kind, Object object, Node result) {
-		JavaType type = JavaType.typeOf(object);
+	@SuppressWarnings("unchecked")
+	protected void marshalValue(Kind kind, Object object, Class<?> clazz, Node result) {
+		JavaType type = JavaType.typeOf(object, clazz);
 		switch (type) {
 		case LIST:
 			marshalList(kind, (List<Object>) object, result);
@@ -113,12 +123,12 @@ public class XmlMapper extends BaseMapper implements Adapter<Node, Object> {
 			mapper.marshal(object, new DOMResult(result));
 			break;
 		default:
-			marshalSimple(object, type, result);
+			marshalSimple(object, type, clazz, result);
 			break;
 		}
 	}
 
-	protected Object unmarshalInternal(Kind kind, Node source) {
+	protected Object unmarshalValue(Kind kind, Node source) {
 		JavaType type = JavaType.typeOf(source.getNodeName());
 		switch (type) {
 		case LIST:
@@ -132,9 +142,11 @@ public class XmlMapper extends BaseMapper implements Adapter<Node, Object> {
 		}
 	}
 
-	protected void marshalSimple(Object object, JavaType type, Node result) {
+	protected void marshalSimple(Object object, JavaType type, Class<?> clazz, Node result) {
 		Document doc = result.getOwnerDocument();
-		Node node = result.appendChild(doc.createElement(type.name));
+		String typeName = ensureName(type != JavaType.NULL ? type.name : modelName(clazz),
+				clazz != null ? clazz.getSimpleName() : JavaType.NULL.name);
+		Node node = result.appendChild(doc.createElement(typeName));
 		switch (type) {
 		case DATE:
 			Calendar cal = Calendar.getInstance();
@@ -142,6 +154,9 @@ public class XmlMapper extends BaseMapper implements Adapter<Node, Object> {
 			node.appendChild(doc.createTextNode(DatatypeConverter.printDateTime(cal)));
 			break;
 		case NULL:
+			if (!JavaType.NULL.name.equals(typeName)) {
+				node.appendChild(doc.createElement(JavaType.NULL.name));
+			}
 			break;
 		default:
 			node.appendChild(doc.createTextNode(String.valueOf(object)));
@@ -149,13 +164,15 @@ public class XmlMapper extends BaseMapper implements Adapter<Node, Object> {
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	protected void marshalList(Kind kind, List<Object> list, Node result) {
 		Document doc = result.getOwnerDocument();
 		switch (kind) {
 		case PROPERTYLIST:
 			if (list != null) {
 				for (Object item : list) {
-					marshalInternal(VALUE, ((Property<Class<?>,Object>)item).getValue(), result);
+					Property<Class<?>, Object> property = (Property<Class<?>,Object>)item;
+					marshalValue(VALUE, property.getValue(), property.getKey(), result);
 				}
 			}
 			break;
@@ -163,7 +180,7 @@ public class XmlMapper extends BaseMapper implements Adapter<Node, Object> {
 			Node node = result.appendChild(doc.createElement(JavaType.LIST.name));
 			if (list != null) {
 				for (Object item : list) {
-					marshalInternal(VALUE, item, node);
+					marshalValue(VALUE, item, null, node);
 				}
 			}
 			break;
@@ -175,31 +192,40 @@ public class XmlMapper extends BaseMapper implements Adapter<Node, Object> {
 		Node node = result.appendChild(doc.createElement(JavaType.MAP.name));
 		if (map != null) {
 			for (Map.Entry<String, Object> item : map.entrySet()) {
-				marshalInternal(VALUE, item.getValue(), node.appendChild(doc.createElement(item.getKey())));
+				marshalValue(VALUE, item.getValue(), null, node.appendChild(doc.createElement(item.getKey())));
 			}
 		}
 	}
 
 	protected Object unmarshalSimple(Node source, JavaType type) {
-		String text = source.getChildNodes().getLength() == 1 ? source.getFirstChild().getNodeValue() : null;
-		if (text == null)
-			return (type == JavaType.STRING) ? "" : null;
-		switch (type) {
-		case INT:
-			return Integer.valueOf(text);
-		case LONG:
-			return Long.valueOf(text);
-		case DOUBLE:
-			return Double.valueOf(text);
-		case BOOLEAN:
-			return Boolean.valueOf(text);
-		case STRING:
-			return String.valueOf(text);
-		case DATE:
-			return DatatypeConverter.parseDateTime(text).getTime();
-		case NULL:
-		default:
-			return null;
+		Node node = source.getChildNodes().getLength() == 1 ? source.getFirstChild() : null;
+		if (node != null && node.getNodeType() != Node.TEXT_NODE) {
+			if (node.getNodeType() == Node.ELEMENT_NODE && node.getNodeName().equals(JavaType.NULL.name))
+				return null;
+			throw new MapperException(IncorrectContentModel, node.getNodeName());
+		}
+		String text = node != null ? node.getNodeValue() : null;
+		if (text == null) return type.value;
+		try {
+			switch (type) {
+			case INT:
+				return Integer.valueOf(text);
+			case LONG:
+				return Long.valueOf(text);
+			case DOUBLE:
+				return Double.valueOf(text);
+			case BOOLEAN:
+				return Boolean.valueOf(text);
+			case STRING:
+				return String.valueOf(text);
+			case DATE:
+				return DatatypeConverter.parseDateTime(text).getTime();
+			case NULL:
+			default:
+				return null;
+			}
+		} catch (Exception ex) {
+			throw new MapperException(IncorrectContentModel, source.getNodeName());
 		}
 	}
 
@@ -209,10 +235,10 @@ public class XmlMapper extends BaseMapper implements Adapter<Node, Object> {
 		while (item != null) {
 			switch (kind) {
 			case PROPERTYLIST:
-				list.add(new Property<Class<?>,Object>(modelClass(item.getNodeName()), unmarshalInternal(VALUE, item)));
+				list.add(new Property<Class<?>,Object>(modelClass(item), unmarshalValue(VALUE, item)));
 				break;
 			case VALUE:
-				list.add(unmarshalInternal(VALUE, item));
+				list.add(unmarshalValue(VALUE, item));
 				break;
 			}
 			item = ensureElementOrNull(item.getNextSibling());
@@ -225,7 +251,7 @@ public class XmlMapper extends BaseMapper implements Adapter<Node, Object> {
 		Node item = ensureElementOrNull(source.getFirstChild());
 		while (item != null) {
 			map.put(item.getNodeName(),
-					unmarshalInternal(VALUE, ensureElement(item.getFirstChild())));
+					unmarshalValue(VALUE, ensureElement(item.getFirstChild())));
 			item = ensureElementOrNull(item.getNextSibling());
 		}
 		return map;
@@ -234,7 +260,7 @@ public class XmlMapper extends BaseMapper implements Adapter<Node, Object> {
 	protected Node ensureElement(Node node) {
 		Node next = ensureElementOrNull(node);
 		if (next == null) {
-			throw new MapperException(ContentModel, node.getParentNode().getNodeName());
+			throw new MapperException(IncorrectContentModel, node.getParentNode().getNodeName());
 		}
 		return next;
 	}
@@ -246,4 +272,9 @@ public class XmlMapper extends BaseMapper implements Adapter<Node, Object> {
 		return next;
 	}
 
+	protected Class<?> modelClass(Node source) {
+		JavaType type = JavaType.typeOf(source.getNodeName());
+		return type != JavaType.OBJECT ? type.type : modelClass(source.getNodeName()); 
+	}
+	
 }

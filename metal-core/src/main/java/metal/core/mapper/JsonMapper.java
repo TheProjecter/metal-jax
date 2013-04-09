@@ -7,6 +7,7 @@
  */
 package metal.core.mapper;
 
+import static metal.core.mapper.Adapter.Kind.*;
 import static metal.core.mapper.MapperMessageCode.*;
 
 import java.io.InputStream;
@@ -35,7 +36,7 @@ public class JsonMapper extends BaseMapper implements Adapter<Object, Object> {
 			protected XmlAdapter<Object, Object> findAdapter(Annotated am, boolean forSerialization) {
 				XmlAdapter<Object,Object> adapter = super.findAdapter(am, forSerialization);
 				if (adapter instanceof BaseAdapter) {
-					((BaseAdapter)adapter).setAdapter(_this);
+					((BaseAdapter<Object, Object>)adapter).setAdapter(_this);
 				}
 				return adapter;
 			}
@@ -64,34 +65,36 @@ public class JsonMapper extends BaseMapper implements Adapter<Object, Object> {
 	}
 	
 	public Object marshal(Kind kind, Object object) {
-		return marshalInternal(object);
+		return marshalValue(kind, object, null);
 	}
 	
 	public Object unmarshal(Kind kind, Object source) {
-		return unmarshalInternal(source);
+		return unmarshalValue(kind, source);
 	}
 	
-	public Object marshalInternal(Object object) {
-		JavaType type = JavaType.typeOf(object);
+	@SuppressWarnings("unchecked")
+	public Object marshalValue(Kind kind, Object object, Class<?> clazz) {
+		JavaType type = JavaType.typeOf(object, clazz);
 		switch (type) {
+		case LIST:
+			return marshalList(kind, (List<Object>) object);
+		case MAP:
+			return marshalMap((Map<String, Object>) object);
 		case LONG:
 		case DATE:
 		case OBJECT:
-			return marshalSimple(object, type);
-		case LIST:
-			return marshalList((List<Object>) object);
-		case MAP:
-			return marshalMap((Map<String, Object>) object);
+			return marshalSimple(object, type, clazz);
 		default:
 			return object;
 		}
 	}
 	
-	public Object unmarshalInternal(Object source) {
-		JavaType type = JavaType.typeOf(source);
+	@SuppressWarnings("unchecked")
+	public Object unmarshalValue(Kind kind, Object source) {
+		JavaType type = JavaType.typeOf(source, null);
 		switch (type) {
 		case LIST:
-			return unmarshalList((List<Object>)source);
+			return unmarshalList(kind, (List<Object>)source);
 		case MAP:
 			Object result = unmarshalSimple((Map<String, Object>)source);
 			if (result != null) {
@@ -104,31 +107,43 @@ public class JsonMapper extends BaseMapper implements Adapter<Object, Object> {
 		}
 	}
 	
-	protected Object marshalSimple(Object object, JavaType type) {
+	protected Object marshalSimple(Object object, JavaType type, Class<?> clazz) {
 		Map<String,Object> result = new HashMap<String,Object>();
 		switch (type) {
 		case LONG:
-			result.put(type.name, String.valueOf(object));
+			result.put(type.name, object);
 			break;
 		case DATE:
-			result.put(type.name, String.valueOf(((Date)object).getTime()));
+			result.put(type.name, ((Date)object).getTime());
 			break;
 		case OBJECT:
 		default:
-			String name = modelName(object.getClass());
-			if (name == null) return object;
-			result.put(name, object);
+			String typeName = modelName(object.getClass());
+			if (typeName != null) {
+				result.put(typeName, object);
+			}
 			break;
 		}
 		return result;
 	}
 
-	protected Object marshalList(List<Object> list) {
+	@SuppressWarnings("unchecked")
+	protected Object marshalList(Kind kind, List<Object> list) {
 		List<Object> result = null;
 		if (list != null) {
 			result = new ArrayList<Object>();
-			for (Object item : list) {
-				result.add(marshalInternal(item));
+			switch (kind) {
+			case PROPERTYLIST:
+				for (Object item : list) {
+					Property<Class<?>, Object> property = (Property<Class<?>,Object>)item;
+					result.add(marshalValue(VALUE, property.getValue(), property.getKey()));
+				}
+				break;
+			case VALUE:
+				for (Object item : list) {
+					result.add(marshalValue(VALUE, item, null));
+				}
+				break;
 			}
 		}
 		return result;
@@ -139,26 +154,21 @@ public class JsonMapper extends BaseMapper implements Adapter<Object, Object> {
 		if (map != null) {
 			result = new LinkedHashMap<String, Object>();
 			for (Map.Entry<String, Object> item : map.entrySet()) {
-				result.put(item.getKey(), marshalInternal(item.getValue()));
+				result.put(item.getKey(), marshalValue(VALUE, item.getValue(), null));
 			}
 		}
 		return result;
 	}
 	
 	protected Object unmarshalSimple(Map<String, Object> map) {
-		JavaType type;
-		Object source;
-		Class<?> modelClass = null;
-		if (map.size() == 1) {
-			Map.Entry<String, Object> entry = map.entrySet().iterator().next();
-			source = entry.getValue();
-			type = JavaType.typeOf(entry.getKey());
-			if (type == JavaType.OBJECT) {
-				modelClass = modelClass(entry.getKey());
-				if (modelClass == null) return null;
-			}
-		} else {
-			return null;
+		if (map.size() != 1) return null;
+		Class<?> clazz = null;
+		Map.Entry<String, Object> entry = map.entrySet().iterator().next();
+		Object source = entry.getValue();
+		JavaType type = JavaType.typeOf(entry.getKey());
+		if (type == JavaType.OBJECT) {
+			clazz = modelClass(entry.getKey());
+			if (clazz == null) return null;
 		}
 		
 		switch (type) {
@@ -168,16 +178,23 @@ public class JsonMapper extends BaseMapper implements Adapter<Object, Object> {
 			return new Date(Long.valueOf(String.valueOf(source)));
 		case OBJECT:
 		default:
-			return mapper.convertValue(source, modelClass);
+			return mapper.convertValue(source, clazz);
 		}
 	}
 	
-	protected Object unmarshalList(List<Object> list) {
+	protected Object unmarshalList(Kind kind, List<Object> list) {
 		List<Object> result = null;
 		if (list != null) {
 			result = new ArrayList<Object>();
 			for (Object item : list) {
-				result.add(unmarshalInternal(item));
+				switch (kind) {
+				case PROPERTYLIST:
+					result.add(new Property<Class<?>,Object>(modelClass(item), unmarshalValue(VALUE, item)));
+					break;
+				case VALUE:
+					result.add(unmarshalValue(VALUE, item));
+					break;
+				}
 			}
 		}
 		return result;
@@ -188,10 +205,29 @@ public class JsonMapper extends BaseMapper implements Adapter<Object, Object> {
 		if (map != null) {
 			result = new LinkedHashMap<String, Object>();
 			for (Map.Entry<String, Object> item : map.entrySet()) {
-				result.put(item.getKey(), unmarshalInternal(item.getValue()));
+				result.put(item.getKey(), unmarshalValue(VALUE, item.getValue()));
 			}
 		}
 		return result;
+	}
+	
+	@SuppressWarnings("unchecked")
+	protected Class<?> modelClass(Object source) {
+		JavaType type = JavaType.typeOf(source, null);
+		switch (type) {
+		case MAP:
+			Map<String, Object> map = (Map<String,Object>) source;
+			if (map.size() == 1) {
+				Map.Entry<String, Object> entry = map.entrySet().iterator().next();
+				JavaType valueType = JavaType.typeOf(entry.getKey());
+				if (valueType != JavaType.OBJECT) return valueType.type;
+				Class<?> clazz = super.modelClass(entry.getKey());
+				if (clazz != null) return clazz;
+			}
+			// no break
+		default:
+			return type.type;
+		}
 	}
 	
 }

@@ -1,10 +1,10 @@
 {
 	"intObject": 4,
-	"longObject": { "long": "5" },
+	"longObject": { "long": 5 },
 	"doubleObject": 7.123,
 	"booleanObject": true,
 	"stringObject": "ABC",
-	"dateObject": { "date": "1388466000000" },
+	"dateObject": { "date": 1388466000000 },
 	"defaultObject": "",
 	"intList": [ 1, 2, 3 ]
 }

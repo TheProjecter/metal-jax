@@ -12,8 +12,6 @@ import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.xml.bind.ValidationEvent;
-import javax.xml.bind.ValidationEventHandler;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import org.apache.commons.lang.StringUtils;
@@ -21,12 +19,6 @@ import org.springframework.core.annotation.AnnotationUtils;
 
 public abstract class BaseMapper implements Mapper {
 
-	public static final class MapperEventHandler implements ValidationEventHandler {
-		public boolean handleEvent(ValidationEvent event) {
-			return false;
-		}
-	}
-	
 	private static final String DEFAULT = "##default";
 
 	private List<Property<String, Class<?>>> modelClasses;
@@ -60,7 +52,7 @@ public abstract class BaseMapper implements Mapper {
 			if (modelClass.getValue().equals(clazz))
 				return modelClass.getKey();
 		}
-		return JavaType.typeOf(clazz).name;
+		return null;
 	}
 
 	protected Class<?> modelClass(String name) {
@@ -68,11 +60,11 @@ public abstract class BaseMapper implements Mapper {
 			if (modelClass.getKey().equals(name))
 				return modelClass.getValue();
 		}
-		return JavaType.typeOf(name).type;
+		return null;
 	}
 
-	private String ensureName(String name, String defaultName) {
-		if (StringUtils.equals(name, DEFAULT)) {
+	protected String ensureName(String name, String defaultName) {
+		if (StringUtils.isEmpty(name) || StringUtils.equals(name, DEFAULT)) {
 			name = defaultName;
 			if (!Character.isLowerCase(name.charAt(0))) {
 				char[] chars = name.toCharArray();

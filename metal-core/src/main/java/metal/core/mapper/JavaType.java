@@ -7,25 +7,29 @@
  */
 package metal.core.mapper;
 
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
 public enum JavaType {
-	INT("int", Integer.class),
-	LONG("long", Long.class),
-	DOUBLE("double", Double.class),
-	BOOLEAN("boolean", Boolean.class),
-	STRING("string", String.class),
-	DATE("date", Date.class),
-	LIST("list", List.class),
-	MAP("map", Map.class),
-	OBJECT("object", Object.class),
-	NULL("null", Object.class);
+	INT("int", Integer.class, null),
+	LONG("long", Long.class, null),
+	DOUBLE("double", Double.class, null),
+	BOOLEAN("boolean", Boolean.class, null),
+	STRING("string", String.class, ""),
+	DATE("date", Date.class, null),
+	LIST("list", List.class, Collections.emptyList()),
+	MAP("map", Map.class, Collections.emptyMap()),
+	OBJECT("object", Object.class, null),
+	NULL("null", null, null);
 	
 	public final String name;
 	public final Class<?> type;
-	private JavaType(String name, Class<?> type) { this.name = name; this.type = type; }
+	public final Object value;
+	private JavaType(String name, Class<?> type, Object value) {
+		this.name = name; this.type = type; this.value = value;
+	}
 	private static final JavaType[] values = JavaType.values();
 	
 	public static JavaType typeOf(String name) {
@@ -33,10 +37,6 @@ public enum JavaType {
 			if (value.name.equals(name)) return value;
 		}
 		return OBJECT;
-	}
-	
-	public static JavaType typeOf(Object object) {
-		return typeOf(object==null ? null : object.getClass());
 	}
 	
 	public static JavaType typeOf(Class<?> type) {
@@ -47,6 +47,11 @@ public enum JavaType {
 			}
 		}
 		return OBJECT;
+	}
+	
+	public static JavaType typeOf(Object object, Class<?> clazz) {
+		clazz = object == null ? null : clazz != null ? clazz : object.getClass();
+		return typeOf(clazz);
 	}
 	
 }

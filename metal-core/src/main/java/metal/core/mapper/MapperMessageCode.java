@@ -12,5 +12,5 @@ import metal.core.message.MessageCode;
 public enum MapperMessageCode implements MessageCode {
 	UnexpectedException,
 	UnexpectedType,
-	ContentModel
+	IncorrectContentModel
 }
