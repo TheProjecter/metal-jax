@@ -120,6 +120,7 @@ public class TestHelper {
 		Assert.assertTrue(o1.getIntList().equals(o2.getIntList()));
 	}
 	
+	@SuppressWarnings("unchecked")
 	public static void assertEquals(GenericObject o1, GenericObject o2) {
 		Assert.assertTrue(o1.getIntObject().equals(o2.getIntObject()));
 		Assert.assertTrue(o1.getLongObject().equals(o2.getLongObject()));
