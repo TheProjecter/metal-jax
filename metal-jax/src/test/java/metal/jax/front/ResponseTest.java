@@ -25,21 +25,21 @@ import metal.core.test.TestBase;
 import org.apache.commons.io.IOUtils;
 import org.junit.Test;
 
-public class RequestTest extends TestBase {
+public class ResponseTest extends TestBase {
 
 	@Resource(name = "test-jax-xmlMapper")
 	private Mapper xmlMapper;
 
 	@Test
 	@SuppressWarnings("unchecked")
-	public void testRequest_write() {
-		Request request = null, request2 = null;
+	public void testResponse_write() {
+		Response response = null, response2 = null;
 		String xml = null, xml2 = null;
 
 		try {
-			request = new Request();
-			request.setMethod("hello");
-			request.setParameters(Arrays.asList(
+			response = new Response();
+			response.setStatus("hello");
+			response.setResults(Arrays.asList(
 					new Property<Class<?>, Object>(Integer.class, 4),
 					new Property<Class<?>, Object>(Long.class, 5L),
 					new Property<Class<?>, Object>(Double.class, 7.123),
@@ -51,14 +51,14 @@ public class RequestTest extends TestBase {
 					new Property<Class<?>, Object>(BaseObject.class, TestHelper.init(new BaseObject())),
 					new Property<Class<?>, Object>(List.class, TestHelper.init(new ArrayList<Object>())),
 					new Property<Class<?>, Object>(Map.class, TestHelper.init(new LinkedHashMap<String, Object>()))));
-			xml = xmlMapper.write(request);
+			xml = xmlMapper.write(response);
 		} catch (Exception e) {
 			fail(e);
 		}
 
 		try {
-			request2 = xmlMapper.read(Request.class, xml);
-			xml2 = xmlMapper.write(request2);
+			response2 = xmlMapper.read(Response.class, xml);
+			xml2 = xmlMapper.write(response2);
 		} catch (Exception e) {
 			fail(e);
 		}
@@ -67,19 +67,19 @@ public class RequestTest extends TestBase {
 	}
 
 	@Test
-	public void testRequest_read() {
-		Request request;
+	public void testResponse_read() {
+		Response response;
 		String xml = null, xml2 = null;
 
 		try {
-			xml = IOUtils.toString(source("request.xml"));
+			xml = IOUtils.toString(source("response.xml"));
 		} catch (Exception e) {
 			fail(e);
 		}
 
 		try {
-			request = xmlMapper.read(Request.class, xml);
-			xml2 = xmlMapper.write(request);
+			response = xmlMapper.read(Response.class, xml);
+			xml2 = xmlMapper.write(response);
 		} catch (Exception e) {
 			fail(e);
 		}
