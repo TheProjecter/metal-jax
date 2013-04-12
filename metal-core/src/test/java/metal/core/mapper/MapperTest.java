@@ -32,6 +32,7 @@ public class MapperTest extends TestBase {
 	private Mapper xmlMapper;
 
 	@Test
+	@SuppressWarnings("unchecked")
 	public void testXmlMapper_write() {
 		TestModel model = null, model2 = null;
 		String xml = null, xml2 = null;
@@ -46,16 +47,12 @@ public class MapperTest extends TestBase {
 					new Property<Class<?>, Object>(Double.class, 7.123),
 					new Property<Class<?>, Object>(Boolean.class, true),
 					new Property<Class<?>, Object>(String.class, "ABC"),
-					new Property<Class<?>, Object>(Date.class, TestHelper
-							.dateValue("20131231", "yyyyMMdd")),
+					new Property<Class<?>, Object>(Date.class, TestHelper.dateValue("20131231", "yyyyMMdd")),
 					new Property<Class<?>, Object>(String.class, ""),
 					new Property<Class<?>, Object>((Class<?>) null, null),
-					new Property<Class<?>, Object>(BaseObject.class, TestHelper
-							.init(new BaseObject())),
-					new Property<Class<?>, Object>(List.class, TestHelper
-							.init(new ArrayList<Object>())),
-					new Property<Class<?>, Object>(Map.class, TestHelper
-							.init(new LinkedHashMap<String, Object>()))));
+					new Property<Class<?>, Object>(BaseObject.class, TestHelper.init(new BaseObject())),
+					new Property<Class<?>, Object>(List.class, TestHelper.init(new ArrayList<Object>())),
+					new Property<Class<?>, Object>(Map.class, TestHelper.init(new LinkedHashMap<String, Object>()))));
 			xml = xmlMapper.write(model);
 		} catch (Exception e) {
 			fail(e);
