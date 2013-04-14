@@ -16,12 +16,12 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringEscapeUtils;
 
-public class CrossDomainResponseWrapper extends BaseResponseWrapper {
+public class CrossDomainResponse extends BaseResponse {
 	
 	private String requestURL;
 	private String version;
 	
-	public CrossDomainResponseWrapper(HttpServletResponse response, String requestURL, String version) {
+	public CrossDomainResponse(HttpServletResponse response, String requestURL, String version) {
 		super(response);
 		this.requestURL = requestURL;
 		this.version = version;

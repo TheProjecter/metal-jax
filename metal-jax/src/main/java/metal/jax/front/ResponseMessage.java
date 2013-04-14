@@ -16,12 +16,18 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import metal.core.mapper.Property;
 import metal.core.mapper.PropertyListAdapter;
 
-@XmlRootElement
-public class Response {
+@XmlRootElement(name="response")
+public class ResponseMessage {
 
 	private String status;
 	private List<Property<Class<?>, Object>> results = Collections.emptyList();
 
+	public ResponseMessage() {}
+	
+	public ResponseMessage(Object value, Throwable exception) {
+		
+	}
+	
 	public String getStatus() {
 		return status;
 	}

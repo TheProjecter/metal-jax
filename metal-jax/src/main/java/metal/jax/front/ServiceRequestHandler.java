@@ -10,12 +10,16 @@ package metal.jax.front;
 import static metal.jax.front.FrontMessageCode.*;
 
 import java.io.IOException;
+import java.util.Collections;
 import java.util.Map;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import metal.core.mapper.Mapper;
+
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
@@ -26,7 +30,8 @@ import org.springframework.remoting.support.RemoteInvocationResult;
 public class ServiceRequestHandler extends HttpInvokerServiceExporter implements ApplicationContextAware {
 	
 	private ApplicationContext context;
-	private Map<String,ServiceResolver> serviceMap;
+	private Map<String,Service> serviceMap = Collections.emptyMap();
+	private Mapper messageMapper;
 	
 	@Override
 	public void afterPropertiesSet() {}
@@ -35,43 +40,50 @@ public class ServiceRequestHandler extends HttpInvokerServiceExporter implements
 		this.context = context;
 	}
 	
-	public void setServiceMap(Map<String,ServiceResolver> serviceMap) {
+	public void setServiceMap(Map<String,Service> serviceMap) {
 		this.serviceMap = serviceMap;
+	}
+
+	public void setMessageMapper(Mapper messageMapper) {
+		this.messageMapper = messageMapper;
 	}
 
 	@Override
 	public void handleRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		ServiceRequestWrapper requestWrapper = new ServiceRequestWrapper(request);
-		ServiceResolver resolver = getServiceResolver(requestWrapper);
-		Object service = resolveService(resolver, requestWrapper);
-		RemoteInvocation invocation = resolveInvocation(resolver, requestWrapper);
-		RemoteInvocationResult result = invokeAndCreateResult(invocation, service);
-		new ServiceResponseWrapper(response, result.getValue(), result.getException()).flushBuffer();
+		ServiceRequest serviceRequest = new ServiceRequest(request);
+		Service service = serviceMap.get(serviceRequest.getServletPath());
+		ResponseMessage message = invokeService(service, serviceRequest);
+		new ServiceResponse(response, message).flushBuffer();
 	}
 
-	protected ServiceResolver getServiceResolver(ServiceRequestWrapper request) {
-		String key = request.getServletPath();
-		ServiceResolver resolver = serviceMap != null ? serviceMap.get(key) : null;
-		if (resolver == null) {
-			throw new FrontException(UnknownService, key);
-		}
-		return resolver;
-	}
-	
-	protected Object resolveService(ServiceResolver resolver, ServiceRequestWrapper request) {
-		String key = resolver.resolveServicePath(request);
+	protected ResponseMessage invokeService(Service service, ServiceRequest request) {
 		try {
-			return context.getBean(key);
-		} catch (Exception e) {
-			throw new FrontException(UnknownServicePath, e, key);
+			String method = service.getRequestMethod(request);
+			Object target = getInvocationTarget(service, request);
+			RequestMessage message = messageMapper.read(RequestMessage.class, request.getInputStream());
+			return invoke(method, target, message);
+		} catch (Exception ex) {
+			return new ResponseMessage(null, ex);
 		}
 	}
 	
-	protected RemoteInvocation resolveInvocation(ServiceResolver resolver, ServiceRequestWrapper requestWrapper) throws IOException {
-		Request request = resolver.parseRequest(requestWrapper);
-		String methodName = request.getMethod();
-		methodName = (methodName != null && methodName.length() != 0) ? methodName : resolver.resolveServiceMethod(requestWrapper);
-		return new RemoteInvocation(methodName, request.getParameterTypes(), request.getParameterValues());
+	protected ResponseMessage invoke(String method, Object target, RequestMessage message) {
+		method = StringUtils.isEmpty(message.getMethod()) ? method : message.getMethod();
+		RemoteInvocation invocation = new RemoteInvocation(method, message.getParameterTypes(), message.getParameterValues());
+		RemoteInvocationResult result = invokeAndCreateResult(invocation, target);
+		return new ResponseMessage(result.getValue(), result.getException());
+	}
+	
+	protected Object getInvocationTarget(Service service, ServiceRequest request) {
+		if (service == null) {
+			throw new FrontException(UnknownService, request.getServletPath());
+		}
+		String servicePath = service.getServicePath(request);
+		try {
+			return context.getBean(servicePath);
+		} catch (Exception e) {
+			throw new FrontException(UnknownServicePath, e, servicePath);
+		}
 	}
 	
 }

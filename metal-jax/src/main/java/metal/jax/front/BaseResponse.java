@@ -19,7 +19,7 @@ import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpServletResponseWrapper;
 
-abstract class BaseResponseWrapper extends HttpServletResponseWrapper {
+abstract class BaseResponse extends HttpServletResponseWrapper {
 
 	private class BufferedOutputStream extends ServletOutputStream {
 		public void write(int b) throws IOException { buffer.write(b); }
@@ -34,7 +34,7 @@ abstract class BaseResponseWrapper extends HttpServletResponseWrapper {
 	private String message;
 	private int status;
 	
-	public BaseResponseWrapper(HttpServletResponse response) {
+	public BaseResponse(HttpServletResponse response) {
 		super(response);
 	}
 	

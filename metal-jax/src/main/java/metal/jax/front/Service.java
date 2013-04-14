@@ -7,16 +7,13 @@
  */
 package metal.jax.front;
 
-import java.io.IOException;
+import java.util.Collections;
 import java.util.Map;
 
-import metal.core.mapper.Mapper;
-
-public class ServiceResolver {
+public class Service {
 
 	private String servicePath;
-	private Map<String,String> methodMap;
-	private Mapper mapper;
+	private Map<String,String> methodMap = Collections.emptyMap();
 	
 	public void setServicePath(String servicePath) {
 		this.servicePath = servicePath;
@@ -26,25 +23,13 @@ public class ServiceResolver {
 		this.methodMap = methodMap;
 	}
 
-	public void setMapper(Mapper mapper) {
-		this.mapper = mapper;
-	}
-
-	public String resolveServicePath(ServiceRequestWrapper request) {
+	public String getServicePath(ServiceRequest request) {
 		if (servicePath != null) return servicePath;
 		return request.getDirName();
 	}
 	
-	public String resolveServiceMethod(ServiceRequestWrapper request) {
-		String method = null;
-		if (methodMap != null) {
-			method = methodMap.get(request.getMethod());
-		}
-		return method;
-	}
-	
-	public Request parseRequest(ServiceRequestWrapper request) throws IOException {
-		return mapper.read(Request.class, request.getInputStream());
+	public String getRequestMethod(ServiceRequest request) {
+		return methodMap.get(request.getMethod());
 	}
 	
 }

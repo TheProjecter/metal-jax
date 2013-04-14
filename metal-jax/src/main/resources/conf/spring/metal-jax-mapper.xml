@@ -6,8 +6,8 @@ xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.sprin
 	<bean id="metal-jax-xmlMapper" class="metal.core.mapper.XmlMapper">
 		<property name="modelClasses">
 			<list>
-				<value>metal.jax.front.Request</value>
-				<value>metal.jax.front.Response</value>
+				<value>metal.jax.front.RequestMessage</value>
+				<value>metal.jax.front.ResponseMessage</value>
 			</list>
 		</property>
 	</bean>

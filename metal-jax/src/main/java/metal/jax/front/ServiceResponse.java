@@ -12,15 +12,13 @@ import java.io.PrintWriter;
 
 import javax.servlet.http.HttpServletResponse;
 
-public class ServiceResponseWrapper extends BaseResponseWrapper {
+public class ServiceResponse extends BaseResponse {
 	
-	private Object value;
-	private Throwable error;
+	private ResponseMessage message;
 	
-	public ServiceResponseWrapper(HttpServletResponse response, Object value, Throwable error) {
+	public ServiceResponse(HttpServletResponse response, ResponseMessage message) {
 		super(response);
-		this.value = value;
-		this.error = error;
+		this.message = message;
 	}
 	
 	@Override

@@ -16,8 +16,8 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import metal.core.mapper.Property;
 import metal.core.mapper.PropertyListAdapter;
 
-@XmlRootElement
-public class Request {
+@XmlRootElement(name="request")
+public class RequestMessage {
 
 	private String method;
 	private List<Property<Class<?>, Object>> parameters = Collections.emptyList();

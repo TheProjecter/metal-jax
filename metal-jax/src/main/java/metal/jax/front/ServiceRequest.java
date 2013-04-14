@@ -18,7 +18,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
-public class ServiceRequestWrapper extends BaseRequestWrapper {
+public class ServiceRequest extends BaseRequest {
 	
 	private String dirName;
 	private String baseName;
@@ -26,7 +26,7 @@ public class ServiceRequestWrapper extends BaseRequestWrapper {
 	private boolean methodAsBaseName;
 	private Object[] values;
 	
-	public ServiceRequestWrapper(HttpServletRequest request) {
+	public ServiceRequest(HttpServletRequest request) {
 		super(request);
 		init(getPathInfo());
 	}

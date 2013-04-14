@@ -8,13 +8,13 @@ xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.sprin
 	</bean>
 	
 	<bean id="metal-jax-serviceRequestHandler" class="metal.jax.front.ServiceRequestHandler">
+		<property name="messageMapper" ref="metal-jax-xmlMapper"/>
 		<property name="serviceMap">
 			<map>
-				<entry key="/service"><bean class="metal.jax.front.ServiceResolver"/></entry>
+				<entry key="/service"><bean class="metal.jax.front.Service"/></entry>
 				<entry key="/model">
-					<bean class="metal.jax.front.ServiceResolver">
-						<property name="servicePath" value="/metal-core/model"/>
-						<property name="mapper" ref="metal-jax-xmlMapper"/>
+					<bean class="metal.jax.front.Service">
+						<property name="servicePath" value="/metal/jax/model"/>
 						<property name="methodMap">
 							<map>
 								<entry key="GET" value="load"/>

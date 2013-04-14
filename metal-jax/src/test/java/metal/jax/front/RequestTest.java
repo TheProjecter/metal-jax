@@ -33,11 +33,11 @@ public class RequestTest extends TestBase {
 	@Test
 	@SuppressWarnings("unchecked")
 	public void testRequest_write() {
-		Request request = null, request2 = null;
+		RequestMessage request = null, request2 = null;
 		String xml = null, xml2 = null;
 
 		try {
-			request = new Request();
+			request = new RequestMessage();
 			request.setMethod("hello");
 			request.setParameters(Arrays.asList(
 					new Property<Class<?>, Object>(Integer.class, 4),
@@ -57,7 +57,7 @@ public class RequestTest extends TestBase {
 		}
 
 		try {
-			request2 = xmlMapper.read(Request.class, xml);
+			request2 = xmlMapper.read(RequestMessage.class, xml);
 			xml2 = xmlMapper.write(request2);
 		} catch (Exception e) {
 			fail(e);
@@ -68,7 +68,7 @@ public class RequestTest extends TestBase {
 
 	@Test
 	public void testRequest_read() {
-		Request request;
+		RequestMessage request;
 		String xml = null, xml2 = null;
 
 		try {
@@ -78,7 +78,7 @@ public class RequestTest extends TestBase {
 		}
 
 		try {
-			request = xmlMapper.read(Request.class, xml);
+			request = xmlMapper.read(RequestMessage.class, xml);
 			xml2 = xmlMapper.write(request);
 		} catch (Exception e) {
 			fail(e);

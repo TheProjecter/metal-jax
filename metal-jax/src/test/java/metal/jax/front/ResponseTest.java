@@ -33,11 +33,11 @@ public class ResponseTest extends TestBase {
 	@Test
 	@SuppressWarnings("unchecked")
 	public void testResponse_write() {
-		Response response = null, response2 = null;
+		ResponseMessage response = null, response2 = null;
 		String xml = null, xml2 = null;
 
 		try {
-			response = new Response();
+			response = new ResponseMessage();
 			response.setStatus("hello");
 			response.setResults(Arrays.asList(
 					new Property<Class<?>, Object>(Integer.class, 4),
@@ -57,7 +57,7 @@ public class ResponseTest extends TestBase {
 		}
 
 		try {
-			response2 = xmlMapper.read(Response.class, xml);
+			response2 = xmlMapper.read(ResponseMessage.class, xml);
 			xml2 = xmlMapper.write(response2);
 		} catch (Exception e) {
 			fail(e);
@@ -68,7 +68,7 @@ public class ResponseTest extends TestBase {
 
 	@Test
 	public void testResponse_read() {
-		Response response;
+		ResponseMessage response;
 		String xml = null, xml2 = null;
 
 		try {
@@ -78,7 +78,7 @@ public class ResponseTest extends TestBase {
 		}
 
 		try {
-			response = xmlMapper.read(Response.class, xml);
+			response = xmlMapper.read(ResponseMessage.class, xml);
 			xml2 = xmlMapper.write(response);
 		} catch (Exception e) {
 			fail(e);

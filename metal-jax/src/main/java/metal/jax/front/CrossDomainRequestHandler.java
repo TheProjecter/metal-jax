@@ -24,9 +24,9 @@ public class CrossDomainRequestHandler extends BaseRequestHandler {
 
 	@Override
 	protected void process(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		CrossDomainResponseWrapper responseWrapper = new CrossDomainResponseWrapper(response, request.getRequestURL().toString(), version);
-		request.getRequestDispatcher(request.getPathInfo()).include(request, responseWrapper);
-		responseWrapper.flushBuffer();
+		CrossDomainResponse xdResponse = new CrossDomainResponse(response, request.getRequestURL().toString(), version);
+		request.getRequestDispatcher(request.getPathInfo()).include(request, xdResponse);
+		xdResponse.flushBuffer();
 	}
 	
 }
