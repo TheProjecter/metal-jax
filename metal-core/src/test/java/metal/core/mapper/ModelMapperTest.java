@@ -5,7 +5,7 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package metal.jax.front;
+package metal.core.mapper;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -16,30 +16,29 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
-import metal.core.mapper.ModelMapper;
-import metal.core.mapper.Property;
-import metal.core.mapper.TestHelper;
 import metal.core.model.BaseObject;
+import metal.core.model.TestModel;
 import metal.core.test.TestBase;
 
 import org.apache.commons.io.IOUtils;
 import org.junit.Test;
 
-public class RequestTest extends TestBase {
+public class ModelMapperTest extends TestBase {
 
-	@Resource(name = "test-jax-xmlMapper")
+	@Resource(name = "test-core-xmlMapper")
 	private ModelMapper xmlMapper;
 
 	@Test
 	@SuppressWarnings("unchecked")
-	public void testRequest_write() {
-		RequestMessage request = null, request2 = null;
+	public void testXmlMapper_write() {
+		TestModel model = null, model2 = null;
 		String xml = null, xml2 = null;
 
 		try {
-			request = new RequestMessage();
-			request.setMethod("hello");
-			request.setParameters(Arrays.asList(
+			model = new TestModel();
+			model.setProperty1("property1");
+			model.setProperty2("property2");
+			model.setProperties(Arrays.asList(
 					new Property<Class<?>, Object>(Integer.class, 4),
 					new Property<Class<?>, Object>(Long.class, 5L),
 					new Property<Class<?>, Object>(Double.class, 7.123),
@@ -51,14 +50,14 @@ public class RequestTest extends TestBase {
 					new Property<Class<?>, Object>(BaseObject.class, TestHelper.init(new BaseObject())),
 					new Property<Class<?>, Object>(List.class, TestHelper.init(new ArrayList<Object>())),
 					new Property<Class<?>, Object>(Map.class, TestHelper.init(new LinkedHashMap<String, Object>()))));
-			xml = xmlMapper.write(request);
+			xml = xmlMapper.write(model);
 		} catch (Exception e) {
 			fail(e);
 		}
 
 		try {
-			request2 = xmlMapper.read(RequestMessage.class, xml);
-			xml2 = xmlMapper.write(request2);
+			model2 = xmlMapper.read(TestModel.class, xml);
+			xml2 = xmlMapper.write(model2);
 		} catch (Exception e) {
 			fail(e);
 		}
@@ -67,19 +66,19 @@ public class RequestTest extends TestBase {
 	}
 
 	@Test
-	public void testRequest_read() {
-		RequestMessage request;
+	public void testXmlMapper_read() {
+		TestModel model;
 		String xml = null, xml2 = null;
 
 		try {
-			xml = IOUtils.toString(source("request.xml"));
+			xml = IOUtils.toString(source("testModel.xml"));
 		} catch (Exception e) {
 			fail(e);
 		}
 
 		try {
-			request = xmlMapper.read(RequestMessage.class, xml);
-			xml2 = xmlMapper.write(request);
+			model = xmlMapper.read(TestModel.class, xml);
+			xml2 = xmlMapper.write(model);
 		} catch (Exception e) {
 			fail(e);
 		}

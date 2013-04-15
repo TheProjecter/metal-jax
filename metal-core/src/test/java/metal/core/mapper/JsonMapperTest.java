@@ -20,7 +20,7 @@ import org.junit.Test;
 public class JsonMapperTest extends TestBase {
 
 	@Resource(name="test-core-jsonMapper")
-	private Mapper jsonMapper;
+	private ModelMapper jsonMapper;
 	
 	@Test
 	public void testBaseObject_write() {

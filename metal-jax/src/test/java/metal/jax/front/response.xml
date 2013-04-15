@@ -1,14 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <response>
-	<results>
-		<int>4</int>
-		<long>5</long>
-		<double>7.123</double>
-		<boolean>true</boolean>
-		<string>ABC</string>
-		<date>2013-12-31T00:00:00-05:00</date>
-		<string/>
-		<null/>
+	<message>hello world</message>
+	<messageCode>hello</messageCode>
+	<result>
 		<baseObject>
 			<booleanObject>true</booleanObject>
 			<booleanValue>true</booleanValue>
@@ -22,54 +16,5 @@
 			<longValue>5</longValue>
 			<stringObject>ABC</stringObject>
 		</baseObject>
-		<list>
-			<int>4</int>
-			<long>5</long>
-			<double>7.123</double>
-			<boolean>true</boolean>
-			<string>ABC</string>
-			<date>2013-12-31T00:00:00-05:00</date>
-			<string/>
-			<null/>
-			<baseObject>
-				<booleanObject>true</booleanObject>
-				<booleanValue>true</booleanValue>
-				<dateObject>2013-12-31T00:00:00-05:00</dateObject>
-				<defaultObject/>
-				<doubleObject>7.123</doubleObject>
-				<doubleValue>7.123</doubleValue>
-				<intObject>4</intObject>
-				<intValue>4</intValue>
-				<longObject>5</longObject>
-				<longValue>5</longValue>
-				<stringObject>ABC</stringObject>
-			</baseObject>
-		</list>
-		<map>
-			<intObject><int>4</int></intObject>
-			<longObject><long>5</long></longObject>
-			<doubleObject><double>7.123</double></doubleObject>
-			<booleanObject><boolean>true</boolean></booleanObject>
-			<stringObject><string>ABC</string></stringObject>
-			<dateObject><date>2013-12-31T00:00:00-05:00</date></dateObject>
-			<defaultObject><string/></defaultObject>
-			<nullObject><null/></nullObject>
-			<objectObject>
-				<baseObject>
-					<booleanObject>true</booleanObject>
-					<booleanValue>true</booleanValue>
-					<dateObject>2013-12-31T00:00:00-05:00</dateObject>
-					<defaultObject/>
-					<doubleObject>7.123</doubleObject>
-					<doubleValue>7.123</doubleValue>
-					<intObject>4</intObject>
-					<intValue>4</intValue>
-					<longObject>5</longObject>
-					<longValue>5</longValue>
-					<stringObject>ABC</stringObject>
-				</baseObject>
-			</objectObject>
-		</map>
-	</results>
-	<status>hello</status>
+	</result>
 </response>

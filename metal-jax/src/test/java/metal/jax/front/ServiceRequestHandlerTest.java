@@ -11,7 +11,7 @@ import static org.junit.Assert.*;
 
 import javax.annotation.Resource;
 
-import metal.core.mapper.Mapper;
+import metal.core.mapper.ModelMapper;
 import metal.core.test.TestBase;
 
 import org.junit.Test;
@@ -19,7 +19,7 @@ import org.junit.Test;
 public class ServiceRequestHandlerTest extends TestBase {
 
 	@Resource(name = "test-jax-xmlMapper")
-	private Mapper xmlMapper;
+	private ModelMapper xmlMapper;
 	
 	@Resource(name="test-jax-testService")
 	private Object service;

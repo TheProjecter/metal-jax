@@ -7,58 +7,49 @@
  */
 package metal.jax.front;
 
-import java.util.Collections;
-import java.util.List;
-
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
-import metal.core.mapper.Property;
-import metal.core.mapper.PropertyListAdapter;
+import metal.core.mapper.ValueAdapter;
 
 @XmlRootElement(name="response")
 public class ResponseMessage {
 
-	private String status;
-	private List<Property<Class<?>, Object>> results = Collections.emptyList();
+	private Object result;
+	private String message;
+	private String messageCode;
 
 	public ResponseMessage() {}
 	
-	public ResponseMessage(Object value, Throwable exception) {
-		
+	public ResponseMessage(Object result, String message, String messageCode) {
+		this.result = result;
+		this.message = message;
+		this.messageCode = messageCode;
 	}
 	
-	public String getStatus() {
-		return status;
+	@XmlJavaTypeAdapter(ValueAdapter.class)
+	public Object getResult() {
+		return result;
 	}
 
-	public void setStatus(String status) {
-		this.status = status;
+	public void setResult(Object result) {
+		this.result = result;
 	}
 
-	@XmlJavaTypeAdapter(PropertyListAdapter.class)
-	public List<Property<Class<?>, Object>> getResults() {
-		return results;
+	public String getMessage() {
+		return message;
 	}
 
-	public void setResults(List<Property<Class<?>, Object>> results) {
-		this.results = results;
+	public void setMessage(String message) {
+		this.message = message;
 	}
 
-	public Class<?>[] getResultTypes() {
-		Class<?>[] types = new Class[results.size()];
-		for (int i = 0; i < results.size(); i++) {
-			types[i] = (Class<?>) results.get(i).getKey();
-		}
-		return types;
+	public String getMessageCode() {
+		return messageCode;
 	}
 
-	public Object[] getResultValues() {
-		Object[] values = new Object[results.size()];
-		for (int i = 0; i < results.size(); i++) {
-			values[i] = results.get(i).getValue();
-		}
-		return values;
+	public void setMessageCode(String messageCode) {
+		this.messageCode = messageCode;
 	}
 
 }

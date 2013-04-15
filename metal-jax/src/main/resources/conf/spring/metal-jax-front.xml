@@ -8,7 +8,8 @@ xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.sprin
 	</bean>
 	
 	<bean id="metal-jax-serviceRequestHandler" class="metal.jax.front.ServiceRequestHandler">
-		<property name="messageMapper" ref="metal-jax-xmlMapper"/>
+		<property name="modelMapper" ref="metal-jax-xmlMapper"/>
+		<property name="messageMapper" ref="metal-core-messageMapper"/>
 		<property name="serviceMap">
 			<map>
 				<entry key="/service"><bean class="metal.jax.front.Service"/></entry>

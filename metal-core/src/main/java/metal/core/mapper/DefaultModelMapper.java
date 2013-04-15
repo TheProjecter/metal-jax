@@ -10,7 +10,7 @@ package metal.core.mapper;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-public class DefaultMapper extends BaseMapper {
+public class DefaultModelMapper extends BaseModelMapper {
 
 	private Reader reader;
 

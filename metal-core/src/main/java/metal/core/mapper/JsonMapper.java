@@ -25,7 +25,7 @@ import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.map.introspect.Annotated;
 import org.codehaus.jackson.xc.JaxbAnnotationIntrospector;
 
-public class JsonMapper extends BaseMapper implements Adapter<Object, Object> {
+public class JsonMapper extends BaseModelMapper implements Adapter<Object, Object> {
 	
 	private ObjectMapper mapper;
 	

@@ -33,7 +33,7 @@ import org.springframework.oxm.jaxb.Jaxb2Marshaller;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 
-public class XmlMapper extends BaseMapper implements Adapter<Node, Object> {
+public class XmlMapper extends BaseModelMapper implements Adapter<Node, Object> {
 
 	private DocumentBuilder documentBuilder;
 	private Jaxb2Marshaller mapper;

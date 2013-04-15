@@ -17,13 +17,13 @@ import javax.xml.bind.annotation.XmlRootElement;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.core.annotation.AnnotationUtils;
 
-public abstract class BaseMapper implements Mapper {
+public abstract class BaseModelMapper implements ModelMapper {
 
 	private static final String DEFAULT = "##default";
 
 	private List<Property<String, Class<?>>> modelClasses;
 
-	protected BaseMapper() {
+	protected BaseModelMapper() {
 		this.modelClasses = new ArrayList<Property<String, Class<?>>>();
 	}
 
