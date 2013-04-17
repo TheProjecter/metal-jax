@@ -14,7 +14,10 @@ import javax.annotation.Resource;
 import metal.core.mapper.ModelMapper;
 import metal.core.test.TestBase;
 
+import org.apache.commons.io.IOUtils;
 import org.junit.Test;
+import org.springframework.mock.web.MockHttpServletRequest;
+import org.springframework.mock.web.MockHttpServletResponse;
 
 public class ServiceRequestHandlerTest extends TestBase {
 
@@ -39,6 +42,21 @@ public class ServiceRequestHandlerTest extends TestBase {
 		
 		ResponseMessage response = handler.invoke(null, service, request);
 		assertNotNull(response);
+	}
+
+	@Test
+	public void testHandleRequest() throws Exception {
+		MockHttpServletRequest httpRequest = new MockHttpServletRequest("GET", "/service/test/jax/test");
+		httpRequest.setServletPath("/service");
+		httpRequest.setPathInfo("/test/jax/test/hello");
+		httpRequest.setContent(IOUtils.toByteArray(source("serviceRequest.xml")));
+		
+		String response1 = IOUtils.toString(source("serviceResponse.xml"));
+		MockHttpServletResponse httpResponse = new MockHttpServletResponse();
+		handler.handleRequest(httpRequest, httpResponse);
+		String response2 = httpResponse.getContentAsString();
+		
+		assertEqualsIgnoreWhitespace(response1, response2);
 	}
 
 }

@@ -60,19 +60,19 @@ public class ServiceRequestHandler extends HttpInvokerServiceExporter implements
 		ServiceRequest serviceRequest = new ServiceRequest(request);
 		Service service = serviceMap.get(serviceRequest.getServletPath());
 		ResponseMessage message = invokeService(service, serviceRequest);
-		new ServiceResponse(response, message).flushBuffer();
+		modelMapper.write(message, response.getOutputStream());
 	}
 
 	protected ResponseMessage invokeService(Service service, ServiceRequest request) {
 		try {
-			String method = service.getRequestMethod(request);
 			Object target = getInvocationTarget(service, request);
+			String method = service.getRequestMethod(request);
 			RequestMessage message = modelMapper.read(RequestMessage.class, request.getInputStream());
 			return invoke(method, target, message);
 		} catch (AnyException ex) {
 			return new ResponseMessage(null, messageMapper.getMessage(ex), ex.getMessage());
 		} catch (Exception ex) {
-			return new ResponseMessage(null, ex.getMessage(), ex.getMessage());
+			return new ResponseMessage(null, ex.getMessage(), ex.getClass().getSimpleName());
 		}
 	}
 	
