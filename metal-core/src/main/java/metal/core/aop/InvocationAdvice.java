@@ -20,13 +20,13 @@ public class InvocationAdvice {
 
 	public Object invoke(ProceedingJoinPoint pjp) throws Throwable {
 		try {
-			logger.logTrace(pjp.getTarget(), pjp.getSignature().getName(), Logger.TRACE_ENTRY);
+			if (logger != null) logger.logTrace(pjp.getTarget(), pjp.getSignature().getName(), Logger.TRACE_ENTRY);
 			return pjp.proceed();
 		} catch (Exception ex) {
-			logger.logError(pjp.getTarget(), pjp.getSignature().getName(), ex);
+			if (logger != null) logger.logError(pjp.getTarget(), pjp.getSignature().getName(), ex);
 			throw ex;
 		} finally {
-			logger.logTrace(pjp.getTarget(), pjp.getSignature().getName(), Logger.TRACE_EXIT);
+			if (logger != null) logger.logTrace(pjp.getTarget(), pjp.getSignature().getName(), Logger.TRACE_EXIT);
 		}
 	}
 

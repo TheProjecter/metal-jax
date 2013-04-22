@@ -7,17 +7,10 @@
  */
 package metal.jax.service;
 
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
+import java.util.HashMap;
 
-import metal.jax.model.Message;
+public interface EchoService {
 
-@XmlRootElement(name="/test/jax/test")
-public class TestImpl implements TestService {
-
-	@XmlElement
-	public String hello(Message message) {
-		return "test: " + message.getValue();
-	}
+	String hello(HashMap<String,Object> message);
 	
 }

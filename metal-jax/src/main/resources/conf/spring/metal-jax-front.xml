@@ -3,6 +3,8 @@
 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
 
+	<bean id="metal-jax-serviceRegistry" class="metal.jax.front.ServiceRegistry"/>
+
 	<bean id="metal-jax-crossDomainRequestHandler" class="metal.jax.front.CrossDomainRequestHandler">
 		<property name="version" value="metal-jax"/>
 	</bean>
@@ -10,6 +12,7 @@ xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.sprin
 	<bean id="metal-jax-serviceRequestHandler" class="metal.jax.front.ServiceRequestHandler">
 		<property name="modelMapper" ref="metal-jax-xmlMapper"/>
 		<property name="messageMapper" ref="metal-core-messageMapper"/>
+		<property name="serviceRegistry" ref="metal-jax-serviceRegistry"/>
 		<property name="serviceMap">
 			<map>
 				<entry key="/service"><bean class="metal.jax.front.Service"/></entry>

@@ -7,6 +7,8 @@
  */
 package metal.core.mapper;
 
+import static metal.core.common.XmlAnnotationUtils.*;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
@@ -14,12 +16,9 @@ import java.util.List;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
-import org.apache.commons.lang.StringUtils;
 import org.springframework.core.annotation.AnnotationUtils;
 
 public abstract class BaseModelMapper implements ModelMapper {
-
-	private static final String DEFAULT = "##default";
 
 	private List<Property<String, Class<?>>> modelClasses;
 
@@ -61,18 +60,6 @@ public abstract class BaseModelMapper implements ModelMapper {
 				return modelClass.getValue();
 		}
 		return null;
-	}
-
-	protected String ensureName(String name, String defaultName) {
-		if (StringUtils.isEmpty(name) || StringUtils.equals(name, DEFAULT)) {
-			name = defaultName;
-			if (!Character.isLowerCase(name.charAt(0))) {
-				char[] chars = name.toCharArray();
-				chars[0] = Character.toLowerCase(chars[0]);
-				name = new String(chars);
-			}
-		}
-		return name;
 	}
 
 }

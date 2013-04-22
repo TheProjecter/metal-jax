@@ -29,7 +29,8 @@ public class Service {
 	}
 	
 	public String getRequestMethod(ServiceRequest request) {
-		return methodMap.get(request.getMethod());
+		String method = methodMap.get(request.getBaseName());
+		return method != null ? method : request.getBaseName();
 	}
 	
 }

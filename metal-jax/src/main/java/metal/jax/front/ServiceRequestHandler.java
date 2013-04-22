@@ -10,6 +10,7 @@ package metal.jax.front;
 import static metal.jax.front.FrontMessageCode.*;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Map;
 
@@ -19,8 +20,10 @@ import javax.servlet.http.HttpServletResponse;
 
 import metal.core.common.AnyException;
 import metal.core.mapper.ModelMapper;
+import metal.core.mapper.Property;
 import metal.core.message.MessageMapper;
 
+import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
@@ -33,6 +36,7 @@ public class ServiceRequestHandler extends HttpInvokerServiceExporter implements
 	
 	private ApplicationContext context;
 	private Map<String,Service> serviceMap = Collections.emptyMap();
+	private ServiceRegistry serviceRegistry;
 	private MessageMapper messageMapper;
 	private ModelMapper modelMapper;
 	
@@ -45,6 +49,10 @@ public class ServiceRequestHandler extends HttpInvokerServiceExporter implements
 	
 	public void setServiceMap(Map<String,Service> serviceMap) {
 		this.serviceMap = serviceMap;
+	}
+
+	public void setServiceRegistry(ServiceRegistry serviceRegistry) {
+		this.serviceRegistry = serviceRegistry;
 	}
 
 	public void setMessageMapper(MessageMapper messageMapper) {
@@ -66,8 +74,9 @@ public class ServiceRequestHandler extends HttpInvokerServiceExporter implements
 	protected ResponseMessage invokeService(Service service, ServiceRequest request) {
 		try {
 			Object target = getInvocationTarget(service, request);
-			String method = service.getRequestMethod(request);
-			RequestMessage message = modelMapper.read(RequestMessage.class, request.getInputStream());
+			String method = getRequestMethod(service, request);
+			Class<?> paramType = serviceRegistry.getServiceMethodParamType(service.getServicePath(request), method);
+			RequestMessage message = getRequestMessage(request, paramType);
 			return invoke(method, target, message);
 		} catch (AnyException ex) {
 			return new ResponseMessage(null, messageMapper.getMessage(ex), ex.getMessage());
@@ -96,10 +105,34 @@ public class ServiceRequestHandler extends HttpInvokerServiceExporter implements
 		}
 		String servicePath = service.getServicePath(request);
 		try {
-			return context.getBean(servicePath);
+			String beanName = serviceRegistry.getServiceBeanName(servicePath);
+			return context.getBean(beanName);
 		} catch (Exception e) {
 			throw new FrontException(UnknownServicePath, e, servicePath);
 		}
+	}
+	
+	protected String getRequestMethod(Service service, ServiceRequest request) {
+		return serviceRegistry.getServiceMethodName(service.getServicePath(request), service.getRequestMethod(request));
+	}
+	
+	@SuppressWarnings("unchecked")
+	protected RequestMessage getRequestMessage(ServiceRequest request, Class<?> paramType) throws Exception {
+		RequestMessage message = null;
+		switch (HttpContentType.typeOf(request.getContentType())) {
+		case XML:
+			message = modelMapper.read(RequestMessage.class, request.getInputStream());
+			break;
+		case FORM:
+			message = new RequestMessage();
+			if (paramType != null) {
+				Object value = paramType.newInstance();
+				BeanUtils.populate(value, request.getParameterMap());
+				message.setParameters(Arrays.asList(new Property<Class<?>,Object>(paramType, value)));
+			}
+			break;
+		}
+		return message;
 	}
 	
 }

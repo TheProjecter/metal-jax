@@ -45,11 +45,28 @@ public class ServiceRequestHandlerTest extends TestBase {
 	}
 
 	@Test
-	public void testHandleRequest() throws Exception {
-		MockHttpServletRequest httpRequest = new MockHttpServletRequest("GET", "/service/test/jax/test");
+	public void testHandleRequestForm() throws Exception {
+		MockHttpServletRequest httpRequest = new MockHttpServletRequest("POST", "/metal-jax/service/test/jax/test/hello");
+		httpRequest.setServletPath("/service");
+		httpRequest.setPathInfo("/test/jax/test/hello");
+		httpRequest.addParameter("value", "ABC");
+		httpRequest.setContentType(HttpContentType.FORM.type);
+		
+		String response1 = IOUtils.toString(source("serviceResponse.xml"));
+		MockHttpServletResponse httpResponse = new MockHttpServletResponse();
+		handler.handleRequest(httpRequest, httpResponse);
+		String response2 = httpResponse.getContentAsString();
+		
+		assertEqualsIgnoreWhitespace(response1, response2);
+	}
+
+	@Test
+	public void testHandleRequestXml() throws Exception {
+		MockHttpServletRequest httpRequest = new MockHttpServletRequest("POST", "/metal-jax/service/test/jax/test/hello");
 		httpRequest.setServletPath("/service");
 		httpRequest.setPathInfo("/test/jax/test/hello");
 		httpRequest.setContent(IOUtils.toByteArray(source("serviceRequest.xml")));
+		httpRequest.setContentType(HttpContentType.XML.type);
 		
 		String response1 = IOUtils.toString(source("serviceResponse.xml"));
 		MockHttpServletResponse httpResponse = new MockHttpServletResponse();

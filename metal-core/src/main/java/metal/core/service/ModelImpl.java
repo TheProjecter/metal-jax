@@ -7,6 +7,9 @@
  */
 package metal.core.service;
 
+import javax.xml.bind.annotation.XmlRootElement;
+
+@XmlRootElement(name="/metal/core/model")
 public class ModelImpl implements ModelService {
 	
 	public Object load(String key) {

@@ -5,12 +5,11 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package metal.jax.service;
+package metal.jax.front;
 
-import metal.jax.model.Message;
-
-public interface TestService {
-
-	String hello(Message message);
-	
+public enum HttpRequestMethod {
+	GET,
+	POST,
+	PUT,
+	DELETE
 }

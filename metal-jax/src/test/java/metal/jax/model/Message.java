@@ -5,19 +5,23 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package metal.jax.service;
+package metal.jax.model;
 
-import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
-import metal.jax.model.Message;
+@XmlRootElement
+public class Message {
 
-@XmlRootElement(name="/test/jax/test")
-public class TestImpl implements TestService {
+	private String value;
+	
+	public Message() {}
 
-	@XmlElement
-	public String hello(Message message) {
-		return "test: " + message.getValue();
+	public String getValue() {
+		return value;
 	}
+
+	public void setValue(String value) {
+		this.value = value;
+	};
 	
 }

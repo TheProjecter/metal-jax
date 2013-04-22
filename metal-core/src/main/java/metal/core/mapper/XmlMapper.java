@@ -7,6 +7,7 @@
  */
 package metal.core.mapper;
 
+import static metal.core.common.XmlAnnotationUtils.*;
 import static metal.core.mapper.Adapter.Kind.*;
 import static metal.core.mapper.MapperMessageCode.*;
 
@@ -28,6 +29,7 @@ import javax.xml.transform.dom.DOMResult;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
+
 
 import org.springframework.oxm.jaxb.Jaxb2Marshaller;
 import org.w3c.dom.Document;
