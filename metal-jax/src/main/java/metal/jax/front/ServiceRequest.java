@@ -7,24 +7,13 @@
  */
 package metal.jax.front;
 
-import java.io.IOException;
-import java.io.InputStream;
-
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-
-import org.w3c.dom.Document;
-import org.xml.sax.SAXException;
 
 public class ServiceRequest extends BaseRequest {
 	
 	private String dirName;
 	private String baseName;
 	private String extName;
-	private boolean methodAsBaseName;
-	private Object[] values;
 	
 	public ServiceRequest(HttpServletRequest request) {
 		super(request);
@@ -60,14 +49,6 @@ public class ServiceRequest extends BaseRequest {
 		return extName;
 	}
 
-	public boolean isMethodAsBaseName() {
-		return methodAsBaseName;
-	}
-
-	public void setMethodAsBaseName() {
-		this.methodAsBaseName = true;
-	}
-
 	@Override
 	public String getServletPath() {
 		String value = (String)getAttribute(INCLUDE_SERVLET_PATH_ATTR);
@@ -82,27 +63,4 @@ public class ServiceRequest extends BaseRequest {
 		return value;
 	}
 	
-	public void setValues(Object[] values) {
-		this.values = values;
-	}
-	
-	public Object[] getValues() {
-//		Document doc = parseInput(request.getInputStream());
-//		RemoteInvocation i = new ServiceInvocation();
-//		i.setMethodName(baseName);
-//		i.setParameterTypes(new Class[]{HelloModel.class});
-//		i.setArguments(new Object[]{new HelloModel()});
-		return values;
-	}
-
-	protected Document parseInput(InputStream input) throws ServletException, IOException {
-		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-		try {
-			return factory.newDocumentBuilder().parse(input);
-		} catch (SAXException e) {
-			throw new ServletException(e);
-		} catch (ParserConfigurationException e) {
-			throw new ServletException(e);
-		}
-	}
 }
