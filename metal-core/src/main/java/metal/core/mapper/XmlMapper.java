@@ -21,27 +21,41 @@ import java.util.List;
 import java.util.Map;
 
 import javax.xml.bind.DatatypeConverter;
+import javax.xml.bind.JAXBElement;
+import javax.xml.bind.JAXBException;
 import javax.xml.bind.ValidationEvent;
 import javax.xml.bind.ValidationEventHandler;
+import javax.xml.namespace.QName;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.transform.Source;
 import javax.xml.transform.dom.DOMResult;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
-import javax.xml.transform.stream.StreamSource;
 
 
+import org.springframework.oxm.XmlMappingException;
 import org.springframework.oxm.jaxb.Jaxb2Marshaller;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 
 public class XmlMapper extends BaseModelMapper implements Adapter<Node, Object> {
 
+	private static class Jaxb2Mapper extends Jaxb2Marshaller {
+		public <T> T unmarshal(Source source, Class<T> type) throws XmlMappingException {
+			try {
+				return createUnmarshaller().unmarshal(source, type).getValue();
+			} catch (JAXBException ex) {
+				throw convertJaxbException(ex);
+			}
+		}
+	}
+
 	private DocumentBuilder documentBuilder;
-	private Jaxb2Marshaller mapper;
+	private Jaxb2Mapper mapper;
 
 	public XmlMapper() {
-		mapper = new Jaxb2Marshaller();
+		mapper = new Jaxb2Mapper();
 		mapper.setAdapters(new BaseAdapter[] {
 			new ValueAdapter<Node, Object>(this),
 			new PropertyListAdapter<Node, Object>(this)
@@ -77,7 +91,10 @@ public class XmlMapper extends BaseModelMapper implements Adapter<Node, Object> 
 	public <T> T read(Class<T> type, InputStream input) {
 		Object object = null;
 		try {
-			object = mapper.unmarshal(new StreamSource(input));
+			Document doc = getDocumentBuilder().parse(input);
+			Node xmlContent = doc.createElement("xmlContent");
+			xmlContent.appendChild(doc.createElement("value")).appendChild(doc.getDocumentElement());
+			object = mapper.unmarshal(new DOMSource(xmlContent), XmlContent.class).getValue();
 		} catch (Exception ex) {
 			throw new MapperException(UnexpectedException, ex);
 		}
@@ -87,9 +104,19 @@ public class XmlMapper extends BaseModelMapper implements Adapter<Node, Object> 
 	}
 
 	@Override
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public void write(Object object, OutputStream output) {
+		JavaType type = JavaType.typeOf(object, null);
 		try {
-			mapper.marshal(object, new StreamResult(output));
+			switch (type) {
+			case OBJECT:
+				mapper.marshal(object, new StreamResult(output));
+				break;
+			default:
+				JAXBElement value = new JAXBElement(new QName(type.name), type.type, object);
+				mapper.marshal(value, new StreamResult(output));
+				break;
+			}
 		} catch (Exception ex) {
 			throw new MapperException(UnexpectedException, ex);
 		}

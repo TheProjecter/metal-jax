@@ -23,140 +23,36 @@ public class XmlMapperTest extends TestBase {
 	private ModelMapper xmlMapper;
 	
 	@Test
-	public void testBaseObject_write() {
-		BaseObject object = null, object2 = null;
-		String xml = null, xml2 = null;
-
-		try {
-			object = TestHelper.init(new BaseObject());
-			xml = xmlMapper.write(object);
-		} catch (Exception e) {
-			fail(e);
-		}
-		
-		try {
-			object2 = xmlMapper.read(BaseObject.class, xml);
-			xml2 = xmlMapper.write(object2);
-		} catch (Exception e) {
-			fail(e);
-		}
-		
-		TestHelper.assertEquals(object, object2);
-		assertEqualsIgnoreWhitespace(xml, xml2);
+	public void testMapper_write() {
+		testMapper_write("ABC");
+		testMapper_write(TestUtils.dateValue("20131231", "yyyyMMdd"));
+		testMapper_write(TestUtils.init(new BaseObject()));
+		testMapper_write(TestUtils.init(new AnnotatedObject()));
+		testMapper_write(TestUtils.init(new GenericObject()));
 	}
 	
 	@Test
-	public void testBaseObject_read() {
-		BaseObject object = null, object2 = null;
-		String xml = null, xml2 = null;
-
-		try {
-			object = TestHelper.init(new BaseObject());
-			xml = IOUtils.toString(source("baseObject.xml"));
-		} catch (Exception e) {
-			fail(e);
-		}
-
-		try {
-			object2 = xmlMapper.read(BaseObject.class, xml);
-			xml2 = xmlMapper.write(object2);
-		} catch (Exception e) {
-			fail(e);
-		}
-
-		TestHelper.assertEquals(object, object2);
+	public void testMapper_read() throws Exception {
+		testMapper_read("ABC", "string.xml");
+		testMapper_read(TestUtils.dateValue("20131231", "yyyyMMdd"), "date.xml");
+		testMapper_read(TestUtils.init(new BaseObject()), "baseObject.xml");
+		testMapper_read(TestUtils.init(new AnnotatedObject()), "annotatedObject.xml");
+		testMapper_read(TestUtils.init(new GenericObject()), "genericObject.xml");
+	}
+	
+	void testMapper_write(Object object) {
+		String xml = xmlMapper.write(object);
+		Object object2 = xmlMapper.read(object.getClass(), xml);
+		String xml2 = xmlMapper.write(object2);
+		TestUtils.assertEquals(object, object2);
 		assertEqualsIgnoreWhitespace(xml, xml2);
 	}
 	
-	@Test
-	public void testAnnotatedObject_write() {
-		AnnotatedObject object = null, object2 = null;
-		String xml = null, xml2 = null;
-
-		try {
-			object = TestHelper.init(new AnnotatedObject());
-			xml = xmlMapper.write(object);
-		} catch (Exception e) {
-			fail(e);
-		}
-		
-		try {
-			object2 = xmlMapper.read(AnnotatedObject.class, xml);
-			xml2 = xmlMapper.write(object2);
-		} catch (Exception e) {
-			fail(e);
-		}
-		
-		TestHelper.assertEquals(object, object2);
-		assertEqualsIgnoreWhitespace(xml, xml2);
-	}
-	
-	@Test
-	public void testAnnotatedObject_read() {
-		AnnotatedObject object = null, object2 = null;
-		String xml = null, xml2 = null;
-
-		try {
-			object = TestHelper.init(new AnnotatedObject());
-			xml = IOUtils.toString(source("annotatedObject.xml"));
-		} catch (Exception e) {
-			fail(e);
-		}
-
-		try {
-			object2 = xmlMapper.read(AnnotatedObject.class, xml);
-			xml2 = xmlMapper.write(object2);
-		} catch (Exception e) {
-			fail(e);
-		}
-
-		TestHelper.assertEquals(object, object2);
-		assertEqualsIgnoreWhitespace(xml, xml2);
-	}
-	
-	@Test
-	public void testGenericObject_write() {
-		GenericObject object = null, object2 = null;
-		String xml = null, xml2 = null;
-
-		try {
-			object = TestHelper.init(new GenericObject());
-			xml = xmlMapper.write(object);
-		} catch (Exception e) {
-			fail(e);
-		}
-		
-		try {
-			object2 = xmlMapper.read(GenericObject.class, xml);
-			xml2 = xmlMapper.write(object2);
-		} catch (Exception e) {
-			fail(e);
-		}
-		
-		TestHelper.assertEquals(object, object2);
-		assertEqualsIgnoreWhitespace(xml, xml2);
-	}
-	
-	@Test
-	public void testGenericObject_read() {
-		GenericObject object = null, object2 = null;
-		String xml = null, xml2 = null;
-
-		try {
-			object = TestHelper.init(new GenericObject());
-			xml = IOUtils.toString(source("genericObject.xml"));
-		} catch (Exception e) {
-			fail(e);
-		}
-
-		try {
-			object2 = xmlMapper.read(GenericObject.class, xml);
-			xml2 = xmlMapper.write(object2);
-		} catch (Exception e) {
-			fail(e);
-		}
-
-		TestHelper.assertEquals(object, object2);
+	void testMapper_read(Object object, String file) throws Exception {
+		String xml = IOUtils.toString(source(file));
+		Object object2 = xmlMapper.read(object.getClass(), xml);
+		String xml2 = xmlMapper.write(object2);
+		TestUtils.assertEquals(object, object2);
 		assertEqualsIgnoreWhitespace(xml, xml2);
 	}
 	

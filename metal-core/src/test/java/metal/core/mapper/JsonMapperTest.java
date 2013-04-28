@@ -23,141 +23,37 @@ public class JsonMapperTest extends TestBase {
 	private ModelMapper jsonMapper;
 	
 	@Test
-	public void testBaseObject_write() {
-		BaseObject object = null, object2 = null;
-		String json = null, json2 = null;
-
-		try {
-			object = TestHelper.init(new BaseObject());
-			json = jsonMapper.write(object);
-		} catch (Exception e) {
-			fail(e);
-		}
-		
-		try {
-			object2 = jsonMapper.read(BaseObject.class, json);
-			json2 = jsonMapper.write(object2);
-		} catch (Exception e) {
-			fail(e);
-		}
-		
-		TestHelper.assertEquals(object, object2);
-		assertEqualsIgnoreWhitespace(json, json2);
+	public void testMapper_write() {
+		testMapper_write("ABC");
+		testMapper_write(TestUtils.dateValue("20131231", "yyyyMMdd"));
+		testMapper_write(TestUtils.init(new BaseObject()));
+		testMapper_write(TestUtils.init(new AnnotatedObject()));
+		testMapper_write(TestUtils.init(new GenericObject()));
 	}
 	
 	@Test
-	public void testBaseObject_read() {
-		BaseObject object = null, object2 = null;
-		String json = null, json2 = null;
-
-		try {
-			object = TestHelper.init(new BaseObject());
-			json = IOUtils.toString(source("baseObject.json"));
-		} catch (Exception e) {
-			fail(e);
-		}
-
-		try {
-			object2 = jsonMapper.read(BaseObject.class, json);
-			json2 = jsonMapper.write(object2);
-		} catch (Exception e) {
-			fail(e);
-		}
-
-		TestHelper.assertEquals(object, object2);
+	public void testMapper_read() throws Exception {
+		testMapper_read("ABC", "string.json");
+		testMapper_read(TestUtils.dateValue("20131231", "yyyyMMdd"), "date.json");
+		testMapper_read(TestUtils.init(new BaseObject()), "baseObject.json");
+		testMapper_read(TestUtils.init(new AnnotatedObject()), "annotatedObject.json");
+		testMapper_read(TestUtils.init(new GenericObject()), "genericObject.json");
+	}
+	
+	void testMapper_write(Object object) {
+		String json = jsonMapper.write(object);
+		Object object2 = jsonMapper.read(object.getClass(), json);
+		String json2 = jsonMapper.write(object2);
+		TestUtils.assertEquals(object, object2);
 		assertEqualsIgnoreWhitespace(json, json2);
 	}
 	
-	@Test
-	public void testAnnotatedObject_write() {
-		AnnotatedObject object = null, object2 = null;
-		String json = null, json2 = null;
-
-		try {
-			object = TestHelper.init(new AnnotatedObject());
-			json = jsonMapper.write(object);
-		} catch (Exception e) {
-			fail(e);
-		}
-		
-		try {
-			object2 = jsonMapper.read(AnnotatedObject.class, json);
-			json2 = jsonMapper.write(object2);
-		} catch (Exception e) {
-			fail(e);
-		}
-		
-		TestHelper.assertEquals(object, object2);
+	void testMapper_read(Object object, String file) throws Exception {
+		String json = IOUtils.toString(source(file));
+		Object object2 = jsonMapper.read(object.getClass(), json);
+		String json2 = jsonMapper.write(object2);
+		TestUtils.assertEquals(object, object2);
 		assertEqualsIgnoreWhitespace(json, json2);
 	}
 	
-	@Test
-	public void testAnnotatedObject_read() {
-		AnnotatedObject object = null, object2 = null;
-		String json = null, json2 = null;
-
-		try {
-			object = TestHelper.init(new AnnotatedObject());
-			json = IOUtils.toString(source("annotatedObject.json"));
-		} catch (Exception e) {
-			fail(e);
-		}
-
-		try {
-			object2 = jsonMapper.read(AnnotatedObject.class, json);
-			json2 = jsonMapper.write(object2);
-		} catch (Exception e) {
-			fail(e);
-		}
-
-		TestHelper.assertEquals(object, object2);
-		assertEqualsIgnoreWhitespace(json, json2);
-	}
-	
-	@Test
-	public void testGenericObject_write() {
-		GenericObject object = null, object2 = null;
-		String json = null, json2 = null;
-
-		try {
-			object = TestHelper.init(new GenericObject());
-			json = jsonMapper.write(object);
-		} catch (Exception e) {
-			fail(e);
-		}
-		
-		try {
-			object2 = jsonMapper.read(GenericObject.class, json);
-			json2 = jsonMapper.write(object2);
-		} catch (Exception e) {
-			fail(e);
-		}
-		
-		TestHelper.assertEquals(object, object2);
-		assertEqualsIgnoreWhitespace(json, json2);
-	}
-	
-	@Test
-	public void testGenericObject_read() {
-		GenericObject object = null, object2 = null;
-		String json = null, json2 = null;
-
-		try {
-			object = TestHelper.init(new GenericObject());
-			json = IOUtils.toString(source("genericObject.json"));
-		} catch (Exception e) {
-			fail(e);
-		}
-
-		try {
-			object2 = jsonMapper.read(GenericObject.class, json);
-			json2 = jsonMapper.write(object2);
-		} catch (Exception e) {
-			fail(e);
-		}
-
-		TestHelper.assertEquals(object, object2);
-		assertEqualsIgnoreWhitespace(json, json2);
-	}
-
 }

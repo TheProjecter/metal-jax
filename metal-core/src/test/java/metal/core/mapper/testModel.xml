@@ -10,17 +10,17 @@
 		<string/>
 		<null/>
 		<baseObject>
-			<booleanObject>true</booleanObject>
+			<intValue>4</intValue>
+			<longValue>5</longValue>
+			<doubleValue>7.123</doubleValue>
 			<booleanValue>true</booleanValue>
+			<intObject>4</intObject>
+			<longObject>5</longObject>
+			<doubleObject>7.123</doubleObject>
+			<booleanObject>true</booleanObject>
+			<stringObject>ABC</stringObject>
 			<dateObject>2013-12-31T00:00:00-05:00</dateObject>
 			<defaultObject/>
-			<doubleObject>7.123</doubleObject>
-			<doubleValue>7.123</doubleValue>
-			<intObject>4</intObject>
-			<intValue>4</intValue>
-			<longObject>5</longObject>
-			<longValue>5</longValue>
-			<stringObject>ABC</stringObject>
 		</baseObject>
 		<list>
 			<int>4</int>
@@ -32,17 +32,17 @@
 			<string/>
 			<null/>
 			<baseObject>
-				<booleanObject>true</booleanObject>
+				<intValue>4</intValue>
+				<longValue>5</longValue>
+				<doubleValue>7.123</doubleValue>
 				<booleanValue>true</booleanValue>
+				<intObject>4</intObject>
+				<longObject>5</longObject>
+				<doubleObject>7.123</doubleObject>
+				<booleanObject>true</booleanObject>
+				<stringObject>ABC</stringObject>
 				<dateObject>2013-12-31T00:00:00-05:00</dateObject>
 				<defaultObject/>
-				<doubleObject>7.123</doubleObject>
-				<doubleValue>7.123</doubleValue>
-				<intObject>4</intObject>
-				<intValue>4</intValue>
-				<longObject>5</longObject>
-				<longValue>5</longValue>
-				<stringObject>ABC</stringObject>
 			</baseObject>
 		</list>
 		<map>
@@ -56,17 +56,17 @@
 			<nullObject><null/></nullObject>
 			<objectObject>
 				<baseObject>
-					<booleanObject>true</booleanObject>
+					<intValue>4</intValue>
+					<longValue>5</longValue>
+					<doubleValue>7.123</doubleValue>
 					<booleanValue>true</booleanValue>
+					<intObject>4</intObject>
+					<longObject>5</longObject>
+					<doubleObject>7.123</doubleObject>
+					<booleanObject>true</booleanObject>
+					<stringObject>ABC</stringObject>
 					<dateObject>2013-12-31T00:00:00-05:00</dateObject>
 					<defaultObject/>
-					<doubleObject>7.123</doubleObject>
-					<doubleValue>7.123</doubleValue>
-					<intObject>4</intObject>
-					<intValue>4</intValue>
-					<longObject>5</longObject>
-					<longValue>5</longValue>
-					<stringObject>ABC</stringObject>
 				</baseObject>
 			</objectObject>
 		</map>
