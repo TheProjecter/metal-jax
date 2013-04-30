@@ -7,19 +7,27 @@
  */
 package metal.core.mapper;
 
+import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
-public class XmlContent {
+@XmlRootElement
+public class ValueWrapper {
 
 	private Object value;
-	
+
+	public ValueWrapper() {}
+
+	public ValueWrapper(Object value) {
+		this.value = value;
+	}
+
 	@XmlJavaTypeAdapter(ValueAdapter.class)
 	public Object getValue() {
 		return value;
 	}
-	
+
 	public void setValue(Object value) {
 		this.value = value;
 	}
-	
+
 }

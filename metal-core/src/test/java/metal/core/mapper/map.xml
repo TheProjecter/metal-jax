@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map>
+	<intObject><int>4</int></intObject>
+	<longObject><long>5</long></longObject>
+	<doubleObject><double>7.123</double></doubleObject>
+	<booleanObject><boolean>true</boolean></booleanObject>
+	<stringObject><string>ABC</string></stringObject>
+	<dateObject><date>2013-12-31T00:00:00-05:00</date></dateObject>
+	<defaultObject><string/></defaultObject>
+	<nullObject><null/></nullObject>
+	<objectObject>
+		<baseObject>
+			<intValue>4</intValue>
+			<longValue>5</longValue>
+			<doubleValue>7.123</doubleValue>
+			<booleanValue>true</booleanValue>
+			<intObject>4</intObject>
+			<longObject>5</longObject>
+			<doubleObject>7.123</doubleObject>
+			<booleanObject>true</booleanObject>
+			<stringObject>ABC</stringObject>
+			<dateObject>2013-12-31T00:00:00-05:00</dateObject>
+			<defaultObject/>
+		</baseObject>
+	</objectObject>
+</map>

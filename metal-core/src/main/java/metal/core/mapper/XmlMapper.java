@@ -29,6 +29,8 @@ import javax.xml.namespace.QName;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.transform.Source;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMResult;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
@@ -42,6 +44,13 @@ import org.w3c.dom.Node;
 public class XmlMapper extends BaseModelMapper implements Adapter<Node, Object> {
 
 	private static class Jaxb2Mapper extends Jaxb2Marshaller {
+		public void marshal(Object source, Node result) throws XmlMappingException {
+			try {
+				createMarshaller().marshal(source, result);
+			} catch (JAXBException ex) {
+				throw convertJaxbException(ex);
+			}
+		}
 		public <T> T unmarshal(Source source, Class<T> type) throws XmlMappingException {
 			try {
 				return createUnmarshaller().unmarshal(source, type).getValue();
@@ -52,6 +61,7 @@ public class XmlMapper extends BaseModelMapper implements Adapter<Node, Object> 
 	}
 
 	private DocumentBuilder documentBuilder;
+	private Transformer documentTransformer;
 	private Jaxb2Mapper mapper;
 
 	public XmlMapper() {
@@ -75,6 +85,10 @@ public class XmlMapper extends BaseModelMapper implements Adapter<Node, Object> 
 		this.documentBuilder = documentBuilder;
 	}
 
+	public void setDocumentTransformer(Transformer documentTransformer) {
+		this.documentTransformer = documentTransformer;
+	}
+
 	protected DocumentBuilder getDocumentBuilder() {
 		if (documentBuilder == null) {
 			try {
@@ -86,21 +100,32 @@ public class XmlMapper extends BaseModelMapper implements Adapter<Node, Object> 
 		return documentBuilder;
 	}
 
+	protected Transformer getDocumentTransformer() {
+		if (documentTransformer == null) {
+			try {
+				documentTransformer = TransformerFactory.newInstance().newTransformer();
+			} catch (Exception ex) {
+				throw new MapperException(UnexpectedException, ex);
+			}
+		}
+		return documentTransformer;
+	}
+
 	@Override
 	@SuppressWarnings("unchecked")
-	public <T> T read(Class<T> type, InputStream input) {
-		Object object = null;
+	public <T> T read(Class<T> valueType, InputStream input) {
+		T value = null;
 		try {
 			Document doc = getDocumentBuilder().parse(input);
-			Node xmlContent = doc.createElement("xmlContent");
-			xmlContent.appendChild(doc.createElement("value")).appendChild(doc.getDocumentElement());
-			object = mapper.unmarshal(new DOMSource(xmlContent), XmlContent.class).getValue();
+			Node valueWrapper = doc.createElement("valueWrapper");
+			valueWrapper.appendChild(doc.createElement("value")).appendChild(doc.getDocumentElement());
+			value = (T) mapper.unmarshal(new DOMSource(valueWrapper), ValueWrapper.class).getValue();
 		} catch (Exception ex) {
 			throw new MapperException(UnexpectedException, ex);
 		}
-		if (type == null || object == null || type.isAssignableFrom(object.getClass()))
-			return (T) object;
-		throw new MapperException(UnexpectedType, type.getName(), object.getClass().getName());
+		if (valueType == null || value == null || valueType.isAssignableFrom(value.getClass()))
+			return value;
+		throw new MapperException(UnexpectedType, valueType.getName(), value.getClass().getName());
 	}
 
 	@Override
@@ -112,9 +137,16 @@ public class XmlMapper extends BaseModelMapper implements Adapter<Node, Object> 
 			case OBJECT:
 				mapper.marshal(object, new StreamResult(output));
 				break;
+			case LIST:
+			case MAP:
+				Node wrapper = getDocumentBuilder().newDocument();
+				mapper.marshal(new ValueWrapper(object), wrapper);
+				getDocumentTransformer().transform(new DOMSource(wrapper.getFirstChild().getFirstChild().getFirstChild()),
+						new StreamResult(output));
+				break;
 			default:
-				JAXBElement value = new JAXBElement(new QName(type.name), type.type, object);
-				mapper.marshal(value, new StreamResult(output));
+				mapper.marshal(new JAXBElement(new QName(type.name), type.type, object),
+						new StreamResult(output));
 				break;
 			}
 		} catch (Exception ex) {

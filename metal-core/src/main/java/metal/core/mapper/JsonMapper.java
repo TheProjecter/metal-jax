@@ -10,6 +10,8 @@ package metal.core.mapper;
 import static metal.core.mapper.Adapter.Kind.*;
 import static metal.core.mapper.MapperMessageCode.*;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
@@ -21,6 +23,7 @@ import java.util.Map;
 
 import javax.xml.bind.annotation.adapters.XmlAdapter;
 
+import org.apache.commons.io.IOUtils;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.map.introspect.Annotated;
 import org.codehaus.jackson.xc.JaxbAnnotationIntrospector;
@@ -47,18 +50,43 @@ public class JsonMapper extends BaseModelMapper implements Adapter<Object, Objec
 	}
 	
 	@Override
-	public <T> T read(Class<T> type, InputStream input) {
+	@SuppressWarnings("unchecked")
+	public <T> T read(Class<T> valueType, InputStream input) {
+		T value = null;
 		try {
-			return mapper.readValue(input, type);
+			JavaType type = JavaType.typeOf(valueType);
+			switch (type) {
+			case LIST:
+			case MAP:
+				StringBuilder valueWrapper = new StringBuilder("{\"value\":").append(IOUtils.toCharArray(input)).append("}");
+				value = (T) mapper.readValue(new ByteArrayInputStream(valueWrapper.toString().getBytes()), ValueWrapper.class).getValue();
+				break;
+			default:
+				value = (T) mapper.readValue(input, valueType);
+			}
 		} catch (Exception ex) {
 			throw new MapperException(UnexpectedException, ex);
 		}
+		if (valueType == null || value == null || valueType.isAssignableFrom(value.getClass()))
+			return value;
+		throw new MapperException(UnexpectedType, valueType.getName(), value.getClass().getName());
 	}
 
 	@Override
 	public void write(Object object, OutputStream output) {
 		try {
-			mapper.writeValue(output, object);
+			JavaType type = JavaType.typeOf(object, null);
+			switch (type) {
+			case LIST:
+			case MAP:
+				ByteArrayOutputStream wrapper = new ByteArrayOutputStream();
+				mapper.writeValue(wrapper, new ValueWrapper(object));
+				output.write(unwrap(new String(wrapper.toByteArray())).getBytes());
+				break;
+			default:
+				mapper.writeValue(output, object);
+				break;
+			}
 		} catch (Exception ex) {
 			throw new MapperException(UnexpectedException, ex);
 		}
@@ -228,6 +256,12 @@ public class JsonMapper extends BaseModelMapper implements Adapter<Object, Objec
 		default:
 			return type.type;
 		}
+	}
+
+	private String unwrap(String json) {
+		int index1 = json.indexOf(':');
+		int index2 = json.lastIndexOf('}');
+		return json.substring(index1+1, index2);
 	}
 	
 }

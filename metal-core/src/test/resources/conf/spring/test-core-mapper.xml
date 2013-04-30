@@ -6,7 +6,7 @@ xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.sprin
 	<bean id="test-core-xmlMapper" class="metal.core.mapper.XmlMapper">
 		<property name="modelClasses">
 			<list>
-				<value>metal.core.mapper.XmlContent</value>
+				<value>metal.core.mapper.ValueWrapper</value>
 				<value>metal.core.model.BaseObject</value>
 				<value>metal.core.model.AnnotatedObject</value>
 				<value>metal.core.model.GenericObject</value>

@@ -7,6 +7,9 @@
  */
 package metal.core.mapper;
 
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+
 import javax.annotation.Resource;
 
 import metal.core.model.AnnotatedObject;
@@ -29,6 +32,8 @@ public class JsonMapperTest extends TestBase {
 		testMapper_write(TestUtils.init(new BaseObject()));
 		testMapper_write(TestUtils.init(new AnnotatedObject()));
 		testMapper_write(TestUtils.init(new GenericObject()));
+		testMapper_write(TestUtils.init(new ArrayList<Object>()));
+		testMapper_write(TestUtils.init(new LinkedHashMap<String,Object>()));
 	}
 	
 	@Test
@@ -38,6 +43,8 @@ public class JsonMapperTest extends TestBase {
 		testMapper_read(TestUtils.init(new BaseObject()), "baseObject.json");
 		testMapper_read(TestUtils.init(new AnnotatedObject()), "annotatedObject.json");
 		testMapper_read(TestUtils.init(new GenericObject()), "genericObject.json");
+		testMapper_read(TestUtils.init(new ArrayList<Object>()), "list.json");
+		testMapper_read(TestUtils.init(new LinkedHashMap<String,Object>()), "map.json");
 	}
 	
 	void testMapper_write(Object object) {
