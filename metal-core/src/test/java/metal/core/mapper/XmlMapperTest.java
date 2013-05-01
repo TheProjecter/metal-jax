@@ -8,7 +8,10 @@
 package metal.core.mapper;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Resource;
 
@@ -26,38 +29,39 @@ public class XmlMapperTest extends TestBase {
 	private ModelMapper xmlMapper;
 	
 	@Test
-	public void testMapper_write() {
-		testMapper_write("ABC");
-		testMapper_write(TestUtils.dateValue("20131231", "yyyyMMdd"));
-		testMapper_write(TestUtils.init(new BaseObject()));
-		testMapper_write(TestUtils.init(new AnnotatedObject()));
-		testMapper_write(TestUtils.init(new GenericObject()));
-		testMapper_write(TestUtils.init(new ArrayList<Object>()));
-		testMapper_write(TestUtils.init(new LinkedHashMap<String,Object>()));
+	public void testMapper_write() throws Exception {
+		testMapper_write("ABC", String.class);
+		testMapper_write(TestUtils.dateValue("20131231", "yyyyMMdd"), Date.class);
+		testMapper_write(TestUtils.init(new BaseObject()), BaseObject.class);
+		testMapper_write(TestUtils.init(new AnnotatedObject()), AnnotatedObject.class);
+		testMapper_write(TestUtils.init(new GenericObject()), GenericObject.class);
+		testMapper_write(TestUtils.init(new ArrayList<Object>()), List.class);
+		testMapper_write(TestUtils.init(new LinkedHashMap<String,Object>()), Map.class);
 	}
 	
 	@Test
 	public void testMapper_read() throws Exception {
-		testMapper_read("ABC", "string.xml");
-		testMapper_read(TestUtils.dateValue("20131231", "yyyyMMdd"), "date.xml");
-		testMapper_read(TestUtils.init(new BaseObject()), "baseObject.xml");
-		testMapper_read(TestUtils.init(new AnnotatedObject()), "annotatedObject.xml");
-		testMapper_read(TestUtils.init(new GenericObject()), "genericObject.xml");
-		testMapper_read(TestUtils.init(new ArrayList<Object>()), "list.xml");
-		testMapper_read(TestUtils.init(new LinkedHashMap<String,Object>()), "map.xml");
+		testMapper_read("ABC", String.class, "string.xml");
+		testMapper_read(TestUtils.dateValue("20131231", "yyyyMMdd"), Date.class, "date.xml");
+		testMapper_read(TestUtils.init(new BaseObject()), BaseObject.class, "baseObject.xml");
+		testMapper_read(TestUtils.init(new AnnotatedObject()), AnnotatedObject.class, "annotatedObject.xml");
+		testMapper_read(TestUtils.init(new GenericObject()), GenericObject.class, "genericObject.xml");
+		testMapper_read(TestUtils.init(new ArrayList<Object>()), List.class, "list.xml");
+		testMapper_read(TestUtils.init(new LinkedHashMap<String,Object>()), Map.class, "map.xml");
 	}
 	
-	void testMapper_write(Object object) {
+	<T> void testMapper_write(T object, Class<T> clazz) throws Exception {
 		String xml = xmlMapper.write(object);
-		Object object2 = xmlMapper.read(object.getClass(), xml);
-		String xml2 = xmlMapper.write(object2);
-		TestUtils.assertEquals(object, object2);
-		assertEqualsIgnoreWhitespace(xml, xml2);
+		testMapper(object, clazz, xml);
 	}
 	
-	void testMapper_read(Object object, String file) throws Exception {
+	<T> void testMapper_read(T object, Class<T> clazz, String file) throws Exception {
 		String xml = IOUtils.toString(source(file));
-		Object object2 = xmlMapper.read(object.getClass(), xml);
+		testMapper(object, clazz, xml);
+	}
+	
+	<T> void testMapper(T object, Class<T> clazz, String xml) throws Exception {
+		T object2 = xmlMapper.read(clazz, xml);
 		String xml2 = xmlMapper.write(object2);
 		TestUtils.assertEquals(object, object2);
 		assertEqualsIgnoreWhitespace(xml, xml2);

@@ -117,9 +117,17 @@ public class XmlMapper extends BaseModelMapper implements Adapter<Node, Object> 
 		T value = null;
 		try {
 			Document doc = getDocumentBuilder().parse(input);
-			Node valueWrapper = doc.createElement("valueWrapper");
-			valueWrapper.appendChild(doc.createElement("value")).appendChild(doc.getDocumentElement());
-			value = (T) mapper.unmarshal(new DOMSource(valueWrapper), ValueWrapper.class).getValue();
+			JavaType type = JavaType.typeOf(doc.getDocumentElement().getNodeName());
+			switch (type) {
+			case OBJECT:
+				value = (T) mapper.unmarshal(new DOMSource(doc.getDocumentElement()));
+				break;
+			default:
+				Node valueWrapper = doc.createElement("valueWrapper");
+				valueWrapper.appendChild(doc.createElement("value")).appendChild(doc.getDocumentElement());
+				value = (T) mapper.unmarshal(new DOMSource(valueWrapper), ValueWrapper.class).getValue();
+				break;
+			}
 		} catch (Exception ex) {
 			throw new MapperException(UnexpectedException, ex);
 		}
@@ -131,8 +139,8 @@ public class XmlMapper extends BaseModelMapper implements Adapter<Node, Object> 
 	@Override
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public void write(Object object, OutputStream output) {
-		JavaType type = JavaType.typeOf(object, null);
 		try {
+			JavaType type = JavaType.typeOf(object, null);
 			switch (type) {
 			case OBJECT:
 				mapper.marshal(object, new StreamResult(output));

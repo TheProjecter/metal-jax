@@ -63,6 +63,7 @@ public class JsonMapper extends BaseModelMapper implements Adapter<Object, Objec
 				break;
 			default:
 				value = (T) mapper.readValue(input, valueType);
+				break;
 			}
 		} catch (Exception ex) {
 			throw new MapperException(UnexpectedException, ex);
