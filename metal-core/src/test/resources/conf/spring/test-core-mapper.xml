@@ -3,10 +3,9 @@
 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
 
-	<bean id="test-core-xmlMapper" class="metal.core.mapper.XmlMapper">
+	<bean id="test-core-xmlMapper" class="metal.core.mapper.XmlMapper" parent="metal-core-xmlMapper">
 		<property name="modelClasses">
-			<list>
-				<value>metal.core.mapper.ValueWrapper</value>
+			<list merge="true">
 				<value>metal.core.model.BaseObject</value>
 				<value>metal.core.model.AnnotatedObject</value>
 				<value>metal.core.model.GenericObject</value>
