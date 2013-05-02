@@ -3,10 +3,9 @@
 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
 
-	<bean id="metal-jax-xmlMapper" class="metal.core.mapper.XmlMapper">
+	<bean id="metal-jax-xmlMapper" class="metal.core.mapper.XmlMapper" parent="metal-core-xmlMapper">
 		<property name="modelClasses">
-			<list>
-				<value>metal.jax.front.RequestMessage</value>
+			<list merge="true">
 				<value>metal.jax.front.ResponseMessage</value>
 			</list>
 		</property>

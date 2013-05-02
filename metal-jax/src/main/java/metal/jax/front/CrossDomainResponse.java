@@ -16,7 +16,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringEscapeUtils;
 
-public class CrossDomainResponse extends BaseResponse {
+public class CrossDomainResponse extends BufferedResponse {
 	
 	private String requestURL;
 	private String version;

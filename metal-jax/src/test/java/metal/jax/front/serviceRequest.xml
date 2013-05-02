@@ -1,7 +1,2 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<request>
-	<method>hello</method>
-	<parameters>
-		<message><value>ABC</value></message>
-	</parameters>
-</request>
+<long>12345678</long>

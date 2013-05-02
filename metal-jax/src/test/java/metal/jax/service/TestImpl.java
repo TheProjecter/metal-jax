@@ -7,17 +7,17 @@
  */
 package metal.jax.service;
 
+import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
-
-import metal.jax.model.Message;
 
 @XmlRootElement(name="/test/jax/test")
 public class TestImpl implements TestService {
 
 	@XmlElement
-	public String hello(Message message) {
-		return "test: " + message.getValue();
+	@XmlAttribute(name="message")
+	public String hello(Long message) {
+		return "test: " + message;
 	}
 	
 }

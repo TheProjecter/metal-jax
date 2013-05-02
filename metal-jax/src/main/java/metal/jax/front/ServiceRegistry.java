@@ -13,6 +13,7 @@ import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -23,20 +24,23 @@ import org.springframework.beans.factory.config.BeanPostProcessor;
 
 public class ServiceRegistry implements BeanPostProcessor {
 
-	private Map<String, Property<String, Map<String, Property<String, Class<?>>>>> serviceMap = new HashMap<String, Property<String, Map<String, Property<String, Class<?>>>>>();
+	private Map<String, Property<String, Map<String, Property<String, Property<String, Class<?>>>>>> serviceMap = new HashMap<String, Property<String, Map<String, Property<String, Property<String, Class<?>>>>>>();
 	
 	@Override
 	public Object postProcessBeforeInitialization(Object bean, String beanName) throws BeansException {
 		Class<?> beanClass = bean.getClass();
 		XmlRootElement serviceTag = beanClass.getAnnotation(XmlRootElement.class);
 		if (serviceTag != null) {
-			Property<String, Map<String, Property<String, Class<?>>>> serviceDef = new Property<String, Map<String, Property<String, Class<?>>>>(beanName, new HashMap<String, Property<String, Class<?>>>()); 
+			Property<String, Map<String, Property<String, Property<String, Class<?>>>>> serviceDef = new Property<String, Map<String, Property<String, Property<String, Class<?>>>>>(beanName, new HashMap<String, Property<String, Property<String, Class<?>>>>()); 
 			serviceMap.put(ensureName(serviceTag.name(), beanClass.getSimpleName()), serviceDef);
 			for (Method method : beanClass.getMethods()) {
 				XmlElement methodTag = method.getAnnotation(XmlElement.class);
+				XmlAttribute paramTag = method.getAnnotation(XmlAttribute.class);
 				if (methodTag != null) {
 					Class<?>[] types = method.getParameterTypes();
-					Property<String, Class<?>> methodDef = new Property<String, Class<?>>(method.getName(), types.length != 0 ? types[0] : null);
+					String paramName = paramTag != null ? paramTag.name() : null;
+					Property<String, Class<?>> paramDef = types.length != 0 ? new Property<String, Class<?>>(paramName, types[0]) : null;
+					Property<String, Property<String, Class<?>>> methodDef = new Property<String, Property<String, Class<?>>>(method.getName(), paramDef);
 					serviceDef.getValue().put(ensureName(methodTag.name(), method.getName()), methodDef);
 				}
 			}
@@ -50,31 +54,18 @@ public class ServiceRegistry implements BeanPostProcessor {
 	}
 
 	public String getServiceBeanName(String serviceName) {
-		Property<String, Map<String, Property<String, Class<?>>>> serviceDef = serviceMap.get(serviceName);
+		Property<String, Map<String, Property<String, Property<String, Class<?>>>>> serviceDef = serviceMap.get(serviceName);
 		if (serviceDef != null) {
 			return serviceDef.getKey();
 		}
 		return null;
 	}
 	
-	public String getServiceMethodName(String serviceName, String methodName) {
-		Property<String, Map<String, Property<String, Class<?>>>> serviceDef = serviceMap.get(serviceName);
+	public Property<String, Property<String, Class<?>>> getServiceMethodDef(String serviceName, String methodName) {
+		Property<String, Map<String, Property<String, Property<String, Class<?>>>>> serviceDef = serviceMap.get(serviceName);
 		if (serviceDef != null) {
-			Property<String, Class<?>> methodDef = serviceDef.getValue().get(methodName);
-			if (methodDef != null) {
-				return methodDef.getKey();
-			}
-		}
-		return null;
-	}
-	
-	public Class<?> getServiceMethodParamType(String serviceName, String methodName) {
-		Property<String, Map<String, Property<String, Class<?>>>> serviceDef = serviceMap.get(serviceName);
-		if (serviceDef != null) {
-			Property<String, Class<?>> methodDef = serviceDef.getValue().get(methodName);
-			if (methodDef != null) {
-				return methodDef.getValue();
-			}
+			Property<String, Property<String, Class<?>>> methodDef = serviceDef.getValue().get(methodName);
+			return methodDef;
 		}
 		return null;
 	}

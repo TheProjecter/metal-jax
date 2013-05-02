@@ -10,7 +10,6 @@ package metal.jax.front;
 import static metal.jax.front.FrontMessageCode.*;
 
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Map;
 
@@ -19,12 +18,13 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import metal.core.common.AnyException;
+import metal.core.mapper.JavaType;
 import metal.core.mapper.ModelMapper;
 import metal.core.mapper.Property;
 import metal.core.message.MessageMapper;
 
 import org.apache.commons.beanutils.BeanUtils;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.beanutils.BeanUtilsBean;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
@@ -66,18 +66,18 @@ public class ServiceRequestHandler extends HttpInvokerServiceExporter implements
 	@Override
 	public void handleRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		ServiceRequest serviceRequest = new ServiceRequest(request);
-		Service service = serviceMap.get(serviceRequest.getServletPath());
-		ResponseMessage message = invokeService(service, serviceRequest);
-		modelMapper.write(message, response.getOutputStream());
+		ResponseMessage message = invokeService(serviceRequest);
+		sendResponse(message, new ServiceResponse(response));
 	}
 
-	protected ResponseMessage invokeService(Service service, ServiceRequest request) {
+	protected ResponseMessage invokeService(ServiceRequest request) {
 		try {
+			Service service = serviceMap.get(request.getServletPath());
 			Object target = getInvocationTarget(service, request);
-			String method = getRequestMethod(service, request);
-			Class<?> paramType = serviceRegistry.getServiceMethodParamType(service.getServicePath(request), method);
-			RequestMessage message = getRequestMessage(request, paramType);
-			return invoke(method, target, message);
+			Property<String, Property<String, Class<?>>> methodDef = getRequestMethodDef(service, request);
+			Property<String, Class<?>> paramDef = methodDef.getValue();
+			Object param = getRequestParameter(request, paramDef);
+			return invoke(methodDef.getKey(), target, param, paramDef);
 		} catch (AnyException ex) {
 			return new ResponseMessage(null, messageMapper.getMessage(ex), ex.getMessage());
 		} catch (Exception ex) {
@@ -85,15 +85,22 @@ public class ServiceRequestHandler extends HttpInvokerServiceExporter implements
 		}
 	}
 	
-	protected ResponseMessage invoke(String method, Object target, RequestMessage message) {
-		method = StringUtils.isEmpty(message.getMethod()) ? method : message.getMethod();
-		RemoteInvocation invocation = new RemoteInvocation(method, message.getParameterTypes(), message.getParameterValues());
+	protected void sendResponse(ResponseMessage message, ServiceResponse response) throws IOException {
+		modelMapper.write(message, response.getOutputStream());
+		response.flushBuffer();
+	}
+	
+	protected ResponseMessage invoke(String method, Object target, Object param, Property<String, Class<?>> paramDef) {
+		RemoteInvocation invocation;
+		Class<?> paramType = (paramDef != null) ? paramDef.getValue() : param != null ? param.getClass() : null;
+		if (paramType != null) invocation = new RemoteInvocation(method, new Class<?>[]{paramType}, new Object[]{param});
+		else invocation = new RemoteInvocation(method, new Class<?>[0], new Object[0]);
 		RemoteInvocationResult result = invokeAndCreateResult(invocation, target);
 		Throwable ex = result.getException();
 		if (ex instanceof AnyException) {
 			return new ResponseMessage(result.getValue(), messageMapper.getMessage((AnyException)ex), ex.getMessage());
 		} else if (ex != null) {
-			return new ResponseMessage(result.getValue(), ex.getMessage(), ex.getMessage());
+			return new ResponseMessage(result.getValue(), ex.toString(), ex.getMessage());
 		} else {
 			return new ResponseMessage(result.getValue(), null, null);
 		}
@@ -112,27 +119,33 @@ public class ServiceRequestHandler extends HttpInvokerServiceExporter implements
 		}
 	}
 	
-	protected String getRequestMethod(Service service, ServiceRequest request) {
-		return serviceRegistry.getServiceMethodName(service.getServicePath(request), service.getRequestMethod(request));
+	protected Property<String, Property<String, Class<?>>> getRequestMethodDef(Service service, ServiceRequest request) {
+		return serviceRegistry.getServiceMethodDef(service.getServicePath(request), service.getRequestMethod(request));
 	}
 	
-	@SuppressWarnings("unchecked")
-	protected RequestMessage getRequestMessage(ServiceRequest request, Class<?> paramType) throws Exception {
-		RequestMessage message = null;
+	protected Object getRequestParameter(ServiceRequest request, Property<String, Class<?>> paramDef) throws Exception {
+		Object param = null;
 		switch (HttpContentType.typeOf(request.getContentType())) {
 		case XML:
-			message = modelMapper.read(RequestMessage.class, request.getInputStream());
+			param = modelMapper.read(paramDef.getValue(), request.getInputStream());
 			break;
 		case FORM:
-			message = new RequestMessage();
-			if (paramType != null) {
-				Object value = paramType.newInstance();
-				BeanUtils.populate(value, request.getParameterMap());
-				message.setParameters(Arrays.asList(new Property<Class<?>,Object>(paramType, value)));
+			if (paramDef != null) {
+				Class<?> paramType = paramDef.getValue();
+				switch (JavaType.typeOf(paramType)) {
+				case OBJECT:
+					param = paramType.newInstance();
+					BeanUtils.populate(param, request.getParameterMap());
+					break;
+				default:
+					String value = request.getParameter(paramDef.getKey());
+					param = BeanUtilsBean.getInstance().getConvertUtils().convert(value, paramType);
+					break;
+				}
 			}
 			break;
 		}
-		return message;
+		return param;
 	}
 	
 }

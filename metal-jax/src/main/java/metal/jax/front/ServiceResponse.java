@@ -7,26 +7,12 @@
  */
 package metal.jax.front;
 
-import java.io.IOException;
-import java.io.PrintWriter;
-
 import javax.servlet.http.HttpServletResponse;
 
-public class ServiceResponse extends BaseResponse {
+public class ServiceResponse extends BufferedResponse {
 	
-	private ResponseMessage message;
-	
-	public ServiceResponse(HttpServletResponse response, ResponseMessage message) {
+	public ServiceResponse(HttpServletResponse response) {
 		super(response);
-		this.message = message;
 	}
 	
-	@Override
-	public void flushBuffer() throws IOException {
-		PrintWriter writer = getResponse().getWriter();
-		sendError(SC_INTERNAL_SERVER_ERROR, "not ready message");
-		writer.write("not ready");
-		writer.flush();
-	}
-
 }

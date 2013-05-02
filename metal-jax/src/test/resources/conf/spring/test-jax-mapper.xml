@@ -7,7 +7,6 @@ xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.sprin
 		<property name="modelClasses">
 			<list merge="true">
 				<value>metal.core.model.BaseObject</value>
-				<value>metal.jax.model.Message</value>
 			</list>
 		</property>
 	</bean>

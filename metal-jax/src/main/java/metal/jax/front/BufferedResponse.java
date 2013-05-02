@@ -11,6 +11,7 @@ import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
@@ -19,7 +20,9 @@ import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpServletResponseWrapper;
 
-abstract class BaseResponse extends HttpServletResponseWrapper {
+import org.apache.commons.io.IOUtils;
+
+abstract class BufferedResponse extends HttpServletResponseWrapper {
 
 	private class BufferedOutputStream extends ServletOutputStream {
 		public void write(int b) throws IOException { buffer.write(b); }
@@ -34,7 +37,7 @@ abstract class BaseResponse extends HttpServletResponseWrapper {
 	private String message;
 	private int status;
 	
-	public BaseResponse(HttpServletResponse response) {
+	public BufferedResponse(HttpServletResponse response) {
 		super(response);
 	}
 	
@@ -50,10 +53,13 @@ abstract class BaseResponse extends HttpServletResponseWrapper {
 		return status == 0 || status == SC_OK;
 	}
 	
+	public InputStream getInputStream() throws IOException {
+		flushInternal();
+		return new ByteArrayInputStream(buffer.toByteArray());
+	}
+
 	public BufferedReader getReader() throws IOException {
-		if (output != null) output.flush();
-		else if (writer != null) writer.flush();
-		return new BufferedReader(new InputStreamReader(new ByteArrayInputStream(buffer.toByteArray())));
+		return new BufferedReader(new InputStreamReader(getInputStream()));
 	}
 	
 	@Override
@@ -92,4 +98,16 @@ abstract class BaseResponse extends HttpServletResponseWrapper {
 		this.message = message;
 	}
 
+	@Override
+	public void flushBuffer() throws IOException {
+		flushInternal();
+		IOUtils.write(buffer.toByteArray(), getResponse().getOutputStream());
+		super.flushBuffer();
+	}
+
+	protected void flushInternal() throws IOException {
+		if (output != null) output.flush();
+		else if (writer != null) writer.flush();
+	}
+	
 }

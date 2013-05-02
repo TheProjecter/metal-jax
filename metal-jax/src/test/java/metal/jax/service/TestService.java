@@ -7,10 +7,8 @@
  */
 package metal.jax.service;
 
-import metal.jax.model.Message;
-
 public interface TestService {
 
-	String hello(Message message);
+	String hello(Long message);
 	
 }

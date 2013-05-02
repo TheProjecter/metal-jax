@@ -31,17 +31,11 @@ public class ServiceRequestHandlerTest extends TestBase {
 	private ServiceRequestHandler handler;
 
 	@Test
-	public void testInvoke() {
-		RequestMessage request = null;
-
-		try {
-			request = xmlMapper.read(RequestMessage.class, source("serviceRequest.xml"));
-		} catch (Exception e) {
-			fail(e);
-		}
-		
-		ResponseMessage response = handler.invoke(null, service, request);
+	public void testInvoke() throws Exception {
+		Object param = xmlMapper.read(null, source("serviceRequest.xml"));
+		ResponseMessage response = handler.invoke("hello", service, param, null);
 		assertNotNull(response);
+		assertEquals("test: 12345678", response.getResult());
 	}
 
 	@Test
@@ -49,7 +43,7 @@ public class ServiceRequestHandlerTest extends TestBase {
 		MockHttpServletRequest httpRequest = new MockHttpServletRequest("POST", "/metal-jax/service/test/jax/test/hello");
 		httpRequest.setServletPath("/service");
 		httpRequest.setPathInfo("/test/jax/test/hello");
-		httpRequest.addParameter("value", "ABC");
+		httpRequest.addParameter("message", "12345678");
 		httpRequest.setContentType(HttpContentType.FORM.type);
 		
 		String response1 = IOUtils.toString(source("serviceResponse.xml"));
