@@ -40,7 +40,8 @@ public class ServiceRegistry implements BeanPostProcessor {
 				if (methodTag != null) {
 					Class<?>[] types = method.getParameterTypes();
 					String paramName = paramTag != null ? paramTag.name() : null;
-					ParamSetting paramSetting = types.length != 0 ? new ParamSetting(paramName, types[0]) : null;
+					Class<?> paramType = types.length != 0 ? types[0] : null;
+					ParamSetting paramSetting = new ParamSetting(paramName, paramType);
 					MethodSetting methodSetting = new MethodSetting(method.getName(), paramSetting);
 					methodMap.put(ensureName(methodTag.name(), method.getName()), methodSetting);
 				}

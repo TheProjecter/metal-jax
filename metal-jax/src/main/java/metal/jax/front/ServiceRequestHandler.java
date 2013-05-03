@@ -78,7 +78,7 @@ public class ServiceRequestHandler extends HttpInvokerServiceExporter implements
 			MethodSetting methodDef = getInvocationMethod(service, request);
 			ParamSetting paramDef = methodDef.getParamSetting();
 			Object param = getRequestParameter(request, paramDef);
-			return invoke(methodDef.getName(), target, param, paramDef);
+			return invoke(methodDef.getName(), target, param, paramDef.getParamType());
 		} catch (AnyException ex) {
 			return new ResponseMessage(null, messageMapper.getMessage(ex), ex.getMessage());
 		} catch (Exception ex) {
@@ -91,9 +91,9 @@ public class ServiceRequestHandler extends HttpInvokerServiceExporter implements
 		response.flushBuffer();
 	}
 	
-	protected ResponseMessage invoke(String method, Object target, Object param, ParamSetting paramDef) {
+	protected ResponseMessage invoke(String method, Object target, Object param, Class<?> paramType) {
 		RemoteInvocation invocation;
-		Class<?> paramType = (paramDef != null) ? paramDef.getParamType() : param != null ? param.getClass() : null;
+		paramType = (paramType != null) ? paramType : param != null ? param.getClass() : null;
 		if (paramType != null) invocation = new RemoteInvocation(method, new Class<?>[]{paramType}, new Object[]{param});
 		else invocation = new RemoteInvocation(method, new Class<?>[0], new Object[0]);
 		RemoteInvocationResult result = invokeAndCreateResult(invocation, target);
@@ -131,7 +131,7 @@ public class ServiceRequestHandler extends HttpInvokerServiceExporter implements
 			param = modelMapper.read(paramDef.getParamType(), request.getInputStream());
 			break;
 		case FORM:
-			if (paramDef != null) {
+			if (paramDef.getParamType() != null) {
 				Class<?> paramType = paramDef.getParamType();
 				switch (JavaType.typeOf(paramType)) {
 				case OBJECT:
