@@ -20,8 +20,9 @@ import javax.servlet.http.HttpServletResponse;
 import metal.core.common.AnyException;
 import metal.core.mapper.JavaType;
 import metal.core.mapper.ModelMapper;
-import metal.core.mapper.Property;
 import metal.core.message.MessageMapper;
+import metal.jax.front.config.MethodSetting;
+import metal.jax.front.config.ParamSetting;
 
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.beanutils.BeanUtilsBean;
@@ -74,10 +75,10 @@ public class ServiceRequestHandler extends HttpInvokerServiceExporter implements
 		try {
 			Service service = serviceMap.get(request.getServletPath());
 			Object target = getInvocationTarget(service, request);
-			Property<String, Property<String, Class<?>>> methodDef = getRequestMethodDef(service, request);
-			Property<String, Class<?>> paramDef = methodDef.getValue();
+			MethodSetting methodDef = getInvocationMethod(service, request);
+			ParamSetting paramDef = methodDef.getParamSetting();
 			Object param = getRequestParameter(request, paramDef);
-			return invoke(methodDef.getKey(), target, param, paramDef);
+			return invoke(methodDef.getName(), target, param, paramDef);
 		} catch (AnyException ex) {
 			return new ResponseMessage(null, messageMapper.getMessage(ex), ex.getMessage());
 		} catch (Exception ex) {
@@ -90,9 +91,9 @@ public class ServiceRequestHandler extends HttpInvokerServiceExporter implements
 		response.flushBuffer();
 	}
 	
-	protected ResponseMessage invoke(String method, Object target, Object param, Property<String, Class<?>> paramDef) {
+	protected ResponseMessage invoke(String method, Object target, Object param, ParamSetting paramDef) {
 		RemoteInvocation invocation;
-		Class<?> paramType = (paramDef != null) ? paramDef.getValue() : param != null ? param.getClass() : null;
+		Class<?> paramType = (paramDef != null) ? paramDef.getParamType() : param != null ? param.getClass() : null;
 		if (paramType != null) invocation = new RemoteInvocation(method, new Class<?>[]{paramType}, new Object[]{param});
 		else invocation = new RemoteInvocation(method, new Class<?>[0], new Object[0]);
 		RemoteInvocationResult result = invokeAndCreateResult(invocation, target);
@@ -119,26 +120,26 @@ public class ServiceRequestHandler extends HttpInvokerServiceExporter implements
 		}
 	}
 	
-	protected Property<String, Property<String, Class<?>>> getRequestMethodDef(Service service, ServiceRequest request) {
-		return serviceRegistry.getServiceMethodDef(service.getServicePath(request), service.getRequestMethod(request));
+	protected MethodSetting getInvocationMethod(Service service, ServiceRequest request) {
+		return serviceRegistry.getServiceMethodSetting(service.getServicePath(request), service.getRequestMethod(request));
 	}
 	
-	protected Object getRequestParameter(ServiceRequest request, Property<String, Class<?>> paramDef) throws Exception {
+	protected Object getRequestParameter(ServiceRequest request, ParamSetting paramDef) throws Exception {
 		Object param = null;
 		switch (HttpContentType.typeOf(request.getContentType())) {
 		case XML:
-			param = modelMapper.read(paramDef.getValue(), request.getInputStream());
+			param = modelMapper.read(paramDef.getParamType(), request.getInputStream());
 			break;
 		case FORM:
 			if (paramDef != null) {
-				Class<?> paramType = paramDef.getValue();
+				Class<?> paramType = paramDef.getParamType();
 				switch (JavaType.typeOf(paramType)) {
 				case OBJECT:
 					param = paramType.newInstance();
 					BeanUtils.populate(param, request.getParameterMap());
 					break;
 				default:
-					String value = request.getParameter(paramDef.getKey());
+					String value = request.getParameter(paramDef.getName());
 					param = BeanUtilsBean.getInstance().getConvertUtils().convert(value, paramType);
 					break;
 				}

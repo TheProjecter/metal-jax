@@ -16,21 +16,23 @@ import java.util.List;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
+import metal.core.mapper.config.ModelSetting;
+
 import org.springframework.core.annotation.AnnotationUtils;
 
 public abstract class BaseModelMapper implements ModelMapper {
 
-	private List<Property<String, Class<?>>> modelClasses;
+	private List<ModelSetting> modelSettings;
 
 	protected BaseModelMapper() {
-		this.modelClasses = new ArrayList<Property<String, Class<?>>>();
+		this.modelSettings = new ArrayList<ModelSetting>();
 	}
 
 	public void setModelClasses(List<Class<?>> modelClasses) {
 		for (Class<?> modelClass : modelClasses) {
 			XmlRootElement model = AnnotationUtils.findAnnotation(modelClass, XmlRootElement.class);
 			String name = ensureName((model != null) ? model.name() : DEFAULT, modelClass.getSimpleName());
-			this.modelClasses.add(new Property<String, Class<?>>(name, modelClass));
+			this.modelSettings.add(new ModelSetting(name, modelClass));
 		}
 	}
 
@@ -47,17 +49,17 @@ public abstract class BaseModelMapper implements ModelMapper {
 	}
 
 	protected String modelName(Class<?> clazz) {
-		for (Property<String, Class<?>> modelClass : modelClasses) {
-			if (modelClass.getValue().equals(clazz))
-				return modelClass.getKey();
+		for (ModelSetting setting : modelSettings) {
+			if (setting.getModelClass().equals(clazz))
+				return setting.getName();
 		}
 		return null;
 	}
 
 	protected Class<?> modelClass(String name) {
-		for (Property<String, Class<?>> modelClass : modelClasses) {
-			if (modelClass.getKey().equals(name))
-				return modelClass.getValue();
+		for (ModelSetting setting : modelSettings) {
+			if (setting.getName().equals(name))
+				return setting.getModelClass();
 		}
 		return null;
 	}

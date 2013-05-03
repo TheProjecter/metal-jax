@@ -156,18 +156,11 @@ public class JsonMapper extends BaseModelMapper implements Adapter<Object, Objec
 		return result;
 	}
 
-	@SuppressWarnings("unchecked")
 	protected Object marshalList(Kind kind, List<Object> list) {
 		List<Object> result = null;
 		if (list != null) {
 			result = new ArrayList<Object>();
 			switch (kind) {
-			case PROPERTYLIST:
-				for (Object item : list) {
-					Property<Class<?>, Object> property = (Property<Class<?>,Object>)item;
-					result.add(marshalValue(VALUE, property.getValue(), property.getKey()));
-				}
-				break;
 			case VALUE:
 				for (Object item : list) {
 					result.add(marshalValue(VALUE, item, null));
@@ -217,9 +210,6 @@ public class JsonMapper extends BaseModelMapper implements Adapter<Object, Objec
 			result = new ArrayList<Object>();
 			for (Object item : list) {
 				switch (kind) {
-				case PROPERTYLIST:
-					result.add(new Property<Class<?>,Object>(modelClass(item), unmarshalValue(VALUE, item)));
-					break;
 				case VALUE:
 					result.add(unmarshalValue(VALUE, item));
 					break;

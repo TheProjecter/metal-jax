@@ -5,23 +5,23 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package metal.core.mapper;
+package metal.core.config;
 
-public class Property<K, V> {
+public class Setting<K, V> {
 
 	private K key;
 	private V value;
 
-	public Property(K key, V value) {
+	protected Setting(K key, V value) {
 		this.key = key;
 		this.value = value;
 	}
 
-	public K getKey() {
+	protected K getKey() {
 		return key;
 	}
 
-	public V getValue() {
+	protected V getValue() {
 		return value;
 	}
 

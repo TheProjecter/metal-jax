@@ -67,8 +67,7 @@ public class XmlMapper extends BaseModelMapper implements Adapter<Node, Object> 
 	public XmlMapper() {
 		mapper = new Jaxb2Mapper();
 		mapper.setAdapters(new BaseAdapter[] {
-			new ValueAdapter<Node, Object>(this),
-			new PropertyListAdapter<Node, Object>(this)
+			new ValueAdapter<Node, Object>(this)
 		});
 		mapper.setValidationEventHandler(new ValidationEventHandler() {
 			@Override
@@ -170,8 +169,6 @@ public class XmlMapper extends BaseModelMapper implements Adapter<Node, Object> 
 
 	public Object unmarshal(Kind kind, Node source) {
 		switch (kind) {
-		case PROPERTYLIST:
-			return unmarshalList(kind, source);
 		case VALUE:
 		default:
 			return unmarshalValue(kind, ensureElement(source.getFirstChild()));
@@ -233,18 +230,9 @@ public class XmlMapper extends BaseModelMapper implements Adapter<Node, Object> 
 		}
 	}
 
-	@SuppressWarnings("unchecked")
 	protected void marshalList(Kind kind, List<Object> list, Node result) {
 		Document doc = result.getOwnerDocument();
 		switch (kind) {
-		case PROPERTYLIST:
-			if (list != null) {
-				for (Object item : list) {
-					Property<Class<?>, Object> property = (Property<Class<?>,Object>)item;
-					marshalValue(VALUE, property.getValue(), property.getKey(), result);
-				}
-			}
-			break;
 		case VALUE:
 			Node node = result.appendChild(doc.createElement(JavaType.LIST.name));
 			if (list != null) {
@@ -303,9 +291,6 @@ public class XmlMapper extends BaseModelMapper implements Adapter<Node, Object> 
 		Node item = ensureElementOrNull(source.getFirstChild());
 		while (item != null) {
 			switch (kind) {
-			case PROPERTYLIST:
-				list.add(new Property<Class<?>,Object>(modelClass(item), unmarshalValue(VALUE, item)));
-				break;
 			case VALUE:
 				list.add(unmarshalValue(VALUE, item));
 				break;

@@ -9,7 +9,6 @@ xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.sprin
 				<value>metal.core.model.BaseObject</value>
 				<value>metal.core.model.AnnotatedObject</value>
 				<value>metal.core.model.GenericObject</value>
-				<value>metal.core.model.TestModel</value>
 			</list>
 		</property>
 	</bean>
