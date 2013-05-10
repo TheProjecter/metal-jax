@@ -10,6 +10,8 @@ package metal.core.mapper;
 import java.io.InputStream;
 import java.io.OutputStream;
 
+import metal.core.mop.Model;
+
 public class DefaultModelMapper extends BaseModelMapper {
 
 	private Reader reader;
@@ -35,6 +37,11 @@ public class DefaultModelMapper extends BaseModelMapper {
 	@Override
 	public <T> T read(Class<T> type, InputStream input) {
 		return reader.read(type, input);
+	}
+
+	@Override
+	public <T extends Model> T read(T model, InputStream input) {
+		return reader.read(model, input);
 	}
 
 	@Override

@@ -9,6 +9,7 @@ package metal.jax.service;
 
 import java.util.HashMap;
 
+import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -16,6 +17,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class EchoImpl implements EchoService {
 
 	@XmlElement
+	@XmlAttribute(name="message")
 	public String hello(HashMap<String,Object> message) {
 		return "echo: " + message.get("value");
 	}

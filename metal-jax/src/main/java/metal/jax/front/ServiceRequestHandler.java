@@ -18,14 +18,13 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import metal.core.common.AnyException;
-import metal.core.mapper.JavaType;
 import metal.core.mapper.ModelMapper;
 import metal.core.message.MessageMapper;
-import metal.jax.front.config.MethodSetting;
-import metal.jax.front.config.ParamSetting;
+import metal.core.mop.MethodDeclaration;
+import metal.core.mop.NameDeclaration;
+import metal.core.mop.ServiceRegistry;
 
 import org.apache.commons.beanutils.BeanUtils;
-import org.apache.commons.beanutils.BeanUtilsBean;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
@@ -75,10 +74,9 @@ public class ServiceRequestHandler extends HttpInvokerServiceExporter implements
 		try {
 			Service service = serviceMap.get(request.getServletPath());
 			Object target = getInvocationTarget(service, request);
-			MethodSetting methodDef = getInvocationMethod(service, request);
-			ParamSetting paramDef = methodDef.getParamSetting();
-			Object param = getRequestParameter(request, paramDef);
-			return invoke(methodDef.getName(), target, param, paramDef.getParamType());
+			MethodDeclaration methodDecl = getInvocationMethod(service, request);
+			Object[] params = getRequestParameters(request, methodDecl.getParamDeclarations());
+			return invoke(methodDecl.getName(), target, params, methodDecl.getParamTypes());
 		} catch (AnyException ex) {
 			return new ResponseMessage(null, messageMapper.getMessage(ex), ex.getMessage());
 		} catch (Exception ex) {
@@ -91,10 +89,9 @@ public class ServiceRequestHandler extends HttpInvokerServiceExporter implements
 		response.flushBuffer();
 	}
 	
-	protected ResponseMessage invoke(String method, Object target, Object param, Class<?> paramType) {
+	protected ResponseMessage invoke(String method, Object target, Object[] params, Class<?>[] paramTypes) {
 		RemoteInvocation invocation;
-		paramType = (paramType != null) ? paramType : param != null ? param.getClass() : null;
-		if (paramType != null) invocation = new RemoteInvocation(method, new Class<?>[]{paramType}, new Object[]{param});
+		if (paramTypes != null) invocation = new RemoteInvocation(method, paramTypes, params);
 		else invocation = new RemoteInvocation(method, new Class<?>[0], new Object[0]);
 		RemoteInvocationResult result = invokeAndCreateResult(invocation, target);
 		Throwable ex = result.getException();
@@ -120,33 +117,23 @@ public class ServiceRequestHandler extends HttpInvokerServiceExporter implements
 		}
 	}
 	
-	protected MethodSetting getInvocationMethod(Service service, ServiceRequest request) {
+	protected MethodDeclaration getInvocationMethod(Service service, ServiceRequest request) {
 		return serviceRegistry.getServiceMethodSetting(service.getServicePath(request), service.getRequestMethod(request));
 	}
 	
-	protected Object getRequestParameter(ServiceRequest request, ParamSetting paramDef) throws Exception {
-		Object param = null;
+	protected Object[] getRequestParameters(ServiceRequest request, NameDeclaration[] paramDecls) throws Exception {
+		Object[] params = null;
+		RequestMessage message = new RequestMessage(paramDecls);
 		switch (HttpContentType.typeOf(request.getContentType())) {
 		case XML:
-			param = modelMapper.read(paramDef.getParamType(), request.getInputStream());
+			params = modelMapper.read(message, request.getInputStream()).getValues();
 			break;
 		case FORM:
-			if (paramDef.getParamType() != null) {
-				Class<?> paramType = paramDef.getParamType();
-				switch (JavaType.typeOf(paramType)) {
-				case OBJECT:
-					param = paramType.newInstance();
-					BeanUtils.populate(param, request.getParameterMap());
-					break;
-				default:
-					String value = request.getParameter(paramDef.getName());
-					param = BeanUtilsBean.getInstance().getConvertUtils().convert(value, paramType);
-					break;
-				}
-			}
+			BeanUtils.populate(message, request.getParameterMap());
+			params = message.getValues();
 			break;
 		}
-		return param;
+		return params;
 	}
 	
 }

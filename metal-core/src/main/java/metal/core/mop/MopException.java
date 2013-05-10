@@ -5,26 +5,26 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package metal.core.model;
+package metal.core.mop;
 
 import metal.core.common.AnyException;
 import metal.core.message.MessageCode;
 
-public class ModelException extends AnyException {
+public class MopException extends AnyException {
 
-	public ModelException(MessageCode code) {
+	public MopException(MessageCode code) {
 		super(code);
 	}
 
-	public ModelException(MessageCode code, Throwable cause) {
+	public MopException(MessageCode code, Throwable cause) {
 		super(code, cause);
 	}
 
-	public ModelException(MessageCode code, Object... args) {
+	public MopException(MessageCode code, Object... args) {
 		super(code, args);
 	}
 
-	public ModelException(MessageCode code, Throwable cause, Object... args) {
+	public MopException(MessageCode code, Throwable cause, Object... args) {
 		super(code, cause, args);
 	}
 

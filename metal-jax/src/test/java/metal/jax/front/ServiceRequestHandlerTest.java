@@ -12,6 +12,7 @@ import static org.junit.Assert.*;
 import javax.annotation.Resource;
 
 import metal.core.mapper.ModelMapper;
+import metal.core.mop.NameDeclaration;
 import metal.core.test.TestBase;
 
 import org.apache.commons.io.IOUtils;
@@ -32,10 +33,11 @@ public class ServiceRequestHandlerTest extends TestBase {
 
 	@Test
 	public void testInvoke() throws Exception {
-		Object param = xmlMapper.read(null, source("serviceRequest.xml"));
-		ResponseMessage response = handler.invoke("hello", service, param, null);
+		RequestMessage message = new RequestMessage(new NameDeclaration("message", Long.class), new NameDeclaration("from", String.class));
+		Object[] params = xmlMapper.read(message, source("serviceRequest.xml")).getValues();
+		ResponseMessage response = handler.invoke("hello", service, params, message.getDeclaredTypes());
 		assertNotNull(response);
-		assertEquals("test: 12345678", response.getResult());
+		assertEquals("test: 12345678, from: whoever", response.getResult());
 	}
 
 	@Test
@@ -44,6 +46,7 @@ public class ServiceRequestHandlerTest extends TestBase {
 		httpRequest.setServletPath("/service");
 		httpRequest.setPathInfo("/test/jax/test/hello");
 		httpRequest.addParameter("message", "12345678");
+		httpRequest.addParameter("from", "whoever");
 		httpRequest.setContentType(HttpContentType.FORM.type);
 		
 		String response1 = IOUtils.toString(source("serviceResponse.xml"));

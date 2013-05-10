@@ -5,21 +5,19 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package metal.core.mapper.config;
+package metal.core.mop;
 
-import metal.core.config.Setting;
+public class NameDeclaration extends Setting<String, Class<?>> {
 
-public class ModelSetting extends Setting<String, Class<?>> {
-
-	public ModelSetting(String name, Class<?> modelClass) {
-		super(name, modelClass);
+	public NameDeclaration(String name, Class<?> type) {
+		super(name, type);
 	}
 
 	public String getName() {
 		return this.getKey();
 	}
 	
-	public Class<?> getModelClass() {
+	public Class<?> getType() {
 		return this.getValue();
 	}
 	

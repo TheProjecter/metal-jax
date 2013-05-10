@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <response>
 	<result>
-		<string>test: 12345678</string>
+		<string>test: 12345678, from: whoever</string>
 	</result>
 </response>

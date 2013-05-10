@@ -9,6 +9,6 @@ package metal.jax.service;
 
 public interface TestService {
 
-	String hello(Long message);
+	String hello(Long message, String from);
 	
 }

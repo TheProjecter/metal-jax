@@ -16,29 +16,35 @@ import java.util.List;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
-import metal.core.mapper.config.ModelSetting;
+import metal.core.mop.Model;
+import metal.core.mop.NameDeclaration;
 
 import org.springframework.core.annotation.AnnotationUtils;
 
 public abstract class BaseModelMapper implements ModelMapper {
 
-	private List<ModelSetting> modelSettings;
+	private List<NameDeclaration> modelSettings;
 
 	protected BaseModelMapper() {
-		this.modelSettings = new ArrayList<ModelSetting>();
+		this.modelSettings = new ArrayList<NameDeclaration>();
 	}
 
 	public void setModelClasses(List<Class<?>> modelClasses) {
 		for (Class<?> modelClass : modelClasses) {
 			XmlRootElement model = AnnotationUtils.findAnnotation(modelClass, XmlRootElement.class);
 			String name = ensureName((model != null) ? model.name() : DEFAULT, modelClass.getSimpleName());
-			this.modelSettings.add(new ModelSetting(name, modelClass));
+			this.modelSettings.add(new NameDeclaration(name, modelClass));
 		}
 	}
 
 	@Override
 	public <T> T read(Class<T> type, String input) {
 		return read(type, new ByteArrayInputStream(input.getBytes()));
+	}
+
+	@Override
+	public <T extends Model> T read(T model, String input) {
+		return read(model, new ByteArrayInputStream(input.getBytes()));
 	}
 
 	@Override
@@ -49,17 +55,17 @@ public abstract class BaseModelMapper implements ModelMapper {
 	}
 
 	protected String modelName(Class<?> clazz) {
-		for (ModelSetting setting : modelSettings) {
-			if (setting.getModelClass().equals(clazz))
+		for (NameDeclaration setting : modelSettings) {
+			if (setting.getType().equals(clazz))
 				return setting.getName();
 		}
 		return null;
 	}
 
 	protected Class<?> modelClass(String name) {
-		for (ModelSetting setting : modelSettings) {
+		for (NameDeclaration setting : modelSettings) {
 			if (setting.getName().equals(name))
-				return setting.getModelClass();
+				return setting.getType();
 		}
 		return null;
 	}

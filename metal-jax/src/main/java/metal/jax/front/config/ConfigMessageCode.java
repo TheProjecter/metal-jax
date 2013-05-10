@@ -5,24 +5,10 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package metal.core.config;
+package metal.jax.front.config;
 
-public class Setting<K, V> {
+import metal.core.message.MessageCode;
 
-	private K key;
-	private V value;
-
-	protected Setting(K key, V value) {
-		this.key = key;
-		this.value = value;
-	}
-
-	protected K getKey() {
-		return key;
-	}
-
-	protected V getValue() {
-		return value;
-	}
-
+public enum ConfigMessageCode implements MessageCode {
+	UnexpectedParamNameCount
 }

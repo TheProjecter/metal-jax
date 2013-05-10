@@ -15,9 +15,9 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class TestImpl implements TestService {
 
 	@XmlElement
-	@XmlAttribute(name="message")
-	public String hello(Long message) {
-		return "test: " + message;
+	@XmlAttribute(name="message,from")
+	public String hello(Long message, String from) {
+		return "test: " + message + ", from: " + from;
 	}
 	
 }

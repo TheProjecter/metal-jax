@@ -13,9 +13,9 @@ import metal.core.common.AnyException;
 
 public class ExceptionAdvice {
 
-    public void handle(Exception ex)  {
-    	if (ex instanceof AnyException) throw (AnyException)ex;
-    	throw new AopException(UnhandledException, ex, ex.getClass().getSimpleName(), ex.getMessage());
-    }
-    
+	public void handle(Exception ex) {
+		if (ex instanceof AnyException) throw (AnyException) ex;
+		throw new AopException(UnhandledException, ex, ex.getClass().getName(), ex.getMessage());
+	}
+
 }

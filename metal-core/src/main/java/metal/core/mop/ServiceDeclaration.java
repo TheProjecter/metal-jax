@@ -5,23 +5,21 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package metal.jax.front.config;
+package metal.core.mop;
 
 import java.util.Map;
 
-import metal.core.config.Setting;;
+public class ServiceDeclaration extends Setting<String, Map<String, MethodDeclaration>> {
 
-public class ServiceSetting extends Setting<String, Map<String, MethodSetting>> {
-
-	public ServiceSetting(String name, Map<String, MethodSetting> methodMap) {
-		super(name, methodMap);
+	public ServiceDeclaration(String name, Map<String, MethodDeclaration> methodDecls) {
+		super(name, methodDecls);
 	}
 	
 	public String getName() {
 		return this.getKey();
 	}
 	
-	public MethodSetting getMethodSetting(String name) {
+	public MethodDeclaration getMethodDeclaration(String name) {
 		return this.getValue().get(name);
 	}
 	

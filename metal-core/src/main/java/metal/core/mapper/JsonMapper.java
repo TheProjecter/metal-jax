@@ -17,13 +17,18 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
 import javax.xml.bind.annotation.adapters.XmlAdapter;
 
+import metal.core.mop.Model;
+import metal.core.mop.ValueType;
+
 import org.apache.commons.io.IOUtils;
+import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.map.introspect.Annotated;
 import org.codehaus.jackson.xc.JaxbAnnotationIntrospector;
@@ -54,7 +59,7 @@ public class JsonMapper extends BaseModelMapper implements Adapter<Object, Objec
 	public <T> T read(Class<T> valueType, InputStream input) {
 		T value = null;
 		try {
-			JavaType type = JavaType.typeOf(valueType);
+			ValueType type = ValueType.typeOf(valueType);
 			switch (type) {
 			case LIST:
 			case MAP:
@@ -74,9 +79,26 @@ public class JsonMapper extends BaseModelMapper implements Adapter<Object, Objec
 	}
 
 	@Override
+	public <T extends Model> T read(T model, InputStream input) {
+		try {
+			mapper.readValue(input, ValueWrapper.class).getValue();
+			JsonNode root = mapper.readTree(input);
+			Iterator<String> iterator = root.getFieldNames();
+			while (iterator.hasNext()) {
+				String name = iterator.next();
+				Object value = mapper.readValue(root.get(name), model.getDeclaredType(name));
+				model.put(name, value);
+			}
+			return model;
+		} catch (Exception ex) {
+			throw new MapperException(UnexpectedException, ex);
+		}
+	}
+
+	@Override
 	public void write(Object object, OutputStream output) {
 		try {
-			JavaType type = JavaType.typeOf(object, null);
+			ValueType type = ValueType.typeOf(object, null);
 			switch (type) {
 			case LIST:
 			case MAP:
@@ -103,7 +125,7 @@ public class JsonMapper extends BaseModelMapper implements Adapter<Object, Objec
 	
 	@SuppressWarnings("unchecked")
 	public Object marshalValue(Kind kind, Object object, Class<?> clazz) {
-		JavaType type = JavaType.typeOf(object, clazz);
+		ValueType type = ValueType.typeOf(object, clazz);
 		switch (type) {
 		case LIST:
 			return marshalList(kind, (List<Object>) object);
@@ -120,7 +142,7 @@ public class JsonMapper extends BaseModelMapper implements Adapter<Object, Objec
 	
 	@SuppressWarnings("unchecked")
 	public Object unmarshalValue(Kind kind, Object source) {
-		JavaType type = JavaType.typeOf(source, null);
+		ValueType type = ValueType.typeOf(source, null);
 		switch (type) {
 		case LIST:
 			return unmarshalList(kind, (List<Object>)source);
@@ -136,7 +158,7 @@ public class JsonMapper extends BaseModelMapper implements Adapter<Object, Objec
 		}
 	}
 	
-	protected Object marshalSimple(Object object, JavaType type, Class<?> clazz) {
+	protected Object marshalSimple(Object object, ValueType type, Class<?> clazz) {
 		Map<String,Object> result = new HashMap<String,Object>();
 		switch (type) {
 		case LONG:
@@ -187,8 +209,8 @@ public class JsonMapper extends BaseModelMapper implements Adapter<Object, Objec
 		Class<?> clazz = null;
 		Map.Entry<String, Object> entry = map.entrySet().iterator().next();
 		Object source = entry.getValue();
-		JavaType type = JavaType.typeOf(entry.getKey());
-		if (type == JavaType.OBJECT) {
+		ValueType type = ValueType.typeOf(entry.getKey());
+		if (type == ValueType.OBJECT) {
 			clazz = modelClass(entry.getKey());
 			if (clazz == null) return null;
 		}
@@ -232,14 +254,14 @@ public class JsonMapper extends BaseModelMapper implements Adapter<Object, Objec
 	
 	@SuppressWarnings("unchecked")
 	protected Class<?> modelClass(Object source) {
-		JavaType type = JavaType.typeOf(source, null);
+		ValueType type = ValueType.typeOf(source, null);
 		switch (type) {
 		case MAP:
 			Map<String, Object> map = (Map<String,Object>) source;
 			if (map.size() == 1) {
 				Map.Entry<String, Object> entry = map.entrySet().iterator().next();
-				JavaType valueType = JavaType.typeOf(entry.getKey());
-				if (valueType != JavaType.OBJECT) return valueType.type;
+				ValueType valueType = ValueType.typeOf(entry.getKey());
+				if (valueType != ValueType.OBJECT) return valueType.type;
 				Class<?> clazz = super.modelClass(entry.getKey());
 				if (clazz != null) return clazz;
 			}

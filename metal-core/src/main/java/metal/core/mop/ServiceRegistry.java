@@ -5,48 +5,54 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package metal.jax.front;
+package metal.core.mop;
 
 import static metal.core.common.XmlAnnotationUtils.*;
+import static metal.core.mop.MopMessageCode.*;
 
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
-import metal.jax.front.config.MethodSetting;
-import metal.jax.front.config.ParamSetting;
-import metal.jax.front.config.ServiceSetting;
-
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanPostProcessor;
 
 public class ServiceRegistry implements BeanPostProcessor {
 
-	private Map<String, ServiceSetting> serviceMap = new HashMap<String, ServiceSetting>();
+	private Map<String, ServiceDeclaration> serviceMap = new HashMap<String, ServiceDeclaration>();
 	
 	@Override
 	public Object postProcessBeforeInitialization(Object bean, String beanName) throws BeansException {
 		Class<?> beanClass = bean.getClass();
 		XmlRootElement serviceTag = beanClass.getAnnotation(XmlRootElement.class);
 		if (serviceTag != null) {
-			Map<String, MethodSetting> methodMap = new HashMap<String, MethodSetting>();
+			Map<String, MethodDeclaration> methodMap = new HashMap<String, MethodDeclaration>();
 			for (Method method : beanClass.getMethods()) {
 				XmlElement methodTag = method.getAnnotation(XmlElement.class);
 				XmlAttribute paramTag = method.getAnnotation(XmlAttribute.class);
 				if (methodTag != null) {
-					Class<?>[] types = method.getParameterTypes();
-					String paramName = paramTag != null ? paramTag.name() : null;
-					Class<?> paramType = types.length != 0 ? types[0] : null;
-					ParamSetting paramSetting = new ParamSetting(paramName, paramType);
-					MethodSetting methodSetting = new MethodSetting(method.getName(), paramSetting);
+					String[] paramNames = paramTag != null ? ensureName(paramTag.name(), "").split(",") : new String[0];
+					Class<?>[] paramTypes = method.getParameterTypes();
+					if (paramNames.length != paramTypes.length) {
+						throw new MopException(UnexpectedParamNameCount, paramNames.length, paramTypes.length, method.getName(), beanClass.getName());
+					}
+					List<NameDeclaration> paramDecls = new ArrayList<NameDeclaration>();
+					for (int i = 0; i < paramNames.length; i++) {
+						String paramName = paramNames[i];
+						Class<?> paramType = paramTypes[i];
+						paramDecls.add(new NameDeclaration(paramName, paramType));
+					}
+					MethodDeclaration methodSetting = new MethodDeclaration(method.getName(), paramDecls);
 					methodMap.put(ensureName(methodTag.name(), method.getName()), methodSetting);
 				}
 			}
-			ServiceSetting serviceSetting = new ServiceSetting(beanName, methodMap);
+			ServiceDeclaration serviceSetting = new ServiceDeclaration(beanName, methodMap);
 			serviceMap.put(ensureName(serviceTag.name(), beanClass.getSimpleName()), serviceSetting);
 		}
 		return bean;
@@ -58,17 +64,17 @@ public class ServiceRegistry implements BeanPostProcessor {
 	}
 
 	public String getServiceBeanName(String serviceName) {
-		ServiceSetting serviceSetting = serviceMap.get(serviceName);
+		ServiceDeclaration serviceSetting = serviceMap.get(serviceName);
 		if (serviceSetting != null) {
 			return serviceSetting.getName();
 		}
 		return null;
 	}
 	
-	public MethodSetting getServiceMethodSetting(String serviceName, String methodName) {
-		ServiceSetting serviceSetting = serviceMap.get(serviceName);
+	public MethodDeclaration getServiceMethodSetting(String serviceName, String methodName) {
+		ServiceDeclaration serviceSetting = serviceMap.get(serviceName);
 		if (serviceSetting != null) {
-			MethodSetting methodSetting = serviceSetting.getMethodSetting(methodName);
+			MethodDeclaration methodSetting = serviceSetting.getMethodDeclaration(methodName);
 			return methodSetting;
 		}
 		return null;

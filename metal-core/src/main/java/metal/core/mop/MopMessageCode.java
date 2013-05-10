@@ -5,8 +5,10 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package metal.core.message;
+package metal.core.mop;
 
-public enum ValidationMessageCode implements MessageCode {
-	ValidationFailed
+import metal.core.message.MessageCode;
+
+public enum MopMessageCode implements MessageCode {
+	UnexpectedParamNameCount
 }

@@ -5,14 +5,14 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package metal.core.mapper;
+package metal.core.mop;
 
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-public enum JavaType {
+public enum ValueType {
 	INT("int", Integer.class, null),
 	LONG("long", Long.class, null),
 	DOUBLE("double", Double.class, null),
@@ -27,21 +27,21 @@ public enum JavaType {
 	public final String name;
 	public final Class<?> type;
 	public final Object value;
-	private JavaType(String name, Class<?> type, Object value) {
+	private ValueType(String name, Class<?> type, Object value) {
 		this.name = name; this.type = type; this.value = value;
 	}
-	private static final JavaType[] values = JavaType.values();
+	private static final ValueType[] values = ValueType.values();
 	
-	public static JavaType typeOf(String name) {
-		for (JavaType value : values) {
+	public static ValueType typeOf(String name) {
+		for (ValueType value : values) {
 			if (value.name.equals(name)) return value;
 		}
 		return OBJECT;
 	}
 	
-	public static JavaType typeOf(Class<?> type) {
+	public static ValueType typeOf(Class<?> type) {
 		if (type == null) return NULL;
-		for (JavaType value : values) {
+		for (ValueType value : values) {
 			if (value.type == type || value.type.isAssignableFrom(type)) {
 				return value;
 			}
@@ -49,7 +49,7 @@ public enum JavaType {
 		return OBJECT;
 	}
 	
-	public static JavaType typeOf(Object object, Class<?> clazz) {
+	public static ValueType typeOf(Object object, Class<?> clazz) {
 		clazz = object == null ? null : clazz != null ? clazz : object.getClass();
 		return typeOf(clazz);
 	}
