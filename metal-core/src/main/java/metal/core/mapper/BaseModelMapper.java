@@ -7,67 +7,39 @@
  */
 package metal.core.mapper;
 
-import static metal.core.common.XmlAnnotationUtils.*;
-
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.xml.bind.annotation.XmlRootElement;
 
 import metal.core.mop.Model;
-import metal.core.mop.NameDeclaration;
-
-import org.springframework.core.annotation.AnnotationUtils;
+import metal.core.mop.ModelRegistry;
 
 public abstract class BaseModelMapper implements ModelMapper {
 
-	private List<NameDeclaration> modelSettings;
-
-	protected BaseModelMapper() {
-		this.modelSettings = new ArrayList<NameDeclaration>();
+	private ModelRegistry modelRegistry;
+	
+	public void setModelRegistry(ModelRegistry modelRegistry) {
+		this.modelRegistry = modelRegistry;
 	}
-
-	public void setModelClasses(List<Class<?>> modelClasses) {
-		for (Class<?> modelClass : modelClasses) {
-			XmlRootElement model = AnnotationUtils.findAnnotation(modelClass, XmlRootElement.class);
-			String name = ensureName((model != null) ? model.name() : DEFAULT, modelClass.getSimpleName());
-			this.modelSettings.add(new NameDeclaration(name, modelClass));
-		}
+	
+	protected ModelRegistry getModelRegistry() {
+		return modelRegistry;
 	}
-
+	
 	@Override
 	public <T> T read(Class<T> type, String input) {
 		return read(type, new ByteArrayInputStream(input.getBytes()));
 	}
 
 	@Override
-	public <T extends Model> T read(T model, String input) {
-		return read(model, new ByteArrayInputStream(input.getBytes()));
+	public <T extends Model> T read(T value, String input) {
+		return read(value, new ByteArrayInputStream(input.getBytes()));
 	}
 
 	@Override
-	public String write(Object object) {
+	public String write(Object value) {
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
-		write(object, out);
+		write(value, out);
 		return new String(out.toByteArray());
-	}
-
-	protected String modelName(Class<?> clazz) {
-		for (NameDeclaration setting : modelSettings) {
-			if (setting.getType().equals(clazz))
-				return setting.getName();
-		}
-		return null;
-	}
-
-	protected Class<?> modelClass(String name) {
-		for (NameDeclaration setting : modelSettings) {
-			if (setting.getName().equals(name))
-				return setting.getType();
-		}
-		return null;
 	}
 
 }

@@ -22,6 +22,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanPostProcessor;
+import org.springframework.core.annotation.AnnotationUtils;
 
 public class ServiceRegistry implements BeanPostProcessor {
 
@@ -29,53 +30,52 @@ public class ServiceRegistry implements BeanPostProcessor {
 	
 	@Override
 	public Object postProcessBeforeInitialization(Object bean, String beanName) throws BeansException {
+		return bean;
+	}
+
+	@Override
+	public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
+		registerService(beanName, bean);
+		return bean;
+	}
+
+	private void registerService(String beanName, Object bean) {
 		Class<?> beanClass = bean.getClass();
-		XmlRootElement serviceTag = beanClass.getAnnotation(XmlRootElement.class);
+		XmlRootElement serviceTag = AnnotationUtils.findAnnotation(beanClass, XmlRootElement.class);
 		if (serviceTag != null) {
 			Map<String, MethodDeclaration> methodMap = new HashMap<String, MethodDeclaration>();
 			for (Method method : beanClass.getMethods()) {
-				XmlElement methodTag = method.getAnnotation(XmlElement.class);
-				XmlAttribute paramTag = method.getAnnotation(XmlAttribute.class);
+				XmlElement methodTag = AnnotationUtils.findAnnotation(method, XmlElement.class);
+				XmlAttribute paramTag = AnnotationUtils.findAnnotation(method, XmlAttribute.class);
 				if (methodTag != null) {
 					String[] paramNames = paramTag != null ? ensureName(paramTag.name(), "").split(",") : new String[0];
 					Class<?>[] paramTypes = method.getParameterTypes();
 					if (paramNames.length != paramTypes.length) {
 						throw new MopException(UnexpectedParamNameCount, paramNames.length, paramTypes.length, method.getName(), beanClass.getName());
 					}
-					List<NameDeclaration> paramDecls = new ArrayList<NameDeclaration>();
+					List<NameDeclaration> params = new ArrayList<NameDeclaration>();
 					for (int i = 0; i < paramNames.length; i++) {
-						String paramName = paramNames[i];
-						Class<?> paramType = paramTypes[i];
-						paramDecls.add(new NameDeclaration(paramName, paramType));
+						params.add(new NameDeclaration(paramNames[i], paramTypes[i]));
 					}
-					MethodDeclaration methodSetting = new MethodDeclaration(method.getName(), paramDecls);
-					methodMap.put(ensureName(methodTag.name(), method.getName()), methodSetting);
+					methodMap.put(ensureName(methodTag.name(), method.getName()), new MethodDeclaration(method.getName(), params));
 				}
 			}
-			ServiceDeclaration serviceSetting = new ServiceDeclaration(beanName, methodMap);
-			serviceMap.put(ensureName(serviceTag.name(), beanClass.getSimpleName()), serviceSetting);
+			serviceMap.put(ensureName(serviceTag.name(), beanClass.getSimpleName()), new ServiceDeclaration(beanName, methodMap));
 		}
-		return bean;
 	}
-
-	@Override
-	public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
-		return bean;
-	}
-
+	
 	public String getServiceBeanName(String serviceName) {
-		ServiceDeclaration serviceSetting = serviceMap.get(serviceName);
-		if (serviceSetting != null) {
-			return serviceSetting.getName();
+		ServiceDeclaration service = serviceMap.get(serviceName);
+		if (service != null) {
+			return service.getName();
 		}
 		return null;
 	}
 	
-	public MethodDeclaration getServiceMethodSetting(String serviceName, String methodName) {
-		ServiceDeclaration serviceSetting = serviceMap.get(serviceName);
-		if (serviceSetting != null) {
-			MethodDeclaration methodSetting = serviceSetting.getMethodDeclaration(methodName);
-			return methodSetting;
+	public MethodDeclaration getServiceMethodDeclaration(String serviceName, String methodName) {
+		ServiceDeclaration service = serviceMap.get(serviceName);
+		if (service != null) {
+			return service.getMethodDeclaration(methodName);
 		}
 		return null;
 	}

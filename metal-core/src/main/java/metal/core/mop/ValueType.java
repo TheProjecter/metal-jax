@@ -49,9 +49,8 @@ public enum ValueType {
 		return OBJECT;
 	}
 	
-	public static ValueType typeOf(Object object, Class<?> clazz) {
-		clazz = object == null ? null : clazz != null ? clazz : object.getClass();
-		return typeOf(clazz);
+	public static ValueType typeOf(Object value) {
+		return typeOf(value == null ? null : value.getClass());
 	}
 	
 }

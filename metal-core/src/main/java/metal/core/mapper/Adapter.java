@@ -9,10 +9,8 @@ package metal.core.mapper;
 
 public interface Adapter<V, B> {
 
-	enum Kind { VALUE }
+	V marshal(B value) throws Exception;
 
-	V marshal(Kind kind, B object) throws Exception;
-
-	B unmarshal(Kind kind, V value) throws Exception;
+	B unmarshal(V value) throws Exception;
 
 }

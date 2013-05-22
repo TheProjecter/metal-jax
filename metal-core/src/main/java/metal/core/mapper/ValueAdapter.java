@@ -7,8 +7,6 @@
  */
 package metal.core.mapper;
 
-import static metal.core.mapper.Adapter.Kind.VALUE;
-
 public class ValueAdapter<V, B> extends BaseAdapter<V, B> {
 
 	public ValueAdapter() {}
@@ -18,13 +16,13 @@ public class ValueAdapter<V, B> extends BaseAdapter<V, B> {
 	}
 	
 	@Override
-	public V marshal(B object) throws Exception {
-		return adapter.marshal(VALUE, object);
+	public V marshal(B value) throws Exception {
+		return adapter.marshal(value);
 	}
 
 	@Override
 	public B unmarshal(V value) throws Exception {
-		return adapter.unmarshal(VALUE, value);
+		return adapter.unmarshal(value);
 	}
 	
 }

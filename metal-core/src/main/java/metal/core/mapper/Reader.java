@@ -17,8 +17,8 @@ public interface Reader {
 
 	<T> T read(Class<T> type, String input);
 
-	<T extends Model> T read(T model, InputStream input);
+	<T extends Model> T read(T value, InputStream input);
 
-	<T extends Model> T read(T model, String input);
+	<T extends Model> T read(T value, String input);
 
 }

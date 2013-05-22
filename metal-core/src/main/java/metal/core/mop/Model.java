@@ -11,44 +11,44 @@ import java.util.HashMap;
 
 public class Model extends HashMap<String, Object> {
 
-	private NameDeclaration[] decls;
+	private NameDeclaration[] members;
 
-	public Model(NameDeclaration... decls) {
-		this.decls = decls;
+	public Model(NameDeclaration... members) {
+		this.members = members;
 	}
 
-	public String[] getDeclaredNames() {
-		String[] names = new String[decls.length];
+	public String[] getMemberNames() {
+		String[] names = new String[members.length];
 		int i = 0;
-		for (NameDeclaration decl : decls) {
-			names[i++] = decl.getName();
+		for (NameDeclaration member : members) {
+			names[i++] = member.getName();
 		}
 		return names;
 	}
 	
-	public Class<?>[] getDeclaredTypes() {
-		Class<?>[] types = new Class<?>[decls.length];
+	public Class<?>[] getMemberTypes() {
+		Class<?>[] types = new Class<?>[members.length];
 		int i = 0;
-		for (NameDeclaration decl : decls) {
-			types[i++] = decl.getType();
+		for (NameDeclaration member : members) {
+			types[i++] = member.getType();
 		}
 		return types;
 	}
 	
-	public Class<?> getDeclaredType(String name) {
-		for (NameDeclaration decl : decls) {
-			if (decl.getName().equals(name)) {
-				return decl.getType();
+	public Class<?> getMemberType(String name) {
+		for (NameDeclaration member : members) {
+			if (member.getName().equals(name)) {
+				return member.getType();
 			}
 		}
 		return null;
 	}
 	
 	public Object[] getValues() {
-		Object[] values = new Object[decls.length];
+		Object[] values = new Object[members.length];
 		int i = 0;
-		for (NameDeclaration decl : decls) {
-			values[i++] = get(decl.getName());
+		for (NameDeclaration member : members) {
+			values[i++] = get(member.getName());
 		}
 		return values;
 	}

@@ -11,8 +11,8 @@ import java.io.OutputStream;
 
 public interface Writer {
 
-	void write(Object object, OutputStream output);
+	void write(Object value, OutputStream output);
 
-	String write(Object object);
+	String write(Object value);
 
 }

@@ -9,8 +9,11 @@ package metal.core.service;
 
 import static metal.core.service.TestImpl.TestServiceMessageCode.*;
 
+import org.springframework.stereotype.Service;
+
 import metal.core.message.MessageCode;
 
+@Service("metal-core-testService")
 public class TestImpl implements TestService {
 	
 	enum TestServiceMessageCode implements MessageCode {

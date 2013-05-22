@@ -7,8 +7,6 @@
  */
 package metal.core.mapper;
 
-import static metal.core.common.XmlAnnotationUtils.*;
-import static metal.core.mapper.Adapter.Kind.*;
 import static metal.core.mapper.MapperMessageCode.*;
 
 import java.io.InputStream;
@@ -36,20 +34,23 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
 
+import metal.core.mapper.model.ValueWrapper;
 import metal.core.mop.Model;
 import metal.core.mop.ValueType;
 
+import org.springframework.context.ApplicationListener;
+import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.oxm.XmlMappingException;
 import org.springframework.oxm.jaxb.Jaxb2Marshaller;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 
-public class XmlMapper extends BaseModelMapper implements Adapter<Node, Object> {
+public class XmlMapper extends BaseModelMapper implements Adapter<Node, Object>, ApplicationListener<ContextRefreshedEvent> {
 
 	private static class Jaxb2Mapper extends Jaxb2Marshaller {
-		public void marshal(Object source, Node result) throws XmlMappingException {
+		public void marshal(Object value, Node result) throws XmlMappingException {
 			try {
-				createMarshaller().marshal(source, result);
+				createMarshaller().marshal(value, result);
 			} catch (JAXBException ex) {
 				throw convertJaxbException(ex);
 			}
@@ -78,11 +79,11 @@ public class XmlMapper extends BaseModelMapper implements Adapter<Node, Object> 
 		});
 	}
 
-	public void setModelClasses(List<Class<?>> modelClasses) {
-		super.setModelClasses(modelClasses);
-		mapper.setClassesToBeBound(modelClasses.toArray(new Class<?>[0]));
+	@Override
+	public void onApplicationEvent(ContextRefreshedEvent e) {
+		mapper.setClassesToBeBound(getModelRegistry().getModelClasses());
 	}
-
+	
 	public void setDocumentBuilder(DocumentBuilder documentBuilder) {
 		this.documentBuilder = documentBuilder;
 	}
@@ -115,12 +116,12 @@ public class XmlMapper extends BaseModelMapper implements Adapter<Node, Object> 
 
 	@Override
 	@SuppressWarnings("unchecked")
-	public <T> T read(Class<T> valueType, InputStream input) {
+	public <T> T read(Class<T> type, InputStream input) {
 		T value = null;
 		try {
 			Document doc = getDocumentBuilder().parse(input);
-			ValueType type = ValueType.typeOf(doc.getDocumentElement().getNodeName());
-			switch (type) {
+			ValueType valueType = ValueType.typeOf(doc.getDocumentElement().getNodeName());
+			switch (valueType) {
 			case OBJECT:
 				value = (T) mapper.unmarshal(new DOMSource(doc.getDocumentElement()));
 				break;
@@ -133,23 +134,22 @@ public class XmlMapper extends BaseModelMapper implements Adapter<Node, Object> 
 		} catch (Exception ex) {
 			throw new MapperException(UnexpectedException, ex);
 		}
-		if (valueType == null || value == null || valueType.isAssignableFrom(value.getClass()))
+		if (type == null || value == null || type.isAssignableFrom(value.getClass()))
 			return value;
-		throw new MapperException(UnexpectedType, valueType.getName(), value.getClass().getName());
+		throw new MapperException(UnexpectedType, type.getName(), value.getClass().getName());
 	}
 
 	@Override
-	public <T extends Model> T read(T model, InputStream input) {
+	public <T extends Model> T read(T value, InputStream input) {
 		try {
 			Node root = getDocumentBuilder().parse(input).getDocumentElement();
 			Node node = ensureElementOrNull(root.getFirstChild());
 			while (node != null) {
 				String name = node.getNodeName();
-				Object value = mapper.unmarshal(new DOMSource(node), model.getDeclaredType(name));
-				model.put(name, value);
+				value.put(name, mapper.unmarshal(new DOMSource(node), value.getMemberType(name)));
 				node = ensureElementOrNull(node.getNextSibling());
 			}
-			return model;
+			return value;
 		} catch (Exception ex) {
 			throw new MapperException(UnexpectedException, ex);
 		}
@@ -157,22 +157,22 @@ public class XmlMapper extends BaseModelMapper implements Adapter<Node, Object> 
 
 	@Override
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public void write(Object object, OutputStream output) {
+	public void write(Object value, OutputStream output) {
 		try {
-			ValueType type = ValueType.typeOf(object, null);
-			switch (type) {
+			ValueType valueType = ValueType.typeOf(value);
+			switch (valueType) {
 			case OBJECT:
-				mapper.marshal(object, new StreamResult(output));
+				mapper.marshal(value, new StreamResult(output));
 				break;
 			case LIST:
 			case MAP:
 				Node wrapper = getDocumentBuilder().newDocument();
-				mapper.marshal(new ValueWrapper(object), wrapper);
+				mapper.marshal(new ValueWrapper(value), wrapper);
 				getDocumentTransformer().transform(new DOMSource(wrapper.getFirstChild().getFirstChild().getFirstChild()),
 						new StreamResult(output));
 				break;
 			default:
-				mapper.marshal(new JAXBElement(new QName(type.name), type.type, object),
+				mapper.marshal(new JAXBElement(new QName(valueType.name), valueType.type, value),
 						new StreamResult(output));
 				break;
 			}
@@ -181,110 +181,95 @@ public class XmlMapper extends BaseModelMapper implements Adapter<Node, Object> 
 		}
 	}
 
-	public Node marshal(Kind kind, Object object) {
+	@Override
+	public Node marshal(Object value) {
 		Node result = getDocumentBuilder().newDocument().createElement("result");
-		marshalValue(kind, object, null, result);
+		marshalValue(value, result);
 		return result;
 	}
 
-	public Object unmarshal(Kind kind, Node source) {
-		switch (kind) {
-		case VALUE:
-		default:
-			return unmarshalValue(kind, ensureElement(source.getFirstChild()));
-		}
+	@Override
+	public Object unmarshal(Node value) {
+		return unmarshalValue(ensureElement(value.getFirstChild()));
 	}
 
 	@SuppressWarnings("unchecked")
-	protected void marshalValue(Kind kind, Object object, Class<?> clazz, Node result) {
-		ValueType type = ValueType.typeOf(object, clazz);
-		switch (type) {
+	protected void marshalValue(Object value, Node result) {
+		ValueType valueType = ValueType.typeOf(value);
+		switch (valueType) {
 		case LIST:
-			marshalList(kind, (List<Object>) object, result);
+			marshalList((List<Object>) value, result);
 			break;
 		case MAP:
-			marshalMap((Map<String, Object>) object, result);
+			marshalMap((Map<String, Object>) value, result);
 			break;
 		case OBJECT:
-			mapper.marshal(object, new DOMResult(result));
+			mapper.marshal(value, new DOMResult(result));
 			break;
 		default:
-			marshalSimple(object, type, clazz, result);
+			marshalSimple(value, valueType, result);
 			break;
 		}
 	}
 
-	protected Object unmarshalValue(Kind kind, Node source) {
-		ValueType type = ValueType.typeOf(source.getNodeName());
-		switch (type) {
+	protected Object unmarshalValue(Node value) {
+		ValueType valueType = ValueType.typeOf(value.getNodeName());
+		switch (valueType) {
 		case LIST:
-			return unmarshalList(kind, source);
+			return unmarshalList(value);
 		case MAP:
-			return unmarshalMap(source);
+			return unmarshalMap(value);
 		case OBJECT:
-			return mapper.unmarshal(new DOMSource(source));
+			return mapper.unmarshal(new DOMSource(value));
 		default:
-			return unmarshalSimple(source, type);
+			return unmarshalSimple(value, valueType);
 		}
 	}
 
-	protected void marshalSimple(Object object, ValueType type, Class<?> clazz, Node result) {
+	protected void marshalSimple(Object value, ValueType valueType, Node result) {
 		Document doc = result.getOwnerDocument();
-		String typeName = ensureName(type != ValueType.NULL ? type.name : modelName(clazz),
-				clazz != null ? clazz.getSimpleName() : ValueType.NULL.name);
-		Node node = result.appendChild(doc.createElement(typeName));
-		switch (type) {
+		Node node = result.appendChild(doc.createElement(valueType.name));
+		switch (valueType) {
 		case DATE:
 			Calendar cal = Calendar.getInstance();
-			cal.setTime((Date) object);
+			cal.setTime((Date) value);
 			node.appendChild(doc.createTextNode(DatatypeConverter.printDateTime(cal)));
 			break;
 		case NULL:
-			if (!ValueType.NULL.name.equals(typeName)) {
-				node.appendChild(doc.createElement(ValueType.NULL.name));
-			}
 			break;
 		default:
-			node.appendChild(doc.createTextNode(String.valueOf(object)));
+			node.appendChild(doc.createTextNode(String.valueOf(value)));
 			break;
 		}
 	}
 
-	protected void marshalList(Kind kind, List<Object> list, Node result) {
+	protected void marshalList(List<Object> value, Node result) {
 		Document doc = result.getOwnerDocument();
-		switch (kind) {
-		case VALUE:
-			Node node = result.appendChild(doc.createElement(ValueType.LIST.name));
-			if (list != null) {
-				for (Object item : list) {
-					marshalValue(VALUE, item, null, node);
-				}
-			}
-			break;
+		Node node = result.appendChild(doc.createElement(ValueType.LIST.name));
+		for (Object item : value) {
+			marshalValue(item, node);
 		}
 	}
 
-	protected void marshalMap(Map<String, Object> map, Node result) {
+	protected void marshalMap(Map<String, Object> value, Node result) {
 		Document doc = result.getOwnerDocument();
 		Node node = result.appendChild(doc.createElement(ValueType.MAP.name));
-		if (map != null) {
-			for (Map.Entry<String, Object> item : map.entrySet()) {
-				marshalValue(VALUE, item.getValue(), null, node.appendChild(doc.createElement(item.getKey())));
-			}
+		for (Map.Entry<String, Object> item : value.entrySet()) {
+			marshalValue(item.getValue(), node.appendChild(doc.createElement(item.getKey())));
 		}
 	}
 
-	protected Object unmarshalSimple(Node source, ValueType type) {
-		Node node = source.getChildNodes().getLength() == 1 ? source.getFirstChild() : null;
+	protected Object unmarshalSimple(Node value, ValueType valueType) {
+		Node node = value.getChildNodes().getLength() == 1 ? value.getFirstChild() : null;
 		if (node != null && node.getNodeType() != Node.TEXT_NODE) {
 			if (node.getNodeType() == Node.ELEMENT_NODE && node.getNodeName().equals(ValueType.NULL.name))
 				return null;
 			throw new MapperException(IncorrectContentModel, node.getNodeName());
 		}
 		String text = node != null ? node.getNodeValue() : null;
-		if (text == null) return type.value;
+		if (text == null) return valueType.value;
 		try {
-			switch (type) {
+			switch (valueType) {
 			case INT:
 				return Integer.valueOf(text);
 			case LONG:
@@ -302,30 +287,25 @@ public class XmlMapper extends BaseModelMapper implements Adapter<Node, Object> 
 				return null;
 			}
 		} catch (Exception ex) {
-			throw new MapperException(IncorrectContentModel, source.getNodeName());
+			throw new MapperException(IncorrectContentModel, value.getNodeName());
 		}
 	}
 
-	protected Object unmarshalList(Kind kind, Node source) {
+	protected Object unmarshalList(Node value) {
 		List<Object> list = new ArrayList<Object>();
-		Node item = ensureElementOrNull(source.getFirstChild());
+		Node item = ensureElementOrNull(value.getFirstChild());
 		while (item != null) {
-			switch (kind) {
-			case VALUE:
-				list.add(unmarshalValue(VALUE, item));
-				break;
-			}
+			list.add(unmarshalValue(item));
 			item = ensureElementOrNull(item.getNextSibling());
 		}
 		return list;
 	}
 
-	protected Object unmarshalMap(Node source) {
+	protected Object unmarshalMap(Node value) {
 		Map<String, Object> map = new LinkedHashMap<String, Object>();
-		Node item = ensureElementOrNull(source.getFirstChild());
+		Node item = ensureElementOrNull(value.getFirstChild());
 		while (item != null) {
-			map.put(item.getNodeName(),
-					unmarshalValue(VALUE, ensureElement(item.getFirstChild())));
+			map.put(item.getNodeName(), unmarshalValue(ensureElement(item.getFirstChild())));
 			item = ensureElementOrNull(item.getNextSibling());
 		}
 		return map;
@@ -341,14 +321,10 @@ public class XmlMapper extends BaseModelMapper implements Adapter<Node, Object> 
 
 	protected Node ensureElementOrNull(Node node) {
 		Node next = node;
-		while (next != null && next.getNodeType() != Node.ELEMENT_NODE)
+		while (next != null && next.getNodeType() != Node.ELEMENT_NODE) {
 			next = next.getNextSibling();
+		}
 		return next;
 	}
 
-	protected Class<?> modelClass(Node source) {
-		ValueType type = ValueType.typeOf(source.getNodeName());
-		return type != ValueType.OBJECT ? type.type : modelClass(source.getNodeName()); 
-	}
-	
 }

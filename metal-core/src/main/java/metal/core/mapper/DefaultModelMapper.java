@@ -40,13 +40,13 @@ public class DefaultModelMapper extends BaseModelMapper {
 	}
 
 	@Override
-	public <T extends Model> T read(T model, InputStream input) {
-		return reader.read(model, input);
+	public <T extends Model> T read(T value, InputStream input) {
+		return reader.read(value, input);
 	}
 
 	@Override
-	public void write(Object object, OutputStream output) {
-		writer.write(object, output);
+	public void write(Object value, OutputStream output) {
+		writer.write(value, output);
 	}
 
 }

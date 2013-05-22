@@ -11,8 +11,8 @@ import java.util.List;
 
 public class MethodDeclaration extends Setting<String, List<NameDeclaration>> {
 
-	public MethodDeclaration(String name, List<NameDeclaration> paramDecls) {
-		super(name, paramDecls);
+	public MethodDeclaration(String name, List<NameDeclaration> params) {
+		super(name, params);
 	}
 	
 	public String getName() {
@@ -23,11 +23,20 @@ public class MethodDeclaration extends Setting<String, List<NameDeclaration>> {
 		return this.getValue().toArray(new NameDeclaration[this.getValue().size()]);
 	}
 	
+	public String[] getParamNames() {
+		String[] names = new String[this.getValue().size()];
+		int i = 0;
+		for (NameDeclaration param : this.getValue()) {
+			names[i++] = param.getName();
+		}
+		return names;
+	}
+	
 	public Class<?>[] getParamTypes() {
 		Class<?>[] types = new Class<?>[this.getValue().size()];
 		int i = 0;
-		for (NameDeclaration decl : this.getValue()) {
-			types[i++] = decl.getType();
+		for (NameDeclaration param : this.getValue()) {
+			types[i++] = param.getType();
 		}
 		return types;
 	}

@@ -18,7 +18,7 @@ import org.junit.Test;
 
 public class ExceptionAdviceTest extends TestBase {
 
-	@Resource(name="test-core-testService")
+	@Resource
 	private TestService service;
 	
 	@Resource(name="metal-core-logger")

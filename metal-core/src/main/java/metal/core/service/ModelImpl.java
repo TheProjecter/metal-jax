@@ -7,9 +7,9 @@
  */
 package metal.core.service;
 
-import javax.xml.bind.annotation.XmlRootElement;
+import org.springframework.stereotype.Service;
 
-@XmlRootElement(name="/metal/core/model")
+@Service("metal-core-modelService")
 public class ModelImpl implements ModelService {
 	
 	public Object load(String key) {

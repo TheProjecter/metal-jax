@@ -11,8 +11,8 @@ import java.util.Map;
 
 public class ServiceDeclaration extends Setting<String, Map<String, MethodDeclaration>> {
 
-	public ServiceDeclaration(String name, Map<String, MethodDeclaration> methodDecls) {
-		super(name, methodDecls);
+	public ServiceDeclaration(String name, Map<String, MethodDeclaration> methods) {
+		super(name, methods);
 	}
 	
 	public String getName() {
