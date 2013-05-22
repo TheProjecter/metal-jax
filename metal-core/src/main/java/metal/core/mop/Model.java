@@ -13,6 +13,8 @@ public class Model extends HashMap<String, Object> {
 
 	private NameDeclaration[] members;
 
+	public Model() {}
+	
 	public Model(NameDeclaration... members) {
 		this.members = members;
 	}

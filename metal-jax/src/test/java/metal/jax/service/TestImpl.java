@@ -7,15 +7,11 @@
  */
 package metal.jax.service;
 
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
+import org.springframework.stereotype.Service;
 
-@XmlRootElement(name="/test/jax/test")
+@Service("metal-jax-testService")
 public class TestImpl implements TestService {
 
-	@XmlElement
-	@XmlAttribute(name="message,from")
 	public String hello(Long message, String from) {
 		return "test: " + message + ", from: " + from;
 	}

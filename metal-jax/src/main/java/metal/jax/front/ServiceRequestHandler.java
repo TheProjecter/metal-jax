@@ -18,11 +18,14 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import metal.core.common.AnyException;
-import metal.core.mapper.ModelMapper;
+import metal.core.mapper.Reader;
+import metal.core.mapper.Writer;
 import metal.core.message.MessageMapper;
 import metal.core.mop.MethodDeclaration;
 import metal.core.mop.NameDeclaration;
 import metal.core.mop.ServiceRegistry;
+import metal.jax.front.model.RequestMessage;
+import metal.jax.front.model.ResponseMessage;
 
 import org.apache.commons.beanutils.BeanUtils;
 import org.springframework.beans.BeansException;
@@ -38,7 +41,8 @@ public class ServiceRequestHandler extends HttpInvokerServiceExporter implements
 	private Map<String,Service> serviceMap = Collections.emptyMap();
 	private ServiceRegistry serviceRegistry;
 	private MessageMapper messageMapper;
-	private ModelMapper modelMapper;
+	private Reader requestReader;
+	private Writer responseWriter;
 	
 	@Override
 	public void afterPropertiesSet() {}
@@ -59,8 +63,12 @@ public class ServiceRequestHandler extends HttpInvokerServiceExporter implements
 		this.messageMapper = messageMapper;
 	}
 
-	public void setModelMapper(ModelMapper modelMapper) {
-		this.modelMapper = modelMapper;
+	public void setRequestReader(Reader requestReader) {
+		this.requestReader = requestReader;
+	}
+
+	public void setResponseWriter(Writer responseWriter) {
+		this.responseWriter = responseWriter;
 	}
 
 	@Override
@@ -74,9 +82,9 @@ public class ServiceRequestHandler extends HttpInvokerServiceExporter implements
 		try {
 			Service service = serviceMap.get(request.getServletPath());
 			Object target = getInvocationTarget(service, request);
-			MethodDeclaration methodDecl = getInvocationMethod(service, request);
-			Object[] params = getRequestParameters(request, methodDecl.getParamDeclarations());
-			return invoke(methodDecl.getName(), target, params, methodDecl.getParamTypes());
+			MethodDeclaration method = getInvocationMethod(service, request);
+			Object[] params = getRequestParameters(request, method.getParamDeclarations());
+			return invoke(method.getName(), target, params, method.getParamTypes());
 		} catch (AnyException ex) {
 			return new ResponseMessage(null, messageMapper.getMessage(ex), ex.getMessage());
 		} catch (Exception ex) {
@@ -85,14 +93,12 @@ public class ServiceRequestHandler extends HttpInvokerServiceExporter implements
 	}
 	
 	protected void sendResponse(ResponseMessage message, ServiceResponse response) throws IOException {
-		modelMapper.write(message, response.getOutputStream());
+		responseWriter.write(message, response.getOutputStream());
 		response.flushBuffer();
 	}
 	
 	protected ResponseMessage invoke(String method, Object target, Object[] params, Class<?>[] paramTypes) {
-		RemoteInvocation invocation;
-		if (paramTypes != null) invocation = new RemoteInvocation(method, paramTypes, params);
-		else invocation = new RemoteInvocation(method, new Class<?>[0], new Object[0]);
+		RemoteInvocation invocation = new RemoteInvocation(method, paramTypes, params);
 		RemoteInvocationResult result = invokeAndCreateResult(invocation, target);
 		Throwable ex = result.getException();
 		if (ex instanceof AnyException) {
@@ -118,22 +124,22 @@ public class ServiceRequestHandler extends HttpInvokerServiceExporter implements
 	}
 	
 	protected MethodDeclaration getInvocationMethod(Service service, ServiceRequest request) {
-		return serviceRegistry.getServiceMethodSetting(service.getServicePath(request), service.getRequestMethod(request));
+		return serviceRegistry.getServiceMethodDeclaration(service.getServicePath(request), service.getRequestMethod(request));
 	}
 	
-	protected Object[] getRequestParameters(ServiceRequest request, NameDeclaration[] paramDecls) throws Exception {
-		Object[] params = null;
-		RequestMessage message = new RequestMessage(paramDecls);
+	protected Object[] getRequestParameters(ServiceRequest request, NameDeclaration[] params) throws Exception {
+		Object[] values = null;
+		RequestMessage message = new RequestMessage(params);
 		switch (HttpContentType.typeOf(request.getContentType())) {
 		case XML:
-			params = modelMapper.read(message, request.getInputStream()).getValues();
+			values = requestReader.read(message, request.getInputStream()).getValues();
 			break;
 		case FORM:
 			BeanUtils.populate(message, request.getParameterMap());
-			params = message.getValues();
+			values = message.getValues();
 			break;
 		}
-		return params;
+		return values;
 	}
 	
 }

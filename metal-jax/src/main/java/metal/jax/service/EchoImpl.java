@@ -9,15 +9,11 @@ package metal.jax.service;
 
 import java.util.HashMap;
 
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
+import org.springframework.stereotype.Service;
 
-@XmlRootElement(name="/metal/jax/echo")
+@Service("metal-jax-echoService")
 public class EchoImpl implements EchoService {
 
-	@XmlElement
-	@XmlAttribute(name="message")
 	public String hello(HashMap<String,Object> message) {
 		return "echo: " + message.get("value");
 	}
