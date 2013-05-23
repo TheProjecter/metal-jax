@@ -7,15 +7,13 @@
  */
 package metal.jax.service;
 
-import java.util.HashMap;
-
 import org.springframework.stereotype.Service;
 
 @Service("metal-jax-echoService")
 public class EchoImpl implements EchoService {
 
-	public String hello(HashMap<String,Object> message) {
-		return "echo: " + message.get("value");
+	public String hello(Long message, String from) {
+		return "echo: " + message + ", from: " + from;
 	}
 	
 }
