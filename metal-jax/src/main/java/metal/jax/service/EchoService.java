@@ -7,15 +7,13 @@
  */
 package metal.jax.service;
 
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
+import metal.core.mop.annotation.Method;
+import metal.core.mop.annotation.Service;
 
-@XmlRootElement(name="/metal/jax/echo")
+@Service(path="/metal/jax/echo")
 public interface EchoService {
 
-	@XmlElement
-	@XmlAttribute(name="message,from")
+	@Method(params={"message","from"})
 	String hello(Long message, String from);
 	
 }

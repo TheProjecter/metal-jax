@@ -7,15 +7,13 @@
  */
 package metal.jax.service;
 
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
+import metal.core.mop.annotation.Method;
+import metal.core.mop.annotation.Service;
 
-@XmlRootElement(name="/metal/jax/test")
+@Service(path="/metal/jax/test")
 public interface TestService {
 
-	@XmlElement
-	@XmlAttribute(name="message,from")
+	@Method(params={"message","from"})
 	String hello(Long message, String from);
 	
 }

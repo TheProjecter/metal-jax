@@ -10,15 +10,13 @@ package metal.core.mop;
 import static metal.core.common.XmlAnnotationUtils.*;
 import static metal.core.mop.MopMessageCode.*;
 
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
+import metal.core.mop.annotation.Method;
+import metal.core.mop.annotation.Service;
 
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanPostProcessor;
@@ -41,14 +39,13 @@ public class ServiceRegistry implements BeanPostProcessor {
 
 	private void registerService(String beanName, Object bean) {
 		Class<?> beanClass = bean.getClass();
-		XmlRootElement serviceTag = AnnotationUtils.findAnnotation(beanClass, XmlRootElement.class);
+		Service serviceTag = AnnotationUtils.findAnnotation(beanClass, Service.class);
 		if (serviceTag != null) {
 			Map<String, MethodDeclaration> methodMap = new HashMap<String, MethodDeclaration>();
-			for (Method method : beanClass.getMethods()) {
-				XmlElement methodTag = AnnotationUtils.findAnnotation(method, XmlElement.class);
-				XmlAttribute paramTag = AnnotationUtils.findAnnotation(method, XmlAttribute.class);
+			for (java.lang.reflect.Method method : beanClass.getMethods()) {
+				Method methodTag = AnnotationUtils.findAnnotation(method, Method.class);
 				if (methodTag != null) {
-					String[] paramNames = paramTag != null ? ensureName(paramTag.name(), "").split(",") : new String[0];
+					String[] paramNames = methodTag.params();
 					Class<?>[] paramTypes = method.getParameterTypes();
 					if (paramNames.length != paramTypes.length) {
 						throw new MopException(UnexpectedParamNameCount, paramNames.length, paramTypes.length, method.getName(), beanClass.getName());
@@ -60,7 +57,7 @@ public class ServiceRegistry implements BeanPostProcessor {
 					methodMap.put(ensureName(methodTag.name(), method.getName()), new MethodDeclaration(method.getName(), params));
 				}
 			}
-			serviceMap.put(ensureName(serviceTag.name(), beanClass.getSimpleName()), new ServiceDeclaration(beanName, methodMap));
+			serviceMap.put(ensureName(serviceTag.path(), beanClass.getSimpleName()), new ServiceDeclaration(beanName, methodMap));
 		}
 	}
 	
