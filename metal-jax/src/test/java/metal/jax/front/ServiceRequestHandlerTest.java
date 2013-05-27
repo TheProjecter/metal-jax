@@ -49,12 +49,12 @@ public class ServiceRequestHandlerTest extends TestBase {
 
 	@Test
 	public void testHandleRequestForm() throws Exception {
-		MockHttpServletRequest httpRequest = new MockHttpServletRequest("POST", "/metal-jax/service/metal/jax/test/hello");
+		MockHttpServletRequest httpRequest = new MockHttpServletRequest("POST", "/metal-jax/service/metal/jax/test/hello.xml");
 		httpRequest.setServletPath("/service");
-		httpRequest.setPathInfo("/metal/jax/test/hello");
+		httpRequest.setPathInfo("/metal/jax/test/hello.xml");
 		httpRequest.addParameter("message", "12345678");
 		httpRequest.addParameter("from", "whoever");
-		httpRequest.setContentType(HttpContentType.FORM.type);
+		httpRequest.setContentType(HttpContentType.FORM.contentType);
 		
 		String response1 = IOUtils.toString(source("serviceResponse.xml"));
 		MockHttpServletResponse httpResponse = new MockHttpServletResponse();
@@ -66,11 +66,11 @@ public class ServiceRequestHandlerTest extends TestBase {
 
 	@Test
 	public void testHandleRequestXml() throws Exception {
-		MockHttpServletRequest httpRequest = new MockHttpServletRequest("POST", "/metal-jax/service/metal/jax/test/hello");
+		MockHttpServletRequest httpRequest = new MockHttpServletRequest("POST", "/metal-jax/service/metal/jax/test/hello.xml");
 		httpRequest.setServletPath("/service");
-		httpRequest.setPathInfo("/metal/jax/test/hello");
+		httpRequest.setPathInfo("/metal/jax/test/hello.xml");
 		httpRequest.setContent(IOUtils.toByteArray(source("serviceRequest.xml")));
-		httpRequest.setContentType(HttpContentType.XML.type);
+		httpRequest.setContentType(HttpContentType.XML.contentType);
 		
 		String response1 = IOUtils.toString(source("serviceResponse.xml"));
 		MockHttpServletResponse httpResponse = new MockHttpServletResponse();

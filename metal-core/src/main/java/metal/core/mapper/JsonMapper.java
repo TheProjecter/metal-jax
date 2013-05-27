@@ -30,6 +30,7 @@ import org.codehaus.jackson.JsonEncoding;
 import org.codehaus.jackson.JsonGenerator;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.map.ObjectMapper;
+import org.codehaus.jackson.map.annotate.JsonSerialize;
 import org.codehaus.jackson.map.introspect.Annotated;
 import org.codehaus.jackson.xc.JaxbAnnotationIntrospector;
 
@@ -50,6 +51,7 @@ public class JsonMapper extends BaseModelMapper implements Adapter<Object, Objec
 			}
 		};
 		mapper = new ObjectMapper();
+		mapper.getSerializationConfig().setSerializationInclusion(JsonSerialize.Inclusion.NON_NULL);
 		mapper.getSerializationConfig().setAnnotationIntrospector(introspector);
 		mapper.getDeserializationConfig().setAnnotationIntrospector(introspector);
 	}

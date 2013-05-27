@@ -28,6 +28,7 @@ public class BaseObject {
 	private String stringObject;
 	private Date dateObject;
 	private String defaultObject;
+	private Object nullObject;
 	
 	public int getIntValue() {
 		return intValue;
@@ -94,6 +95,12 @@ public class BaseObject {
 	}
 	public void setDefaultObject(String defaultObject) {
 		this.defaultObject = defaultObject;
+	}
+	public Object getNullObject() {
+		return nullObject;
+	}
+	public void setNullObject(Object nullObject) {
+		this.nullObject = nullObject;
 	}
 	
 }

@@ -62,7 +62,6 @@ public class TestUtils {
 		object.setStringObject("ABC");
 		object.setDateObject(dateValue("20131231", "yyyyMMdd"));
 		object.setDefaultObject("");
-		object.setNullObject(null);
 		object.setObjectObject(init(new BaseObject()));
 		object.setListObject(init(new ArrayList<Object>()));
 		object.setMapObject(init(new LinkedHashMap<String,Object>()));
@@ -146,7 +145,6 @@ public class TestUtils {
 		Assert.assertTrue(o1.getStringObject().equals(o2.getStringObject()));
 		Assert.assertTrue(o1.getDateObject().equals(o2.getDateObject()));
 		Assert.assertTrue(o1.getDefaultObject().equals(o2.getDefaultObject()));
-		Assert.assertTrue(o1.getNullObject() == o2.getNullObject());
 		assertEquals((BaseObject)o1.getObjectObject(), (BaseObject)o2.getObjectObject());
 		assertEquals((List<Object>)o1.getListObject(), (List<Object>)o2.getListObject());
 		assertEquals((Map<String,Object>)o1.getMapObject(), (Map<String,Object>)o2.getMapObject());

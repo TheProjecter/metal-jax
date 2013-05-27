@@ -19,8 +19,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import metal.core.common.AnyException;
-import metal.core.mapper.Reader;
-import metal.core.mapper.Writer;
+import metal.core.mapper.ContentMapper;
 import metal.core.message.MessageMapper;
 import metal.core.mop.MethodDeclaration;
 import metal.core.mop.NameDeclaration;
@@ -42,8 +41,7 @@ public class ServiceRequestHandler extends HttpInvokerServiceExporter implements
 	private Map<String,Service> serviceMap = Collections.emptyMap();
 	private ServiceRegistry serviceRegistry;
 	private MessageMapper messageMapper;
-	private Reader requestReader;
-	private Writer responseWriter;
+	private ContentMapper contentMapper;
 	
 	@Override
 	public void afterPropertiesSet() {}
@@ -64,19 +62,15 @@ public class ServiceRequestHandler extends HttpInvokerServiceExporter implements
 		this.messageMapper = messageMapper;
 	}
 
-	public void setRequestReader(Reader requestReader) {
-		this.requestReader = requestReader;
-	}
-
-	public void setResponseWriter(Writer responseWriter) {
-		this.responseWriter = responseWriter;
+	public void setContentMapper(ContentMapper contentMapper) {
+		this.contentMapper = contentMapper;
 	}
 
 	@Override
 	public void handleRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		ServiceRequest serviceRequest = new ServiceRequest(request);
 		ResponseMessage message = invokeService(serviceRequest);
-		sendResponse(message, new ServiceResponse(response));
+		sendResponse(message, new ServiceResponse(response), serviceRequest.getExtName());
 	}
 
 	protected ResponseMessage invokeService(ServiceRequest request) {
@@ -93,8 +87,9 @@ public class ServiceRequestHandler extends HttpInvokerServiceExporter implements
 		}
 	}
 	
-	protected void sendResponse(ResponseMessage message, ServiceResponse response) throws IOException {
-		responseWriter.write(message, response.getOutputStream());
+	protected void sendResponse(ResponseMessage message, ServiceResponse response, String ext) throws IOException {
+		String contentType = HttpContentType.typeOf(ext, HttpContentType.JSON).name();
+		contentMapper.write(message, response.getOutputStream(), contentType);
 		response.flushBuffer();
 	}
 	
@@ -131,13 +126,14 @@ public class ServiceRequestHandler extends HttpInvokerServiceExporter implements
 	protected Object[] getRequestParameters(ServiceRequest request, NameDeclaration[] params) throws Exception {
 		Object[] values = null;
 		RequestMessage message = new RequestMessage(params);
-		switch (typeOf(request.getContentType(), FORM)) {
-		case XML:
-			values = requestReader.read(message, request.getInputStream()).getValues();
-			break;
+		HttpContentType contentType = typeOf(request.getContentType(), FORM);
+		switch (contentType) {
 		case FORM:
 			BeanUtils.populate(message, request.getParameterMap());
 			values = message.getValues();
+			break;
+		default:
+			values = contentMapper.read(message, request.getInputStream(), contentType.name()).getValues();
 			break;
 		}
 		return values;

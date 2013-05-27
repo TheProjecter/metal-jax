@@ -25,7 +25,6 @@ public class GenericObject {
 	private Object listObject;
 	private Object mapObject;
 	private Object objectObject;
-	private Object nullObject;
 	
 	@XmlJavaTypeAdapter(ValueAdapter.class)
 	public Object getIntObject() {
@@ -96,13 +95,6 @@ public class GenericObject {
 	}
 	public void setObjectObject(Object objectObject) {
 		this.objectObject = objectObject;
-	}
-	@XmlJavaTypeAdapter(ValueAdapter.class)
-	public Object getNullObject() {
-		return nullObject;
-	}
-	public void setNullObject(Object nullObject) {
-		this.nullObject = nullObject;
 	}
 	
 }
