@@ -8,6 +8,7 @@
 package metal.jax.front;
 
 import static metal.jax.front.FrontMessageCode.*;
+import static metal.jax.front.HttpContentType.*;
 
 import java.io.IOException;
 import java.util.Collections;
@@ -130,7 +131,7 @@ public class ServiceRequestHandler extends HttpInvokerServiceExporter implements
 	protected Object[] getRequestParameters(ServiceRequest request, NameDeclaration[] params) throws Exception {
 		Object[] values = null;
 		RequestMessage message = new RequestMessage(params);
-		switch (HttpContentType.typeOf(request.getContentType())) {
+		switch (typeOf(request.getContentType(), FORM)) {
 		case XML:
 			values = requestReader.read(message, request.getInputStream()).getValues();
 			break;

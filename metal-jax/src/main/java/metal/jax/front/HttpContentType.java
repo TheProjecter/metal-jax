@@ -8,17 +8,20 @@
 package metal.jax.front;
 
 public enum HttpContentType {
-	XML("text/xml"),
+	XML("application/xml", "text/xml"),
+	JSON("application/json", "text/json"),
 	FORM("application/x-www-form-urlencoded");
 	
-	public final String type;
-	private HttpContentType(String type) { this.type = type; }
+	public final String[] types;
+	private HttpContentType(String... types) { this.types = types; }
 	private static final HttpContentType[] values = HttpContentType.values();
-	public static HttpContentType typeOf(String type) {
+	public static HttpContentType typeOf(String contentType, HttpContentType defaultType) {
 		for (HttpContentType value : values) {
-			if (value.type.equals(type)) return value;
+			for (String type : value.types) {
+				if (type.equals(contentType)) return value;
+			}
 		}
-		return FORM;
+		return defaultType;
 	}
 	
 }
