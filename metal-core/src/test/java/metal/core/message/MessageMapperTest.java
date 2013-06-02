@@ -25,7 +25,7 @@ public class MessageMapperTest extends TestBase {
 		SpecificException
 	}
 	
-	@Resource(name="metal-core-messageMapper")
+	@Resource
 	private MessageMapper mapper;
 	
 	@Test

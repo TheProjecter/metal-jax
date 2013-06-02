@@ -34,7 +34,7 @@ import org.codehaus.jackson.map.annotate.JsonSerialize;
 import org.codehaus.jackson.map.introspect.Annotated;
 import org.codehaus.jackson.xc.JaxbAnnotationIntrospector;
 
-public class JsonMapper extends BaseModelMapper implements Adapter<Object, Object> {
+public class JsonMapper extends BaseMapper implements Adapter<Object, Object> {
 	
 	private ObjectMapper mapper;
 	
@@ -44,8 +44,8 @@ public class JsonMapper extends BaseModelMapper implements Adapter<Object, Objec
 			@Override
 			protected XmlAdapter<Object, Object> findAdapter(Annotated am, boolean forSerialization) {
 				XmlAdapter<Object,Object> adapter = super.findAdapter(am, forSerialization);
-				if (adapter instanceof BaseAdapter) {
-					((BaseAdapter<Object, Object>)adapter).setAdapter(_this);
+				if (adapter instanceof ValueAdapter) {
+					((ValueAdapter<Object, Object>)adapter).setAdapter(_this);
 				}
 				return adapter;
 			}
@@ -173,7 +173,7 @@ public class JsonMapper extends BaseModelMapper implements Adapter<Object, Objec
 			break;
 		case OBJECT:
 		default:
-			String modelName = getModelRegistry().getModelName(value.getClass());
+			String modelName = modelRegistry.getModelName(value.getClass());
 			if (modelName != null) {
 				map.put(modelName, value);
 			}
@@ -205,7 +205,7 @@ public class JsonMapper extends BaseModelMapper implements Adapter<Object, Objec
 		Object value = entry.getValue();
 		ValueType valueType = ValueType.typeOf(entry.getKey());
 		if (valueType == ValueType.OBJECT) {
-			modelClass = getModelRegistry().getModelClass(entry.getKey());
+			modelClass = modelRegistry.getModelClass(entry.getKey());
 			if (modelClass == null) return null;
 		}
 		switch (valueType) {

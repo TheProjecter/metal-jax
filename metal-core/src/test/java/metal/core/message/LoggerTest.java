@@ -15,7 +15,7 @@ import org.junit.Test;
 
 public class LoggerTest extends TestBase {
 
-	@Resource(name="metal-core-logger")
+	@Resource
 	private Logger logger;
 	
 	@Test

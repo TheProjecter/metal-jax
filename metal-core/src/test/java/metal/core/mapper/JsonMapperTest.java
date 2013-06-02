@@ -26,7 +26,7 @@ import org.junit.Test;
 public class JsonMapperTest extends TestBase {
 
 	@Resource(name="metal-core-jsonMapper")
-	private ModelMapper jsonMapper;
+	private Mapper jsonMapper;
 	
 	@Test
 	public void testMapper_write() throws Exception {

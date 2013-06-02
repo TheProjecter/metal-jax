@@ -11,7 +11,7 @@ import static org.junit.Assert.*;
 
 import javax.annotation.Resource;
 
-import metal.core.mapper.ModelMapper;
+import metal.core.mapper.Mapper;
 import metal.core.mop.MethodDeclaration;
 import metal.core.mop.ServiceRegistry;
 import metal.core.test.TestBase;
@@ -26,15 +26,15 @@ import org.springframework.mock.web.MockHttpServletResponse;
 public class ServiceRequestHandlerTest extends TestBase {
 
 	@Resource(name = "metal-core-xmlMapper")
-	private ModelMapper xmlMapper;
+	private Mapper xmlMapper;
 	
 	@Resource(name="metal-jax-testService")
 	private Object service;
 	
-	@Resource(name="metal-jax-serviceRequestHandler")
+	@Resource
 	private ServiceRequestHandler handler;
 	
-	@Resource(name="metal-core-serviceRegistry")
+	@Resource
 	private ServiceRegistry serviceRegistry;
 
 	@Test

@@ -45,7 +45,7 @@ import org.springframework.oxm.jaxb.Jaxb2Marshaller;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 
-public class XmlMapper extends BaseModelMapper implements Adapter<Node, Object>, ApplicationListener<ContextRefreshedEvent> {
+public class XmlMapper extends BaseMapper implements Adapter<Node, Object>, ApplicationListener<ContextRefreshedEvent> {
 
 	private static class Jaxb2Mapper extends Jaxb2Marshaller {
 		public void marshal(Object value, Node result) throws XmlMappingException {
@@ -70,7 +70,7 @@ public class XmlMapper extends BaseModelMapper implements Adapter<Node, Object>,
 
 	public XmlMapper() {
 		mapper = new Jaxb2Mapper();
-		mapper.setAdapters(new BaseAdapter[] {
+		mapper.setAdapters(new ValueAdapter[] {
 			new ValueAdapter<Node, Object>(this)
 		});
 		mapper.setValidationEventHandler(new ValidationEventHandler() {
@@ -81,7 +81,7 @@ public class XmlMapper extends BaseModelMapper implements Adapter<Node, Object>,
 
 	@Override
 	public void onApplicationEvent(ContextRefreshedEvent e) {
-		mapper.setClassesToBeBound(getModelRegistry().getModelClasses());
+		mapper.setClassesToBeBound(modelRegistry.getModelClasses());
 	}
 	
 	public void setDocumentBuilder(DocumentBuilder documentBuilder) {

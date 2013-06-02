@@ -6,7 +6,7 @@ xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.sprin
 
 	<bean id="metal-core-xmlMapper" class="metal.core.mapper.XmlMapper" p:modelRegistry-ref="metal-core-modelRegistry"/>
 	<bean id="metal-core-jsonMapper" class="metal.core.mapper.JsonMapper" p:modelRegistry-ref="metal-core-modelRegistry"/>
-	<bean id="metal-core-contentMapper" class="metal.core.mapper.ContentMapper">
+	<bean id="metal-core-valueMapper" class="metal.core.mapper.ValueMapper">
 		<property name="readers">
 			<map>
 				<entry key="xml" value-ref="metal-core-xmlMapper"/>

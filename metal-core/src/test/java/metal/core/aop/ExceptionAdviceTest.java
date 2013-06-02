@@ -21,7 +21,7 @@ public class ExceptionAdviceTest extends TestBase {
 	@Resource
 	private TestService service;
 	
-	@Resource(name="metal-core-logger")
+	@Resource
 	private Logger logger;
 	
 	@Test

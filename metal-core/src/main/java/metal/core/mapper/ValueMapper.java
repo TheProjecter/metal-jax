@@ -13,7 +13,7 @@ import java.util.Map;
 
 import metal.core.mop.Model;
 
-public class ContentMapper {
+public class ValueMapper {
 	
 	private Map<String, Reader> readers;
 	private Map<String, Writer> writers;

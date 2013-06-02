@@ -7,6 +7,6 @@
  */
 package metal.core.mapper;
 
-public interface ModelMapper extends Reader, Writer {
+public interface Mapper extends Reader, Writer {
 	// empty for now
 }

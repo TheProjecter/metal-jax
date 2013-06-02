@@ -7,12 +7,20 @@
  */
 package metal.core.mapper;
 
-public class ValueAdapter<V, B> extends BaseAdapter<V, B> {
+import javax.xml.bind.annotation.adapters.XmlAdapter;
 
+public class ValueAdapter<V, B> extends XmlAdapter<V, B> {
+
+	private Adapter<V, B> adapter;
+	
 	public ValueAdapter() {}
 	
 	public ValueAdapter(Adapter<V, B> adapter) {
-		super(adapter);
+		this.adapter = adapter;
+	}
+	
+	public void setAdapter(Adapter<V, B> adapter) {
+		this.adapter = adapter;
 	}
 	
 	@Override

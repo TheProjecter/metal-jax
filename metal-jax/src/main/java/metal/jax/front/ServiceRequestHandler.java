@@ -14,12 +14,13 @@ import java.io.IOException;
 import java.util.Collections;
 import java.util.Map;
 
+import javax.annotation.Resource;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import metal.core.common.AnyException;
-import metal.core.mapper.ContentMapper;
+import metal.core.mapper.ValueMapper;
 import metal.core.message.MessageMapper;
 import metal.core.mop.MethodDeclaration;
 import metal.core.mop.NameDeclaration;
@@ -39,9 +40,15 @@ public class ServiceRequestHandler extends HttpInvokerServiceExporter implements
 	
 	private ApplicationContext context;
 	private Map<String,Service> serviceMap = Collections.emptyMap();
+	
+	@Resource
 	private ServiceRegistry serviceRegistry;
+	
+	@Resource
 	private MessageMapper messageMapper;
-	private ContentMapper contentMapper;
+	
+	@Resource
+	private ValueMapper valueMapper;
 	
 	@Override
 	public void afterPropertiesSet() {}
@@ -52,18 +59,6 @@ public class ServiceRequestHandler extends HttpInvokerServiceExporter implements
 	
 	public void setServiceMap(Map<String,Service> serviceMap) {
 		this.serviceMap = serviceMap;
-	}
-
-	public void setServiceRegistry(ServiceRegistry serviceRegistry) {
-		this.serviceRegistry = serviceRegistry;
-	}
-
-	public void setMessageMapper(MessageMapper messageMapper) {
-		this.messageMapper = messageMapper;
-	}
-
-	public void setContentMapper(ContentMapper contentMapper) {
-		this.contentMapper = contentMapper;
 	}
 
 	@Override
@@ -89,7 +84,7 @@ public class ServiceRequestHandler extends HttpInvokerServiceExporter implements
 	
 	protected void sendResponse(ResponseMessage message, ServiceResponse response, String ext) throws IOException {
 		String contentType = HttpContentType.typeOf(ext, HttpContentType.JSON).name();
-		contentMapper.write(message, response.getOutputStream(), contentType);
+		valueMapper.write(message, response.getOutputStream(), contentType);
 		response.flushBuffer();
 	}
 	
@@ -133,7 +128,7 @@ public class ServiceRequestHandler extends HttpInvokerServiceExporter implements
 			values = message.getValues();
 			break;
 		default:
-			values = contentMapper.read(message, request.getInputStream(), contentType.name()).getValues();
+			values = valueMapper.read(message, request.getInputStream(), contentType.name()).getValues();
 			break;
 		}
 		return values;

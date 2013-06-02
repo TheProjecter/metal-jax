@@ -15,7 +15,7 @@ import org.aspectj.lang.ProceedingJoinPoint;
 
 public class InvocationAdvice {
 
-	@Resource(name = "metal-core-logger")
+	@Resource
 	private Logger logger;
 
 	public Object invoke(ProceedingJoinPoint pjp) throws Throwable {

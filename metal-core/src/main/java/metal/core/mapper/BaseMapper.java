@@ -13,16 +13,12 @@ import java.io.ByteArrayOutputStream;
 import metal.core.mop.Model;
 import metal.core.mop.ModelRegistry;
 
-public abstract class BaseModelMapper implements ModelMapper {
+public abstract class BaseMapper implements Mapper {
 
-	private ModelRegistry modelRegistry;
+	protected ModelRegistry modelRegistry;
 	
 	public void setModelRegistry(ModelRegistry modelRegistry) {
 		this.modelRegistry = modelRegistry;
-	}
-	
-	protected ModelRegistry getModelRegistry() {
-		return modelRegistry;
 	}
 	
 	@Override

@@ -28,7 +28,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 @ContextConfiguration(locations="classpath*:conf/spring/*.xml")
 public class TestBase {
 
-	@Resource(name="metal-core-messageMapper")
+	@Resource
 	private MessageMapper mapper;
 	
 	protected InputStream source(String name) throws IOException {
