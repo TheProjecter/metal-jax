@@ -7,10 +7,14 @@
  */
 package metal.demo.service;
 
+import metal.core.mop.annotation.Method;
+import metal.core.mop.annotation.Service;
 import metal.demo.model.HelloModel;
 
+@Service(path="/metal/demo/echo")
 public interface EchoService {
 	
+	@Method(params={"model"})
 	HelloModel hello(HelloModel model);
 	
 }

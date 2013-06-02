@@ -11,5 +11,6 @@ import metal.core.message.MessageCode;
 
 public enum FrontMessageCode implements MessageCode {
 	UnknownService,
-	UnknownServicePath
+	UnknownServicePath,
+	FailedParamDefaultConstruction
 }
