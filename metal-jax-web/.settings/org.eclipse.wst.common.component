@@ -8,7 +8,7 @@
         <dependent-module archiveName="metal-jax.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/metal-jax/metal-jax">
             <dependency-type>uses</dependency-type>
         </dependent-module>
-        <property name="context-root" value="metal-jax"/>
+        <property name="context-root" value="/metal-jax"/>
         <property name="java-output-path" value="/metal-jax-web/target/classes"/>
     </wb-module>
 </project-modules>
