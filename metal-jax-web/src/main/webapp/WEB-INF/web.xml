@@ -31,6 +31,6 @@ version="2.5">
 	</context-param>
 	<mime-mapping>
 		<extension>jx</extension>
-		<mime-type>text/plain</mime-type>
+		<mime-type>text/javascript</mime-type>
 	</mime-mapping>
 </web-app>

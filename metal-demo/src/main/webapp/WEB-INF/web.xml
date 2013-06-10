@@ -31,7 +31,7 @@ version="2.5">
 	</context-param>
 	<mime-mapping>
 		<extension>jx</extension>
-		<mime-type>text/plain</mime-type>
+		<mime-type>text/javascript</mime-type>
 	</mime-mapping>
 	<welcome-file-list>
 		<welcome-file>metal-demo.html</welcome-file>
