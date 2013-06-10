@@ -1,0 +1,72 @@
+/**
+ * @class Logger
+ * @imports System
+ * 
+ * @copyright Jay Tang 2012
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ */
+
+//@private
+function initObject(forClass) {
+	this.forClass = forClass;
+}
+
+//@public
+function log() {
+	if (typeof console != "undefined") {
+		var msg = System.formatText.apply(null, arguments);
+		console.log(msg);
+	}
+}
+
+//@public
+function debug() {
+	if (typeof console != "undefined") {
+		var msg = formatText.call(this, "DEBUG", arguments);
+		if (typeof console.debug != "undefined") console.debug(msg);
+		else console.log(msg);
+	}
+}
+
+//@public
+function error() {
+	if (typeof console != "undefined") {
+		var msg = formatText.call(this, "ERROR", arguments);
+		if (typeof console.error != "undefined") console.error(msg);
+		else console.log(msg);
+	}
+}
+
+//@public
+function info() {
+	if (typeof console != "undefined") {
+		var msg = formatText.call(this, "INFO", arguments);
+		if (typeof console.info != "undefined") console.info(msg);
+		else console.log(msg);
+	}
+}
+
+//@public
+function warn() {
+	if (typeof console != "undefined") {
+		var msg = formatText.call(this, "WARN", arguments);
+		if (typeof console.warn != "undefined") console.warn(msg);
+		else console.log(msg);
+	}
+}
+
+//@private
+function formatText(level, args) {
+	var msg = System.formatText.apply(null, args);
+	var category = System.parseBaseName(this.forClass.getName());
+	return System.formatText("${time} ${level} ${category} - ${msg}", {time:now(), level:level, category:category, msg:msg});
+}
+
+//@private
+function now() {
+	var d = new Date();
+	return (d.toJSON||d.toString).call(d);
+}

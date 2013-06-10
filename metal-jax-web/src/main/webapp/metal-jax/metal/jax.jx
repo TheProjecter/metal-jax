@@ -99,6 +99,7 @@
 						} else if (baseContext.extendsClass("metal.jax.Face")) {
 							bootClass = baseContext;
 						}
+						$source.scope.$logger.info("initContext() with baseContext: ${baseContext}", $setting);
 					}
 					if (bootClass) {
 						if (bootClass.main) {
@@ -106,8 +107,10 @@
 						} else if (bootClass.extendsClass("metal.jax.Face") && !this.document.body.firstChild) {
 							rootFace = new bootClass(this.document.body);
 						}
+						$source.scope.$logger.info("initContext() with bootClass: ${bootClass}", $setting);
 					}
 				});
+				$source.scope.$logger.info("initContext() with baseModule: ${baseModule}", $setting);
 			});
 		}
 		

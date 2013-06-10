@@ -12,6 +12,7 @@ $static.getContext = function getContext() { return $context; };
 $static.getName = function getName() { return "metal.jax.ClassLoader"; };
 $private.ClassLoader = function ClassLoader() {};
 $imports.Context = "metal.jax.Context";
+$imports.Logger = "metal.jax.Logger";
 $imports.Object = "metal.jax.Object";
 $imports.System = "metal.jax.System";
 
@@ -487,6 +488,9 @@ $private.flush_notifyClass = function flush_notifyClass(source) {
 		} else {
 			if (source.scope.initClass) {
 				source.scope.initClass();
+			}
+			if (source.scope.$imports.Logger == $imports.Logger) {
+				source.scope.$logger = new source.scope.Logger(source.$class);
 			}
 		}
 		_busyCount--;
