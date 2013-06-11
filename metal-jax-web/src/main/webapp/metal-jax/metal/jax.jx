@@ -55,6 +55,7 @@
 			setting["baseOrigin"] = parts[1];
 			setting["baseScheme"] = parts[1].split(":")[0];
 			setting["baseURL"] = splitPath(parts[1] + parts[2], -1, -1);
+			setting["baseModule"] = parts[3] || setting["baseModule"];
 			setting["bootClass"] = parts[4] || setting["bootClass"];
 			var nodes = this.document.getElementsByTagName("script");
 			var parts = _urlRE_.exec(resolvePath(nodes[nodes.length-1].src, setting["baseURL"] + "/"));
@@ -64,6 +65,18 @@
 			setting["bootContext"] = splitPath(parts[2], -2, 2).split(".")[0].split("/").join(".");
 			setting["baseModule"] = parts[3] || setting["baseModule"];
 			setting["baseContext"] = parts[4] || setting["baseContext"];
+		}
+		
+		function logSetting(logger, setting) {
+			logger.info("metal-jax init with bootModule: ${bootModule}", setting);
+			logger.info("metal-jax init with bootContext: ${bootContext}", setting);
+			if (setting["baseModule"]) {
+				logger.info("metal-jax init with baseModule: ${baseModule}", setting);
+			} else {
+				logger.warn("metal-jax init without baseModule");
+			}
+			logger.info("metal-jax init with baseContext: ${baseContext}", setting);
+			logger.info("metal-jax init with bootClass: ${bootClass}", setting);
 		}
 		
 		function parseSource(source) {
@@ -99,7 +112,6 @@
 						} else if (baseContext.extendsClass("metal.jax.Face")) {
 							bootClass = baseContext;
 						}
-						$source.scope.$logger.info("initContext() with baseContext: ${baseContext}", $setting);
 					}
 					if (bootClass) {
 						if (bootClass.main) {
@@ -107,10 +119,9 @@
 						} else if (bootClass.extendsClass("metal.jax.Face") && !this.document.body.firstChild) {
 							rootFace = new bootClass(this.document.body);
 						}
-						$source.scope.$logger.info("initContext() with bootClass: ${bootClass}", $setting);
 					}
 				});
-				$source.scope.$logger.info("initContext() with baseModule: ${baseModule}", $setting);
+				logSetting($source.scope.$logger, $setting);
 			});
 		}
 		
