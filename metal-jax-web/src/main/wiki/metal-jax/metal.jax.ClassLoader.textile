@@ -1,0 +1,23 @@
+<link type="text/css" rel="stylesheet" href="../styles/main.css"/>
+
+p(title). Class @metal.jax.ClassLoader@
+
+{toc:style=decimal}
+
+h1. Overview
+
+Class loader is responsible to load/compile class sources.
+
+See also: "@metal.jax@":metal.jax.html
+
+h1. Summary
+
+Class loader summary.
+
+h1. Detail
+
+Class loader details.
+
+table(grid).
+|_.Name |_.Value |_.Comments |
+| name | value | |

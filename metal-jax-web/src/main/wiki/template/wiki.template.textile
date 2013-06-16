@@ -1,0 +1,23 @@
+<link type="text/css" rel="stylesheet" href="../styles/main.css"/>
+
+p(title). Title for @wiki.template@
+
+{toc:style=decimal}
+
+h1. Overview
+
+Describes requirement overview.
+
+h1. Summary
+
+Describes design summary.
+
+See also: "@wiki.template@":wiki.template.html
+
+h1. Detail
+
+Describes implementation detail.
+
+table(grid).
+|_.Name |_.Value |_.Comments |
+| name | value | |
