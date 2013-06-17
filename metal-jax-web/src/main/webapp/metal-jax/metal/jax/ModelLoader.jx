@@ -109,8 +109,9 @@ function handleSource(source) {
 			source.error = ex.message;
 			System.logError(ex);
 		}
-	} else if (!source.error) {
-		source.error = "empty content";
+	} else {
+		if (!source.error) source.error = "empty content";
+		System.logError(source.error);
 	}
 	if (source.status < 100) {
 		//error
