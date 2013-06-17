@@ -171,7 +171,7 @@ $public.loadClass = function loadClass(name, callback) {
 	} catch (ex) {
 		_pendingCount--;
 		source.error = ex.message;
-		System.logError(ex);
+		$logger.error(ex.message);
 	} finally {
 		waitFor(callback);
 	}
@@ -192,11 +192,11 @@ $private.handleSource = function handleSource(source) {
 			parseSource(source);
 		} catch (ex) {
 			source.error = ex.message;
-			System.logError(ex);
+			$logger.error(ex.message);
 		}
 	} else {
 		if (!source.error) source.error = "empty content";
-		System.logError(source.error);
+		$logger.error("source request failed for ${name} with ${error}", source);
 	}
 	if (source.status < 100) {
 		//error
@@ -386,7 +386,7 @@ $private._formatRE_ = /\$\{([^\s\}:]+)(:[^\}]*)?\}/g;
 $static.formatText = function formatText() {
 	var args = arguments;
 	var text = Array.prototype.shift.call(arguments);
-	if (!text || text.indexOf("${") < 0) return text;
+	if (typeof text != "string" || text.indexOf("${") < 0) return text;
 	var argType = typeof args[0];
 	return text.replace(_formatRE_, function(match, name, value) {
 		var result = _NULL_;

@@ -62,6 +62,7 @@ function warn() {
 function formatText(level, args) {
 	var msg = System.formatText.apply(null, args);
 	var category = System.parseBaseName(this.forClass.getName());
+	if (typeof msg != "string") return msg;
 	return System.formatText("${time} ${level} ${category} - ${msg}", {time:now(), level:level, category:category, msg:msg});
 }
 

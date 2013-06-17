@@ -1,6 +1,7 @@
 /**
  * @class ModelLoader
  * @imports System
+ * @imports Logger
  * 
  * @copyright Jay Tang 2012
  * All rights reserved. This program and the accompanying materials
@@ -46,7 +47,7 @@ function call(source, callback) {
 	} catch (ex) {
 		_pendingCount--;
 		source.error = ex.message;
-		System.logError(ex);
+		$logger.error(ex.message);
 	} finally {
 		if (callback) waitFor(System.callback(notify, callback, source));
 	}
@@ -107,11 +108,11 @@ function handleSource(source) {
 			parseSource(source);
 		} catch (ex) {
 			source.error = ex.message;
-			System.logError(ex);
+			$logger.error(ex.message);
 		}
 	} else {
 		if (!source.error) source.error = "empty content";
-		System.logError(source.error);
+		$logger.error("source request failed for ${name} with ${error}", source);
 	}
 	if (source.status < 100) {
 		//error
