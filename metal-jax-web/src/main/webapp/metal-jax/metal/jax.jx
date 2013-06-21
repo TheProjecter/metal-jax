@@ -38,7 +38,9 @@
 		
 		function main() {
 			parseSetting($setting);
-			if (!this[$setting["bootModule"]]) {
+			if (this[$setting["bootModule"]]) {
+				$source.scope.$logger.info("metal-jax already loaded from '${bootURL}'", $setting);
+			} else {
 				this[$setting["bootModule"]] = {};
 				waitFor("load", function() {
 					$source.type = $setting["classType"];
