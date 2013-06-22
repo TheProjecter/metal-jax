@@ -26,8 +26,11 @@ function find(key, positive) {
 	if (source) {
 		if (!source.error) {
 			return source.object;
-		} else if (positive) {
-			System.throwError("failed to load model: ${0}:${1}, error: ${2}", source.$class.getName(), key, source.error);
+		} else {
+			var msg = $logger.error("model ${0}#${1} was not loaded: ${2}", source.$class.getName(), key, source.error);
+			if (positive) {
+				System.throwError(msg);
+			}
 		}
 	}
 }
@@ -43,11 +46,12 @@ function load(key, callback) {
 function call(source, callback) {
 	try {
 		_pendingCount++;
+		$logger.debug("request to load model ${0}#${1}", source.$class.getName(), source.key);
 		System.loadback(source, handleSource);
 	} catch (ex) {
 		_pendingCount--;
 		source.error = ex.message;
-		$logger.error(ex.message);
+		$logger.error("failed to load model ${0}#${1}: ${2}", source.$class.getName(), source.key, ex.message);
 	} finally {
 		if (callback) waitFor(System.callback(notify, callback, source));
 	}
@@ -82,7 +86,7 @@ function initSource(key) {
 	source.base = this.$("model.base");
 	source.module = this.$("model.module");
 	source.path = this.getName().split(".").join("/").concat(".", source.type);
-	if (source.base.indexOf("file") != 0) source.path = source.path.concat("#", source.key);
+//	if (source.base.indexOf("file") != 0) source.path = source.path.concat("#", source.key);
 	return source;
 }
 
@@ -104,15 +108,16 @@ function notify(callback, source) {
 //@private
 function handleSource(source) {
 	if (source.content) {
+		$logger.debug("response for model ${0}#${1} from ${2}", source.$class.getName(), source.key, source.url);
 		try {
 			parseSource(source);
 		} catch (ex) {
 			source.error = ex.message;
-			$logger.error(ex.message);
+			$logger.error("failed to parse model ${0}#${1}: ${2}", source.$class.getName(), source.key, ex.message);
 		}
 	} else {
 		if (!source.error) source.error = "empty content";
-		$logger.error("source request failed for ${name} with ${error}", source);
+		$logger.error("failed to load model ${0}#${1} from ${2}: ${3}", source.$class.getName(), source.key, source.url, source.error);
 	}
 	if (source.status < 100) {
 		//error

@@ -16,54 +16,62 @@ function initObject(forClass) {
 
 //@public
 function log() {
+	var text = System.formatText.apply(null, arguments);
 	if (typeof console != "undefined") {
-		var msg = System.formatText.apply(null, arguments);
-		console.log(msg);
+		console.log(text);
 	}
+	return text;
 }
 
 //@public
 function debug() {
+	var text = System.formatText.apply(null, arguments);
 	if (typeof console != "undefined") {
-		var msg = formatText.call(this, "DEBUG", arguments);
+		var msg = formatText.call(this, "DEBUG", text);
 		if (typeof console.debug != "undefined") console.debug(msg);
 		else console.log(msg);
 	}
+	return text;
 }
 
 //@public
 function error() {
+	var text = System.formatText.apply(null, arguments);
 	if (typeof console != "undefined") {
-		var msg = formatText.call(this, "ERROR", arguments);
+		var msg = formatText.call(this, "ERROR", text);
 		if (typeof console.error != "undefined") console.error(msg);
 		else console.log(msg);
 	}
+	return text;
 }
 
 //@public
 function info() {
+	var text = System.formatText.apply(null, arguments);
 	if (typeof console != "undefined") {
-		var msg = formatText.call(this, "INFO", arguments);
+		var msg = formatText.call(this, "INFO", text);
 		if (typeof console.info != "undefined") console.info(msg);
 		else console.log(msg);
 	}
+	return text;
 }
 
 //@public
 function warn() {
+	var text = System.formatText.apply(null, arguments);
 	if (typeof console != "undefined") {
-		var msg = formatText.call(this, "WARN", arguments);
+		var msg = formatText.call(this, "WARN", text);
 		if (typeof console.warn != "undefined") console.warn(msg);
 		else console.log(msg);
 	}
+	return text;
 }
 
 //@private
-function formatText(level, args) {
-	var msg = System.formatText.apply(null, args);
+function formatText(level, text) {
+	if (typeof text != "string") return text;
 	var category = System.parseBaseName(this.forClass.getName());
-	if (typeof msg != "string") return msg;
-	return System.formatText("${time} ${level} ${category} - ${msg}", {time:now(), level:level, category:category, msg:msg});
+	return System.formatText("${time} ${level} ${category} - ${text}", {time:now(), level:level, category:category, text:text});
 }
 
 //@private

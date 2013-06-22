@@ -24,6 +24,7 @@ $private.initClass_ = function initClass_() {
 	this._pendingCount = 0;
 	this._pendingFlush = [];
 	this._pendingFlush.push(this.$source);
+	this.$logger = null;
 	flush();
 };
 
@@ -156,8 +157,11 @@ $public.findClass = function findClass(name, positive) {
 	if (source) {
 		if (!source.error) {
 			return source.$class;
-		} else if (positive) {
-			System.throwError("failed to load class: ${0}, error: ${1}", name, source.error);
+		} else {
+			var msg = $logger.error("class ${name} was not loaded: ${error}", source);
+			if (positive) {
+				System.throwError(msg);
+			}
 		}
 	}
 };
@@ -167,11 +171,12 @@ $public.loadClass = function loadClass(name, callback) {
 		if (!name || findSource(name, this)) return;
 		_pendingCount++;
 		var source = putSource(initSource(name, this));
+		if ($logger) $logger.debug("request to load class ${0}", name);
 		loadback(source, handleSource);
 	} catch (ex) {
 		_pendingCount--;
 		source.error = ex.message;
-		$logger.error(ex.message);
+		if ($logger) $logger.error("failed to load class ${0}: ${1}", name, ex.message);
 	} finally {
 		waitFor(callback);
 	}
@@ -188,15 +193,16 @@ $private.waitFor = function waitFor(callback) {
 
 $private.handleSource = function handleSource(source) {
 	if (source.content) {
+		if ($logger) $logger.debug("response for class ${name} from ${url}", source);
 		try {
 			parseSource(source);
 		} catch (ex) {
 			source.error = ex.message;
-			$logger.error(ex.message);
+			if ($logger) $logger.error("failed to compile class ${0}: ${1}", name, ex.message);
 		}
 	} else {
 		if (!source.error) source.error = "empty content";
-		$logger.error("source request failed for ${name} with ${error}", source);
+		if ($logger) $logger.error("failed to load class ${name} from ${url}: ${error}", source);
 	}
 	if (source.status < 100) {
 		//error
