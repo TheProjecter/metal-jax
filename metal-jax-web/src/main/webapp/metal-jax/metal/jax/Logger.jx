@@ -11,7 +11,12 @@
 
 //@private
 function initObject(forClass) {
-	this.forClass = forClass;
+	var name = forClass.getName();
+	this.forClass = name;
+	this.enableInfo = $(name+".info", $("logger.info", "true")) == "true";
+	this.enableWarn = $(name+".warn", $("logger.warn", "true")) == "true";
+	this.enableError = $(name+".error", $("logger.error", "true")) == "true";
+	this.enableDebug = $(name+".debug", $("logger.debug", "false")) == "true";
 }
 
 //@public
@@ -26,7 +31,7 @@ function log() {
 //@public
 function debug() {
 	var text = System.formatText.apply(null, arguments);
-	if (typeof console != "undefined") {
+	if (this.enableDebug && typeof console != "undefined") {
 		var msg = formatText.call(this, "DEBUG", text);
 		if (typeof console.debug != "undefined") console.debug(msg);
 		else console.log(msg);
@@ -37,7 +42,7 @@ function debug() {
 //@public
 function error() {
 	var text = System.formatText.apply(null, arguments);
-	if (typeof console != "undefined") {
+	if (this.enableError && typeof console != "undefined") {
 		var msg = formatText.call(this, "ERROR", text);
 		if (typeof console.error != "undefined") console.error(msg);
 		else console.log(msg);
@@ -48,7 +53,7 @@ function error() {
 //@public
 function info() {
 	var text = System.formatText.apply(null, arguments);
-	if (typeof console != "undefined") {
+	if (this.enableInfo && typeof console != "undefined") {
 		var msg = formatText.call(this, "INFO", text);
 		if (typeof console.info != "undefined") console.info(msg);
 		else console.log(msg);
@@ -59,7 +64,7 @@ function info() {
 //@public
 function warn() {
 	var text = System.formatText.apply(null, arguments);
-	if (typeof console != "undefined") {
+	if (this.enableWarn && typeof console != "undefined") {
 		var msg = formatText.call(this, "WARN", text);
 		if (typeof console.warn != "undefined") console.warn(msg);
 		else console.log(msg);
@@ -70,7 +75,7 @@ function warn() {
 //@private
 function formatText(level, text) {
 	if (typeof text != "string") return text;
-	var category = System.parseBaseName(this.forClass.getName());
+	var category = System.parseBaseName(this.forClass);
 	return System.formatText("${time} ${level} ${category} - ${text}", {time:now(), level:level, category:category, text:text});
 }
 
