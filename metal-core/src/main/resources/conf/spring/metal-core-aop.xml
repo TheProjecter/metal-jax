@@ -8,7 +8,7 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
 	<bean id="metal-core-invocationAdvice" class="metal.core.aop.InvocationAdvice"/>
 	<bean id="metal-core-exceptionAdvice" class="metal.core.aop.ExceptionAdvice"/>
 	<aop:config>
-		<aop:pointcut id="metal-core-serviceExecution" expression="execution(public * metal.*.service..*.*(..))"/>
+		<aop:pointcut id="metal-core-serviceExecution" expression="execution(public * metal.*.service..*Service.*(..))"/>
 		<aop:aspect id="metal-core-serviceInvocation" ref="metal-core-invocationAdvice">
 			<aop:around pointcut-ref="metal-core-serviceExecution" method="invoke"/>
 		</aop:aspect>
