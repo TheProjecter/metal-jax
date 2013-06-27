@@ -13,7 +13,7 @@ public interface MessageCode {
 
 	final class Format {
 		public static String format(MessageCode code) {
-			return new StringBuilder(code.getClass().getPackage().getName().replace('.', '-')).append('-').append(code.name()).toString();
+			return new StringBuilder(code.getClass().getPackage().getName()).append('.').append(code.name()).toString();
 		}
 	}
 

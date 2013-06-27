@@ -29,7 +29,7 @@ public class ValidationMessageTest extends TestBase {
 	@Resource
 	private MessageMapper mapper;
 	
-	@Resource(name="metal-core-validator")
+	@Resource(name="metal.core.validator")
 	private Validator validator;
 	
 	@Test
