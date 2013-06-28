@@ -7,7 +7,7 @@
         <dependent-module archiveName="metal-core.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/metal-core/metal-core">
             <dependency-type>uses</dependency-type>
         </dependent-module>
-        <dependent-module archiveName="metal-jax.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/metal-jax/metal-jax">
+        <dependent-module deploy-path="/WEB-INF/lib" handle="module:/resource/metal-front/metal-front">
             <dependency-type>uses</dependency-type>
         </dependent-module>
         <property name="context-root" value="/metal-demo"/>
