@@ -5,15 +5,16 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package metal.jax.service;
+package metal.front.service;
 
-import metal.core.mop.annotation.Method;
-import metal.core.mop.annotation.Service;
+import javax.servlet.http.HttpServletResponse;
 
-@Service(path="/metal/jax/test")
-public interface TestService {
+import metal.front.common.BufferedResponse;
 
-	@Method(params={"message","from"})
-	String hello(Long message, String from);
+public class ServiceResponse extends BufferedResponse {
+	
+	public ServiceResponse(HttpServletResponse response) {
+		super(response);
+	}
 	
 }

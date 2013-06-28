@@ -5,13 +5,15 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package metal.jax.front;
+package metal.front.crossdomain;
 
 import java.io.IOException;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import metal.front.common.BaseRequestHandler;
 
 public class CrossDomainRequestHandler extends BaseRequestHandler {
 	

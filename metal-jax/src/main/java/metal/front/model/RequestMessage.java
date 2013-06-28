@@ -5,9 +5,9 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package metal.jax.front.model;
+package metal.front.model;
 
-import static metal.jax.front.FrontMessageCode.*;
+import static metal.front.common.FrontMessageCode.*;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -15,7 +15,7 @@ import org.apache.commons.beanutils.BeanUtilsBean;
 
 import metal.core.mop.Model;
 import metal.core.mop.NameDeclaration;
-import metal.jax.front.FrontException;
+import metal.front.common.FrontException;
 
 @XmlRootElement(name="request")
 public class RequestMessage extends Model {

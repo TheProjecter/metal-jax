@@ -5,15 +5,15 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package metal.jax.front.service;
+package metal.front.service;
 
 import org.springframework.stereotype.Service;
 
-@Service("metal-front-echoService")
-public class EchoImpl implements EchoService {
+@Service("metal.front.testService")
+public class TestImpl implements TestService {
 
 	public String hello(Long message, String from) {
-		return "echo: " + message + ", from: " + from;
+		return "test: " + message + ", from: " + from;
 	}
 	
 }

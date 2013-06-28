@@ -5,7 +5,7 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package metal.jax.front;
+package metal.front.common;
 
 import java.io.IOException;
 
@@ -15,7 +15,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.web.HttpRequestHandler;
 
-abstract class BaseRequestHandler implements HttpRequestHandler {
+public abstract class BaseRequestHandler implements HttpRequestHandler {
 	
 	protected static final String CACHE_HEADER = "Cache-Control";
 	protected static final String CACHE_AGE = "public,max-age=300";

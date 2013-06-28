@@ -5,15 +5,15 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package metal.jax.service;
+package metal.front.service;
 
-import org.springframework.stereotype.Service;
+import metal.core.mop.annotation.Method;
+import metal.core.mop.annotation.Service;
 
-@Service("metal-jax-testService")
-public class TestImpl implements TestService {
+@Service(path="/metal/front/test")
+public interface TestService {
 
-	public String hello(Long message, String from) {
-		return "test: " + message + ", from: " + from;
-	}
+	@Method(params={"message","from"})
+	String hello(Long message, String from);
 	
 }

@@ -5,7 +5,7 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package metal.jax.front;
+package metal.front.service;
 
 import static org.junit.Assert.*;
 
@@ -15,8 +15,10 @@ import metal.core.mapper.Mapper;
 import metal.core.mop.MethodDeclaration;
 import metal.core.mop.ServiceRegistry;
 import metal.core.test.TestBase;
-import metal.jax.front.model.RequestMessage;
-import metal.jax.front.model.ResponseMessage;
+import metal.front.common.HttpContentType;
+import metal.front.model.RequestMessage;
+import metal.front.model.ResponseMessage;
+import metal.front.service.ServiceRequestHandler;
 
 import org.apache.commons.io.IOUtils;
 import org.junit.Test;
@@ -25,10 +27,10 @@ import org.springframework.mock.web.MockHttpServletResponse;
 
 public class ServiceRequestHandlerTest extends TestBase {
 
-	@Resource(name = "metal-core-xmlMapper")
+	@Resource(name = "metal.core.xmlMapper")
 	private Mapper xmlMapper;
 	
-	@Resource(name="metal-jax-testService")
+	@Resource(name="metal.front.testService")
 	private Object service;
 	
 	@Resource
@@ -39,7 +41,7 @@ public class ServiceRequestHandlerTest extends TestBase {
 
 	@Test
 	public void testInvoke() throws Exception {
-		MethodDeclaration method = serviceRegistry.getServiceMethodDeclaration("/metal/jax/test", "hello");
+		MethodDeclaration method = serviceRegistry.getServiceMethodDeclaration("/metal/front/test", "hello");
 		RequestMessage message = new RequestMessage(method.getParamDeclarations());
 		Object[] params = xmlMapper.read(message, source("serviceRequest.xml")).getValues();
 		ResponseMessage response = handler.invoke("hello", service, params, message.getMemberTypes());
@@ -49,9 +51,9 @@ public class ServiceRequestHandlerTest extends TestBase {
 
 	@Test
 	public void testHandleRequestForm() throws Exception {
-		MockHttpServletRequest httpRequest = new MockHttpServletRequest("POST", "/metal-jax/service/metal/jax/test/hello.xml");
+		MockHttpServletRequest httpRequest = new MockHttpServletRequest("POST", "/metal-jax/service/metal/front/test/hello.xml");
 		httpRequest.setServletPath("/service");
-		httpRequest.setPathInfo("/metal/jax/test/hello.xml");
+		httpRequest.setPathInfo("/metal/front/test/hello.xml");
 		httpRequest.addParameter("message", "12345678");
 		httpRequest.addParameter("from", "whoever");
 		httpRequest.setContentType(HttpContentType.FORM.contentType);
@@ -66,9 +68,9 @@ public class ServiceRequestHandlerTest extends TestBase {
 
 	@Test
 	public void testHandleRequestXml() throws Exception {
-		MockHttpServletRequest httpRequest = new MockHttpServletRequest("POST", "/metal-jax/service/metal/jax/test/hello.xml");
+		MockHttpServletRequest httpRequest = new MockHttpServletRequest("POST", "/metal-jax/service/metal/front/test/hello.xml");
 		httpRequest.setServletPath("/service");
-		httpRequest.setPathInfo("/metal/jax/test/hello.xml");
+		httpRequest.setPathInfo("/metal/front/test/hello.xml");
 		httpRequest.setContent(IOUtils.toByteArray(source("serviceRequest.xml")));
 		httpRequest.setContentType(HttpContentType.XML.contentType);
 		

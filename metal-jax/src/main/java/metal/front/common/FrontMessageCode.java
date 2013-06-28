@@ -5,14 +5,12 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package metal.jax.front;
+package metal.front.common;
 
-import javax.servlet.http.HttpServletResponse;
+import metal.core.message.MessageCode;
 
-public class ServiceResponse extends BufferedResponse {
-	
-	public ServiceResponse(HttpServletResponse response) {
-		super(response);
-	}
-	
+public enum FrontMessageCode implements MessageCode {
+	UnknownService,
+	UnknownServicePath,
+	FailedParamDefaultConstruction
 }

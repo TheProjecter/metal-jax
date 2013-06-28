@@ -5,12 +5,12 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package metal.jax.front;
+package metal.front.common;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletRequestWrapper;
 
-abstract class BaseRequest extends HttpServletRequestWrapper {
+public abstract class BaseRequest extends HttpServletRequestWrapper {
 	
 	public static final String INCLUDE_SERVLET_PATH_ATTR = "javax.servlet.include.servlet_path";
 	

@@ -5,7 +5,7 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package metal.jax.front;
+package metal.front.crossdomain;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -13,6 +13,8 @@ import java.io.PrintWriter;
 import java.io.Writer;
 
 import javax.servlet.http.HttpServletResponse;
+
+import metal.front.common.BufferedResponse;
 
 import org.apache.commons.lang.StringEscapeUtils;
 

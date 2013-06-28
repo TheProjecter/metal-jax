@@ -5,12 +5,12 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package metal.jax.front;
+package metal.front.service;
 
 import java.util.Collections;
 import java.util.Map;
 
-public class Service {
+public class ServiceSetting {
 
 	private String servicePath;
 	private Map<String,String> methodMap = Collections.emptyMap();

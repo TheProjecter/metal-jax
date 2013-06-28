@@ -5,10 +5,10 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package metal.jax.front;
+package metal.front.service;
 
-import static metal.jax.front.FrontMessageCode.*;
-import static metal.jax.front.HttpContentType.*;
+import static metal.front.common.FrontMessageCode.*;
+import static metal.front.common.HttpContentType.*;
 
 import java.io.IOException;
 import java.util.Collections;
@@ -25,8 +25,10 @@ import metal.core.message.MessageMapper;
 import metal.core.mop.MethodDeclaration;
 import metal.core.mop.NameDeclaration;
 import metal.core.mop.ServiceRegistry;
-import metal.jax.front.model.RequestMessage;
-import metal.jax.front.model.ResponseMessage;
+import metal.front.common.FrontException;
+import metal.front.common.HttpContentType;
+import metal.front.model.RequestMessage;
+import metal.front.model.ResponseMessage;
 
 import org.apache.commons.beanutils.BeanUtils;
 import org.springframework.beans.BeansException;
@@ -39,7 +41,7 @@ import org.springframework.remoting.support.RemoteInvocationResult;
 public class ServiceRequestHandler extends HttpInvokerServiceExporter implements ApplicationContextAware {
 	
 	private ApplicationContext context;
-	private Map<String,Service> serviceMap = Collections.emptyMap();
+	private Map<String,ServiceSetting> serviceMap = Collections.emptyMap();
 	
 	@Resource
 	private ServiceRegistry serviceRegistry;
@@ -57,7 +59,7 @@ public class ServiceRequestHandler extends HttpInvokerServiceExporter implements
 		this.context = context;
 	}
 	
-	public void setServiceMap(Map<String,Service> serviceMap) {
+	public void setServiceMap(Map<String,ServiceSetting> serviceMap) {
 		this.serviceMap = serviceMap;
 	}
 
@@ -70,7 +72,7 @@ public class ServiceRequestHandler extends HttpInvokerServiceExporter implements
 
 	protected ResponseMessage invokeService(ServiceRequest request) {
 		try {
-			Service service = serviceMap.get(request.getServletPath());
+			ServiceSetting service = serviceMap.get(request.getServletPath());
 			Object target = getInvocationTarget(service, request);
 			MethodDeclaration method = getInvocationMethod(service, request);
 			Object[] params = getRequestParameters(request, method.getParamDeclarations());
@@ -101,7 +103,7 @@ public class ServiceRequestHandler extends HttpInvokerServiceExporter implements
 		}
 	}
 	
-	protected Object getInvocationTarget(Service service, ServiceRequest request) {
+	protected Object getInvocationTarget(ServiceSetting service, ServiceRequest request) {
 		if (service == null) {
 			throw new FrontException(UnknownService, request.getServletPath());
 		}
@@ -114,7 +116,7 @@ public class ServiceRequestHandler extends HttpInvokerServiceExporter implements
 		}
 	}
 	
-	protected MethodDeclaration getInvocationMethod(Service service, ServiceRequest request) {
+	protected MethodDeclaration getInvocationMethod(ServiceSetting service, ServiceRequest request) {
 		return serviceRegistry.getServiceMethodDeclaration(service.getServicePath(request), service.getRequestMethod(request));
 	}
 	

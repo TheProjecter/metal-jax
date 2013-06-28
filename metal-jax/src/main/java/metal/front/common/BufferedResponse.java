@@ -5,7 +5,7 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package metal.jax.front;
+package metal.front.common;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
@@ -22,7 +22,7 @@ import javax.servlet.http.HttpServletResponseWrapper;
 
 import org.apache.commons.io.IOUtils;
 
-abstract class BufferedResponse extends HttpServletResponseWrapper {
+public abstract class BufferedResponse extends HttpServletResponseWrapper {
 
 	private class BufferedOutputStream extends ServletOutputStream {
 		public void write(int b) throws IOException { buffer.write(b); }
