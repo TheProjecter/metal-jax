@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 
 import metal.demo.model.HelloModel;
 
-@Service("metal-demo-echoService")
+@Service("metal.demo.echoService")
 public class EchoImpl implements EchoService {
 	
 	public HelloModel hello(HelloModel model) {
