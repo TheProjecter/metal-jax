@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
 	<name>metal-demo</name>
+	<comment></comment>
 	<projects>
+		<project>metal-jax</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>
