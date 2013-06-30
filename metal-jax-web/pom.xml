@@ -32,6 +32,7 @@
 		<dependency>
 			<groupId>metal.jax</groupId>
 			<artifactId>metal-jax</artifactId>
+			<type>war</type>
 			<version>1.0.0</version>
 		</dependency>
 		<dependency>
@@ -77,6 +78,20 @@
 
 	<build>
 		<plugins>
+			<plugin>
+				<artifactId>maven-war-plugin</artifactId>
+				<configuration>
+					<overlays>
+						<overlay>
+							<groupId>metal.jax</groupId>
+							<artifactId>metal-jax</artifactId>
+							<excludes>
+								<exclude>WEB-INF/</exclude>
+							</excludes>
+						</overlay>
+					</overlays>
+				</configuration>
+			</plugin>
 		</plugins>
 	</build>
 

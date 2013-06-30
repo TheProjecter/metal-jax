@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<artifactId>metal-jax</artifactId>
-	<packaging>jar</packaging>
+	<packaging>war</packaging>
 
 	<parent>
 		<groupId>metal.jax</groupId>
@@ -16,6 +16,67 @@
 
 	<build>
 		<plugins>
+			<plugin>
+				<artifactId>maven-install-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>metal-jax-install</id>
+						<phase>install</phase>
+						<goals>
+							<goal>install-file</goal>
+						</goals>
+						<configuration>
+							<file>${basedir}/target/${project.build.finalName}.jar</file>
+							<groupId>${project.groupId}</groupId>
+							<artifactId>${project.artifactId}</artifactId>
+							<version>${project.version}</version>
+							<packaging>jar</packaging>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<artifactId>maven-war-plugin</artifactId>
+				<configuration>
+					<failOnMissingWebXml>false</failOnMissingWebXml>
+				</configuration>
+			</plugin>
+			<plugin>
+				<artifactId>maven-jar-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>metal-jax-jar</id>
+						<phase>compile</phase>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+						<configuration>
+							<classesDirectory>${basedir}/target/jar-resources</classesDirectory>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<artifactId>maven-resources-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>metal-jax-resources</id>
+						<phase>process-resources</phase>
+						<goals>
+							<goal>copy-resources</goal>
+						</goals>
+						<configuration>
+							<outputDirectory>${basedir}/target/jar-resources/META-INF/resources</outputDirectory>
+							<resources>
+								<resource>
+									<directory>${basedir}/src/main/webapp</directory>
+									<filtering>true</filtering>
+								</resource>
+							</resources>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
 		</plugins>
 	</build>
 
