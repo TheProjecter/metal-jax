@@ -12,8 +12,6 @@
 	</parent>
 
     <properties>
-        <appengine.app.id>metal-jax</appengine.app.id>
-        <appengine.app.version>1</appengine.app.version>
         <appengine.target.version>1.8.1</appengine.target.version>
     </properties>
     
