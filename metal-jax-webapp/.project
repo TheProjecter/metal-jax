@@ -1,9 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-	<name>metal-jax-web</name>
+	<name>metal-jax-webapp</name>
 	<comment></comment>
 	<projects>
+		<project>metal-core</project>
+		<project>metal-front</project>
 		<project>metal-jax</project>
+		<project>metal-demo</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>

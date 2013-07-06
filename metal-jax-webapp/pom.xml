@@ -2,7 +2,7 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<artifactId>metal-demo</artifactId>
+	<artifactId>metal-jax-webapp</artifactId>
 	<packaging>war</packaging>
 
 	<parent>
@@ -19,40 +19,23 @@
 		</dependency>
 		<dependency>
 			<groupId>${project.groupId}</groupId>
+			<artifactId>metal-front</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>${project.groupId}</groupId>
 			<artifactId>metal-jax</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>metal-demo</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 	</dependencies>
 
 	<build>
 		<plugins>
-			<plugin>
-				<artifactId>maven-install-plugin</artifactId>
-				<executions>
-					<execution>
-						<id>webjar-install</id>
-						<phase>install</phase>
-					</execution>
-				</executions>
-			</plugin>
-			<plugin>
-				<artifactId>maven-jar-plugin</artifactId>
-				<executions>
-					<execution>
-						<id>webjar-jar</id>
-						<phase>compile</phase>
-					</execution>
-				</executions>
-			</plugin>
-			<plugin>
-				<artifactId>maven-resources-plugin</artifactId>
-				<executions>
-					<execution>
-						<id>webjar-resources</id>
-						<phase>process-resources</phase>
-					</execution>
-				</executions>
-			</plugin>
 		</plugins>
 	</build>
 

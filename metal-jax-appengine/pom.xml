@@ -1,0 +1,93 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<artifactId>metal-jax-appengine</artifactId>
+	<packaging>war</packaging>
+
+	<parent>
+		<groupId>metal.jax</groupId>
+		<artifactId>metal-base</artifactId>
+		<version>1.0.0</version>
+	</parent>
+
+    <properties>
+        <appengine.app.id>metal-jax</appengine.app.id>
+        <appengine.app.version>1</appengine.app.version>
+        <appengine.target.version>1.8.1</appengine.target.version>
+    </properties>
+    
+	<dependencies>
+		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>metal-core</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>metal-front</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>metal-jax</artifactId>
+			<type>war</type>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>metal-demo</artifactId>
+			<type>war</type>
+			<version>${project.version}</version>
+		</dependency>
+        <dependency>
+            <groupId>com.google.appengine</groupId>
+            <artifactId>appengine-api-1.0-sdk</artifactId>
+            <version>${appengine.target.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>servlet-api</artifactId>
+            <version>2.5</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>jstl</groupId>
+            <artifactId>jstl</artifactId>
+            <version>1.2</version>
+        </dependency>
+	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<artifactId>maven-war-plugin</artifactId>
+				<configuration>
+					<overlays>
+						<overlay>
+							<groupId>${project.groupId}</groupId>
+							<artifactId>metal-jax</artifactId>
+						</overlay>
+						<overlay>
+							<groupId>${project.groupId}</groupId>
+							<artifactId>metal-demo</artifactId>
+						</overlay>
+					</overlays>
+                    <webResources>
+                        <resource>
+                            <directory>${basedir}/src/main/webapp/WEB-INF</directory>
+                            <filtering>true</filtering>
+                            <targetPath>WEB-INF</targetPath>
+                        </resource>
+                    </webResources>
+				</configuration>
+			</plugin>
+            <plugin>
+                <groupId>com.google.appengine</groupId>
+                <artifactId>appengine-maven-plugin</artifactId>
+                <version>${appengine.target.version}</version>
+            </plugin>
+		</plugins>
+	</build>
+
+</project>
