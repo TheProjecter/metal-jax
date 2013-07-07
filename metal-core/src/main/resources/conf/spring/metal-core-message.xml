@@ -11,7 +11,7 @@ xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.sprin
 		</property>
 		<property name="resourceMap">
 			<map>
-				<entry key="message" value="classpath*:message/*.properties"/>
+				<entry key="messages" value="classpath*:messages/*.properties"/>
 			</map>
 		</property>
 	</bean>
