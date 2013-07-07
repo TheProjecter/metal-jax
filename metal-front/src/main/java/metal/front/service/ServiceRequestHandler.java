@@ -37,8 +37,9 @@ import org.springframework.context.ApplicationContextAware;
 import org.springframework.remoting.httpinvoker.HttpInvokerServiceExporter;
 import org.springframework.remoting.support.RemoteInvocation;
 import org.springframework.remoting.support.RemoteInvocationResult;
+import org.springframework.web.HttpRequestHandler;
 
-public class ServiceRequestHandler extends HttpInvokerServiceExporter implements ApplicationContextAware {
+public class ServiceRequestHandler extends HttpInvokerServiceExporter implements HttpRequestHandler, ApplicationContextAware {
 	
 	private ApplicationContext context;
 	private Map<String,ServiceSetting> serviceMap = Collections.emptyMap();

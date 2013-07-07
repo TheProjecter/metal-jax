@@ -7,16 +7,19 @@
  */
 package metal.front.crossdomain;
 
+import static metal.front.common.HttpHeaderField.*;
+
 import java.io.IOException;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import metal.front.common.BaseRequestHandler;
+import org.springframework.web.HttpRequestHandler;
+
 import metal.front.common.HttpContentType;
 
-public class CrossDomainRequestHandler extends BaseRequestHandler {
+public class CrossDomainRequestHandler implements HttpRequestHandler {
 	
 	private static final String VERSION_DEFAULT = "metal-jax";
 	private String version = VERSION_DEFAULT;
@@ -26,7 +29,8 @@ public class CrossDomainRequestHandler extends BaseRequestHandler {
 	}
 
 	@Override
-	protected void process(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	public void handleRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		response.setHeader(CacheControl.name, CacheControl.value);
 		response.setContentType(HttpContentType.JS.contentType);
 		CrossDomainResponse xdResponse = new CrossDomainResponse(response, request.getRequestURL().toString(), version);
 		request.getRequestDispatcher(request.getPathInfo()).include(request, xdResponse);
