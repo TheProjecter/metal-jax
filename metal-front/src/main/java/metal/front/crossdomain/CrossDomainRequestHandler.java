@@ -14,6 +14,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import metal.front.common.BaseRequestHandler;
+import metal.front.common.HttpContentType;
 
 public class CrossDomainRequestHandler extends BaseRequestHandler {
 	
@@ -26,6 +27,7 @@ public class CrossDomainRequestHandler extends BaseRequestHandler {
 
 	@Override
 	protected void process(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		response.setContentType(HttpContentType.JS.contentType);
 		CrossDomainResponse xdResponse = new CrossDomainResponse(response, request.getRequestURL().toString(), version);
 		request.getRequestDispatcher(request.getPathInfo()).include(request, xdResponse);
 		xdResponse.flushBuffer();

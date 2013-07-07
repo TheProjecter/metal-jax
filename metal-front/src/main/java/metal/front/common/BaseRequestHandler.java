@@ -19,11 +19,9 @@ public abstract class BaseRequestHandler implements HttpRequestHandler {
 	
 	protected static final String CACHE_HEADER = "Cache-Control";
 	protected static final String CACHE_AGE = "public,max-age=300";
-	protected static final String CONTENT_TYPE = "text/plain";
 	
 	protected void setResponseHeaders(HttpServletResponse response) {
 		response.setHeader(CACHE_HEADER, CACHE_AGE);
-		response.setContentType(CONTENT_TYPE);
 	}
 	
 	public void handleRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

@@ -10,6 +10,7 @@ package metal.front.common;
 public enum HttpContentType {
 	XML("application/xml", "text/xml", "xml"),
 	JSON("application/json", "text/json", "json"),
+	JS("application/javascript", "text/javascript", "js"),
 	FORM("application/x-www-form-urlencoded");
 	
 	private final String[] types;

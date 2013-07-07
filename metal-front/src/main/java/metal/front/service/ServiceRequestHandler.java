@@ -85,8 +85,9 @@ public class ServiceRequestHandler extends HttpInvokerServiceExporter implements
 	}
 	
 	protected void sendResponse(ResponseMessage message, ServiceResponse response, String ext) throws IOException {
-		String contentType = HttpContentType.typeOf(ext, HttpContentType.JSON).name();
-		valueMapper.write(message, response.getOutputStream(), contentType);
+		HttpContentType httpContentType = HttpContentType.typeOf(ext, HttpContentType.JSON);
+		response.setContentType(httpContentType.contentType);
+		valueMapper.write(message, response.getOutputStream(), httpContentType.name());
 		response.flushBuffer();
 	}
 	
