@@ -7,6 +7,10 @@
  */
 package metal.core.message;
 
+import javax.annotation.Resource;
+
+import metal.core.common.AnyException;
+
 import org.slf4j.LoggerFactory;
 
 public class Logger {
@@ -21,6 +25,9 @@ public class Logger {
 	private boolean traceEnabled = false;
 	private boolean stackTraceEnabled = false;
 
+	@Resource
+	private MessageMapper messageMapper;
+	
 	public void setDebugEnabled(boolean debugEnabled) {
 		this.debugEnabled = debugEnabled;
 	}
@@ -54,9 +61,22 @@ public class Logger {
 			org.slf4j.Logger logger = getLogger(target);
 			if (logger.isErrorEnabled()) {
 				if (stackTraceEnabled) {
-					logger.error("exception while calling " + method, ex);
+					logger.error("exception while calling " + method + ": " + ex.getMessage(), ex);
 				} else {
-					logger.error("exception while calling " + method, ex.getMessage());
+					logger.error("exception while calling " + method + ": " + ex.getMessage());
+				}
+			}
+		}
+	}
+
+	public void logError(Object target, String method, AnyException ex) {
+		if (errorEnabled) {
+			org.slf4j.Logger logger = getLogger(target);
+			if (logger.isErrorEnabled()) {
+				if (stackTraceEnabled) {
+					logger.error("exception while calling " + method + ": " + messageMapper.getMessage(ex), ex);
+				} else {
+					logger.error("exception while calling " + method + ": " + messageMapper.getMessage(ex));
 				}
 			}
 		}

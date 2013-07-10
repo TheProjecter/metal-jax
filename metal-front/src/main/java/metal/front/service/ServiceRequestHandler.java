@@ -21,7 +21,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import metal.core.common.AnyException;
 import metal.core.mapper.ValueMapper;
-import metal.core.message.Message;
 import metal.core.mop.MethodDeclaration;
 import metal.core.mop.NameDeclaration;
 import metal.core.mop.ServiceRegistry;
@@ -87,7 +86,7 @@ public class ServiceRequestHandler extends HttpInvokerServiceExporter implements
 		} catch (ValidationException ex) {
 			return new ResponseMessage(null, messageMapper.createMessages(null, ex.getMessages()));
 		} catch (AnyException ex) {
-			return new ResponseMessage(null, messageMapper.createMessages(null, (Message)ex));
+			return new ResponseMessage(null, messageMapper.createMessages(null, ex));
 		} catch (Exception ex) {
 			return new ResponseMessage(null, messageMapper.createMessages(null, ex));
 		}
@@ -105,7 +104,7 @@ public class ServiceRequestHandler extends HttpInvokerServiceExporter implements
 		RemoteInvocationResult result = invokeAndCreateResult(invocation, target);
 		Throwable ex = result.getException();
 		if (ex instanceof AnyException) {
-			return new ResponseMessage(result.getValue(), messageMapper.createMessages(null, (Message)ex));
+			return new ResponseMessage(result.getValue(), messageMapper.createMessages(null, ex));
 		} else if (ex != null) {
 			return new ResponseMessage(result.getValue(), messageMapper.createMessages(null, ex));
 		} else {

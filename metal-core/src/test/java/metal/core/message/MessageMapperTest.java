@@ -25,7 +25,7 @@ public class MessageMapperTest extends TestBase {
 		SpecificException
 	}
 	
-	class TestException extends AnyException {
+	static class TestException extends AnyException {
 		protected TestException(MessageCode code, Object... args) { super(code, args); }
 	}
 	

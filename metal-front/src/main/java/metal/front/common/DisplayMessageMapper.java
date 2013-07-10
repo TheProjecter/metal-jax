@@ -12,6 +12,7 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import metal.core.common.AnyException;
 import metal.core.message.Message;
 import metal.core.message.MessageMapper;
 import metal.front.model.DisplayMessage;
@@ -30,8 +31,8 @@ public class DisplayMessageMapper {
 		return displayMessages;
 	}
 	
-	public List<DisplayMessage> createMessages(String kind, Message message) {
-		return addMessage(kind, message, new ArrayList<DisplayMessage>());
+	public List<DisplayMessage> createMessages(String kind, AnyException ex) {
+		return addMessage(kind, ex, new ArrayList<DisplayMessage>());
 	}
 	
 	public List<DisplayMessage> createMessages(String kind, Throwable ex) {

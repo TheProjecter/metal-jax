@@ -7,8 +7,11 @@
  */
 package metal.core.message;
 
+import static metal.core.message.MessageMapperTest.MessageMapperTestMessageCode.GenericException;
+
 import javax.annotation.Resource;
 
+import metal.core.message.MessageMapperTest.TestException;
 import metal.core.test.TestBase;
 
 import org.junit.Test;
@@ -25,6 +28,7 @@ public class LoggerTest extends TestBase {
 		logger.logInfo(this, "logInfo", "a test message");
 		logger.logWarn(this, "logWarn", "a test message");
 		logger.logError(this, "logError", new Exception("a test message"));
+		logger.logError(this, "logError", new TestException(GenericException, "a", "b", "c"));
 	}
 
 }
