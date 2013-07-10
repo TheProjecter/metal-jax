@@ -5,7 +5,9 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package metal.core.message;
+package metal.core.validation;
+
+import metal.core.message.MessageCode;
 
 public enum ValidationMessageCode implements MessageCode {
 	ValidationFailed

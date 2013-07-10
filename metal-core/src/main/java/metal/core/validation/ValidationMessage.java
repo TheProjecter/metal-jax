@@ -5,11 +5,14 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package metal.core.message;
+package metal.core.validation;
 
-import static metal.core.message.ValidationMessageCode.*;
+import static metal.core.validation.ValidationMessageCode.*;
 
 import javax.validation.ConstraintViolation;
+
+import metal.core.message.Message;
+import metal.core.message.MessageCode;
 
 public class ValidationMessage implements Message {
 
@@ -59,4 +62,8 @@ public class ValidationMessage implements Message {
 		return (String)arguments[3];
 	}
 
+	public String getPropertyPath() {
+		return (String)arguments[1];
+	}
+	
 }

@@ -7,6 +7,10 @@
  */
 package metal.front.model;
 
+import java.util.List;
+
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
@@ -16,15 +20,17 @@ import metal.core.mapper.ValueAdapter;
 public class ResponseMessage {
 
 	private Object result;
-	private String message;
-	private String messageCode;
+	private List<DisplayMessage> messages;
 
 	public ResponseMessage() {}
 	
-	public ResponseMessage(Object result, String message, String messageCode) {
+	public ResponseMessage(Object result) {
 		this.result = result;
-		this.message = message;
-		this.messageCode = messageCode;
+	}
+	
+	public ResponseMessage(Object result, List<DisplayMessage> messages) {
+		this.result = result;
+		this.messages = messages;
 	}
 	
 	@XmlJavaTypeAdapter(ValueAdapter.class)
@@ -36,20 +42,14 @@ public class ResponseMessage {
 		this.result = result;
 	}
 
-	public String getMessage() {
-		return message;
+	@XmlElementWrapper
+	@XmlElement(name="message")
+	public List<DisplayMessage> getMessages() {
+		return messages;
 	}
 
-	public void setMessage(String message) {
-		this.message = message;
-	}
-
-	public String getMessageCode() {
-		return messageCode;
-	}
-
-	public void setMessageCode(String messageCode) {
-		this.messageCode = messageCode;
+	public void setMessages(List<DisplayMessage> messages) {
+		this.messages = messages;
 	}
 
 }

@@ -21,10 +21,13 @@ import javax.servlet.http.HttpServletResponse;
 
 import metal.core.common.AnyException;
 import metal.core.mapper.ValueMapper;
-import metal.core.message.MessageMapper;
+import metal.core.message.Message;
 import metal.core.mop.MethodDeclaration;
 import metal.core.mop.NameDeclaration;
 import metal.core.mop.ServiceRegistry;
+import metal.core.validation.ValidationException;
+import metal.core.validation.Validator;
+import metal.front.common.DisplayMessageMapper;
 import metal.front.common.FrontException;
 import metal.front.common.HttpContentType;
 import metal.front.model.RequestMessage;
@@ -48,10 +51,13 @@ public class ServiceRequestHandler extends HttpInvokerServiceExporter implements
 	private ServiceRegistry serviceRegistry;
 	
 	@Resource
-	private MessageMapper messageMapper;
+	private DisplayMessageMapper messageMapper;
 	
 	@Resource
 	private ValueMapper valueMapper;
+	
+	@Resource
+	private Validator validator;
 	
 	@Override
 	public void afterPropertiesSet() {}
@@ -78,10 +84,12 @@ public class ServiceRequestHandler extends HttpInvokerServiceExporter implements
 			MethodDeclaration method = getInvocationMethod(service, request);
 			Object[] params = getRequestParameters(request, method.getParamDeclarations());
 			return invoke(method.getName(), target, params, method.getParamTypes());
+		} catch (ValidationException ex) {
+			return new ResponseMessage(null, messageMapper.createMessages(null, ex.getMessages()));
 		} catch (AnyException ex) {
-			return new ResponseMessage(null, messageMapper.getMessage(ex), ex.getMessage());
+			return new ResponseMessage(null, messageMapper.createMessages(null, (Message)ex));
 		} catch (Exception ex) {
-			return new ResponseMessage(null, ex.getMessage(), ex.getClass().getSimpleName());
+			return new ResponseMessage(null, messageMapper.createMessages(null, ex));
 		}
 	}
 	
@@ -97,11 +105,11 @@ public class ServiceRequestHandler extends HttpInvokerServiceExporter implements
 		RemoteInvocationResult result = invokeAndCreateResult(invocation, target);
 		Throwable ex = result.getException();
 		if (ex instanceof AnyException) {
-			return new ResponseMessage(result.getValue(), messageMapper.getMessage((AnyException)ex), ex.getMessage());
+			return new ResponseMessage(result.getValue(), messageMapper.createMessages(null, (Message)ex));
 		} else if (ex != null) {
-			return new ResponseMessage(result.getValue(), ex.toString(), ex.getMessage());
+			return new ResponseMessage(result.getValue(), messageMapper.createMessages(null, ex));
 		} else {
-			return new ResponseMessage(result.getValue(), null, null);
+			return new ResponseMessage(result.getValue());
 		}
 	}
 	
@@ -135,6 +143,7 @@ public class ServiceRequestHandler extends HttpInvokerServiceExporter implements
 			values = valueMapper.read(message, request.getInputStream(), contentType.name()).getValues();
 			break;
 		}
+		validator.assertValid(values);
 		return values;
 	}
 	

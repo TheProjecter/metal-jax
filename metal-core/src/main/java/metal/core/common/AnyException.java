@@ -16,22 +16,22 @@ public class AnyException extends RuntimeException implements Message {
 	private String[] codes;
 	private Object[] arguments;
 
-	public AnyException(MessageCode code) {
+	protected AnyException(MessageCode code) {
 		super(code.name());
 		setCode(code);
 	}
 
-	public AnyException(MessageCode code, Throwable cause) {
+	protected AnyException(MessageCode code, Throwable cause) {
 		super(code.name(), cause);
 		setCode(code);
 	}
 
-	public AnyException(MessageCode code, Object... args) {
+	protected AnyException(MessageCode code, Object... args) {
 		this(code);
 		this.arguments = args;
 	}
 
-	public AnyException(MessageCode code, Throwable cause, Object... args) {
+	protected AnyException(MessageCode code, Throwable cause, Object... args) {
 		this(code, cause);
 		this.arguments = args;
 	}

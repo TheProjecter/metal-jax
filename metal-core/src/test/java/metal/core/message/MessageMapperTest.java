@@ -25,13 +25,17 @@ public class MessageMapperTest extends TestBase {
 		SpecificException
 	}
 	
+	class TestException extends AnyException {
+		protected TestException(MessageCode code, Object... args) { super(code, args); }
+	}
+	
 	@Resource
 	private MessageMapper mapper;
 	
 	@Test
 	public void testErrorMessage() {
-		assertEquals("GenericException: a, b and c", mapper.getMessage(new AnyException(GenericException, "a", "b", "c")));
-		assertEquals("MoreSpecificException: a, b and c", mapper.getMessage(new AnyException(SpecificException, "a", "b", "c")));
+		assertEquals("GenericException: a, b and c", mapper.getMessage(new TestException(GenericException, "a", "b", "c")));
+		assertEquals("MoreSpecificException: a, b and c", mapper.getMessage(new TestException(SpecificException, "a", "b", "c")));
 	}
 
 }
