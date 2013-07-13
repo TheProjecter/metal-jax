@@ -212,6 +212,16 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/ma
 								<classesDirectory>${basedir}/target/webjar-classes</classesDirectory>
 							</configuration>
 						</execution>
+						<execution>
+							<id>test-webjar-jar</id>
+							<phase></phase>
+							<goals>
+								<goal>test-jar</goal>
+							</goals>
+							<configuration>
+								<testClassesDirectory>${basedir}/target/test-webjar-classes</testClassesDirectory>
+							</configuration>
+						</execution>
 					</executions>
 				</plugin>
 	            <plugin>
@@ -244,6 +254,22 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/ma
 								</resources>
 							</configuration>
 						</execution>
+						<execution>
+							<id>test-webjar-resources</id>
+							<phase></phase>
+							<goals>
+								<goal>copy-resources</goal>
+							</goals>
+							<configuration>
+								<outputDirectory>${basedir}/target/test-webjar-classes/META-INF/resources</outputDirectory>
+								<resources>
+									<resource>
+										<directory>${basedir}/src/test/webapp</directory>
+										<filtering>true</filtering>
+									</resource>
+								</resources>
+							</configuration>
+						</execution>
 					</executions>
 				</plugin>
 				<plugin>
@@ -260,6 +286,7 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/ma
 										<versionRange>[2.4,)</versionRange>
 										<goals>
 											<goal>jar</goal>
+											<goal>test-jar</goal>
 										</goals>
 									</pluginExecutionFilter>
 									<action>

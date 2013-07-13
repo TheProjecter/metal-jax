@@ -32,6 +32,10 @@
 						<id>webjar-jar</id>
 						<phase>compile</phase>
 					</execution>
+					<execution>
+						<id>test-webjar-jar</id>
+						<phase>compile</phase>
+					</execution>
 				</executions>
 			</plugin>
 			<plugin>
@@ -39,6 +43,10 @@
 				<executions>
 					<execution>
 						<id>webjar-resources</id>
+						<phase>process-resources</phase>
+					</execution>
+					<execution>
+						<id>test-webjar-resources</id>
 						<phase>process-resources</phase>
 					</execution>
 				</executions>
