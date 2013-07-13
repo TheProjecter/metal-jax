@@ -32,11 +32,15 @@ public class RequestMessage extends Model {
 		if (containsKey(key)) {
 			value = super.get(key);
 		} else {
+			Class<?> memberType = getMemberType((String)key);
+			if (memberType == null) {
+				throw new FrontException(UndefinedParamType, key);
+			}
 			try {
 				value = getMemberType((String)key).newInstance();
 				super.put((String)key, value);
 			} catch (Exception e) {
-				throw new FrontException(FailedParamDefaultConstruction, e);
+				throw new FrontException(FailedParamInstantiation, e, e.getClass().getName(), e.getMessage(), key);
 			}
 		}
 		return value;

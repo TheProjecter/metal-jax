@@ -10,7 +10,7 @@ package metal.front.common;
 import metal.core.message.MessageCode;
 
 public enum FrontMessageCode implements MessageCode {
-	UnknownService,
-	UnknownServicePath,
-	FailedParamDefaultConstruction
+	UndefinedService,
+	UndefinedParamType,
+	FailedParamInstantiation
 }

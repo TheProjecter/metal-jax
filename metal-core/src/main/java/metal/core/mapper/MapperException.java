@@ -16,7 +16,7 @@ public class MapperException extends AnyException {
 	}
 
 	public MapperException(MapperMessageCode code, Throwable cause) {
-		super(code, cause);
+		super(code, cause, cause.getClass().getName(), cause.getMessage());
 	}
 
 	public MapperException(MapperMessageCode code, Object... args) {

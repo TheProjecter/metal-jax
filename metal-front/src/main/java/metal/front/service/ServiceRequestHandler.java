@@ -114,14 +114,14 @@ public class ServiceRequestHandler extends HttpInvokerServiceExporter implements
 	
 	protected Object getInvocationTarget(ServiceSetting service, ServiceRequest request) {
 		if (service == null) {
-			throw new FrontException(UnknownService, request.getServletPath());
+			throw new FrontException(UndefinedService, request.getServletPath());
 		}
 		String servicePath = service.getServicePath(request);
 		try {
 			String beanName = serviceRegistry.getServiceBeanName(servicePath);
 			return context.getBean(beanName);
 		} catch (Exception e) {
-			throw new FrontException(UnknownServicePath, e, servicePath);
+			throw new FrontException(UndefinedService, e, servicePath);
 		}
 	}
 	
