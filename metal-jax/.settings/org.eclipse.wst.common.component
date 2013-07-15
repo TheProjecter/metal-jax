@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project-modules id="moduleCoreId" project-version="1.5.0">
     <wb-module deploy-name="metal-jax">
-        <wb-resource deploy-path="/" source-path="/src/main/java"/>
-        <wb-resource deploy-path="/" source-path="/src/main/resources"/>
         <wb-resource deploy-path="/META-INF/resources" source-path="/src/main/webapp"/>
         <wb-resource deploy-path="/META-INF/resources" source-path="/src/test/webapp"/>
+        <wb-resource deploy-path="/" source-path="/src/main/wiki"/>
     </wb-module>
 </project-modules>
