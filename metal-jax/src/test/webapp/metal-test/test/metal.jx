@@ -7,10 +7,10 @@
 
 //@private
 function initObject() {
-	this.set("testSuite", new TestSuite());
+	this.testSuite = new TestSuite();
 }
 
 //@private
 function initContext() {
-	this.get("testSuite").run($context);
+	this.testSuite.run($context);
 }

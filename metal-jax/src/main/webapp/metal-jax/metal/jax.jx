@@ -244,6 +244,12 @@
 	
 	function $static() {
 		this.scope.$private = this.scope;
+		this.scope.$static.$static = this.scope.$static;
+		this.scope.$static.$public = this.scope.$public;
+		this.scope.$static.$protected = this.scope.$protected;
+		this.scope.$protected.$static = this.scope.$static;
+		this.scope.$protected.$public = this.scope.$public;
+		this.scope.$protected.$protected = this.scope.$protected;
 		with (this.scope.$static) {
 			with (this.scope.$protected) {
 				with (this.scope.$private) {
