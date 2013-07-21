@@ -1,0 +1,32 @@
+<link type="text/css" rel="stylesheet" href="../styles/main.css"/>
+
+p(title). Creating A Class
+
+{toc:style=decimal}
+
+h1. Overview
+
+The framework makes it very easy to create class-based javascript code.
+
+h1. Summary
+
+Object sets up the base behavior inherited by all classes.
+
+The framework also recognizes a few lifecycle callback methods.
+
+h1. Detail
+
+h2. Object Methods
+
+table(grid).
+|_.Name |_.Scope |_.Comments |
+| newObject | static | Creates new object instance. |
+| get | public | Returns an object property. Can be overriden in child class to add bebavior. |
+| set | public | Sets an object property. Can be overriden in child class to add bebavior. |
+
+h2. Lifecycle Methods
+
+table(grid).
+|_.Name |_.Scope |_.Comments |
+| initClass | private | Initializes a new class. |
+| initObject | private | Initializes a new object instance. |

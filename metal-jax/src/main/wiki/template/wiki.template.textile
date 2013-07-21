@@ -12,6 +12,16 @@ h1. Summary
 
 Describes design summary.
 
+Ordered points:
+# Point 1
+# Point 2
+## Point 2.1
+
+Unordered points:
+* Point 1
+* Point 2
+** Point 2.1
+
 See also: "@wiki.template@":wiki.template.html
 
 h1. Detail
