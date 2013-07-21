@@ -207,6 +207,18 @@ function parseCSV(text, delimiter) {
 	return result;
 }
 
+//@private
+var _settingRE_= /\s*([\w.]+)\s*=\s*(.+)(?:\r?\n)?/g;
+
+//@static
+function parseProperties(text) {
+	var result = {}, match;
+	while ((match = _settingRE_.exec(text))) {
+		result[match[1]] = match[2];
+	}
+	return result;
+}
+
 //@static
 function parseJSONFromText(text) {
 	return eval("(".concat(text, ")"));

@@ -70,15 +70,15 @@
 		}
 		
 		function logSetting(logger, setting) {
-			logger.info("metal-jax init with bootModule: ${bootModule}", setting);
-			logger.info("metal-jax init with bootContext: ${bootContext}", setting);
+			logger.info("metal.jax.init.bootModule", setting);
+			logger.info("metal.jax.init.bootContext", setting);
 			if (setting["baseModule"]) {
-				logger.info("metal-jax init with baseModule: ${baseModule}", setting);
+				logger.info("metal.jax.init.baseModule", setting);
 			} else {
-				logger.warn("metal-jax init without baseModule");
+				logger.warn("metal.jax.init.baseModule.missing");
 			}
-			logger.info("metal-jax init with baseContext: ${baseContext}", setting);
-			logger.info("metal-jax init with bootClass: ${bootClass}", setting);
+			logger.info("metal.jax.init.baseContext", setting);
+			logger.info("metal.jax.init.bootClass", setting);
 		}
 		
 		function parseSource(source) {

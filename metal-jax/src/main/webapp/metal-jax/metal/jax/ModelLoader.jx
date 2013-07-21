@@ -85,7 +85,8 @@ function initSource(key) {
 	source.type = this.$("model.type");
 	source.base = this.$("model.base");
 	source.module = this.$("model.module");
-	source.path = this.getName().split(".").join("/").concat(".", source.type);
+//	source.path = this.getName().split(".").join("/").concat(".", source.type);
+	source.path = key.concat(".", source.type);
 //	if (source.base.indexOf("file") != 0) source.path = source.path.concat("#", source.key);
 	return source;
 }
@@ -139,6 +140,9 @@ function parseSource(source) {
 		break;
 	case "csv":
 		source.content = System.parseCSV(source.content, source.$class.$("model.delimiter"));
+		break;
+	case "properties":
+		source.content = System.parseProperties(source.content);
 		break;
 	}
 	_pendingFlush.push(source);
