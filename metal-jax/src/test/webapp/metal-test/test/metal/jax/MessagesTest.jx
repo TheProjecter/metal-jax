@@ -1,0 +1,9 @@
+/**
+ * @test MessagesTest
+ * @requires metal.jax.Messages hello
+ */
+
+//@public
+function testMessage() {
+	assertEquals("hello world !", hello.get("hello.world"));
+}
