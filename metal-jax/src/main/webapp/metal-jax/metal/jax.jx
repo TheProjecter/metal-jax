@@ -29,7 +29,7 @@
 					{ type:"context",		"extends":"metal.jax.Context" },
 					{ type:"face",			"extends":"metal.jax.Face" },
 					{ type:"${faceType}",	"extends":"metal.jax.Face" },
-					{ type:"model",			"extends":"metal.jax.Model" },
+					{ type:"resource",		"extends":"metal.jax.Resource" },
 					{ type:"service",		"extends":"metal.jax.Service" }
 				]
 			}

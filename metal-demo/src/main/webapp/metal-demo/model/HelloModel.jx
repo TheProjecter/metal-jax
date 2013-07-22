@@ -1,5 +1,5 @@
 /**
- * @model HelloModel
+ * @resource HelloModel
  */
 
 //@static

@@ -1,5 +1,5 @@
 /**
- * @model Table
+ * @resource Table
  * 
  * @setting model.type=csv
  * @setting model.delimiter=,

@@ -73,7 +73,7 @@ table(grid).
 | context | @metal.jax.Context@ | Context source. |
 | face | @metal.jax.Face@ | Face source. |
 | html | @metal.jax.Face@ | HTML source. |
-| model | @metal.jax.Model@ | Model source. |
+| resource | @metal.jax.Resource@ | Resource source. |
 | service | @metal.jax.Service@ | Service source. |
 
 h2. Bootstrapping Methods

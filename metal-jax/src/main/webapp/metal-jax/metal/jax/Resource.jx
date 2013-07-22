@@ -1,5 +1,5 @@
 /**
- * @class Model
+ * @class Resource
  * @imports ModelLoader
  * 
  * @setting model.base=${baseURL}

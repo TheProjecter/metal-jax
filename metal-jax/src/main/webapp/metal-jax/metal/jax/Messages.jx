@@ -1,5 +1,5 @@
 /**
- * @model Messages
+ * @resource Messages
  * 
  * @setting model.module=messages
  * @setting model.type=properties

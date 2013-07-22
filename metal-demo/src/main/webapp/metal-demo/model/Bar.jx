@@ -1,5 +1,5 @@
 /**
- * @model Bar
+ * @resource Bar
  * @setting model.type=txt
  */
 

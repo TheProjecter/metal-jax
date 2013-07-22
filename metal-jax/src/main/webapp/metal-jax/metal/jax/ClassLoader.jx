@@ -283,6 +283,7 @@ $private.parseModel = function parseModel(source) {
 				case "setting":
 					parseSetting(source.scope.$setting, match);
 					break;
+					/*
 				case "resource":
 					if (source.contentType == "context") {
 						value = value || name;
@@ -290,6 +291,7 @@ $private.parseModel = function parseModel(source) {
 						source.scope.$resource[value] = name;
 					}
 					break;
+					*/
 				case "source":
 				case "content":
 					if (source.contentType == "context") {

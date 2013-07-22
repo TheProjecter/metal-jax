@@ -1,5 +1,5 @@
 /**
- * @model Hello
+ * @resource Hello
  * @imports Foo
  * @imports Bar
  */
