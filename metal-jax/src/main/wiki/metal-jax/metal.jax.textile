@@ -48,7 +48,7 @@ Source properties are source parsing results for class/context creation.
 
 table(grid).
 |_.Name |_.Value |_.Comments |
-| contentType | @context@ | Type token for context creation. |
+| stereotype | @context@ | Type token for context creation. |
 | name | @metal.jax.ClassLoader@ | Identifies source as well as class/context. |
 | scope | $public, $protected, $static, $imports, $requires, $resource, $setting | Private scope variables. |
 | setting | source, content | _More settings_. |

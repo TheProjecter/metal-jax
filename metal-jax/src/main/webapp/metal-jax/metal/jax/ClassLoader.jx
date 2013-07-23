@@ -14,6 +14,7 @@ $private.ClassLoader = function ClassLoader() {};
 $imports.Context = "metal.jax.Context";
 $imports.Logger = "metal.jax.Logger";
 $imports.Object = "metal.jax.Object";
+$imports.Resource = "metal.jax.Resource";
 $imports.System = "metal.jax.System";
 
 $private.initClass_ = function initClass_() {
@@ -87,7 +88,7 @@ $private.getSource = function getSource(name, context) {
 
 $private.putSource = function putSource(source) {
 	getHolder(source.context)[source.name] = source;
-	if (source.contentType == "context") {
+	if (source.stereotype == "context") {
 		$source.holder[source.name] = source;
 	}
 	return source;
@@ -238,7 +239,7 @@ $private.parseSource = function parseSource(source) {
 	_pendingFlush.push(source);
 	source.$class = source.scope[source.baseName];
 	source.context.loadClass(source.scope.$imports[source.superBase]);
-	if (source.contentType != "context") {
+	if (source.stereotype != "context") {
 		for (var name in source.scope.$imports) {
 			source.context.loadClass(source.scope.$imports[name]);
 		}
@@ -252,6 +253,7 @@ $private.parseModel = function parseModel(source) {
 	source.scope.$setting.module = source.module;
 	source.scope.$setting.path = source.path;
 	if (source.type != $("classType")) {
+		source.stereotype = source.type;
 		source.contentType = source.type;
 		source.scope.content = source.content;
 		source.content = null;
@@ -285,7 +287,7 @@ $private.parseModel = function parseModel(source) {
 					break;
 					/*
 				case "resource":
-					if (source.contentType == "context") {
+					if (source.stereotype == "context") {
 						value = value || name;
 						source.scope.$imports[parseBaseName(name)] = name;
 						source.scope.$resource[value] = name;
@@ -294,19 +296,19 @@ $private.parseModel = function parseModel(source) {
 					*/
 				case "source":
 				case "content":
-					if (source.contentType == "context") {
+					if (source.stereotype == "context") {
 						source.setting[settingTag].push(parseSetting({}, match));
 					}
 					break;
 				case "class":
 				case "context":
 				default:
-					if (source.contentType) break;
-					source.contentType = settingTag;
+					if (source.stereotype) break;
+					source.stereotype = settingTag;
 					if (source.name != parseSourceName(name, source.name)) {
 						System.throwError("incorrect ${0} name declared: ${1}", settingTag, name);
 					}
-					if (source.contentType == "context") {
+					if (source.stereotype == "context") {
 						source.holder = {};
 						source.scope.$resource = {};
 						source.setting = { source:[], content:[] };
@@ -316,10 +318,10 @@ $private.parseModel = function parseModel(source) {
 			}
 		}
 	}
-	source.contentType = source.contentType || "class";
+	source.stereotype = source.stereotype || "class";
 	source.baseName = parseBaseName(source.name);
 	if (!source.superBase && source.name != $imports.Object) {
-		var setting = findContentSetting(source.contentType, source.context);
+		var setting = findContentSetting(source.stereotype, source.context);
 		var superName = setting && setting["extends"] || $imports.Object;
 		source.superBase = parseBaseName(superName);
 		source.scope.$imports[source.superBase] = superName;
@@ -446,7 +448,7 @@ $private.flush_initClass = function flush_initClass(source) {
 		_busyCount++;
 		if (source.context) {
 			source.scope[source.superBase] = source.context.findClass(source.scope.$imports[source.superBase], true);
-			if (source.contentType != "context") {
+			if (source.stereotype != "context") {
 				for (var name in source.scope.$imports) {
 					source.scope[name] = source.context.findClass(source.scope.$imports[name], true);
 				}
@@ -459,20 +461,20 @@ $private.flush_initClass = function flush_initClass(source) {
 			superSource = findSource(superName, source.context);
 			flush_initClass(superSource);
 		}
-		if (source.contentType != "context") {
+		if (source.stereotype != "context") {
 			for (var name in source.scope.$imports) {
 				flush_initClass(findSource(source.scope.$imports[name], source.context));
 			}
 		}
 		flush_initMember(source, superSource);
-		if (source.contentType == "context") {
+		if (source.stereotype == "context") {
 			for (var name in source.scope.$imports) {
 				source.context.loadClass(source.scope.$imports[name]);
 			}
 		}
 		_busyCount--;
 		source.flushStatus = 0;
-		if (source.contentType != "context") {
+		if (source.stereotype != "context") {
 			flush_notifyClass(source);
 		}
 	}
@@ -482,7 +484,7 @@ $private.flush_notifyClass = function flush_notifyClass(source) {
 	if (source.flushStatus == 0) {
 		source.flushStatus = "busy 1";
 		_busyCount++;
-		if (source.contentType == "context") {
+		if (source.stereotype == "context") {
 			for (var name in source.scope.$imports) {
 				var clazz = source.scope[name] = source.context.findClass(source.scope.$imports[name], true);
 				flush_notifyClass(getSource(clazz.getName(), clazz.getContext()));
@@ -515,10 +517,10 @@ $private.flush_initContext = function flush_initContext(source) {
 			var clazz = source.scope[name];
 			flush_initContext(getSource(clazz.getName(), clazz.getContext()));
 		}
-		if (source.contentType == "context") {
+		if (source.stereotype == "context") {
 			initResource(source);
 		}
-		if (source.contentType == "context" && source.scope.initObject) {
+		if (source.stereotype == "context" && source.scope.initObject) {
 			source.scope.initObject.call(source.context);
 		}
 		_busyCount--;
@@ -534,7 +536,7 @@ $private.flush_notifyContext = function flush_notifyContext(source) {
 			var clazz = source.scope[name];
 			flush_notifyContext(getSource(clazz.getName(), clazz.getContext()));
 		}
-		if (source.contentType == "context" && source.scope.initContext) {
+		if (source.stereotype == "context" && source.scope.initContext) {
 			source.scope.initContext.call(source.context);
 		}
 		_busyCount--;
@@ -555,7 +557,7 @@ $private.flush_initMember = function flush_initMember(source, superSource) {
 	initMember(source.$class, source.scope.$static);
 	initMember(source.$class.prototype, source.scope.$public, true);
 	initMember(source.scope.$public, source.scope.$super);
-	if (source.contentType == "context") {
+	if (source.stereotype == "context") {
 		source.context = source.scope.$context = new source.$class(source.$class);
 		putSource(source);
 	}
@@ -565,7 +567,7 @@ $private.flush_initMember = function flush_initMember(source, superSource) {
 
 $private.flush_initSetting = function flush_initSetting(source) {
 	initSetting(source.scope.$setting, source.$class);
-	if (source.contentType == "context") {
+	if (source.stereotype == "context") {
 		var settings = source.setting["source"];
 		for (var i = 0; i < settings.length; i++) {
 			var setting = settings[i];

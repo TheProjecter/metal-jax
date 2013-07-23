@@ -19,7 +19,7 @@
 			faceType: "html"
 		};
 		var $source = {
-			contentType: "context",
+			stereotype: "context",
 			name: "metal.jax.ClassLoader",
 			scope: { $public:{}, $protected:{}, $static:{}, $imports:{}, $requires:{}, $resource:{}, $setting:$setting },
 			setting: {
