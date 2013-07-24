@@ -50,8 +50,8 @@ table(grid).
 |_.Name |_.Value |_.Comments |
 | stereotype | @context@ | Type token for context creation. |
 | name | @metal.jax.ClassLoader@ | Identifies source as well as class/context. |
-| scope | $public, $protected, $static, $imports, $requires, $resource, $setting | Private scope variables. |
-| setting | source, content | _More settings_. |
+| scope | $public, $protected, $static, $imports, $requires, $setting | Private scope variables. |
+| setting | source, stereotype | _More settings_. |
 
 h2. Context Source Settings
 
@@ -63,9 +63,9 @@ table(grid).
 | module | ${bootModule} | Module folder to load context sources. |
 | includes | ^metal.jax[.] | Regexp for source names. |
 
-h2. Source Content Types
+h2. Source Stereotypes
 
-Source content types define default base class for each source type.
+Source stereotypes define default base class for each type.
 
 table(grid).
 |_.Name |_.Value |_.Comments |

@@ -137,10 +137,10 @@ $private.findSourceSetting = function findSourceSetting(name, context) {
 	}
 };
 
-$private.findContentSetting = function findContentSetting(type, context) {
+$private.findStereotypeSetting = function findStereotypeSetting(type, context) {
 	var clazz = context.getClass();
 	while (clazz) {
-		var settings = getSource(clazz.getName(), clazz.getContext()).setting["content"];
+		var settings = getSource(clazz.getName(), clazz.getContext()).setting["stereotype"];
 		for (var i = 0; i < settings.length; i++) {
 			var setting = settings[i];
 			if (setting.type == type) {
@@ -247,7 +247,7 @@ $private.parseSource = function parseSource(source) {
 };
 
 $private._classHeaderRE_ = /^\s*\/\*\*([\S\s]*?)\*\//;
-$private._classSettingRE_ = /@(setting|source|content)[\t ]+([\S\t ]*\S+)[\t ]*$|@([a-zA-Z]+)[\t ]+(\S+)[\t ]*([\S\t ]+)?[\t ]*$/gm;
+$private._classSettingRE_ = /@(setting|source|stereotype)[\t ]+([\S\t ]*\S+)[\t ]*$|@([a-zA-Z]+)[\t ]+(\S+)[\t ]*([\S\t ]+)?[\t ]*$/gm;
 $private.parseModel = function parseModel(source) {
 	source.scope = { $public:{}, $protected:{}, $static:{}, $imports:{}, $requires:{}, $setting:{} };
 	source.scope.$setting.module = source.module;
@@ -295,7 +295,7 @@ $private.parseModel = function parseModel(source) {
 					break;
 					*/
 				case "source":
-				case "content":
+				case "stereotype":
 					if (source.stereotype == "context") {
 						source.setting[settingTag].push(parseSetting({}, match));
 					}
@@ -311,7 +311,7 @@ $private.parseModel = function parseModel(source) {
 					if (source.stereotype == "context") {
 						source.holder = {};
 						source.scope.$resource = {};
-						source.setting = { source:[], content:[] };
+						source.setting = { source:[], stereotype:[] };
 					}
 					break;
 				}
@@ -321,7 +321,7 @@ $private.parseModel = function parseModel(source) {
 	source.stereotype = source.stereotype || "class";
 	source.baseName = parseBaseName(source.name);
 	if (!source.superBase && source.name != $imports.Object) {
-		var setting = findContentSetting(source.stereotype, source.context);
+		var setting = findStereotypeSetting(source.stereotype, source.context);
 		var superName = setting && setting["extends"] || $imports.Object;
 		source.superBase = parseBaseName(superName);
 		source.scope.$imports[source.superBase] = superName;
@@ -370,7 +370,7 @@ $private.parseSetting = function parseSetting(setting, match) {
 		}
 		break;
 	case "source":
-	case "content":
+	case "stereotype":
 		while (match = _settingsRE_.exec(content)) {
 			setting[match[1]] = match[2];
 			found = true;
@@ -580,7 +580,7 @@ $private.flush_initSetting = function flush_initSetting(source) {
 			}
 			setting.context = source.context;
 		}
-		var settings = source.setting["content"];
+		var settings = source.setting["stereotype"];
 		for (var i = 0; i < settings.length; i++) {
 			var setting = settings[i];
 			initSetting(setting, source.$class);
