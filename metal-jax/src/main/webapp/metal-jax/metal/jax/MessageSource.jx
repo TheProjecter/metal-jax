@@ -1,0 +1,11 @@
+/**
+ * @resource MessageSource
+ * 
+ * @setting model.module=messages
+ * @setting model.type=properties
+ */
+
+//@static
+function parseModel(value) {
+	this.value = value;
+}
