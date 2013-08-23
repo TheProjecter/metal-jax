@@ -1,11 +1,10 @@
 /**
  * @resource Table
  * 
- * @setting model.type=csv
- * @setting model.delimiter=,
+ * @setting resource.type=csv
+ * @setting resource.content.delimiter=,
  */
 
-//@static
-function parseModel(value) {
-	this.value = value;
+//@private
+function parseModel(model) {
 }

@@ -5,5 +5,5 @@
 
 //@public
 function testMessage() {
-	assertEquals("hello world !", hello.get("hello.world"));
+	assertEquals("hello world !", $("hello.world"));
 }

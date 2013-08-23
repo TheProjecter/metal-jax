@@ -1,0 +1,17 @@
+/**
+ * @context base
+ * @imports metal.test.TestSuite
+ * @source base=${baseURL} module=${baseModule} includes=[.]test[.]
+ * @source base=${baseURL} module=${baseModule} includes=Test$
+ * @stereotype type=test base=metal.test.TestCase
+ */
+
+//@private
+function initObject() {
+	this.testSuite = new TestSuite();
+}
+
+//@private
+function initContext() {
+	this.testSuite.run($context);
+}

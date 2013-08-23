@@ -1,12 +1,12 @@
 /**
- * @test ClassLoaderTest
+ * @test ContextTest
  * 
- * @imports metal.jax.ClassLoader
+ * @imports metal.jax.Context
  * @imports metal.jax.Object
  * @imports metal.jax.Object Object2
- * @imports test.base baseContext
+ * @imports .base baseContext
  * 
- * @setting classLoader=metal.jax.ClassLoader
+ * @setting classLoader=metal.jax.Context
  * @setting classLoader1=${classLoader}
  * @setting classLoader2=  ${classLoader}  ${classLoader}
  */
@@ -47,10 +47,10 @@ function test_classSetting() {
 	assertEquals($super.$protected, $private.$super.$protected);
 	assertEquals($super.$static, $private.$super.$static);
 	
-	assertEquals($("classLoader"), ClassLoader.getName());
-	assertEquals($("classLoader1"), ClassLoader.getName());
-	assertEquals($("classLoader2"), "  ".concat(ClassLoader.getName(), "  ", ClassLoader.getName()));
-	assertEquals($("classLoader3"), ClassLoader.getName());
+	assertEquals($("classLoader"), Context.getName());
+	assertEquals($("classLoader1"), Context.getName());
+	assertEquals($("classLoader2"), "  ".concat(Context.getName(), "  ", Context.getName()));
+	assertEquals($("classLoader3"), Context.getName());
 	
 	assertEquals(Object, Object2);
 	assertEquals(Object, Object3);
@@ -58,13 +58,13 @@ function test_classSetting() {
 
 //@public
 function test_getSuperClass() {
-	assertEquals(Object, ClassLoader.getSuperClass());
+	assertEquals(null, Context.getSuperClass());
 }
 
 //@public
 function test_newObject() {
-	assertEquals(ClassLoader, new ClassLoader().getClass());
-	assertEquals(ClassLoaderTest, new ClassLoaderTest().getClass());
+	assertEquals(Context, new Context().getClass());
+	assertEquals(ContextTest, new ContextTest().getClass());
 }
 
 //@public
@@ -79,5 +79,5 @@ function test_loadClass() {
 
 //@public
 function test_findClass() {
-	assertEquals(ClassLoader, new ClassLoader().findClass(ClassLoader.getName()));
+	assertEquals(Context, new Context().findClass(Context.getName()));
 }

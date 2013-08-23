@@ -18,9 +18,9 @@ function run(context) {
 		context.loadClass(testName, function() {
 			var testClass = context.findClass(testName);
 			if (testClass && testClass.extendsClass(TestCase)) {
-				runner.runTest(testClass.newObject(context));
+				runner.runTest(new testClass(context));
 			} else {
-				var test = testClass.newObject(context);
+				var test = new testClass(context);
 				runAll.call(runner, context);
 			}
 		});

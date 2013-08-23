@@ -20,7 +20,6 @@ h2. Object Methods
 
 table(grid).
 |_.Name |_.Scope |_.Comments |
-| newObject | static | Creates new object instance. |
 | get | public | Returns an object property. Can be overriden in child class to add bebavior. |
 | set | public | Sets an object property. Can be overriden in child class to add bebavior. |
 

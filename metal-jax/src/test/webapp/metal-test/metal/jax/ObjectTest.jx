@@ -26,7 +26,7 @@ function test_getSuperClass() {
 
 //@public
 function test_getName() {
-	assertEquals("test.metal.jax.ObjectTest", this.getClass().getName());
+	assertEquals("metal.jax.ObjectTest", this.getClass().getName());
 }
 
 //@public
@@ -38,7 +38,6 @@ function test_$() {
 //@public
 function test_newObject() {
 	assertEquals(Object, new Object().getClass());
-	assertEquals(Object, Object.newObject().getClass());
 }
 
 //@public

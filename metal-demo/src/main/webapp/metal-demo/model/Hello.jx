@@ -4,13 +4,14 @@
  * @imports Bar
  */
 
-//@static
+//@private
 function parseModel(model) {
+	model = model || this.model;
 	this.set("foo", new Foo(model.foo));
 	Bar.load(model.bar);
 }
 
-//@static
-function initModel(model) {
+//@private
+function initObject(model) {
 	this.set("bar", Bar.find(model.bar));
 }

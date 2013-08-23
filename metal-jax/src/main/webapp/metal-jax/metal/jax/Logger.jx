@@ -10,63 +10,21 @@
  */
 
 //@private
-function initObject(forClass) {
-	var name = forClass.getName();
-	this.forClass = forClass;
-	this.enableInfo = $(name+".info", $("logger.info", "true")) == "true";
-	this.enableWarn = $(name+".warn", $("logger.warn", "true")) == "true";
-	this.enableError = $(name+".error", $("logger.error", "true")) == "true";
-	this.enableDebug = $(name+".debug", $("logger.debug", "false")) == "true";
+function initClass() {
+	this.enableInfo = $("class.info", $("logger.info", "true")) == "true";
+	this.enableWarn = $("class.warn", $("logger.warn", "true")) == "true";
+	this.enableError = $("class.error", $("logger.error", "true")) == "true";
+	this.enableDebug = $("class.debug", $("logger.debug", "false")) == "true";
 }
 
-//@public
-function log(msg) {
-	msg = System.formatText.apply(null, arguments);
+//@static
+function log() {
+	var level = Array.prototype.shift.call(arguments);
+	arguments[0] = this.$(arguments[0], arguments[0]);
+	var msg = System.formatText.apply(null, arguments);
 	if (typeof console != "undefined") {
-		console.log(msg);
-	}
-	return msg;
-}
-
-//@public
-function debug(msg) {
-	msg = System.formatText.apply(null, arguments);
-	if (this.enableDebug && typeof console != "undefined") {
-		var line = formatLine.call(this, "DEBUG", msg);
-		if (typeof console.debug != "undefined") console.debug(line);
-		else console.log(line);
-	}
-	return msg;
-}
-
-//@public
-function error(msg) {
-	msg = System.formatText.apply(null, arguments);
-	if (this.enableError && typeof console != "undefined") {
-		var line = formatLine.call(this, "ERROR", msg);
-		if (typeof console.error != "undefined") console.error(line);
-		else console.log(line);
-	}
-	return msg;
-}
-
-//@public
-function info(msg) {
-	msg = System.formatText.apply(null, arguments);
-	if (this.enableInfo && typeof console != "undefined") {
-		var line = formatLine.call(this, "INFO", msg);
-		if (typeof console.info != "undefined") console.info(line);
-		else console.log(line);
-	}
-	return msg;
-}
-
-//@public
-function warn(msg) {
-	msg = System.formatText.apply(null, arguments);
-	if (this.enableWarn && typeof console != "undefined") {
-		var line = formatLine.call(this, "WARN", msg);
-		if (typeof console.warn != "undefined") console.warn(line);
+		var line = formatLine.call(this, level.toUpperCase(), msg);
+		if (typeof console[level] != "undefined") console[level](line);
 		else console.log(line);
 	}
 	return msg;
@@ -75,7 +33,7 @@ function warn(msg) {
 //@private
 function formatLine(level, msg) {
 	if (typeof msg != "string") return msg;
-	var category = System.parseBaseName(this.forClass.getName());
+	var category = System.parseBaseName(this.getName());
 	return System.formatText("${time} ${level} ${category} - ${msg}", {time:now(), level:level, category:category, msg:msg});
 }
 

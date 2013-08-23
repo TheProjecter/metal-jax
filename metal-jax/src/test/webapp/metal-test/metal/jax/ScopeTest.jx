@@ -1,7 +1,7 @@
 /**
  * @test ScopeTest
- * @imports ScopeBase
- * @imports ScopeObject
+ * @imports metal.jax.test.ScopeBase
+ * @imports metal.jax.test.ScopeObject
  */
 
 //@public

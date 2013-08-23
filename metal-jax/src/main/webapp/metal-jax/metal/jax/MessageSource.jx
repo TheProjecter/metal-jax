@@ -1,11 +1,16 @@
 /**
  * @resource MessageSource
  * 
- * @setting model.module=messages
- * @setting model.type=properties
+ * @setting resource.module=messages
+ * @setting resource.type=properties
  */
 
-//@static
-function parseModel(value) {
-	this.value = value;
+//@private
+function initResource(name, scope) {
+	var messages = this.findResource(name, true);
+	for (var key in messages) {
+		if (!(key in scope.$setting)) {
+			scope.$setting[key] = messages[key];
+		}
+	}
 }

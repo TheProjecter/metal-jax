@@ -6,7 +6,7 @@
 //@private
 var $count = 0;
 
-//@static
+//@protected
 function initNode(node) {
 	this.nodes = this.nodes || {};
 	this.inputs = this.inputs || {};
@@ -33,7 +33,7 @@ function initNode(node) {
 		this.nodes[node.name] = node;
 		break;
 	default:
-		return $super.$static.initNode.call(this, node);
+		return $super.$protected.initNode.call(this, node);
 	}
 }
 

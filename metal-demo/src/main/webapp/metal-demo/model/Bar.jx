@@ -1,9 +1,8 @@
 /**
  * @resource Bar
- * @setting model.type=txt
+ * @setting resource.type=txt
  */
 
-//@static
-function parseModel(value) {
-	this.value = value;
+//@private
+function parseModel(model) {
 }

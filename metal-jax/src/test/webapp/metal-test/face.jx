@@ -1,0 +1,25 @@
+/**
+ * @context face
+ * @imports metal.jax.Face
+ * @imports metal.jax.System
+ * @source base=${baseURL} module=${baseModule} includes=[.]test[.]
+ * @source base=${baseURL} module=${baseModule} includes=Test$
+ */
+
+//@private
+function initClass() {
+	var bootClass = $("bootClass");
+	if (bootClass) {
+		Face.loadResource(bootClass);
+	}
+}
+
+//@private
+function initContext() {
+	var bootClass = $("bootClass");
+	if (bootClass) {
+		System.document.body.appendChild(Face.fromResource(bootClass).node);
+	} else {
+		new Face(System.document.body);
+	}
+}

@@ -1,7 +1,6 @@
 /**
- * @class SystemTest
- * @extends meta4.test.TestCase
- * @imports meta4.core.System
+ * @test SystemTest
+ * @imports metal.jax.System
  */
 
 //@public
@@ -10,7 +9,7 @@ function test_callback() {
 	var callback = System.callback(function() {
 		return this;
 	});
-	assertEquals(System.context, callback());
+	assertEquals(System.window, callback());
 	assertEquals(object, callback.call(object));
 	
 	callback = System.callback.call(object, function() {
@@ -22,7 +21,7 @@ function test_callback() {
 
 //@public
 function test_loadback() {
-	var source = { url:$("baseURL") };
+	var source = { base:$("bootURL"), module:$("bootModule"), path:"metal/jax.jx" };
 	System.loadback(source, function(source) {
 		assertEquals(true, source.content.length>0, "test_loadback");
 	});
@@ -52,43 +51,43 @@ function test_formatText() {
 //@public
 function test_resolvePath() {
 	var base = "http://host/base/root";
-	assertEquals("http://host/hello/world", System.resolvePath(base, "http://host/hello/world"));
-	assertEquals("http://host/hello/world", System.resolvePath(base, "/hello/world"));
-	assertEquals("http://host/base/hello/world", System.resolvePath(base, "hello/world"));
-	assertEquals("http://host/base", System.resolvePath(base, ""));
+	assertEquals("http://host/hello/world", System.resolvePath("http://host/hello/world", base));
+	assertEquals("http://host/hello/world", System.resolvePath("/hello/world", base));
+	assertEquals("http://host/base/hello/world", System.resolvePath("hello/world", base));
+	assertEquals("http://host/base", System.resolvePath("", base));
 }
 
 //@public
-function test_splicePath() {
+function test_splitPath() {
 	var path = "a/b/c/d/e";
 	
-	assertEquals("a/b/c/d/e", System.splicePath(path, -2, 0));
-	assertEquals("a/b/c/d/e", System.splicePath(path, -1, 0));
-	assertEquals("a/b/c/d/e", System.splicePath(path, 0, 0));
-	assertEquals("a/b/c/d/e", System.splicePath(path, 1, 0));
-	assertEquals("a/b/c/d/e", System.splicePath(path, 2, 0));
+	assertEquals("a/b/c/d/e", System.splitPath(path, -2, 0));
+	assertEquals("a/b/c/d/e", System.splitPath(path, -1, 0));
+	assertEquals("a/b/c/d/e", System.splitPath(path, 0, 0));
+	assertEquals("a/b/c/d/e", System.splitPath(path, 1, 0));
+	assertEquals("a/b/c/d/e", System.splitPath(path, 2, 0));
 	
-	assertEquals("d/e", System.splicePath(path, -2, -2));
-	assertEquals("e", System.splicePath(path, -1, -2));
-	assertEquals("a/b", System.splicePath(path, 0, -2));
-	assertEquals("b/c", System.splicePath(path, 1, -2));
-	assertEquals("c/d", System.splicePath(path, 2, -2));
+	assertEquals("a/b/c", System.splitPath(path, -2, -2));
+	assertEquals("a/b/c/d", System.splitPath(path, -1, -2));
+	assertEquals("c/d/e", System.splitPath(path, 0, -2));
+	assertEquals("a/d/e", System.splitPath(path, 1, -2));
+	assertEquals("a/b/e", System.splitPath(path, 2, -2));
 	
-	assertEquals("d", System.splicePath(path, -2, -1));
-	assertEquals("e", System.splicePath(path, -1, -1));
-	assertEquals("a", System.splicePath(path, 0, -1));
-	assertEquals("b", System.splicePath(path, 1, -1));
-	assertEquals("c", System.splicePath(path, 2, -1));
+	assertEquals("a/b/c/e", System.splitPath(path, -2, -1));
+	assertEquals("a/b/c/d", System.splitPath(path, -1, -1));
+	assertEquals("b/c/d/e", System.splitPath(path, 0, -1));
+	assertEquals("a/c/d/e", System.splitPath(path, 1, -1));
+	assertEquals("a/b/d/e", System.splitPath(path, 2, -1));
 	
-	assertEquals("a/b/c/e", System.splicePath(path, -2, 1));
-	assertEquals("a/b/c/d", System.splicePath(path, -1, 1));
-	assertEquals("b/c/d/e", System.splicePath(path, 0, 1));
-	assertEquals("a/c/d/e", System.splicePath(path, 1, 1));
-	assertEquals("a/b/d/e", System.splicePath(path, 2, 1));
+	assertEquals("d", System.splitPath(path, -2, 1));
+	assertEquals("e", System.splitPath(path, -1, 1));
+	assertEquals("a", System.splitPath(path, 0, 1));
+	assertEquals("b", System.splitPath(path, 1, 1));
+	assertEquals("c", System.splitPath(path, 2, 1));
 	
-	assertEquals("a/b/c", System.splicePath(path, -2, 2));
-	assertEquals("a/b/c/d", System.splicePath(path, -1, 2));
-	assertEquals("c/d/e", System.splicePath(path, 0, 2));
-	assertEquals("a/d/e", System.splicePath(path, 1, 2));
-	assertEquals("a/b/e", System.splicePath(path, 2, 2));
+	assertEquals("d/e", System.splitPath(path, -2, 2));
+	assertEquals("e", System.splitPath(path, -1, 2));
+	assertEquals("a/b", System.splitPath(path, 0, 2));
+	assertEquals("b/c", System.splitPath(path, 1, 2));
+	assertEquals("c/d", System.splitPath(path, 2, 2));
 }

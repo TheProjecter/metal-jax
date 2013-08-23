@@ -1,11 +1,11 @@
 /**
  * @class Resource
- * @imports ModelLoader
+ * @imports Context
  * 
- * @setting model.base=${baseURL}
- * @setting model.module=metal-model
- * @setting model.type=xml
- * @setting model.delimiter=\t
+ * @setting resource.base=
+ * @setting resource.module=
+ * @setting resource.type=
+ * @setting resource.content.delimiter=
  * 
  * @copyright Jay Tang 2012
  * All rights reserved. This program and the accompanying materials
@@ -16,26 +16,16 @@
 
 //@private
 function initClass() {
-	$static.load = ModelLoader.load;
-	$static.find = ModelLoader.find;
+	$static.loadResource = Context.loadResource;
+	$static.findResource = Context.findResource;
 }
 
 //@private
-function initObject(value) {
-	this.value = value;
+function initResource(name, scope) {
+	scope[name] = this.fromResource(name);
 }
 
-//@public
-function get(name) {
-	return this.value ? this.value.get(name) : $super.get.call(this, name);
-}
-
-//@public
-function set(name, value) {
-	return this.value ? this.value.set(name, value) : $super.set.call(this, name, value);
-}
-
-//@public
-function serialize() {
-	return "<greeting>hello</greeting>";
+//@static
+function fromResource(name) {
+	return new this(this.findResource(name, true));
 }

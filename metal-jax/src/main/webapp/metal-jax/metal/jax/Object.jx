@@ -11,16 +11,9 @@
 
 //@private
 function initClass() {
-	$static.$ = Object.$ = Context.$;
-	$static.initObject = Object.initObject = Context.initObject;
-	$static.extendsClass = Object.extendsClass = Context.extendsClass;
-}
-
-//@static
-function newObject() {
-	var object = new this(this);
-	initObject.call(this, object, arguments);
-	return object;
+	$static.$ = Context.$;
+	$static.extendsClass = Context.extendsClass;
+	$protected.log = Context.log;
 }
 
 //@public

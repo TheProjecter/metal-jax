@@ -249,7 +249,6 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/ma
 								<resources>
 									<resource>
 										<directory>${basedir}/src/main/webapp</directory>
-										<filtering>true</filtering>
 									</resource>
 								</resources>
 							</configuration>
@@ -265,7 +264,6 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/ma
 								<resources>
 									<resource>
 										<directory>${basedir}/src/test/webapp</directory>
-										<filtering>true</filtering>
 									</resource>
 								</resources>
 							</configuration>

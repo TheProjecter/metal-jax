@@ -1,10 +1,707 @@
+//@ sourceURL=metal.jax.Context
 /**
- * @class Context
- * @extends ClassLoader
- * 
  * @copyright Jay Tang 2012
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  */
+$public.getClass = function getClass() { return Context; };
+$static.getSuperClass = function getSuperClass() { return null; };
+$static.getContext = function getContext() { return $context; };
+$static.getName = function getName() { return "metal.jax.Context"; };
+$private.Context = function Context() {};
+$imports.Object = "metal.jax.Object";
+$imports.System = "metal.jax.System";
+$imports.Logger = "metal.jax.Logger";
+$imports.MessageSource = "metal.jax.MessageSource";
+$requires["metal-jax"] = "metal.jax.MessageSource";
+
+$private.initClass_ = function initClass_() {
+	this.$source.classes[this.$source.name] = this.$source;
+	this._callbacks = [];
+	this._busyCount = 0;
+	this._pendingCount = 0;
+	this._pendingResources = [];
+	this._pendingClasses = [];
+	this._pendingClasses.push(this.$source);
+	flush();
+};
+
+$public.initObject = function initObject(object, args) {
+	if (args && args.length == 1 && object && args[0] == object.getClass());
+	else if (object) callSuper("initObject", object.getClass(), object, args);
+	return object;
+};
+
+$private.callSuper = function callSuper(callback, clazz, target, args, once) {
+	if (!once && clazz.getSuperClass()) {
+		callSuper(callback, clazz.getSuperClass(), target, args, once);
+	}
+	var source = getClassHandle(clazz);
+	if (source.scope[callback]) {
+		if (args) source.scope[callback].apply(target, args);
+		else source.scope[callback].apply(target);
+	} else if (once && clazz.getSuperClass()) {
+		callSuper(callback, clazz.getSuperClass(), target, args, once);
+	}
+};
+
+$static.extendsClass = function extendsClass(that) {
+	var clazz = this;
+	while (clazz && that) {
+		if (clazz == that || clazz.getName() == that) return true;
+		clazz = clazz.getSuperClass();
+	}
+};
+
+$static.$ = function $(name, value) {
+	var clazz = this;
+	while (clazz) {
+		var source = getClassHandle(clazz);
+		if (name in source.scope.$setting) {
+			return source.scope.$setting[name];
+		}
+		clazz = clazz.getSuperClass();
+		if (clazz && this == this.getContext().getClass()) {
+			clazz = clazz.getContext().getClass();
+		}
+	}
+	if (this != this.getContext().getClass()) {
+		return arguments.callee.call(this.getContext().getClass(), name, value);
+	}
+	return value;
+};
+
+$static.log = function log() {
+	if ($private.Logger) {
+		return Logger.log.apply(this.$class||this, arguments);
+	}
+};
+
+$private.getResourceHolder = function getResourceHolder(clazz) {
+	var source = getClassHandle(clazz);
+	if (!source.resources) source.resources = {};
+	return source.resources;
+};
+
+$private.putResourceHandle = function putResourceHandle(source) {
+	source = (arguments.length == 1) ? source : initResourceHandle.apply(this, arguments);
+	getResourceHolder(source.$class)[source.name] = source;
+	return source;
+};
+
+$private.initResourceHandle = function initResourceHandle(name, clazz) {
+	var source = { "$class": clazz };
+	source.name = name;
+	source.base = clazz.$("resource.base") || $("baseURL");
+	source.module = clazz.$("resource.module") || $("baseModule");
+	source.resourceType = clazz.$("resource.type") || $("faceType");
+	source.path = source.name.split(".").join("/").concat(".", source.resourceType);
+	return source;
+};
+
+$private.getClassHandle = function getClassHandle(clazz) {
+	var name = (arguments.length == 1) ? clazz.getName() : arguments[0];
+	var context = (arguments.length == 1) ? clazz.getContext() : arguments[1];
+	return $source.classes[context.getClass().getName()].classes[name];
+};
+
+$private.putClassHandle = function putClassHandle(source) {
+	source = (arguments.length == 1) ? source : initClassHandle.apply(this, arguments);
+	$source.classes[source.$context.getClass().getName()].classes[source.name] = source;
+	if (source.stereotype == "context") {
+		$source.classes[source.name] = source;
+	}
+	return source;
+};
+
+$private.initClassHandle = function initClassHandle(name, context) {
+	name = parseSourceName(name);
+	var setting = findSourceSetting(name, context);
+	var source = { "$context": setting ? setting.$context : context };
+	source.name = name;
+	source.base = setting && setting.base || $("baseURL");
+	source.module = setting && setting.module || $("baseModule");
+	source.resourceType = $("classType");
+	source.path = source.name.split(".").join("/").concat(".", source.resourceType);
+	return source;
+};
+
+$private.findClassHandle = function findClassHandle(name, context) {
+	name = parseSourceName(name);
+	var setting = findSourceSetting(name, context);
+	return getClassHandle(name, setting ? setting.$context : context);
+};
+
+$private.findSourceSetting = function findSourceSetting(name, context) {
+	var clazz = context.getClass();
+	while (clazz) {
+		var settings = getClassHandle(clazz).setting["source"];
+		for (var i = 0; i < settings.length; i++) {
+			var setting = settings[i];
+			if (setting["includes"]) {
+				if (setting["includes"].test(name)) {
+					if (!(setting["excludes"] && setting["excludes"].test(name))) {
+						return setting;
+					}
+				}
+			} else if (setting["excludes"]) {
+				if (!setting["excludes"].test(name)) {
+					return setting;
+				}
+			}
+		}
+		clazz = clazz.getSuperClass();
+		if (clazz) clazz = clazz.getContext().getClass();
+	}
+};
+
+$private.findStereotypeSetting = function findStereotypeSetting(type, context) {
+	var clazz = context.getClass();
+	while (clazz) {
+		var settings = getClassHandle(clazz).setting["stereotype"];
+		for (var i = 0; i < settings.length; i++) {
+			var setting = settings[i];
+			if (setting.type == type) {
+				return setting;
+			}
+		}
+		clazz = clazz.getSuperClass();
+		if (clazz) clazz = clazz.getContext().getClass();
+	}
+};
+
+$static.findResource = function findResource(name, positive) {
+	if (!name) return;
+	var source = getResourceHolder(this)[name];
+	if (source) {
+		if (!source.error) {
+			return source.model || source.content;
+		} else {
+			var msg = log("error", "resource '${name}:${resourceType}' was not loaded: ${error}", source);
+			if (positive) {
+				System.throwError(msg);
+			}
+		}
+	}
+};
+
+$static.loadResource = function loadResource(name, callback) {
+	try {
+		if (!name || getResourceHolder(this)[name]) return;
+		_pendingCount++;
+		var source = putResourceHandle(name, this);
+		log("debug", "request to load resource '${name}:${resourceType}'", source);
+		System.loadback(source, handleSource);
+	} catch (ex) {
+		_pendingCount--;
+		source.error = ex.message;
+		log("error", "failed to load resource '${name}:${resourceType}': ${error}", source);
+	} finally {
+		waitFor(callback);
+	}
+};
+
+$public.findClass = function findClass(name, positive) {
+	if (!name) return;
+	var source = findClassHandle(name, this);
+	if (source) {
+		if (!source.error) {
+			return source.$class;
+		} else {
+			var msg = log("error", "class '${name}' was not loaded: ${error}", source);
+			if (positive) {
+				System.throwError(msg);
+			}
+		}
+	}
+};
+
+$public.loadClass = function loadClass(name, callback) {
+	try {
+		if (!name || findClassHandle(name, this)) return;
+		_pendingCount++;
+		var source = putClassHandle(name, this);
+		log("debug", "request to load class '${name}'", source);
+		loadback(source, handleSource);
+	} catch (ex) {
+		_pendingCount--;
+		source.error = ex.message;
+		log("error", "failed to load class '${name}': ${error}", source);
+	} finally {
+		waitFor(callback);
+	}
+};
+
+$private.waitFor = function waitFor(callback) {
+	if (!callback) return;
+	if (_pendingCount) {
+		_callbacks.push(callback);
+	} else {
+		callback();
+	}
+};
+
+$private.handleSource = function handleSource(source) {
+	if (source.content) {
+		log("debug", "response for '${name}:${resourceType}' from ${url}", source);
+		try {
+			if (source.$class) {
+				parseResource(source);
+			} else {
+				parseSource(source);
+			}
+		} catch (ex) {
+			source.error = ex.message;
+			log("error", "failed to parse '${name}:${resourceType}' from ${url}: ${error}", source);
+		}
+	} else {
+		if (!source.error) source.error = "empty content";
+		log("error", "failed to load '${name}:${resourceType}' from ${url}: ${error}", source);
+	}
+	if (source.status < 100) {
+		//error
+	} else {
+		_pendingCount--;
+		flush();
+	}
+};
+
+$private.parseResource = function parseResource(source) {
+	switch (source.resourceType) {
+	case "json":
+		source.model = System.parseJSONFromText(source.content);
+		break;
+	case "xml":
+		source.model = System.parseJSONFromXML(source.content.documentElement);
+		break;
+	case "html":
+		source.model = System.parseHTML(source.content);
+		break;
+	case "csv":
+		source.model = System.parseCSV(source.content, source.$class.$("resource.content.delimiter", "\t"));
+		break;
+	case "properties":
+		source.model = System.parseProperties(source.content);
+		break;
+	}
+	_pendingResources.push(source);
+	callSuper("parseModel", source.$class, source, null, true);
+	if (source.model) delete source.content;
+	source.flushStatus = "endNotifyClass";
+};
+
+$private._classHeader_   = "//@ sourceURL=${0}\n";
+$private._getClass_      = "$public.getClass = function getClass() { return ${0}; };\n";
+$private._getSuperClass_ = "$static.getSuperClass = function getSuperClass() { return ${0}; };\n";
+$private._getContext_    = "$static.getContext = function getContext() { return $context; };\n";
+$private._getName_       = "$static.getName = function getName() { return \"${0}\"; };\n";
+$private._constructor_   = "$private.${0} = function ${0}() { $context.initObject(this, arguments); };\n";
+$private._memberRE_      = /^\/\/@(\S+)\s+(function|var)\s+([A-Za-z0-9_$]+)/gm;
+$private._classFooter_   = "\n//@ sourceURL=${0}\n";
+$private.parseSource = function parseSource(source) {
+	parseModel(source);
+	source.content = formatText(_classHeader_, source.name).concat(
+		formatText(_getClass_, source.baseName),
+		formatText(_getSuperClass_, source.superBase),
+		_getContext_,
+		formatText(_getName_, source.name),
+		formatText(_constructor_, source.baseName),
+		source.content ? source.content.replace(_memberRE_, formatMember) : "",
+		formatText(_classFooter_, source.name)
+	);
+	compile.call(source);
+	_pendingClasses.push(source);
+	source.scope.$context = source.$context;
+	source.$context.loadClass(source.scope.$imports[source.superBase]);
+	if (source.stereotype != "context") {
+		for (var name in source.scope.$imports) {
+			source.$context.loadClass(source.scope.$imports[name]);
+		}
+	}
+};
+
+$private._classHeaderRE_ = /^\s*\/\*\*([\S\s]*?)\*\//;
+$private._classSettingRE_ = /@(setting|source|stereotype)[\t ]+([\S\t ]*\S+)[\t ]*$|@([a-zA-Z]+)[\t ]+(\S+)[\t ]*([\S\t ]+)?[\t ]*$/gm;
+$private.parseModel = function parseModel(source) {
+	source.scope = { $public:{}, $protected:{}, $static:{}, $imports:{}, $requires:{}, $setting:{} };
+	var match = _classHeaderRE_.exec(source.content);
+	if (match) {
+		source.content = source.content.substring(match[0].length);
+		var header = match[1];
+		while (match = _classSettingRE_.exec(header)) {
+			var settingTag = match[1]||match[3], name = match[2]||match[4], value = match[5];
+			if (!settingTag || !name) continue;
+			switch (settingTag) {
+			case "extends":
+				name = parseSourceName(name, source.name);
+				value = parseBaseName(name, value);
+				source.scope.$imports[value] = name;
+				source.superBase = source.superBase || value;
+				break;
+			case "imports":
+				name = parseSourceName(name, source.name);
+				value = parseBaseName(name, value);
+				source.scope.$imports[value] = name;
+				break;
+			case "requires":
+				name = parseSourceName(name, source.name);
+				value = formatText(value||name, source.$context.getClass());
+				source.scope.$imports[parseBaseName(name)] = name;
+				source.scope.$requires[value] = name;
+				break;
+			case "setting":
+				parseSetting(source.scope.$setting, match);
+				break;
+			case "source":
+			case "stereotype":
+				if (source.stereotype == "context") {
+					source.setting[settingTag].push(parseSetting({}, match));
+				}
+				break;
+			case "class":
+			case "context":
+			case "resource":
+			default:
+				if (source.stereotype) break;
+				source.stereotype = settingTag;
+				if (source.name != parseSourceName(name, source.name)) {
+					System.throwError("incorrect ${stereotype} name declared: ${name}", source);
+				}
+				if (source.stereotype == "context") {
+					source.classes = {};
+					source.setting = { source:[], stereotype:[] };
+				}
+				break;
+			}
+		}
+	}
+	source.stereotype = source.stereotype || "class";
+	source.baseName = parseBaseName(source.name);
+	if (!source.superBase && source.name != $imports.Object) {
+		var setting = findStereotypeSetting(source.stereotype, source.$context);
+		var superName = setting && setting["base"] || $imports.Object;
+		source.superBase = parseBaseName(superName);
+		source.scope.$imports[source.superBase] = superName;
+	}
+	if (!source.superBase || source.name == $imports.Object) {
+		source.superBase = "null";
+	}
+};
+
+$static.parseSourceName = function parseSourceName(name, base) {
+	var parts; base = base || "";
+	if (name.indexOf(".") < 0 && base.indexOf(".") > 0) {
+		parts = base.split(".");
+		parts[parts.length-1] = name;
+		name = parts.join(".");
+	}
+	if (name.charAt(0) == ".") name = name.substring(1);
+	return name;
+};
+
+$static.parseBaseName = function parseBaseName(name, value) {
+	return value || splitPath(name, -1, 1, ".") || "";
+};
+
+$private._settingRE_ = /([^=\t ]+)=(.*)/;
+$private._settingsRE_ = /([^=\t ]+)=(\S+)/g;
+$private.parseSetting = function parseSetting(setting, match) {
+	var input = match[0], settingTag = match[1], content = match[2], found;
+	switch (settingTag) {
+	case "setting":
+		if (match = _settingRE_.exec(content)) {
+			setting[match[1]] = match[2];
+			found = true;
+		}
+		break;
+	case "source":
+	case "stereotype":
+		while (match = _settingsRE_.exec(content)) {
+			setting[match[1]] = match[2];
+			found = true;
+		}
+		break;
+	}
+	if (!found) {
+		System.throwError("incorrect ${0} declared: ${1}", settingTag, input);
+	}
+	return setting;
+};
+
+$private._members_ = {
+	"var": "$${0}.${2}",
+	"function": "$${0}.${2} = ${1} ${2}"
+};
+$private.formatMember = function formatMember(match, memberTag, memberType, name) {
+	return (memberType in _members_) ? formatText(_members_[memberType], memberTag, memberType, name) : match;
+};
+
+$private._NULL_ = {};
+$private._formatRE_ = /\$\{([^\s\}:]+)(:[^\}]*)?\}/g;
+$static.formatText = function formatText() {
+	var args = arguments;
+	var text = Array.prototype.shift.call(arguments);
+	if (typeof text != "string" || text.indexOf("${") < 0) return text;
+	var argType = typeof args[0];
+	return text.replace(_formatRE_, function(match, name, value) {
+		var result = _NULL_;
+		if (argType != "object" && argType != "function" || args.length > 1) {
+			var idx = parseInt(name);
+			if (idx in args) return args[idx];
+		} else if (argType == "object") {
+			if (name in args[0]) return args[0][name];
+		} else if (argType == "function") {
+			result = args[0].$(name, _NULL_);
+		}
+		return result != _NULL_ ? result : value ? value.substring(1) : match;
+	});
+};
+
+$private.flush = function flush() {
+	for (var i = 0; i < _pendingClasses.length; i++) {
+		if (_pendingCount) return;
+		flush_initClass(_pendingClasses[i]);
+	}
+	for (var i = 0; i < _pendingClasses.length; i++) {
+		if (_pendingCount) return;
+		flush_notifyClass(_pendingClasses[i]);
+	}
+	for (var i = 0; i < _pendingClasses.length; i++) {
+		if (_pendingCount) return;
+		flush_loadResource(_pendingClasses[i], _pendingClasses[i].scope.$requires);
+	}
+	for (var i = 0; i < _pendingResources.length; i++) {
+		if (_pendingCount) return;
+		flush_loadResource(_pendingResources[i], _pendingResources[i].$requires);
+	}
+	for (var i = 0; i < _pendingResources.length; i++) {
+		if (_pendingCount) return;
+		flush_initResource(_pendingResources[i]);
+	}
+	for (var i = 0; i < _pendingClasses.length; i++) {
+		if (_pendingCount) return;
+		flush_initContext(_pendingClasses[i]);
+	}
+	if (_busyCount) return;
+	while (_callbacks.length) {
+		if (_pendingCount) return;
+		_callbacks.shift()();
+	}
+	for (var i = 0; i < _pendingClasses.length; i++) {
+		if (_pendingCount) return;
+		flush_notifyContext(_pendingClasses[i]);
+	}
+	for (var i = 0; i < _pendingResources.length; ) {
+		if (_pendingResources[i].flushStatus == "endInitResource") {
+			_pendingResources.splice(i, 1);
+		} else i++;
+	}
+	for (var i = 0; i < _pendingClasses.length; ) {
+		if (_pendingClasses[i].flushStatus == "endNotifyContext") {
+			_pendingClasses.splice(i, 1);
+		} else i++;
+	}
+};
+
+$private.flush_initClass = function flush_initClass(source) {
+	if (typeof source.flushStatus == "undefined") {
+		source.flushStatus = "beginInitClass";
+		_busyCount++;
+		if (source.$context) {
+			source.scope[source.superBase] = source.$context.findClass(source.scope.$imports[source.superBase], true);
+			if (source.stereotype != "context") {
+				for (var name in source.scope.$imports) {
+					source.scope[name] = source.$context.findClass(source.scope.$imports[name], true);
+				}
+			}
+		}
+		var superSource;
+		var superClass = source.scope[source.superBase];
+		if (superClass) {
+			var superName = source.scope.$imports[source.superBase];
+			superSource = findClassHandle(superName, source.$context);
+			flush_initClass(superSource);
+		}
+		if (source.stereotype != "context") {
+			for (var name in source.scope.$imports) {
+				flush_initClass(findClassHandle(source.scope.$imports[name], source.$context));
+			}
+		}
+		initClassMembers(source, superSource);
+		initClassSettings(source);
+		if (source.stereotype == "context") {
+			for (var name in source.scope.$imports) {
+				source.$context.loadClass(source.scope.$imports[name]);
+			}
+		}
+		_busyCount--;
+		source.flushStatus = "endInitClass";
+		if (source.stereotype != "context") {
+			flush_notifyClass(source);
+		}
+	}
+};
+
+$private.flush_notifyClass = function flush_notifyClass(source) {
+	if (source.flushStatus == "endInitClass") {
+		source.flushStatus = "beginNotifyClass";
+		_busyCount++;
+		if (source.stereotype == "context") {
+			for (var name in source.scope.$imports) {
+				source.scope[name] = source.$context.findClass(source.scope.$imports[name], true);
+			}
+			for (var name in source.scope.$imports) {
+				flush_notifyClass(getClassHandle(source.scope[name]));
+			}
+		}
+		if (source.scope.initClass) {
+			source.scope.initClass();
+		}
+		_busyCount--;
+		source.flushStatus = "endNotifyClass";
+	}
+};
+
+$private.flush_loadResource = function flush_loadResource(source, requires) {
+	if (source.flushStatus == "endNotifyClass") {
+		source.flushStatus = "beginLoadResource";
+		_busyCount++;
+		if (requires) {
+			for (var name in requires) {
+				source.$class.getContext().findClass(requires[name], true).loadResource(name);
+			}
+		}
+		_busyCount--;
+		source.flushStatus = "endLoadResource";
+	}
+};
+
+$private.flush_initResource = function flush_initResource(source) {
+	if (source.flushStatus == "endLoadResource") {
+		source.flushStatus = "beginInitResource";
+		_busyCount++;
+		if (source.$requires) {
+			for (var name in source.$requires) {
+				var clazz = source.$class.getContext().findClass(source.$requires[name], true);
+				flush_initResource(getResourceHolder(clazz)[name]);
+			}
+		}
+		callSuper("initModel", source.$class, source, null, true);
+		_busyCount--;
+		source.flushStatus = "endInitResource";
+	}
+};
+
+$private.flush_initContext = function flush_initContext(source) {
+	if (source.flushStatus == "endLoadResource") {
+		source.flushStatus = "beginInitContext";
+		_busyCount++;
+		for (var name in source.scope.$imports) {
+			flush_initContext(getClassHandle(source.scope[name]));
+		}
+		for (var name in source.scope.$requires) {
+			var clazz = source.$context.findClass(source.scope.$requires[name], true);
+			if (source.stereotype == "resource" && clazz.extendsClass(source.$class)) continue;
+			callSuper("initResource", clazz, clazz, [name, source.scope], true);
+		}
+		if (source.stereotype == "context") {
+			if (source.scope.initObject) {
+				source.scope.initObject.call(source.$context);
+			}
+		}
+		_busyCount--;
+		source.flushStatus = "endInitContext";
+	}
+};
+
+$private.flush_notifyContext = function flush_notifyContext(source) {
+	if (source.flushStatus == "endInitContext") {
+		source.flushStatus = "beginNotifyContext";
+		_busyCount++;
+		for (var name in source.scope.$imports) {
+			flush_notifyContext(getClassHandle(source.scope[name]));
+		}
+		if (source.stereotype == "context" && source.scope.initContext) {
+			source.scope.initContext.call(source.$context);
+		}
+		_busyCount--;
+		source.flushStatus = "endNotifyContext";
+	}
+};
+
+$private.initClassMembers = function initClassMembers(source, superSource) {
+	if (superSource) {
+		source.scope.$super = copyMember({}, superSource.scope.$public);
+		source.scope.$super.$static = copyMember({}, superSource.scope.$static);
+		source.scope.$super.$protected = copyMember({}, superSource.scope.$protected);
+		copyMember(source.scope.$protected, source.scope.$super.$protected);
+		copyMember(source.scope.$static, source.scope.$super.$static);
+		source.$class.prototype = new superSource.$class(superSource.$class);
+		copyMember(source.$class.prototype, source.scope.$super);
+	}
+	copyMember(source.$class, source.scope.$static);
+	copyMember(source.$class.prototype, source.scope.$public, true);
+	copyMember(source.scope.$public, source.scope.$super);
+	if (source.stereotype == "context") {
+		source.$context = source.scope.$context = new source.$class(source.$class);
+		putClassHandle(source);
+	}
+};
+
+$private.initClassSettings = function initClassSettings(source) {
+	initSetting(source.scope.$setting, source.$class);
+	if (source.stereotype == "context") {
+		var settings = source.setting["source"];
+		for (var i = 0; i < settings.length; i++) {
+			var setting = settings[i];
+			initSetting(setting, source.$class);
+			if (setting["includes"]) {
+				setting["includes"] = new RegExp(setting["includes"]);
+			}
+			if (setting["excludes"]) {
+				setting["excludes"] = new RegExp(setting["excludes"]);
+			}
+			setting.$context = source.$context;
+		}
+		var settings = source.setting["stereotype"];
+		for (var i = 0; i < settings.length; i++) {
+			var setting = settings[i];
+			initSetting(setting, source.$class);
+			setting.$context = source.$context;
+		}
+	}
+};
+
+$private.copyMember = function copyMember(target, source, override) {
+	if (source && target) {
+		for (var name in source) {
+			switch (name) {
+			case "$class":
+			case "$super":
+			case "$private":
+			case "$static":
+			case "$public":
+			case "$protected":
+				continue;
+			}
+			if (override) {
+				target[name] = source[name];
+			} else {
+				target[name] = target[name] || source[name];
+			}
+		}
+	}
+	return target;
+};
+
+$private.initSetting = function initSetting(setting, clazz) {
+	if (setting) {
+		for (var name in setting) {
+			setting[name] = formatText(setting[name], clazz);
+		}
+	}
+};
+
+//@ sourceURL=metal.jax.Context

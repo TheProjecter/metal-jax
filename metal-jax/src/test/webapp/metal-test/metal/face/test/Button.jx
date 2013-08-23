@@ -1,0 +1,9 @@
+/**
+ * @face Button
+ */
+
+//@private
+function initObject(node) {
+	this.nodes.button;
+	this.nodes.label.innerHTML += " - Button.jx";
+}

@@ -17,7 +17,7 @@ The boot context accomplishes the following:
 
 The boot context handles source loading across domain. A few bootstrapping methods are published to class loader scope for reuse.
 
-See also: "@metal.jax.ClassLoader@":metal.jax.ClassLoader.html
+See also: "@metal.jax.Context@":metal.jax.Context.html
 
 h1. Detail
 
@@ -49,7 +49,7 @@ Source properties are source parsing results for class/context creation.
 table(grid).
 |_.Name |_.Value |_.Comments |
 | stereotype | @context@ | Type token for context creation. |
-| name | @metal.jax.ClassLoader@ | Identifies source as well as class/context. |
+| name | @metal.jax.Context@ | Identifies source as well as class/context. |
 | scope | $public, $protected, $static, $imports, $requires, $setting | Private scope variables. |
 | setting | source, stereotype | _More settings_. |
 
@@ -90,8 +90,8 @@ table(grid).
 h2. Bootstrapping Steps
 
 # Parse baseURL and bootURL to initialize settings.
-# Load ClassLoader source.
-# Evaluate source and initialize ClassLoader as a class, including its dependency classes.
+# Load Context source.
+# Evaluate source and initialize Context as a class, including its dependency classes.
 # Load and initialize base context.
 ## Load base context as a class.
 ## Parse base document for classes.

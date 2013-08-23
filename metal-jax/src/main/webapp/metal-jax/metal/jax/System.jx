@@ -1,6 +1,6 @@
 /**
  * @class System
- * @extends Context
+ * @imports Context
  * 
  * @copyright Jay Tang 2012
  * All rights reserved. This program and the accompanying materials
@@ -15,6 +15,11 @@ function initClass() {
 	System.document = window.document;
 	System.docHead = window.document.firstChild.firstChild;
 	Array.prototype.indexOf = Array.prototype.indexOf || indexOf;
+	System.splitPath = Context.splitPath;
+	System.resolvePath = Context.resolvePath;
+	System.formatText = Context.formatText;
+	System.parseBaseName = Context.parseBaseName;
+	System.parseSourceName = Context.parseSourceName;
 }
 
 //@static
@@ -75,7 +80,7 @@ function loadSameDomain(source, callback) {
 		if (!request || request.readyState != 4) return;
 		try {
 			if (request.status == 200 || request.status == 0) {
-				source.content = isXML(source) ? request.responseXML.firstChild ?
+				source.content = (source.resourceType == "xml") ? request.responseXML.firstChild ?
 					checkXML(request.responseXML) : parseXML(request.responseText) : request.responseText;
 			} else {
 				source.status = request.status;
@@ -132,7 +137,7 @@ function loadCrossDomain(source, callback) {
 			source.error = response.error;
 		} else {
 			try {
-				source.content = isXML(source) ?
+				source.content = (source.resourceType == "xml") ?
 					parseXML(response.content) : response.content;
 			} catch (ex) {
 				source.error = ex.message;
@@ -288,6 +293,7 @@ function moveHTML(node) {
 //@static
 function clearHTML(node) {
 	while (node.firstChild) node.removeChild(node.firstChild);
+	return node;
 }
 
 //@static
@@ -318,11 +324,6 @@ function checkXML(doc) {
 				error.reason, error.line, error.linepos, content);
 	}
 	return doc;
-}
-
-//@private
-function isXML(source) {
-	return source.type == "xml" || source.contentType == "xml";
 }
 
 //@static

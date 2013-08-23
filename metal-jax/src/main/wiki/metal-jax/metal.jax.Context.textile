@@ -1,12 +1,12 @@
 <link type="text/css" rel="stylesheet" href="../styles/main.css"/>
 
-p(title). Class @metal.jax.ClassLoader@
+p(title). Class @metal.jax.Context@
 
 {toc:style=decimal}
 
 h1. Overview
 
-Class loader is responsible to load/compile class sources.
+Context is responsible to load/compile class sources.
 
 See also: "@metal.jax@":metal.jax.html
 

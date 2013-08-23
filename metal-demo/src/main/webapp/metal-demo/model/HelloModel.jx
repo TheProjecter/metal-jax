@@ -2,10 +2,10 @@
  * @resource HelloModel
  */
 
-//@static
+//@private
 function parseModel(model) {
 }
 
-//@static
-function initModel(model) {
+//@private
+function initObject(model) {
 }

@@ -10,9 +10,9 @@
 	(function() {
 		
 		var $setting = {
-			bootClass: "",
-			baseModule: "",
+			baseModule: ".",
 			baseContext: "base",
+			bootClass: "",
 			crossDomain: "xd",
 			crossTimeout: "3000",
 			classType: "jx",
@@ -20,17 +20,18 @@
 		};
 		var $source = {
 			stereotype: "context",
-			name: "metal.jax.ClassLoader",
-			scope: { $public:{}, $protected:{}, $static:{}, $imports:{}, $requires:{}, $resource:{}, $setting:$setting },
+			name: "metal.jax.Context",
+			baseName: "Context",
+			scope: { $public:{}, $protected:{}, $static:{}, $imports:{}, $requires:{}, $setting:$setting },
+			classes: {},
 			setting: {
 				source: [{ base:"${bootURL}", module:"${bootModule}", includes:"^metal.jax[.]" }],
 				stereotype: [
-					{ type:"class",			"extends":"metal.jax.Object" },
-					{ type:"context",		"extends":"metal.jax.Context" },
-					{ type:"face",			"extends":"metal.jax.Face" },
-					{ type:"${faceType}",	"extends":"metal.jax.Face" },
-					{ type:"resource",		"extends":"metal.jax.Resource" },
-					{ type:"service",		"extends":"metal.jax.Service" }
+					{ type:"class", base:"metal.jax.Object" },
+					{ type:"context", base:"metal.jax.Context" },
+					{ type:"resource", base:"metal.jax.Resource" },
+					{ type:"face", base:"metal.jax.Face" },
+					{ type:"service", base:"metal.jax.Service" }
 				]
 			}
 		};
@@ -39,14 +40,14 @@
 		function main() {
 			parseSetting($setting);
 			if (this[$setting["bootModule"]]) {
-				$source.scope.$logger.info("metal-jax already loaded from '${bootURL}'", $setting);
+				$source.scope.$static.log("info", "metal.jax.init.done", $setting);
 			} else {
 				this[$setting["bootModule"]] = {};
 				waitFor("load", function() {
-					$source.type = $setting["classType"];
 					$source.base = $setting["bootURL"];
 					$source.module = $setting["bootModule"];
-					$source.path = $source.name.split(".").join("/").concat(".", $source.type);
+					$source.resourceType = $setting["classType"];
+					$source.path = $source.name.split(".").join("/").concat(".", $source.resourceType);
 					loadback($source, parseSource);
 				});
 			}
@@ -66,29 +67,27 @@
 			setting["bootModule"] = splitPath(parts[2], -3, 1);
 			setting["bootContext"] = splitPath(parts[2], -2, 2).split(".")[0].split("/").join(".");
 			setting["baseModule"] = parts[3] || setting["baseModule"];
-			setting["baseContext"] = parts[4] || setting["baseContext"];
+			setting["baseContext"] = parts[4] || !parts[3] && !parts[4] && setting["bootClass"] || setting["baseContext"];
 		}
 		
-		function logSetting(logger, setting) {
-			logger.info("metal.jax.init.bootModule", setting);
-			logger.info("metal.jax.init.bootContext", setting);
-			if (setting["baseModule"]) {
-				logger.info("metal.jax.init.baseModule", setting);
+		function logSetting(setting) {
+			$source.scope.$static.log("info", "metal.jax.init.bootModule", setting);
+			$source.scope.$static.log("info", "metal.jax.init.bootContext", setting);
+			if (setting["baseModule"] == ".") {
+				$source.scope.$static.log("warn", "metal.jax.init.baseModule.missing");
 			} else {
-				logger.warn("metal.jax.init.baseModule.missing");
+				$source.scope.$static.log("info", "metal.jax.init.baseModule", setting);
 			}
-			logger.info("metal.jax.init.baseContext", setting);
-			logger.info("metal.jax.init.bootClass", setting);
+			$source.scope.$static.log("info", "metal.jax.init.baseContext", setting);
+			$source.scope.$static.log("info", "metal.jax.init.bootClass", setting);
 		}
 		
 		function parseSource(source) {
 			if (source.content) {
-				$static.call(source);
-				source.holder = {};
-				source.holder[source.name] = source;
-				source.scope.$private.$source = source;
-				source.scope.$private.compile = $static;
-				source.scope.$private.loadback = loadback;
+				$.call(source);
+				source.scope.compile = $;
+				source.scope.$source = source;
+				source.scope.loadback = loadback;
 				source.scope.$static.splitPath = splitPath;
 				source.scope.$static.resolvePath = resolvePath;
 				source.scope.initClass_();
@@ -99,31 +98,12 @@
 		}
 		
 		function initContext() {
-			$source.context.loadClass($setting["baseContext"], function() {
-				var baseContext = $source.context.findClass($setting["baseContext"]);
-				var context = baseContext ? baseContext.getContext() : $source.context;
-				var Face = context.findClass("metal.jax.Face");
-				Face && Face.parseModel.call($source.scope, this.document.body);
-				context.loadClass($setting["bootClass"], function() {
-					var bootClass = context.findClass($setting["bootClass"]);
-					var rootFace = Face && new Face();
-					Face && Face.initModel.call(rootFace, null, [this.document.body]);
-					if (baseContext) {
-						if (baseContext.main) {
-							bootClass = baseContext;
-						} else if (baseContext.extendsClass("metal.jax.Face")) {
-							bootClass = baseContext;
-						}
-					}
-					if (bootClass) {
-						if (bootClass.main) {
-							bootClass.main.call();
-						} else if (bootClass.extendsClass("metal.jax.Face") && !this.document.body.firstChild) {
-							rootFace = new bootClass(this.document.body);
-						}
-					}
-				});
-				logSetting($source.scope.$logger, $setting);
+			$source.$context.loadClass($setting["baseContext"], function() {
+				var baseContext = $source.$context.findClass($setting["baseContext"]);
+				if (baseContext && baseContext.main) {
+					baseContext.main.call();
+				}
+				logSetting($setting);
 			});
 		}
 		
@@ -221,7 +201,7 @@
 					path = _urlRE_.exec(base)[1].concat(path);
 				} else {
 					base = splitPath(base, -1, -1);
-					path = base ? base.concat("/", path) : path;
+					path = base ? path ? base.concat("/", path) : base : path;
 				}
 			}
 			return path;
@@ -242,7 +222,7 @@
 		
 	})();
 	
-	function $static() {
+	function $() {
 		this.scope.$private = this.scope;
 		this.scope.$static.$static = this.scope.$static;
 		this.scope.$static.$public = this.scope.$public;
@@ -258,6 +238,11 @@
 				}
 			}
 		}
+		this.$class = this.scope[this.baseName];
+		this.scope.$class = this.$class;
+		this.scope.$static.$class = this.$class;
+		this.scope.$public.$class = this.$class;
+		this.scope.$protected.$class = this.$class;
 	}
 	
 })();
