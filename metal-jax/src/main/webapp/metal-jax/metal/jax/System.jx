@@ -36,11 +36,6 @@ function callback() {
 }
 
 //@static
-function throwError() {
-	throw Error(System.formatText.apply(this, arguments));
-}
-
-//@static
 function indexOf(item, index) {
 	index = index || 0;
 	for ( ; index < this.length; index++) {
@@ -69,7 +64,7 @@ function loadback(source, callback) {
 		var action = (origin == $("baseOrigin")) ? loadSameDomain : loadCrossDomain;
 		action.call(this, source, callback);
 	} else {
-		System.throwError("invalid URL: ${0}", source.base);
+		throwError("invalid URL: ${0}", source.base);
 	}
 }
 
@@ -94,7 +89,7 @@ function loadSameDomain(source, callback) {
 	try {
 		request.send(requestInput(source));
 	} catch (ex) {
-		System.throwError("failed to load URL: ${0}, error: ${1}", source.url, ex.message);
+		throwError("failed to load URL: ${0}, error: ${1}", source.url, ex.message);
 	}
 }
 
@@ -108,7 +103,7 @@ function requestSameDomain(source, callback) {
 	} else if (typeof ActiveXObject != "undefined") {
 		request = new ActiveXObject("Microsoft.XMLHTTP");
 	} else {
-		System.throwError("XHR not supported");
+		throwError("XHR not supported");
 	}
 	source.url = [source.base, source.module, source.path].join("/");
 	switch (requestMethod(source)) {
@@ -306,7 +301,7 @@ function parseXML(text) {
 		doc.loadXML(text);
 		return checkXML(doc);
 	} else {
-		System.throwError("XML parsing not supported");
+		throwError("XML parsing not supported");
 	}
 }
 
@@ -316,11 +311,11 @@ function checkXML(doc) {
 	if (doc.documentElement.nodeName == "parsererror") {
 		error = doc.documentElement.childNodes[0].data;
 		content = doc.documentElement.childNodes[1].childNodes[0].data;
-		System.throwError("XML Error: ${0}, content: ${1}", error, content);
+		throwError("XML Error: ${0}, content: ${1}", error, content);
 	} else if (doc.parseError && doc.parseError.errorCode) {
 		error = doc.parseError;
 		content = error.srcText;
-		System.throwError("XML Error: ${0}, at line: ${1}, column: ${2}, content: ${3}",
+		throwError("XML Error: ${0}, at line: ${1}, column: ${2}, content: ${3}",
 				error.reason, error.line, error.linepos, content);
 	}
 	return doc;
@@ -333,7 +328,7 @@ function formatXML(doc) {
 	} else if (typeof doc.xml != "undefined") {
 		return doc.xml;
 	} else {
-		System.throwError("XML serialization not supported");
+		throwError("XML serialization not supported");
 	}
 }
 
@@ -355,7 +350,7 @@ function toggleEvent(event, target, callback, positive) {
 				target.detachEvent(event, callback);
 			}
 		} else {
-			System.throwError("event not supported: ${0}", event);
+			throwError("event not supported: ${0}", event);
 		}
 	}
 	return callback;

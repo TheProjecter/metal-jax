@@ -1,5 +1,5 @@
 /**
- * @resource MessageSource
+ * @resource Messages
  * 
  * @setting resource.module=messages
  * @setting resource.type=properties

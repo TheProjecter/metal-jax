@@ -11,14 +11,16 @@ $static.getSuperClass = function getSuperClass() { return null; };
 $static.getContext = function getContext() { return $context; };
 $static.getName = function getName() { return "metal.jax.Context"; };
 $private.Context = function Context() {};
-$imports.Object = "metal.jax.Object";
-$imports.System = "metal.jax.System";
-$imports.Logger = "metal.jax.Logger";
-$imports.MessageSource = "metal.jax.MessageSource";
-$requires["metal-jax"] = "metal.jax.MessageSource";
+$imports["Object"] = "metal.jax.Object";
+$imports["Logger"] = "metal.jax.Logger";
+$imports["System"] = "metal.jax.System";
+$imports["Messages"] = "metal.jax.Messages";
+$requires["metal.jax"] = "metal.jax.Messages";
 
 $private.initClass_ = function initClass_() {
 	this.$source.classes[this.$source.name] = this.$source;
+	this.Logger = null;
+	this.System = null;
 	this._callbacks = [];
 	this._busyCount = 0;
 	this._pendingCount = 0;
@@ -73,9 +75,14 @@ $static.$ = function $(name, value) {
 	return value;
 };
 
+$static.throwError = function throwError(msg) {
+	msg = this.$class.$(msg, msg);
+	throw Error(formatText.apply(null, arguments));
+};
+
 $static.log = function log() {
-	if ($private.Logger) {
-		return Logger.log.apply(this.$class||this, arguments);
+	if (Logger) {
+		Logger.log.apply(this.$class, arguments);
 	}
 };
 
@@ -179,9 +186,10 @@ $static.findResource = function findResource(name, positive) {
 		if (!source.error) {
 			return source.model || source.content;
 		} else {
-			var msg = log("error", "resource '${name}:${resourceType}' was not loaded: ${error}", source);
+			var msg = "resource '${name}:${resourceType}' was not loaded: ${error}";
+			log("error", msg, source);
 			if (positive) {
-				System.throwError(msg);
+				throwError(msg, source);
 			}
 		}
 	}
@@ -210,9 +218,10 @@ $public.findClass = function findClass(name, positive) {
 		if (!source.error) {
 			return source.$class;
 		} else {
-			var msg = log("error", "class '${name}' was not loaded: ${error}", source);
+			var msg = "class '${name}' was not loaded: ${error}";
+			log("error", msg, source);
 			if (positive) {
-				System.throwError(msg);
+				throwError(msg, source);
 			}
 		}
 	}
@@ -347,7 +356,7 @@ $private.parseModel = function parseModel(source) {
 				break;
 			case "requires":
 				name = parseSourceName(name, source.name);
-				value = formatText(value||name, source.$context.getClass());
+				value = value||name;
 				source.scope.$imports[parseBaseName(name)] = name;
 				source.scope.$requires[value] = name;
 				break;
@@ -367,7 +376,7 @@ $private.parseModel = function parseModel(source) {
 				if (source.stereotype) break;
 				source.stereotype = settingTag;
 				if (source.name != parseSourceName(name, source.name)) {
-					System.throwError("incorrect ${stereotype} name declared: ${name}", source);
+					throwError("incorrect ${stereotype} name declared: ${name}", source);
 				}
 				if (source.stereotype == "context") {
 					source.classes = {};
@@ -425,7 +434,7 @@ $private.parseSetting = function parseSetting(setting, match) {
 		break;
 	}
 	if (!found) {
-		System.throwError("incorrect ${0} declared: ${1}", settingTag, input);
+		throwError("incorrect ${0} declared: ${1}", settingTag, input);
 	}
 	return setting;
 };

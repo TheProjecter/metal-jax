@@ -39,9 +39,7 @@
 		
 		function main() {
 			parseSetting($setting);
-			if (this[$setting["bootModule"]]) {
-				$source.scope.$static.log("info", "metal.jax.init.done", $setting);
-			} else {
+			if (!this[$setting["bootModule"]]) {
 				this[$setting["bootModule"]] = {};
 				waitFor("load", function() {
 					$source.base = $setting["bootURL"];
@@ -70,18 +68,6 @@
 			setting["baseContext"] = parts[4] || !parts[3] && !parts[4] && setting["bootClass"] || setting["baseContext"];
 		}
 		
-		function logSetting(setting) {
-			$source.scope.$static.log("info", "metal.jax.init.bootModule", setting);
-			$source.scope.$static.log("info", "metal.jax.init.bootContext", setting);
-			if (setting["baseModule"] == ".") {
-				$source.scope.$static.log("warn", "metal.jax.init.baseModule.missing");
-			} else {
-				$source.scope.$static.log("info", "metal.jax.init.baseModule", setting);
-			}
-			$source.scope.$static.log("info", "metal.jax.init.baseContext", setting);
-			$source.scope.$static.log("info", "metal.jax.init.bootClass", setting);
-		}
-		
 		function parseSource(source) {
 			if (source.content) {
 				$.call(source);
@@ -103,7 +89,15 @@
 				if (baseContext && baseContext.main) {
 					baseContext.main.call();
 				}
-				logSetting($setting);
+				$source.scope.$static.log("info", "metal.jax.init.bootModule", $setting);
+				$source.scope.$static.log("info", "metal.jax.init.bootContext", $setting);
+				if ($setting["baseModule"] == ".") {
+					$source.scope.$static.log("warn", "metal.jax.init.baseModule.missing");
+				} else {
+					$source.scope.$static.log("info", "metal.jax.init.baseModule", $setting);
+				}
+				$source.scope.$static.log("info", "metal.jax.init.baseContext", $setting);
+				$source.scope.$static.log("info", "metal.jax.init.bootClass", $setting);
 			});
 		}
 		

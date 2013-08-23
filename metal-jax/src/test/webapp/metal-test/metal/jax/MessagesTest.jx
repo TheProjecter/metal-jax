@@ -1,6 +1,6 @@
 /**
- * @test MessageSourceTest
- * @requires metal.jax.MessageSource hello
+ * @test MessagesTest
+ * @requires metal.jax.Messages hello
  */
 
 //@public

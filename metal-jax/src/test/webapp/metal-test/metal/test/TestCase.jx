@@ -57,7 +57,7 @@ function fail(message, name) {
 		failTest(name, message);
 	} else {
 		log("error", message);
-		System.throwError(message);
+		throwError(message);
 	}
 }
 
