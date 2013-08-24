@@ -11,23 +11,22 @@
 
 //@private
 function initClass() {
-	this.enableInfo = $("class.info", $("logger.info", "true")) == "true";
-	this.enableWarn = $("class.warn", $("logger.warn", "true")) == "true";
-	this.enableError = $("class.error", $("logger.error", "true")) == "true";
-	this.enableDebug = $("class.debug", $("logger.debug", "false")) == "true";
+	this.levels = { info: "true", warn: "true", error: "true", debug: "false" };
 }
 
 //@static
-function log() {
-	var level = Array.prototype.shift.call(arguments);
-	arguments[0] = this.$(arguments[0], arguments[0]);
-	var msg = System.formatText.apply(null, arguments);
+function log(msg) {
 	if (typeof console != "undefined") {
-		var line = formatLine.call(this, level.toUpperCase(), msg);
-		if (typeof console[level] != "undefined") console[level](line);
-		else console.log(line);
+		var level = (msg in levels) ? Array.prototype.shift.call(arguments) : "info";
+		var enabled = this.$("logger."+level, levels[level]) == "true";
+		if (enabled) {
+			msg = this.$(msg, msg);
+			msg = System.formatText.apply(null, arguments);
+			var line = formatLine.call(this, level.toUpperCase(), msg);
+			if (typeof console[level] != "undefined") console[level](line);
+			else console.log(line);
+		}
 	}
-	return msg;
 }
 
 //@private
