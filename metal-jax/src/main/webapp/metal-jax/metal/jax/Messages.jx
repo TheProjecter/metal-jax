@@ -6,11 +6,10 @@
  */
 
 //@private
-function initResource(name, scope) {
-	var messages = this.findResource(name, true);
-	for (var key in messages) {
-		if (!(key in scope.$setting)) {
-			scope.$setting[key] = messages[key];
+function initResource(source) {
+	for (var name in source.model) {
+		if (!(name in this.$setting)) {
+			this.$setting[name] = source.model[name];
 		}
 	}
 }

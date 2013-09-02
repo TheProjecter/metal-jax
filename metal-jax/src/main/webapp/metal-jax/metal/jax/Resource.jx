@@ -21,8 +21,8 @@ function initClass() {
 }
 
 //@private
-function initResource(name, scope) {
-	scope[name] = this.fromResource(name);
+function initResource(source) {
+	this[source.name] = source.$class.fromResource(source.name);
 }
 
 //@static

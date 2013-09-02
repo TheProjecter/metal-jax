@@ -10,9 +10,9 @@
 	(function() {
 		
 		var $setting = {
+			base: "",
 			baseModule: ".",
 			baseContext: "base",
-			bootClass: "",
 			crossDomain: "xd",
 			crossTimeout: "3000",
 			classType: "jx",
@@ -22,7 +22,7 @@
 			stereotype: "context",
 			name: "metal.jax.Context",
 			baseName: "Context",
-			scope: { $public:{}, $protected:{}, $static:{}, $imports:{}, $requires:{}, $setting:$setting },
+			scope: { $setting:$setting, $imports:{}, $requires:{}, $static:{}, $protected:{}, $public:{} },
 			classes: {},
 			setting: {
 				source: [{ base:"${bootURL}", module:"${bootModule}", includes:"^metal.jax[.]" }],
@@ -57,7 +57,7 @@
 			setting["baseScheme"] = parts[1].split(":")[0];
 			setting["baseURL"] = splitPath(parts[1] + parts[2], -1, -1);
 			setting["baseModule"] = parts[3] || setting["baseModule"];
-			setting["bootClass"] = parts[4] || setting["bootClass"];
+			setting["base"] = parts[4] || setting["base"];
 			var nodes = this.document.getElementsByTagName("script");
 			var parts = _urlRE_.exec(resolvePath(nodes[nodes.length-1].src, setting["baseURL"] + "/"));
 			setting["bootOrigin"] = parts[1];
@@ -65,7 +65,7 @@
 			setting["bootModule"] = splitPath(parts[2], -3, 1);
 			setting["bootContext"] = splitPath(parts[2], -2, 2).split(".")[0].split("/").join(".");
 			setting["baseModule"] = parts[3] || setting["baseModule"];
-			setting["baseContext"] = parts[4] || !parts[3] && !parts[4] && setting["bootClass"] || setting["baseContext"];
+			setting["baseContext"] = parts[4] || !parts[3] && !parts[4] && setting["base"] || setting["baseContext"];
 		}
 		
 		function parseSource(source) {
@@ -77,28 +77,9 @@
 				source.scope.$static.splitPath = splitPath;
 				source.scope.$static.resolvePath = resolvePath;
 				source.scope.initClass_();
-				source.scope.waitFor(initContext);
 			} else {
 				throw Error("failed to load URL: " + source.url + ", error: " + source.error);
 			}
-		}
-		
-		function initContext() {
-			$source.$context.loadClass($setting["baseContext"], function() {
-				var baseContext = $source.$context.findClass($setting["baseContext"]);
-				if (baseContext && baseContext.main) {
-					baseContext.main.call();
-				}
-				$source.scope.$static.log("info", "metal.jax.init.bootModule", $setting);
-				$source.scope.$static.log("info", "metal.jax.init.bootContext", $setting);
-				if ($setting["baseModule"] == ".") {
-					$source.scope.$static.log("warn", "metal.jax.init.baseModule.missing");
-				} else {
-					$source.scope.$static.log("info", "metal.jax.init.baseModule", $setting);
-				}
-				$source.scope.$static.log("info", "metal.jax.init.baseContext", $setting);
-				$source.scope.$static.log("info", "metal.jax.init.bootClass", $setting);
-			});
 		}
 		
 		function waitFor(event, callback) {

@@ -11,7 +11,12 @@
 
 //@private
 function initClass() {
-	this.levels = { info: "true", warn: "true", error: "true", debug: "false" };
+	this.levels = {
+		info: $("logger.info", "true"),
+		warn: $("logger.warn", "true"),
+		error: $("logger.error", "true"),
+		debug: $("logger.debug", "true")
+	};
 }
 
 //@static

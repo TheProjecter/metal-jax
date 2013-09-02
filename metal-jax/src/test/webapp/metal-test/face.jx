@@ -1,25 +1,25 @@
 /**
  * @context face
- * @imports metal.jax.Face
  * @imports metal.jax.System
+ * @imports metal.jax.Face
+ * @requires metal.jax.Face ${base}
  * @source base=${baseURL} module=${baseModule} includes=[.]test[.]
  * @source base=${baseURL} module=${baseModule} includes=Test$
+ * @source base=${baseURL} module=metal-face includes=metal.face
  */
 
 //@private
 function initClass() {
-	var bootClass = $("bootClass");
-	if (bootClass) {
-		Face.loadResource(bootClass);
-	}
+	parseResourceModel(Face, this, System.document.body);
 }
 
 //@private
 function initContext() {
-	var bootClass = $("bootClass");
-	if (bootClass) {
-		System.document.body.appendChild(Face.fromResource(bootClass).node);
+	var clazz = extendClass(Face);
+	var base = $("base");
+	if (base) {
+		System.document.body.appendChild(clazz.fromResource(base).node);
 	} else {
-		new Face(System.document.body);
+		new clazz(System.document.body);
 	}
 }

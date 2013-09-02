@@ -6,7 +6,6 @@
 
 //@private
 function parseModel(model) {
-	model = model || this.model;
 	this.set("foo", new Foo(model.foo));
 	Bar.load(model.bar);
 }

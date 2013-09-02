@@ -32,7 +32,7 @@ table(grid).
 | baseScheme | _Readonly_ | The base URL scheme. |
 | baseModule | _Required_ | The folder for baseContext. |
 | baseContext | @base@ | The initial app context. |
-| bootClass | _Default empty_ | The fallback for baseContext. Specified with fragment in the base URL. |
+| base | _Default empty_ | The fallback for baseContext. Specified with fragment in the base URL. |
 | bootURL | _Readonly_ | The URL to load metal-jax boot context. |
 | bootOrigin | _Readonly_ | The boot URL origin. |
 | bootModule | @metal-jax@ | The folder for metal-jax. |
