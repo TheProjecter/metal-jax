@@ -46,20 +46,20 @@ $private.initContext = function initContext() {
 
 $public.initObject = function initObject(object, args) {
 	if (args && args.length == 1 && object && args[0] == object.getClass());
-	else if (object) callSuper("initObject", object.getClass(), object, args);
+	else if (object) callSuper("initObject", object.getClass(), object, args, true);
 	return object;
 };
 
-$private.callSuper = function callSuper(callback, clazz, target, args, once) {
-	if (!once && clazz.getSuperClass()) {
-		callSuper(callback, clazz.getSuperClass(), target, args, once);
+$private.callSuper = function callSuper(callback, clazz, target, args, fromBase) {
+	if (fromBase && clazz.getSuperClass()) {
+		callSuper(callback, clazz.getSuperClass(), target, args, fromBase);
 	}
 	var source = getClassHandle(clazz);
 	if (source.scope[callback]) {
 		if (args) source.scope[callback].apply(target, args);
 		else source.scope[callback].apply(target);
-	} else if (once && clazz.getSuperClass()) {
-		callSuper(callback, clazz.getSuperClass(), target, args, once);
+	} else if (!fromBase && clazz.getSuperClass()) {
+		callSuper(callback, clazz.getSuperClass(), target, args, fromBase);
 	}
 };
 
@@ -329,7 +329,7 @@ $private.parseResource = function parseResource(source) {
 };
 
 $protected.parseResourceModel = function parseResourceModel(clazz, source, model) {
-	callSuper("parseModel", clazz, source, [model], true);
+	callSuper("parseModel", clazz, source, [model]);
 };
 
 $private.parseSource = function parseSource(source) {
@@ -538,7 +538,7 @@ $private.flush = function flush() {
 };
 
 $private.flush_initClass = function flush_initClass(source) {
-	if (typeof source.flushStatus == "undefined") {
+	if (!source.flushStatus) {
 		source.flushStatus = "beginInitClass";
 		_busyCount++;
 		if (source.$context) {
@@ -590,9 +590,9 @@ $private.flush_notifyClass = function flush_notifyClass(source) {
 		if (source.scope.initClass) {
 			source.scope.initClass();
 		}
-		flush_loadResource(source);
 		_busyCount--;
 		source.flushStatus = "endNotifyClass";
+		flush_loadResource(source);
 	}
 };
 
@@ -609,8 +609,8 @@ $private.flush_loadResource = function flush_loadResource(source) {
 	source.resourceStatus = source.resourceStatus || {};
 	for (var name in source.scope.$requires) {
 		if (!source.resourceStatus[name]) {
-			source.scope[source.scope.$requires[name]].loadResource(name);
 			source.resourceStatus[name] = "pendingInit";
+			source.scope[source.scope.$requires[name]].loadResource(name);
 		}
 	}
 };
@@ -624,13 +624,13 @@ $private.flush_initResource = function flush_initResource(source) {
 				var clazz = source.scope[source.scope.$requires[name]];
 				if (clazz.findResource(name, true)) {
 					var resource = getResourceHolder(clazz)[name];
-					callSuper("initResource", clazz, source.scope, [resource], true);
+					callSuper("initResource", clazz, source.scope, [resource]);
 				}
 			}
 		}
-		flush_loadResource(source);
 		_busyCount--;
 		source.flushStatus = "endInitResource";
+		flush_loadResource(source);
 	}
 };
 
@@ -638,7 +638,6 @@ $private.flush_initContext = function flush_initContext(source) {
 	if (source.flushStatus == "endInitResource") {
 		source.flushStatus = "beginInitContext";
 		_busyCount++;
-		delete source.resourceStatus;
 		for (var name in source.scope.$imports) {
 			flush_initContext(getClassHandle(source.scope[name]));
 		}
@@ -659,8 +658,10 @@ $private.flush_notifyContext = function flush_notifyContext(source) {
 		for (var name in source.scope.$imports) {
 			flush_notifyContext(getClassHandle(source.scope[name]));
 		}
-		if (source.stereotype == "context" && source.scope.initContext) {
-			source.scope.initContext.call(source.$context);
+		if (source.stereotype == "context") {
+			if (source.scope.initContext) {
+				source.scope.initContext.call(source.$context);
+			}
 		}
 		_busyCount--;
 		source.flushStatus = "endNotifyContext";

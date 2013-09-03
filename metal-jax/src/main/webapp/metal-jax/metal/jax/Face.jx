@@ -10,6 +10,11 @@
  */
 
 //@private
+function initClass() {
+	$protected.document = window.document;
+}
+
+//@private
 function initResource(source) {
 	if (source.$imports) {
 		for (var name in source.$imports) {
@@ -50,8 +55,8 @@ function parseNode(node) {
 		if (node.nodeName.toLowerCase() == "img") {
 			node.src = resolvePath(node.attributes["alt"].value||node.attributes["src"].value, this);
 		} else if (node.nodeName.toLowerCase() == "link") {
-			System.docHead.appendChild(node);
 			node.href = resolvePath(node.attributes["href"].value, this);
+			System.docHead.appendChild(node);
 		}
 	}
 	if (node.id) {
@@ -140,10 +145,34 @@ var _events_ = [
 	"mousedown", "mousemove", "mouseout", "mouseover", "mouseup"
 ];
 
+//@protected
+function toggleEvent(event, target, callback, positive) {
+	positive = positive || arguments.length == 3;
+	if (callback) {
+		if (target.addEventListener) {
+			if (positive) {
+				target.addEventListener(event, callback, false);
+			} else {
+				target.removeEventListener(event, callback, false);
+			}
+		} else if (target.attachEvent) {
+			event = "on"+event;
+			if (positive) {
+				target.attachEvent(event, callback);
+			} else {
+				target.detachEvent(event, callback);
+			}
+		} else {
+			throwError("event not supported: ${0}", event);
+		}
+	}
+	return callback;
+}
+
 //@public
 function bind(action, node, event) {
 	var binding = System.callback.call(this, dispatch, action, node);
-	if (node && event) System.toggleEvent(event, node, binding);
+	if (node && event) toggleEvent(event, node, binding);
 	return binding;
 }
 

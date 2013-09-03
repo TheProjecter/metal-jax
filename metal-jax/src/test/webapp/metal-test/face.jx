@@ -1,6 +1,5 @@
 /**
  * @context face
- * @imports metal.jax.System
  * @imports metal.jax.Face
  * @requires metal.jax.Face ${base}
  * @source base=${baseURL} module=${baseModule} includes=[.]test[.]
@@ -10,7 +9,7 @@
 
 //@private
 function initClass() {
-	parseResourceModel(Face, this, System.document.body);
+	parseResourceModel(Face, this, document.body);
 }
 
 //@private
@@ -18,8 +17,8 @@ function initContext() {
 	var clazz = extendClass(Face);
 	var base = $("base");
 	if (base) {
-		System.document.body.appendChild(clazz.fromResource(base).node);
+		document.body.appendChild(clazz.fromResource(base).node);
 	} else {
-		new clazz(System.document.body);
+		new clazz(document.body);
 	}
 }

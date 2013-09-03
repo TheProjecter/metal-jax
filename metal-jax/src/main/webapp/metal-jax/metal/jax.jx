@@ -41,13 +41,7 @@
 			parseSetting($setting);
 			if (!this[$setting["bootModule"]]) {
 				this[$setting["bootModule"]] = {};
-				waitFor("load", function() {
-					$source.base = $setting["bootURL"];
-					$source.module = $setting["bootModule"];
-					$source.resourceType = $setting["classType"];
-					$source.path = $source.name.split(".").join("/").concat(".", $source.resourceType);
-					loadback($source, parseSource);
-				});
+				waitFor("load", loadSource);
 			}
 		}
 		
@@ -66,6 +60,14 @@
 			setting["bootContext"] = splitPath(parts[2], -2, 2).split(".")[0].split("/").join(".");
 			setting["baseModule"] = parts[3] || setting["baseModule"];
 			setting["baseContext"] = parts[4] || !parts[3] && !parts[4] && setting["base"] || setting["baseContext"];
+		}
+		
+		function loadSource() {
+			$source.base = $setting["bootURL"];
+			$source.module = $setting["bootModule"];
+			$source.resourceType = $setting["classType"];
+			$source.path = $source.name.split(".").join("/").concat(".", $source.resourceType);
+			loadback($source, parseSource);
 		}
 		
 		function parseSource(source) {
