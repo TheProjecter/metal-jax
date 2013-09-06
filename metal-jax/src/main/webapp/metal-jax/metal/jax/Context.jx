@@ -116,8 +116,8 @@ $private.putResourceHandle = function putResourceHandle(source) {
 	return source;
 };
 
-$private.initResourceHandle = function initResourceHandle(name, clazz) {
-	var setting = findSourceSetting(name, clazz.getContext());
+$private.initResourceHandle = function initResourceHandle(name, clazz, context) {
+	var setting = findSourceSetting(name, context);
 	var source = { "$class": clazz };
 	source.name = name;
 	source.base = clazz.$("resource.base") || setting && setting.base || $("baseURL");
@@ -198,9 +198,9 @@ $private.findStereotypeSetting = function findStereotypeSetting(type, context) {
 	}
 };
 
-$static.findResource = function findResource(name, positive) {
+$public.findResource = function findResource(name, clazz, positive) {
 	if (!name) return;
-	var source = getResourceHolder(this)[name];
+	var source = getResourceHolder(clazz)[name];
 	if (source) {
 		if (!source.error) {
 			return source.model || source.content;
@@ -214,11 +214,11 @@ $static.findResource = function findResource(name, positive) {
 	}
 };
 
-$static.loadResource = function loadResource(name, callback) {
+$public.loadResource = function loadResource(name, clazz, callback) {
 	try {
-		if (!name || getResourceHolder(this)[name]) return;
+		if (!name || getResourceHolder(clazz)[name]) return;
 		_pendingCount++;
-		var source = putResourceHandle(name, this);
+		var source = putResourceHandle(name, clazz, this);
 		log("debug", "request to load resource '${name}:${resourceType}'", source);
 		System.loadback(source, handleSource);
 	} catch (ex) {
@@ -610,7 +610,7 @@ $private.flush_loadResource = function flush_loadResource(source) {
 	for (var name in source.scope.$requires) {
 		if (!source.resourceStatus[name]) {
 			source.resourceStatus[name] = "pendingInit";
-			source.scope[source.scope.$requires[name]].loadResource(name);
+			source.$context.loadResource(name, source.scope[source.scope.$requires[name]]);
 		}
 	}
 };
@@ -622,7 +622,7 @@ $private.flush_initResource = function flush_initResource(source) {
 			if (source.resourceStatus[name] == "pendingInit") {
 				source.resourceStatus[name] = "doneInit";
 				var clazz = source.scope[source.scope.$requires[name]];
-				if (clazz.findResource(name, true)) {
+				if (source.$context.findResource(name, clazz, true)) {
 					var resource = getResourceHolder(clazz)[name];
 					callSuper("initResource", clazz, source.scope, [resource]);
 				}

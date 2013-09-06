@@ -50,16 +50,20 @@
 			setting["baseOrigin"] = parts[1];
 			setting["baseScheme"] = parts[1].split(":")[0];
 			setting["baseURL"] = splitPath(parts[1] + parts[2], -1, -1);
-			setting["baseModule"] = parts[3] || setting["baseModule"];
-			setting["base"] = parts[4] || setting["base"];
+			var module = parts[3], base = parts[4];
 			var nodes = this.document.getElementsByTagName("script");
-			var parts = _urlRE_.exec(resolvePath(nodes[nodes.length-1].src, setting["baseURL"] + "/"));
+			parts = _urlRE_.exec(resolvePath(nodes[nodes.length-1].src, setting["baseURL"] + "/"));
 			setting["bootOrigin"] = parts[1];
 			setting["bootURL"] = splitPath(parts[1] + parts[2], -3, -3);
 			setting["bootModule"] = splitPath(parts[2], -3, 1);
 			setting["bootContext"] = splitPath(parts[2], -2, 2).split(".")[0].split("/").join(".");
-			setting["baseModule"] = parts[3] || setting["baseModule"];
-			setting["baseContext"] = parts[4] || !parts[3] && !parts[4] && setting["base"] || setting["baseContext"];
+			if (parts[3] || parts[4]) {
+				module = parts[3]; base = parts[4];
+			}
+			setting["base"] = base || setting["base"];
+			parts = (module||"").split("/");
+			setting["baseContext"] = parts.length > 1 && parts.pop() || setting["baseContext"];
+			setting["baseModule"] = parts.join("/") || setting["baseModule"];
 		}
 		
 		function loadSource() {

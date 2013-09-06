@@ -15,14 +15,18 @@
  */
 
 //@private
-function initClass() {
-	$static.loadResource = Context.loadResource;
-	$static.findResource = Context.findResource;
-}
-
-//@private
 function initResource(source) {
 	this[source.name] = source.$class.fromResource(source.name);
+}
+
+//@static
+function loadResource(name, callback) {
+	this.getContext().loadResource(name, this, callback);
+}
+
+//@static
+function findResource(name, positive) {
+	return this.getContext().findResource(name, this, positive);
 }
 
 //@static
