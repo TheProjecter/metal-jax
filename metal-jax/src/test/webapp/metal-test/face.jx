@@ -10,6 +10,7 @@
 //@private
 function initClass() {
 	parseResourceModel(Face, this, document.body);
+	$context.loadClass($("base"));
 }
 
 //@private
@@ -17,7 +18,8 @@ function initContext() {
 	var clazz = extendClass(Face);
 	var base = $("base");
 	if (base) {
-		document.body.appendChild(clazz.fromResource(base).node);
+		var Base = $context.findClass(base);
+		document.body.appendChild((Base||clazz).fromResource(base).node);
 	} else {
 		new clazz(document.body);
 	}
