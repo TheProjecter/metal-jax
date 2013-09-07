@@ -62,7 +62,7 @@
 			}
 			setting["base"] = base || setting["base"];
 			parts = (module||"").split("/");
-			setting["baseContext"] = parts.length > 1 && parts.pop() || setting["baseContext"];
+			setting["baseContext"] = parts.pop() || base || setting["baseContext"];
 			setting["baseModule"] = parts.join("/") || setting["baseModule"];
 		}
 		
