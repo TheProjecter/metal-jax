@@ -62,14 +62,15 @@ function parseNode(node) {
 	if (node.id) {
 		var parts = node.id.split(":"), nodeId = parts.shift();
 		if (parts.length) {
-			var name = parts[0];
-			var className = parts[1] || name || Face.getName();
+			var name = System.parseSourceName(parts[0], this.name);
+			var className = parts.length > 1 && (parts[1]||name) || Face.getName();
 			this.$imports = this.$imports || {};
 			this.$imports[className] = className;
 			if (name) {
 				this.$requires = this.$requires || {};
 				this.$requires[name] = className;
 			}
+			node.id = [nodeId, name, className].join(":");
 		}
 	}
 }
@@ -98,8 +99,8 @@ function initModel(node) {
 function initNode(node) {
 	if (node.id) {
 		var parts = node.id.split(":"), nodeId = parts.shift();
-		var name = parts.length > 0 && parts[0];
-		var className = parts.length > 1 && parts[1] || parts.length > 0 && (name || Face.getName());
+		var name = parts.length && parts[0];
+		var className = parts.length && parts[1];
 		var childClass = this.getClass().getContext().findClass(className);
 		
 		this.nodes = this.nodes || {};
