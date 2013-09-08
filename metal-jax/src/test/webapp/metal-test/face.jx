@@ -4,7 +4,7 @@
  * @requires metal.jax.Face ${base}
  * @source base=${baseURL} module=${baseModule} includes=[.]test[.]
  * @source base=${baseURL} module=${baseModule} includes=Test$
- * @source base=${baseURL} module=metal-face includes=metal.face
+ * @source base=${bootURL} module=metal-face includes=^metal.face[.]
  */
 
 //@private
