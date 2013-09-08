@@ -219,7 +219,7 @@ $public.loadResource = function loadResource(name, clazz, callback) {
 		if (!name || getResourceHolder(clazz)[name]) return;
 		_pendingCount++;
 		var source = putResourceHandle(name, clazz, this);
-		log("debug", "request to load resource '${name}:${resourceType}'", source);
+		log("debug", "request to load resource '${0}:${1}' from context '${2}'", name, source.resourceType, this.getClass().getName());
 		System.loadback(source, handleSource);
 	} catch (ex) {
 		_pendingCount--;
@@ -251,7 +251,7 @@ $public.loadClass = function loadClass(name, callback) {
 		if (!name || findClassHandle(name, this)) return;
 		_pendingCount++;
 		var source = putClassHandle(name, this);
-		log("debug", "request to load class '${0}' from context '${1}'", name, source.$context.getClass().getName());
+		log("debug", "request to load class '${0}' from context '${1}'", name, this.getClass().getName());
 		loadback(source, handleSource);
 	} catch (ex) {
 		_pendingCount--;
@@ -433,12 +433,12 @@ $private.parseModel = function parseModel(source) {
 
 $static.parseSourceName = function parseSourceName(name, base) {
 	var parts; base = base || "";
-	if (name.indexOf(".") < 0 && base.indexOf(".") > 0) {
+	if (name && name.indexOf(".") < 0 && base.indexOf(".") > 0) {
 		parts = base.split(".");
 		parts[parts.length-1] = name;
 		name = parts.join(".");
 	}
-	if (name.charAt(0) == ".") name = name.substring(1);
+	if (name && name.charAt(0) == ".") name = name.substring(1);
 	return name;
 };
 
