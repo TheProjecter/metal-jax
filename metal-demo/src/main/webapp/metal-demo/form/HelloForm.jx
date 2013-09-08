@@ -1,14 +1,12 @@
 /**
  * @face HelloForm
  * @extends metal.face.Form
- * @imports HelloForm:html
  * @imports metal.jax.System
  * @requires service.Echo echo
  */
 
 //@private
 function initObject() {
-	HelloForm_html.apply(this, arguments);
 	this.bind(submit, this.nodes["submit"], "click");
 	this.update = System.callback.call(this, update);
 }

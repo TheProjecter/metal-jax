@@ -7,10 +7,10 @@
 //@private
 function parseModel(model) {
 	this.set("foo", new Foo(model.foo));
-	Bar.load(model.bar);
+	Bar.loadResource(model.bar);
 }
 
 //@private
 function initObject(model) {
-	this.set("bar", Bar.find(model.bar));
+	this.set("bar", Bar.findResource(model.bar));
 }

@@ -1,6 +1,5 @@
 /**
  * @face HelloMetal
- * @imports HelloMetal:html
  * @imports PoweredBy
  * @imports model.Hello
  * @imports metal.jax.System
@@ -16,12 +15,11 @@ var $fontSizes = [ "10px", "13px", "16px", "18px", "24px", "32px" ];
 
 //@private
 function initObject() {
-	HelloMetal_html.apply(this, arguments);
 	this.next = 0;
 	this.flag = false;
 	this.nodes.label.style.fontSize = $fontSizes[this.next++];
 	setInterval(System.callback.call(this, changeLabel), 200);
-	Hello.load("hello", System.callback.call(this, initFooter));
+	Hello.loadResource("hello", System.callback.call(this, initFooter));
 }
 
 //@private
@@ -34,7 +32,7 @@ function changeLabel() {
 
 //@private
 function initFooter() {
-	var hello = Hello.find("hello");
+	var hello = Hello.findResource("hello");
 	this.nodes.footer.innerHTML =
 		"hello: {" +
 			"foo: \"" + hello.get("foo").value + "\", " +
