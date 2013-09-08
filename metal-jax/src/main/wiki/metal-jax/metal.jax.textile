@@ -61,7 +61,7 @@ table(grid).
 |_.Name |_.Value |_.Comments |
 | base | ${bootURL} | Base path to load context sources. |
 | module | ${bootModule} | Module folder to load context sources. |
-| includes | ^metal.jax[.] | Regexp for source names. |
+| includes | ^metal.jax | Regexp for source names. |
 
 h2. Source Stereotypes
 
