@@ -718,11 +718,7 @@ $private.copyMember = function copyMember(target, source, override) {
 			if (name.length > 1 && name.charAt(0) == "$") {
 				continue;
 			}
-			if (override) {
-				target[name] = source[name];
-			} else {
-				target[name] = target[name] || source[name];
-			}
+			target[name] = !override && target[name] || source[name];
 		}
 	}
 	return target;
