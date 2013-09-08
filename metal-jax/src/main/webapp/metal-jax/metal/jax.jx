@@ -58,11 +58,11 @@
 			setting["bootModule"] = splitPath(parts[2], -3, 1);
 			setting["bootContext"] = splitPath(parts[2], -2, 2).split(".")[0].split("/").join(".");
 			if (parts[3] || parts[4]) {
-				module = parts[3]; base = parts[4];
+				module = parts[3] || module; base = parts[4] || base;
 			}
 			setting["base"] = base || setting["base"];
 			parts = (module||"").split("/");
-			setting["baseContext"] = parts.pop() || base || setting["baseContext"];
+			setting["baseContext"] = parts.length == 1 ? parts.pop() || base || setting["baseContext"] : parts.pop() || setting["baseContext"];
 			setting["baseModule"] = parts.join("/") || setting["baseModule"];
 		}
 		
