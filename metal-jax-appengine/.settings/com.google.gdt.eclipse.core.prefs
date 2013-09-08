@@ -1,4 +1,5 @@
 eclipse.preferences.version=1
 jarsExcludedFromWebInfLib=
+lastWarOutDir=C\:/myroot/meta4/git/metal-jax/metal-jax-appengine/target/metal-jax-appengine-1.0.0-SNAPSHOT
 warSrcDir=src/main/webapp
 warSrcDirIsOutput=false

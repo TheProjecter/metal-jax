@@ -46,12 +46,12 @@
 		}
 		
 		function parseSetting(setting) {
-			var parts = _urlRE_.exec(this.document.URLUnencoded||this.document.URL);
+			var parts = _urlRE_.exec(document.URLUnencoded||document.URL);
 			setting["baseOrigin"] = parts[1];
 			setting["baseScheme"] = parts[1].split(":")[0];
 			setting["baseURL"] = splitPath(parts[1] + parts[2], -1, -1);
 			var module = parts[3], base = parts[4];
-			var nodes = this.document.getElementsByTagName("script");
+			var nodes = document.getElementsByTagName("script");
 			parts = _urlRE_.exec(resolvePath(nodes[nodes.length-1].src, setting["baseURL"] + "/"));
 			setting["bootOrigin"] = parts[1];
 			setting["bootURL"] = splitPath(parts[1] + parts[2], -3, -3);
@@ -156,14 +156,14 @@
 				}
 				callback.call(caller, source);
 			});
-			this.document.firstChild.firstChild.appendChild(request.node);
+			document.firstChild.firstChild.appendChild(request.node);
 		}
 		
 		function requestCrossDomain(source, callback) {
 			var request = {};
 			request.url = source.url = [source.base, $setting["crossDomain"], source.module, source.path].join("/");
 			this[$setting["bootModule"]][request.url] = callback;
-			request.node = this.document.createElement("script");
+			request.node = document.createElement("script");
 			request.node.src = request.url;
 			request.timeout = setInterval(callback, parseInt($setting["crossTimeout"]));
 			return request;
@@ -171,7 +171,7 @@
 		
 		function clearRequest(request) {
 			delete this[$setting["bootModule"]][request.url];
-			this.document.firstChild.firstChild.removeChild(request.node);
+			document.firstChild.firstChild.removeChild(request.node);
 			clearInterval(request.timeout);
 			delete request.node;
 		}
