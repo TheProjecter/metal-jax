@@ -7,11 +7,11 @@
  */
 
 //@private
-function initObject() {
-	this.testSuite = new TestSuite();
+function initObject(object) {
+	$context.testSuite = new TestSuite();
 }
 
 //@private
 function initContext() {
-	this.testSuite.run($context);
+	$context.testSuite.run($context);
 }

@@ -3,11 +3,11 @@
  */
 
 //@private
-function initObject() {
-	this.box = {};
-	this.bindings = {};
-	for (var name in this.nodes) {
-		var node = this.nodes[name];
+function initObject(object) {
+	object.box = {};
+	object.bindings = {};
+	for (var name in object.nodes) {
+		var node = object.nodes[name];
 		switch (node.id) {
 		case "frame":
 		case "topLeft":
@@ -22,7 +22,7 @@ function initObject() {
 		case "rightTop":
 		case "right":
 		case "rightBottom":
-			this.bindings[node.id] = this.bind(dispatch, node, "mousedown");
+			object.bindings[node.id] = object.bind(dispatch, node, "mousedown");
 			break;
 		}
 	}

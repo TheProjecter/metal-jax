@@ -11,6 +11,6 @@ function parseModel(model) {
 }
 
 //@private
-function initObject(model) {
-	this.set("bar", Bar.findResource(model.bar));
+function initObject(object, model) {
+	object.set("bar", Bar.findResource(model.bar));
 }

@@ -3,10 +3,10 @@
  */
 
 //@private
-function initObject(node) {
-	this.nodes.button;
-	this.nodes.label.innerHTML += " - Button.jx";
-	this.bind(hello, this.nodes.button, "click");
+function initObject(object, node) {
+	object.nodes.button;
+	object.nodes.label.innerHTML += " - Button.jx";
+	object.bind(hello, object.nodes.button, "click");
 }
 
 //@private

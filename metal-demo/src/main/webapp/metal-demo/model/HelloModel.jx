@@ -7,5 +7,5 @@ function parseModel(model) {
 }
 
 //@private
-function initObject(model) {
+function initObject(object, model) {
 }

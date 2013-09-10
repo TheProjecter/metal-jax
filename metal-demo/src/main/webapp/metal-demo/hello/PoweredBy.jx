@@ -6,9 +6,9 @@
  */
 
 //@private
-function initObject() {
-	this.nodes.label.style.color = "red";
-	setInterval(System.callback.call(this, changeLabel), 1000);
+function initObject(object) {
+	object.nodes.label.style.color = "red";
+	setInterval(System.callback.call(object, changeLabel), 1000);
 }
 
 //@private

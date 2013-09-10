@@ -5,8 +5,8 @@
  */
 
 //@private
-function initObject() {
-	this.hello = "hello";
+function initObject(object) {
+	object.hello = "hello";
 }
 
 //@public

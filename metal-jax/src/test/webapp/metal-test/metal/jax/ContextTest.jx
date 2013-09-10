@@ -20,7 +20,7 @@ function initClass() {
 }
 
 //@private
-function initObject() {
+function initObject(object) {
 	$private.initObjectTested = true;
 }
 

@@ -2,13 +2,13 @@
  * @face HelloForm
  * @extends metal.face.Form
  * @imports metal.jax.System
- * @requires service.Echo echo
+ * @ requires service.Echo echo
  */
 
 //@private
-function initObject() {
-	this.bind(submit, this.nodes["submit"], "click");
-	this.update = System.callback.call(this, update);
+function initObject(object) {
+	object.bind(submit, object.nodes["submit"], "click");
+	object.update = System.callback.call(object, update);
 }
 
 //@private

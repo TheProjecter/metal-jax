@@ -44,9 +44,12 @@ $private.initContext = function initContext() {
 	}
 };
 
-$public.initObject = function initObject(object, args) {
+$static.initObject = function initObject(object, args) {
 	if (args && args.length == 1 && object && args[0] == object.getClass());
-	else if (object) callSuper("initObject", object.getClass(), object, args, true);
+	else if (object) {
+		Array.prototype.unshift.call(args, object);
+		callSuper("initObject", object.getClass(), this, args, true);
+	}
 	return object;
 };
 
@@ -348,7 +351,7 @@ $private._getClass_      = "$public.getClass = function getClass() { return ${0}
 $private._getSuperClass_ = "$static.getSuperClass = function getSuperClass() { return ${0}; };\n";
 $private._getContext_    = "$static.getContext = function getContext() { return $context; };\n";
 $private._getName_       = "$static.getName = function getName() { return \"${0}\"; };\n";
-$private._constructor_   = "$private.${0} = function ${0}() { $context.initObject(this, arguments); };\n";
+$private._constructor_   = "$private.${0} = function ${0}() { ${1}.initObject(this, arguments); };\n";
 $private._memberRE_      = /^\/\/@(\S+)\s+(function|var)\s+([A-Za-z0-9_$]+)/gm;
 $private._classFooter_   = "\n//@ sourceURL=${0}\n";
 $private._classHeaderRE_ = /^\s*\/\*\*([\S\s]*?)\*\//;
@@ -424,7 +427,7 @@ $private.parseModel = function parseModel(source) {
 		formatText(_getSuperClass_, source.superBase),
 		_getContext_,
 		formatText(_getName_, source.name),
-		formatText(_constructor_, source.baseName),
+		formatText(_constructor_, source.baseName, source.stereotype == "context" ? "$static" : "$protected"),
 		source.content ? source.content.replace(_memberRE_, formatMember) : "",
 		formatText(_classFooter_, source.name)
 	);
@@ -643,7 +646,7 @@ $private.flush_initContext = function flush_initContext(source) {
 		}
 		if (source.stereotype == "context") {
 			if (source.scope.initObject) {
-				source.scope.initObject.call(source.$context);
+				source.scope.initObject(source.$context);
 			}
 		}
 		_busyCount--;
@@ -660,7 +663,7 @@ $private.flush_notifyContext = function flush_notifyContext(source) {
 		}
 		if (source.stereotype == "context") {
 			if (source.scope.initContext) {
-				source.scope.initContext.call(source.$context);
+				source.scope.initContext();
 			}
 		}
 		_busyCount--;

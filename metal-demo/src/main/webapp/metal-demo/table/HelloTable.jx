@@ -12,8 +12,8 @@
  */
 
 //@private
-function initObject() {
-	TableModel.load("hello", System.callback.call(this, initTable));
+function initObject(object) {
+	TableModel.load("hello", System.callback.call(object, initTable));
 }
 
 //@private

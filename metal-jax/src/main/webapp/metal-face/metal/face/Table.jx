@@ -12,18 +12,18 @@ function initClass() {
 }
 
 //@private
-function initObject() {
-	this.scroll = this.bind(scroll);
-	this.compare = System.callback.call(this, compare);
-	this.rows = System.copyArray(this.nodes["contentRows"].rows);
-	for (var i = 0; i < this.rows.length; i++) {
-		this.bind(toggleRow, this.rows[i], "click");
+function initObject(object) {
+	object.scroll = object.bind(scroll);
+	object.compare = System.callback.call(object, compare);
+	object.rows = System.copyArray(object.nodes["contentRows"].rows);
+	for (var i = 0; i < object.rows.length; i++) {
+		object.bind(toggleRow, object.rows[i], "click");
 	}
-	for (var i = 0; i < this.nodes["headerRow"].cells.length; i++) {
-		var headerCell = this.nodes["headerRow"].cells[i];
+	for (var i = 0; i < object.nodes["headerRow"].cells.length; i++) {
+		var headerCell = object.nodes["headerRow"].cells[i];
 		if (headerCell.className) {
 			headerCell.firstChild.className = _sortable_;
-			this.bind(sortColumn, headerCell, "click");
+			object.bind(sortColumn, headerCell, "click");
 		}
 	}
 }

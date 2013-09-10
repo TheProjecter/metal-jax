@@ -12,11 +12,11 @@
 var $fontSizes = [ "10px", "13px", "16px", "18px", "24px", "32px" ];
 
 //@private
-function initObject() {
-	this.next = 0;
-	this.flag = false;
-	this.nodes.label.style.fontSize = $fontSizes[this.next++];
-	setInterval(System.callback.call(this, changeLabel), 200);
+function initObject(object) {
+	object.next = 0;
+	object.flag = false;
+	object.nodes.label.style.fontSize = $fontSizes[object.next++];
+	setInterval(System.callback.call(object, changeLabel), 200);
 }
 
 //@private

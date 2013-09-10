@@ -76,10 +76,10 @@ function parseNode(node) {
 }
 
 //@private
-function initObject(node) {
+function initObject(object, node) {
 	if (node) {
-		this.node = node;
-		initModel.call(this, node);
+		object.node = node;
+		initModel.call(object, node);
 	}
 }
 

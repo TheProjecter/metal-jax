@@ -13,6 +13,7 @@
 function initClass() {
 	$static.$ = Context.$;
 	$static.extendsClass = Context.extendsClass;
+	$protected.initObject = Context.initObject;
 	$protected.throwError = Context.throwError;
 	$protected.log = Context.log;
 }
