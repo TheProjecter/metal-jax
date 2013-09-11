@@ -7,33 +7,33 @@
 var $count = 0;
 
 //@protected
-function initNode(node) {
-	this.nodes = this.nodes || {};
-	this.inputs = this.inputs || {};
+function initNode(object, node) {
+	object.nodes = object.nodes || {};
+	object.inputs = object.inputs || {};
 	switch (node.nodeName.toLowerCase()) {
 	case "form":
-		node.name = System.parseBaseName(this.getClass().getName()).concat($count++);
-		this.nodes["form"] = node;
+		node.name = System.parseBaseName(object.getClass().getName()).concat($count++);
+		object.nodes["form"] = node;
 		break;
 	case "fieldset":
-		this.nodes["fieldset"] = node;
+		object.nodes["fieldset"] = node;
 		break;
 	case "legend":
-		this.bind(toggleForm, node, "click");
+		object.bind(toggleForm, node, "click");
 		break;
 	case "label":
-		node.htmlFor = this.nodes["form"].name.concat(".", node.htmlFor);
+		node.htmlFor = object.nodes["form"].name.concat(".", node.htmlFor);
 		break;
 	case "input":
 	case "select":
 	case "textarea":
-		this.inputs[node.name] = node;
+		object.inputs[node.name] = node;
 	case "button":
-		node.id = this.nodes["form"].name.concat(".", node.name);
-		this.nodes[node.name] = node;
+		node.id = object.nodes["form"].name.concat(".", node.name);
+		object.nodes[node.name] = node;
 		break;
 	default:
-		return $super.$protected.initNode.call(this, node);
+		return $super.$protected.initNode(object, node);
 	}
 }
 
