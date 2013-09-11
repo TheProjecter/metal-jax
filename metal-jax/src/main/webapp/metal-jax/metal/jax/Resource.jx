@@ -14,11 +14,6 @@
  * http://www.eclipse.org/legal/epl-v10.html
  */
 
-//@private
-function initResource(source) {
-	this[source.name] = source.$class.fromResource(source.name);
-}
-
 //@static
 function loadResource(name, callback) {
 	this.getContext().loadResource(name, this, callback);
@@ -32,4 +27,8 @@ function findResource(name, positive) {
 //@static
 function fromResource(name) {
 	return new this(this.findResource(name, true));
+}
+
+//@static
+function parseModel(source) {
 }

@@ -7,7 +7,7 @@
 
 //@private
 function initClass() {
-	parseResourceModel(Face, this, document.body);
+	Face.parseModel(this, document.body);
 	$context.loadClass($("base"));
 }
 

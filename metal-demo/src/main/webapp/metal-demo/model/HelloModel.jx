@@ -2,8 +2,8 @@
  * @resource HelloModel
  */
 
-//@private
-function parseModel(model) {
+//@static
+function parseModel(source) {
 }
 
 //@private

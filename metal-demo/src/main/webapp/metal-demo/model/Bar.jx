@@ -3,6 +3,6 @@
  * @setting resource.type=txt
  */
 
-//@private
-function parseModel(model) {
+//@static
+function parseModel(source) {
 }

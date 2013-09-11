@@ -5,6 +5,6 @@
  * @setting resource.content.delimiter=,
  */
 
-//@private
-function parseModel(model) {
+//@static
+function parseModel(source) {
 }

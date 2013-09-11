@@ -40,7 +40,7 @@ $private.initContext = function initContext() {
 	log("info", "metal.jax.init.baseContext", $setting);
 	log("info", "metal.jax.init.base", $setting);
 	if (BaseContext.main) {
-		BaseContext.main.call();
+		BaseContext.main();
 	}
 };
 
@@ -48,21 +48,19 @@ $static.initObject = function initObject(object, args) {
 	if (args && args.length == 1 && object && args[0] == object.getClass());
 	else if (object) {
 		Array.prototype.unshift.call(args, object);
-		callSuper("initObject", object.getClass(), this, args, true);
+		callSuper("initObject", object.getClass(), this, args);
 	}
 	return object;
 };
 
-$private.callSuper = function callSuper(callback, clazz, target, args, fromBase) {
-	if (fromBase && clazz.getSuperClass()) {
-		callSuper(callback, clazz.getSuperClass(), target, args, fromBase);
+$private.callSuper = function callSuper(callback, clazz, scope, args) {
+	if (clazz.getSuperClass()) {
+		callSuper(callback, clazz.getSuperClass(), scope, args);
 	}
 	var source = getClassHandle(clazz);
 	if (source.scope[callback]) {
-		if (args) source.scope[callback].apply(target, args);
-		else source.scope[callback].apply(target);
-	} else if (!fromBase && clazz.getSuperClass()) {
-		callSuper(callback, clazz.getSuperClass(), target, args, fromBase);
+		if (args) source.scope[callback].apply(scope||source.scope, args);
+		else source.scope[callback].apply(scope||source.scope);
 	}
 };
 
@@ -103,12 +101,17 @@ $static.log = function log() {
 	}
 };
 
-$private.getResourceHolder = function getResourceHolder(clazz) {
+$private.getResourceHandle = function getResourceHandle(clazz) {
 	var source = getClassHandle(clazz);
 	while (source.stereotype != "resource") {
 		clazz = clazz.getSuperClass();
 		source = getClassHandle(clazz);
 	}
+	return source;
+};
+
+$private.getResourceHolder = function getResourceHolder(clazz) {
+	var source = getResourceHandle(clazz);
 	source.resources = source.resources || {};
 	return source.resources;
 };
@@ -327,12 +330,8 @@ $private.parseResource = function parseResource(source) {
 		source.model = System.parseProperties(source.content);
 		break;
 	}
-	parseResourceModel(source.$class, source, source.model);
+	getClassHandle(source.$class).scope.$static.parseModel(source, source.model);
 	if (source.model) delete source.content;
-};
-
-$protected.parseResourceModel = function parseResourceModel(clazz, source, model) {
-	callSuper("parseModel", clazz, source, [model]);
 };
 
 $private.parseSource = function parseSource(source) {
@@ -626,8 +625,10 @@ $private.flush_initResource = function flush_initResource(source) {
 				source.resourceStatus[name] = "doneInit";
 				var clazz = source.scope[source.scope.$requires[name]];
 				if (source.$context.findResource(name, clazz, true)) {
-					var resource = getResourceHolder(clazz)[name];
-					callSuper("initResource", clazz, source.scope, [resource]);
+					var handle = getResourceHandle(clazz);
+					if (handle.scope.initResource) {
+						handle.scope.initResource(source.scope, handle.resources[name]);
+					}
 				}
 			}
 		}

@@ -6,10 +6,10 @@
  */
 
 //@private
-function initResource(source) {
+function initResource(target, source) {
 	for (var name in source.model) {
-		if (!(name in this.$setting)) {
-			this.$setting[name] = source.model[name];
+		if (!(name in target.$setting)) {
+			target.$setting[name] = source.model[name];
 		}
 	}
 }
