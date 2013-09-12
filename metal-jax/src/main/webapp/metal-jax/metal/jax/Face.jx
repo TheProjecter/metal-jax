@@ -79,6 +79,7 @@ function parseNode(source, node) {
 function initObject(object, node) {
 	if (node) {
 		object.node = node;
+		object.nodes = {};
 		this.$static.initModel(object, node);
 	}
 }
@@ -103,7 +104,6 @@ function initNode(object, node) {
 		var className = parts.length && parts[1];
 		var childClass = object.getClass().getContext().findClass(className);
 		
-		object.nodes = object.nodes || {};
 		object.nodes[nodeId] = node;
 		if (node.title == nodeId) {
 			var title = object.getClass().$(nodeId+".title");

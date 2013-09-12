@@ -8,7 +8,6 @@ var $count = 0;
 
 //@protected
 function initNode(object, node) {
-	object.nodes = object.nodes || {};
 	object.inputs = object.inputs || {};
 	switch (node.nodeName.toLowerCase()) {
 	case "form":
