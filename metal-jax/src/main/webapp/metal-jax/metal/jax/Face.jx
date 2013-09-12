@@ -55,8 +55,8 @@ function parseNode(source, node) {
 		if (node.nodeName.toLowerCase() == "img") {
 			node.src = resolvePath(node.attributes["alt"].value||node.attributes["src"].value, source);
 		} else if (node.nodeName.toLowerCase() == "link") {
-			node.href = resolvePath(node.attributes["href"].value, source);
 			System.docHead.appendChild(node);
+			node.href = resolvePath(node.attributes["href"].value, source);
 		}
 	}
 	if (node.id) {
