@@ -15,6 +15,11 @@ function test_initObject() {
 }
 
 //@public
+function test_initObjectCall() {
+	assertEquals(getName(), ObjectTest.call("getName"));
+}
+
+//@public
 function test_getClass() {
 	assertEquals(ObjectTest, this.getClass());
 }

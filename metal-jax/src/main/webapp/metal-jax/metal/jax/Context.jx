@@ -10,7 +10,7 @@ $public.getClass = function getClass() { return Context; };
 $static.getSuperClass = function getSuperClass() { return null; };
 $static.getContext = function getContext() { return $context; };
 $static.getName = function getName() { return "metal.jax.Context"; };
-$private.Context = function Context() {};
+$private.Context = function Context() { return $protected.call(this, arguments); };
 $imports["Object"] = "metal.jax.Object";
 $imports["Logger"] = "metal.jax.Logger";
 $imports["System"] = "metal.jax.System";
@@ -44,23 +44,25 @@ $private.initContext = function initContext() {
 	}
 };
 
-$static.initObject = function initObject(object, args) {
-	if (args && args.length == 1 && object && args[0] == object.getClass());
-	else if (object) {
-		Array.prototype.unshift.call(args, object);
-		callSuper("initObject", object.getClass(), this, args);
+$protected.call = function call(target, args) {
+	if (target instanceof String && target in this.$static) {
+		return this.$static[target].apply(this.$static, args);
+	} else if (target instanceof Object && args && args.length == 1 && args[0] == target.getClass()) {
+	} else if (target instanceof Object) {
+		Array.prototype.unshift.call(args, target);
+		callSuper("initObject", target.getClass(), this.$protected, args);
 	}
-	return object;
+	return target;
 };
 
-$private.callSuper = function callSuper(callback, clazz, scope, args) {
+$private.callSuper = function callSuper(action, clazz, scope, args) {
 	if (clazz.getSuperClass()) {
-		callSuper(callback, clazz.getSuperClass(), scope, args);
+		callSuper(action, clazz.getSuperClass(), scope, args);
 	}
 	var source = getClassHandle(clazz);
-	if (source.scope[callback]) {
-		if (args) source.scope[callback].apply(scope||source.scope, args);
-		else source.scope[callback].apply(scope||source.scope);
+	if (action in source.scope) {
+		if (args) source.scope[action].apply(scope||source.scope, args);
+		else source.scope[action].apply(scope||source.scope);
 	}
 };
 
@@ -90,12 +92,12 @@ $static.$ = function $(name, value) {
 	return value;
 };
 
-$static.throwError = function throwError(msg) {
+$protected.throwError = function throwError(msg) {
 	msg = this.$class.$(msg, msg);
 	throw Error(formatText.apply(null, arguments));
 };
 
-$static.log = function log() {
+$protected.log = function log() {
 	if (Logger) {
 		Logger.log.apply(this.$class, arguments);
 	}
@@ -330,7 +332,7 @@ $private.parseResource = function parseResource(source) {
 		source.model = System.parseProperties(source.content);
 		break;
 	}
-	getClassHandle(source.$class).scope.$static.parseModel(source, source.model);
+	source.$class.call("parseModel", source, source.model);
 	if (source.model) delete source.content;
 };
 
@@ -350,7 +352,7 @@ $private._getClass_      = "$public.getClass = function getClass() { return ${0}
 $private._getSuperClass_ = "$static.getSuperClass = function getSuperClass() { return ${0}; };\n";
 $private._getContext_    = "$static.getContext = function getContext() { return $context; };\n";
 $private._getName_       = "$static.getName = function getName() { return \"${0}\"; };\n";
-$private._constructor_   = "$private.${0} = function ${0}() { ${1}.initObject(this, arguments); };\n";
+$private._constructor_   = "$private.${0} = function ${0}() { return $protected.call(this, arguments); };\n";
 $private._memberRE_      = /^\/\/@(\S+)\s+(function|var)\s+([A-Za-z0-9_$]+)/gm;
 $private._classFooter_   = "\n//@ sourceURL=${0}\n";
 $private._classHeaderRE_ = /^\s*\/\*\*([\S\s]*?)\*\//;
@@ -426,7 +428,7 @@ $private.parseModel = function parseModel(source) {
 		formatText(_getSuperClass_, source.superBase),
 		_getContext_,
 		formatText(_getName_, source.name),
-		formatText(_constructor_, source.baseName, source.stereotype == "context" ? "$static" : "$protected"),
+		formatText(_constructor_, source.baseName),
 		source.content ? source.content.replace(_memberRE_, formatMember) : "",
 		formatText(_classFooter_, source.name)
 	);
@@ -588,6 +590,10 @@ $private.flush_notifyClass = function flush_notifyClass(source) {
 			for (var name in source.scope.$imports) {
 				flush_notifyClass(getClassHandle(source.scope[name]));
 			}
+		} else if (source.name == $imports.Object) {
+			source.scope.$protected.throwError = $protected.throwError;
+			source.scope.$protected.call = $protected.call;
+			source.scope.$protected.log = $protected.log;
 		}
 		if (source.scope.initClass) {
 			source.scope.initClass();
