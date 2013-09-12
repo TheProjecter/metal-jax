@@ -30,12 +30,12 @@ function initResource(target, source) {
 
 //@static
 function fromResource(name) {
-	return new this(copyResource.call(this, name));
+	return new this(copyResource(name, this));
 }
 
 //@private
-function copyResource(name) {
-	return this.findResource(name, true).cloneNode(true);
+function copyResource(name, clazz) {
+	return clazz.findResource(name, true).cloneNode(true);
 }
 
 //@static
@@ -112,7 +112,7 @@ function initNode(object, node) {
 		if (childClass) {
 			object.faces = object.faces || {};
 			if (name) {
-				var child = copyResource.call(childClass, name);
+				var child = copyResource(name, childClass);
 				System.clearHTML(node).appendChild(child);
 			}
 			object.faces[nodeId] = new childClass(node);
