@@ -4,19 +4,19 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 xmlns:p="http://www.springframework.org/schema/p"
 xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
 
-	<bean id="metal.core.xmlMapper" class="metal.core.mapper.XmlMapper" p:modelRegistry-ref="metal.core.modelRegistry"/>
-	<bean id="metal.core.jsonMapper" class="metal.core.mapper.JsonMapper" p:modelRegistry-ref="metal.core.modelRegistry"/>
-	<bean id="metal.core.valueMapper" class="metal.core.mapper.ValueMapper">
+	<bean id="metal.core.mapper.XmlMapper" class="metal.core.mapper.XmlMapper" p:modelRegistry-ref="metal.core.mop.ModelRegistry"/>
+	<bean id="metal.core.mapper.JsonMapper" class="metal.core.mapper.JsonMapper" p:modelRegistry-ref="metal.core.mop.ModelRegistry"/>
+	<bean id="metal.core.mapper.ValueMapper" class="metal.core.mapper.ValueMapper">
 		<property name="readers">
 			<map>
-				<entry key="xml" value-ref="metal.core.xmlMapper"/>
-				<entry key="json" value-ref="metal.core.jsonMapper"/>
+				<entry key="xml" value-ref="metal.core.mapper.XmlMapper"/>
+				<entry key="json" value-ref="metal.core.mapper.JsonMapper"/>
 			</map>
 		</property>
 		<property name="writers">
 			<map>
-				<entry key="xml" value-ref="metal.core.xmlMapper"/>
-				<entry key="json" value-ref="metal.core.jsonMapper"/>
+				<entry key="xml" value-ref="metal.core.mapper.XmlMapper"/>
+				<entry key="json" value-ref="metal.core.mapper.JsonMapper"/>
 			</map>
 		</property>
 	</bean>

@@ -9,7 +9,7 @@ package metal.front.service;
 
 import org.springframework.stereotype.Service;
 
-@Service("metal.front.testService")
+@Service("metal.front.service.TestService")
 public class TestImpl implements TestService {
 
 	public String hello(Long message, String from) {

@@ -11,7 +11,7 @@ import metal.core.mop.annotation.Method;
 import metal.core.mop.annotation.Service;
 import metal.demo.model.HelloModel;
 
-@Service(path="/metal/demo/echo")
+@Service(path="/metal/demo/Echo")
 public interface EchoService {
 	
 	@Method(params={"model"})

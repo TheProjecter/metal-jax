@@ -3,13 +3,13 @@
 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
 
-	<bean id="metal.front.messageMapper" class="metal.front.common.DisplayMessageMapper"/>
+	<bean id="metal.front.common.DisplayMessageMapper" class="metal.front.common.DisplayMessageMapper"/>
 	
-	<bean id="metal.front.crossDomainRequestHandler" class="metal.front.crossdomain.CrossDomainRequestHandler">
+	<bean id="metal.front.crossdomain.CrossDomainRequestHandler" class="metal.front.crossdomain.CrossDomainRequestHandler">
 		<property name="version" value="metal-jax"/>
 	</bean>
 	
-	<bean id="metal.front.serviceRequestHandler" class="metal.front.service.ServiceRequestHandler">
+	<bean id="metal.front.service.ServiceRequestHandler" class="metal.front.service.ServiceRequestHandler">
 		<property name="serviceMap">
 			<map>
 				<entry key="/service"><bean class="metal.front.service.ServiceSetting"/></entry>

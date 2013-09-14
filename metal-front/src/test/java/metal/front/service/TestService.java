@@ -10,7 +10,7 @@ package metal.front.service;
 import metal.core.mop.annotation.Method;
 import metal.core.mop.annotation.Service;
 
-@Service(path="/metal/front/test")
+@Service(path="/metal/front/Test")
 public interface TestService {
 
 	@Method(params={"message","from"})

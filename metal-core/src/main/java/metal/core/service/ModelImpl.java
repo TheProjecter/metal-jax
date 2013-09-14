@@ -9,7 +9,7 @@ package metal.core.service;
 
 import org.springframework.stereotype.Service;
 
-@Service("metal.core.modelService")
+@Service("metal.core.service.ModelService")
 public class ModelImpl implements ModelService {
 	
 	public Object load(String key) {

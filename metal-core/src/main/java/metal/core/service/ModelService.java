@@ -9,7 +9,7 @@ package metal.core.service;
 
 import metal.core.mop.annotation.Service;
 
-@Service(path="/metal/core/model")
+@Service(path="/metal/core/Model")
 public interface ModelService {
 	
 	Object load(String key);

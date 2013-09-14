@@ -5,19 +5,19 @@ xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
 xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
 	<display-name>metal-jax</display-name>
 	<servlet>
-		<servlet-name>metal.front.crossDomainRequestHandler</servlet-name>
+		<servlet-name>metal.front.crossdomain.CrossDomainRequestHandler</servlet-name>
 		<servlet-class>org.springframework.web.context.support.HttpRequestHandlerServlet</servlet-class>
 	</servlet>
 	<servlet-mapping>
-		<servlet-name>metal.front.crossDomainRequestHandler</servlet-name>
+		<servlet-name>metal.front.crossdomain.CrossDomainRequestHandler</servlet-name>
 		<url-pattern>/xd/*</url-pattern>
 	</servlet-mapping>
 	<servlet>
-		<servlet-name>metal.front.serviceRequestHandler</servlet-name>
+		<servlet-name>metal.front.service.ServiceRequestHandler</servlet-name>
 		<servlet-class>org.springframework.web.context.support.HttpRequestHandlerServlet</servlet-class>
 	</servlet>
 	<servlet-mapping>
-		<servlet-name>metal.front.serviceRequestHandler</servlet-name>
+		<servlet-name>metal.front.service.ServiceRequestHandler</servlet-name>
 		<url-pattern>/service/*</url-pattern>
 		<url-pattern>/model/*</url-pattern>
 	</servlet-mapping>

@@ -2,13 +2,14 @@
  * @service Echo
  * @imports model.HelloModel
  * @imports model.Hello
- * @setting service.base=http://metal-jax.appspot.com
- * @setting service.path=model/Hello.hello.xml
- * @setting service.module=metal-model
+ * 
+ * @setting service.path=/metal/demo/echo
  */
 
 //@public
 function hello(model, callback) {
+//	/metal/demo/echo/hello.xml?model.name1=n1&model.name2=n2&model.name3=n3	
+	
 	var source = initSource.call(this, new HelloModel(model), "hello", Hello);
 	call.call(this, source, callback);
 }

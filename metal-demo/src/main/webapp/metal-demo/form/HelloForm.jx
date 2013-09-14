@@ -2,7 +2,7 @@
  * @face HelloForm
  * @extends metal.face.Form
  * @imports metal.jax.System
- * @ requires service.Echo echo
+ * @imports service.Echo
  */
 
 //@private
@@ -14,7 +14,7 @@ function initObject(object) {
 //@private
 function submit() {
 	this.nodes.result.innerHTML = "submitting...";
-	echo.hello(this, this.update);
+	Echo.hello(this, update);
 }
 
 //@private

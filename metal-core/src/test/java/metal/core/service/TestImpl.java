@@ -11,7 +11,7 @@ import static metal.core.service.TestImpl.TestServiceMessageCode.*;
 
 import org.springframework.stereotype.Service;
 
-@Service("metal.core.testService")
+@Service("metal.core.service.TestService")
 public class TestImpl implements TestService {
 	
 	enum TestServiceMessageCode implements metal.core.message.MessageCode {

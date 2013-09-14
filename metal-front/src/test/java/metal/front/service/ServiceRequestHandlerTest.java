@@ -27,10 +27,10 @@ import org.springframework.mock.web.MockHttpServletResponse;
 
 public class ServiceRequestHandlerTest extends TestBase {
 
-	@Resource(name = "metal.core.xmlMapper")
+	@Resource(name = "metal.core.mapper.XmlMapper")
 	private Mapper xmlMapper;
 	
-	@Resource(name="metal.front.testService")
+	@Resource(name="metal.front.service.TestService")
 	private Object service;
 	
 	@Resource
@@ -41,7 +41,7 @@ public class ServiceRequestHandlerTest extends TestBase {
 
 	@Test
 	public void testInvoke() throws Exception {
-		MethodDeclaration method = serviceRegistry.getServiceMethodDeclaration("/metal/front/test", "hello");
+		MethodDeclaration method = serviceRegistry.getServiceMethodDeclaration("/metal/front/Test", "hello");
 		RequestMessage message = new RequestMessage(method.getParamDeclarations());
 		Object[] params = xmlMapper.read(message, source("serviceRequest.xml")).getValues();
 		ResponseMessage response = handler.invoke("hello", service, params, message.getMemberTypes());
@@ -51,9 +51,9 @@ public class ServiceRequestHandlerTest extends TestBase {
 
 	@Test
 	public void testHandleRequestForm() throws Exception {
-		MockHttpServletRequest httpRequest = new MockHttpServletRequest("POST", "/metal-jax/service/metal/front/test/hello.xml");
+		MockHttpServletRequest httpRequest = new MockHttpServletRequest("POST", "/metal-jax/service/metal/front/Test/hello.xml");
 		httpRequest.setServletPath("/service");
-		httpRequest.setPathInfo("/metal/front/test/hello.xml");
+		httpRequest.setPathInfo("/metal/front/Test/hello.xml");
 		httpRequest.addParameter("message", "12345678");
 		httpRequest.addParameter("from", "whoever");
 		httpRequest.setContentType(HttpContentType.FORM.contentType);
@@ -68,9 +68,9 @@ public class ServiceRequestHandlerTest extends TestBase {
 
 	@Test
 	public void testHandleRequestXml() throws Exception {
-		MockHttpServletRequest httpRequest = new MockHttpServletRequest("POST", "/metal-jax/service/metal/front/test/hello.xml");
+		MockHttpServletRequest httpRequest = new MockHttpServletRequest("POST", "/metal-jax/service/metal/front/Test/hello.xml");
 		httpRequest.setServletPath("/service");
-		httpRequest.setPathInfo("/metal/front/test/hello.xml");
+		httpRequest.setPathInfo("/metal/front/Test/hello.xml");
 		httpRequest.setContent(IOUtils.toByteArray(source("serviceRequest.xml")));
 		httpRequest.setContentType(HttpContentType.XML.contentType);
 		
