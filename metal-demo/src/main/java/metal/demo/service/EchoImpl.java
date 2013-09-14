@@ -9,12 +9,12 @@ package metal.demo.service;
 
 import org.springframework.stereotype.Service;
 
-import metal.demo.model.HelloModel;
+import metal.demo.model.Hello;
 
 @Service("metal.demo.service.EchoService")
 public class EchoImpl implements EchoService {
 	
-	public HelloModel hello(HelloModel model) {
+	public Hello hello(Hello model) {
 		model.setName1("echo: " + model.getName1());
 		model.setName2("echo: " + model.getName2());
 		model.setName3("echo: " + model.getName3());

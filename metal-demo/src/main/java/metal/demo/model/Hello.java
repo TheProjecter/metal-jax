@@ -14,7 +14,7 @@ import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement(name = "hello")
-public class HelloModel implements Serializable {
+public class Hello implements Serializable {
 	
 	@NotNull
 	@Size(min = 2, max = 16)

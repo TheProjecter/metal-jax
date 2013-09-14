@@ -9,12 +9,12 @@ package metal.demo.service;
 
 import metal.core.mop.annotation.Method;
 import metal.core.mop.annotation.Service;
-import metal.demo.model.HelloModel;
+import metal.demo.model.Hello;
 
 @Service(path="/metal/demo/Echo")
 public interface EchoService {
 	
 	@Method(params={"model"})
-	HelloModel hello(HelloModel model);
+	Hello hello(Hello model);
 	
 }
