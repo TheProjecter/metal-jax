@@ -3,11 +3,14 @@
 	<fieldset class="expanded">
 		<legend>Hello Form</legend>
 		<table class="fieldset">
-			<tr><td><label for="name1">Name 1:</label></td><td><input name="name1" type="text"/></td></tr>
-			<tr><td><label for="name2">Name 2:</label></td><td><input name="name2" type="text"/></td></tr>
-			<tr><td><label for="name3">Name 3:</label></td><td><textarea name="name3"></textarea></td></tr>
-			<tr><td></td><td><button name="submit" type="submit">Submit</button><button name="clear" type="reset">Clear</button></td></tr>
+			<thead><tr><td colspan="2"></td></tr></thead>
+			<tbody>
+				<tr><td><label for="name1">Name 1:</label></td><td><input name="name1" type="text"/></td></tr>
+				<tr><td><label for="name2">Name 2:</label></td><td><input name="name2" type="text"/></td></tr>
+				<tr><td><label for="name3">Name 3:</label></td><td><textarea name="name3"></textarea></td></tr>
+				<tr><td></td><td><button name="submit" type="submit">Submit</button><button name="clear" type="reset">Clear</button></td></tr>
+			</tbody>
+			<tfoot><tr><td colspan="2"><div id="result"></div></td></tr></tfoot>
 		</table>
-		<div id="result"></div>
 	</fieldset>
 </form>

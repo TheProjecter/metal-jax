@@ -13,17 +13,17 @@ function initClass() {
 
 //@private
 function initObject(object) {
-	object.scroll = object.bind(scroll);
+	object.scroll = object.bind(null, scroll);
 	object.compare = System.callback.call(object, compare);
 	object.rows = System.copyArray(object.nodes["contentRows"].rows);
 	for (var i = 0; i < object.rows.length; i++) {
-		object.bind(toggleRow, object.rows[i], "click");
+		object.bind("click", toggleRow, object.rows[i]);
 	}
 	for (var i = 0; i < object.nodes["headerRow"].cells.length; i++) {
 		var headerCell = object.nodes["headerRow"].cells[i];
 		if (headerCell.className) {
 			headerCell.firstChild.className = _sortable_;
-			object.bind(sortColumn, headerCell, "click");
+			object.bind("click", sortColumn, headerCell);
 		}
 	}
 }

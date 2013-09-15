@@ -1,15 +1,11 @@
 /**
  * @service Echo
- * @imports model.HelloModel
  * @imports model.Hello
  * 
- * @setting service.path=/metal/demo/echo
+ * @setting service.path=/metal/demo/Echo
  */
 
 //@public
-function hello(model, callback) {
-//	/metal/demo/echo/hello.xml?model.name1=n1&model.name2=n2&model.name3=n3	
-	
-	var source = initSource.call(this, new HelloModel(model), "hello", Hello);
-	call.call(this, source, callback);
+function hello(model) {
+	callService(this, "hello", {model: new Hello(model)});
 }

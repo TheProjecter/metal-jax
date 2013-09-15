@@ -1,8 +1,0 @@
-/**
- * @resource Bar
- * @setting resource.type=txt
- */
-
-//@static
-function parseModel(source) {
-}

@@ -18,7 +18,7 @@ function initNode(object, node) {
 		object.nodes["fieldset"] = node;
 		break;
 	case "legend":
-		object.bind(toggleForm, node, "click");
+		object.bind("click", toggleForm, node);
 		break;
 	case "label":
 		node.htmlFor = object.nodes["form"].name.concat(".", node.htmlFor);

@@ -228,7 +228,7 @@ $public.loadResource = function loadResource(name, clazz, callback) {
 		_pendingCount++;
 		var source = putResourceHandle(name, clazz, this);
 		log("debug", "request to load resource '${0}:${1}' from context '${2}'", name, source.resourceType, this.getClass().getName());
-		System.loadback(source, handleSource);
+		System.loadback(source, handleResponse);
 	} catch (ex) {
 		_pendingCount--;
 		source.error = ex.message;
@@ -260,7 +260,7 @@ $public.loadClass = function loadClass(name, callback) {
 		_pendingCount++;
 		var source = putClassHandle(name, this);
 		log("debug", "request to load class '${0}' from context '${1}'", name, this.getClass().getName());
-		loadback(source, handleSource);
+		loadback(source, handleResponse);
 	} catch (ex) {
 		_pendingCount--;
 		source.error = ex.message;
@@ -289,7 +289,7 @@ $private.waitFor = function waitFor(callback) {
 	}
 };
 
-$private.handleSource = function handleSource(source) {
+$private.handleResponse = function handleResponse(source) {
 	if (source.content) {
 		log("debug", "response for '${name}:${resourceType}' from ${url}", source);
 		try {

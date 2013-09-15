@@ -171,8 +171,8 @@ function toggleEvent(event, target, callback, positive) {
 }
 
 //@public
-function bind(action, node, event) {
-	var binding = System.callback.call(this, dispatch, action, node);
+function bind(event, callback, node) {
+	var binding = System.callback.call(this, dispatch, callback, node);
 	if (node && event) toggleEvent(event, node, binding);
 	return binding;
 }

@@ -6,7 +6,7 @@
 function initObject(object, node) {
 	object.nodes.button;
 	object.nodes.label.innerHTML += " - Button.jx";
-	object.bind(hello, object.nodes.button, "click");
+	object.bind("click", hello, object.nodes.button);
 }
 
 //@private

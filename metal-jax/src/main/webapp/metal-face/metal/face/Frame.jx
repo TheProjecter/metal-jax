@@ -22,7 +22,7 @@ function initObject(object) {
 		case "rightTop":
 		case "right":
 		case "rightBottom":
-			object.bindings[node.id] = object.bind(dispatch, node, "mousedown");
+			object.bindings[node.id] = object.bind("mousedown", dispatch, node);
 			break;
 		}
 	}

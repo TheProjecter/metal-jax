@@ -1,26 +1,30 @@
 /**
  * @face HelloForm
  * @extends metal.face.Form
- * @imports metal.jax.System
  * @imports service.Echo
  */
 
 //@private
-function initObject(object) {
-	object.bind(submit, object.nodes["submit"], "click");
-	object.update = System.callback.call(object, update);
+function initObject(form) {
+	form.echo = new Echo(form);
+	form.echo.bind("hello", update);
+	form.bind("click", submit, form.nodes["submit"]);
 }
 
 //@private
 function submit() {
 	this.nodes.result.innerHTML = "submitting...";
-	Echo.hello(this, update);
+	this.echo.hello(this);
 }
 
 //@private
-function update(model) {
-	this.nodes.result.innerHTML = "updated";
-	for (var name in this.inputs) {
-		this.set(name, model.get(name));
+function update(model, error) {
+	if (error) {
+		this.nodes.result.innerHTML = "error: " + error;
+	} else {
+		this.nodes.result.innerHTML = "updated";
+		for (var name in this.inputs) {
+			this.set(name, model.result[name]);
+		}
 	}
 }
