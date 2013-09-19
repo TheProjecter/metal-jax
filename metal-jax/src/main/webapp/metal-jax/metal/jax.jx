@@ -31,6 +31,7 @@
 					{ type:"context", base:"metal.jax.Context" },
 					{ type:"resource", base:"metal.jax.Resource" },
 					{ type:"face", base:"metal.jax.Face" },
+					{ type:"model", base:"metal.jax.Model" },
 					{ type:"service", base:"metal.jax.Service" }
 				]
 			}
@@ -76,7 +77,9 @@
 		
 		function parseSource(source) {
 			if (source.content) {
+				source.scope.$private = source.scope;
 				$.call(source);
+				source.$class = source.scope.Context;
 				source.scope.compile = $;
 				source.scope.$source = source;
 				source.scope.loadback = loadback;
@@ -204,13 +207,6 @@
 	})();
 	
 	function $() {
-		this.scope.$private = this.scope;
-		this.scope.$static.$static = this.scope.$static;
-		this.scope.$static.$public = this.scope.$public;
-		this.scope.$static.$protected = this.scope.$protected;
-		this.scope.$protected.$static = this.scope.$static;
-		this.scope.$protected.$public = this.scope.$public;
-		this.scope.$protected.$protected = this.scope.$protected;
 		with (this.scope.$static) {
 			with (this.scope.$protected) {
 				with (this.scope.$private) {
@@ -219,11 +215,6 @@
 				}
 			}
 		}
-		this.$class = this.scope[this.baseName];
-		this.scope.$class = this.$class;
-		this.scope.$static.$class = this.$class;
-		this.scope.$public.$class = this.$class;
-		this.scope.$protected.$class = this.$class;
 	}
 	
 })();

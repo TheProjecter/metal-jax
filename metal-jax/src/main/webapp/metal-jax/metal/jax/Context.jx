@@ -359,6 +359,7 @@ $private._classHeaderRE_ = /^\s*\/\*\*([\S\s]*?)\*\//;
 $private._classSettingRE_ = /@(setting|source|stereotype)[\t ]+([\S\t ]*\S+)[\t ]*$|@([a-zA-Z]+)[\t ]+(\S+)[\t ]*([\S\t ]+)?[\t ]*$/gm;
 $private.parseModel = function parseModel(source) {
 	source.scope = { $setting:{}, $imports:{}, $requires:{}, $static:{}, $protected:{}, $public:{} };
+	source.scope.$private = source.scope;
 	source.scope.$context = source.$context;
 	var match = _classHeaderRE_.exec(source.content);
 	if (match) {
@@ -433,6 +434,7 @@ $private.parseModel = function parseModel(source) {
 		formatText(_classFooter_, source.name)
 	);
 	compile.call(source);
+	source.$class = source.scope[source.baseName];
 };
 
 $static.parseSourceName = function parseSourceName(name, base) {
@@ -605,6 +607,7 @@ $private.flush_notifyClass = function flush_notifyClass(source) {
 };
 
 $private.flush_loadResource = function flush_loadResource(source) {
+	if (_busyCount) return;
 	for (var name in source.scope.$imports) {
 		if (name == source.scope.$imports[name] && !source.scope[name]) {
 			source.scope[name] = source.$context.findClass(name, true);
@@ -679,18 +682,33 @@ $private.flush_notifyContext = function flush_notifyContext(source) {
 };
 
 $private.initClassModel = function initClassModel(source, superSource) {
+	source.scope.$private.$class = source.$class;
+	source.scope.$protected.$class = source.$class;
+	source.scope.$static.$class = source.$class;
+	source.scope.$public.$class = source.$class;
+	source.scope.$protected.$protected = source.scope.$protected;
+	source.scope.$protected.$static = source.scope.$static;
+	source.scope.$protected.$public = source.scope.$public;
+	source.scope.$static.$protected = source.scope.$protected;
+	source.scope.$static.$static = source.scope.$static;
+	source.scope.$static.$public = source.scope.$public;
+	source.scope.$super = {};
 	if (superSource) {
-		source.scope.$super = copyMember({}, superSource.scope.$public);
+		copyMember(source.scope.$super, superSource.scope.$protected);
+		source.scope.$super.$protected = source.scope.$super;
 		source.scope.$super.$static = copyMember({}, superSource.scope.$static);
-		source.scope.$super.$protected = copyMember({}, superSource.scope.$protected);
+		source.scope.$super.$public = copyMember({}, superSource.scope.$public);
 		copyMember(source.scope.$protected, source.scope.$super.$protected);
 		copyMember(source.scope.$static, source.scope.$super.$static);
 		source.$class.prototype = new superSource.$class(superSource.$class);
-		copyMember(source.$class.prototype, source.scope.$super);
+		copyMember(source.$class.prototype, source.scope.$super.$public);
+		source.scope.$protected.$super = source.scope.$super.$protected;
+		source.scope.$static.$super = source.scope.$super.$static;
+		source.scope.$public.$super = source.scope.$super.$public;
 	}
 	copyMember(source.$class, source.scope.$static);
 	copyMember(source.$class.prototype, source.scope.$public, true);
-	copyMember(source.scope.$public, source.scope.$super);
+	copyMember(source.scope.$public, source.scope.$super.$public);
 	if (source.stereotype == "context") {
 		source.$context = source.scope.$context = new source.$class(source.$class);
 		putClassHandle(source);
