@@ -47,9 +47,11 @@ function parseResource(source) {
 	case "properties":
 		source.model = System.parseProperties(source.content);
 		break;
+	default:
+		source.model = source.content;
 	}
 	this.$static.parseModel(source, source.model);
-	if (source.model) delete source.content;
+	delete source.content;
 }
 
 //@static

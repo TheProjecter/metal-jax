@@ -211,7 +211,7 @@ $public.findResource = function findResource(name, clazz, positive) {
 	var source = getResourceHolder(clazz)[name];
 	if (source) {
 		if (!source.error) {
-			return source.model || source.content;
+			return source.model;
 		} else {
 			var msg = "resource '${name}:${resourceType}' was not loaded: ${error}";
 			log("error", msg, source);
