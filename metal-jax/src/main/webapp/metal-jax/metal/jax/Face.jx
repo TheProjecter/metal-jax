@@ -173,13 +173,13 @@ function toggleEvent(event, target, callback, positive) {
 //@public
 function bind(event, callback, node) {
 	var binding = System.callback.call(this, dispatch, callback, node);
-	if (node && event) toggleEvent(event, node, binding);
+	if (event && node) toggleEvent(event, node, binding);
 	return binding;
 }
 
 //@private
-function dispatch(action, node, event) {
-	var status = action.call(this, node, event);
+function dispatch(callback, node, event) {
+	var status = callback.call(this, node, event);
 	if (status) return true;
 	
 	/*stop propagation*/
