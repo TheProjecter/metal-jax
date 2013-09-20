@@ -1,6 +1,6 @@
 /**
  * @class Resource
- * @imports Context
+ * @imports System
  * 
  * @setting resource.base=
  * @setting resource.module=
@@ -27,6 +27,29 @@ function findResource(name, positive) {
 //@static
 function fromResource(name) {
 	return new this(this.findResource(name, true));
+}
+
+//@static
+function parseResource(source) {
+	switch (source.resourceType) {
+	case "json":
+		source.model = System.parseJSONFromText(source.content);
+		break;
+	case "xml":
+		source.model = System.parseJSONFromXML(source.content.documentElement);
+		break;
+	case "html":
+		source.model = System.parseHTML(source.content);
+		break;
+	case "csv":
+		source.model = System.parseCSV(source.content, source.$class.$("resource.content.delimiter", "\t"));
+		break;
+	case "properties":
+		source.model = System.parseProperties(source.content);
+		break;
+	}
+	this.$static.parseModel(source, source.model);
+	if (source.model) delete source.content;
 }
 
 //@static

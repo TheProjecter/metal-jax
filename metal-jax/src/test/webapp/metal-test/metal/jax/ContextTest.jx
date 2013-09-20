@@ -46,6 +46,7 @@ function test_classSetting() {
 	assertEquals($super, $private.$super);
 	assertEquals($super.$protected, $private.$super.$protected);
 	assertEquals($super.$static, $private.$super.$static);
+	assertEquals($super.$public, $private.$super.$public);
 	
 	assertEquals($("classLoader"), Context.getName());
 	assertEquals($("classLoader1"), Context.getName());

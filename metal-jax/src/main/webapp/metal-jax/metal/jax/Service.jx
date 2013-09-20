@@ -4,7 +4,6 @@
  * 
  * @setting service.base=${baseURL}
  * @setting service.module=service
- * @setting service.resourceType=xml
  * 
  * @copyright Jay Tang 2012
  * All rights reserved. This program and the accompanying materials
@@ -25,29 +24,29 @@ function bind(action, callback) {
 }
 
 //@protected
-function callService(service, action, model) {
+function callService(service, action, model, clazz) {
 	try {
-		var source = initServiceHandle(service, action, model);
-		log("debug", "request to call remote '${0}:${1}'", source.name, source.resourceType);
+		var source = initServiceHandle(service, action, model, clazz);
+		log("debug", "request to call service '${name}:${resourceType}'", source);
 		System.loadback(source, handleResponse);
 	} catch (ex) {
 		source.error = ex.message;
-		log("error", "failed to load remote '${name}:${resourceType}': ${error}", source);
-		service.callbacks[action].call(service.caller, null, source.error);
+		log("error", "failed to call service '${name}:${resourceType}': ${error}", source);
+		service.callbacks.error.call(service.caller, source.error);
 	}
 }
 
 //@private
-function initServiceHandle(service, action, model) {
-	var source = {};
+function initServiceHandle(service, action, model, clazz) {
+	var source = { "$class": clazz };
 	source.service = service;
 	source.action = action;
-	source.input = "model.name1=a1&model.name2=b2&model.name3=c3";
+	source.input = "model.name1=a1&model.name2=b2&model.name3=c3"; // marshal(model)
 	
 	source.name = service.getClass().getName();
 	source.base = service.getClass().$("service.base");
 	source.module = service.getClass().$("service.module");
-	source.resourceType = service.getClass().$("service.resourceType");
+	source.resourceType = clazz.$("resource.type");
 	source.path = service.getClass().$("service.path") || source.name.split(".").join("/");
 	source.path = source.path.concat("/", source.action, ".", source.resourceType);
 	return source;
@@ -58,7 +57,7 @@ function handleResponse(source) {
 	if (source.content) {
 		log("debug", "response for '${name}:${resourceType}' from ${url}", source);
 		try {
-			parseResponse(source);
+			source.$class.call("parseResource", source);
 		} catch (ex) {
 			source.error = ex.message;
 			log("error", "failed to parse '${name}:${resourceType}' from ${url}: ${error}", source);
@@ -70,18 +69,9 @@ function handleResponse(source) {
 	if (source.status < 100) {
 		source.error = source.error || "bad response: ".concat(source.status);
 	}
-	source.service.callbacks[source.action].call(source.service.caller, source.model, source.error);
-}
-
-//@private
-function parseResponse(source) {
-	switch (source.resourceType) {
-	case "json":
-		source.model = System.parseJSONFromText(source.content);
-		break;
-	case "xml":
-		source.model = System.parseJSONFromXML(source.content.documentElement);
-		break;
+	if (source.error) {
+		source.service.callbacks.error.call(source.service.caller, source.error);
+	} else {
+		source.service.callbacks[source.action].call(source.service.caller, new source.$class(source.model.result));
 	}
-	if (source.model) delete source.content;
 }
