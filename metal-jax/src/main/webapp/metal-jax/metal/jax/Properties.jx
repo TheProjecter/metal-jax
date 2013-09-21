@@ -1,8 +1,8 @@
 /**
- * @resource Messages
- * @extends Properties
+ * @resource Properties
  * 
- * @setting resource.module=messages
+ * @setting resource.module=conf
+ * @setting resource.type=properties
  * 
  * @copyright Jay Tang 2012
  * All rights reserved. This program and the accompanying materials
@@ -10,3 +10,12 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  */
+
+//@protected
+function initResource(target, source) {
+	for (var name in source.model) {
+		if (!(name in target.$setting)) {
+			target.$setting[name] = source.model[name];
+		}
+	}
+}

@@ -14,6 +14,10 @@
  * http://www.eclipse.org/legal/epl-v10.html
  */
 
+//@protected
+function initResource(target, source) {
+}
+
 //@static
 function loadResource(name, callback) {
 	this.getContext().loadResource(name, this, callback);

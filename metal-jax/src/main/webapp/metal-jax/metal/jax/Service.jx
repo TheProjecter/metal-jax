@@ -71,6 +71,8 @@ function handleResponse(source) {
 	}
 	if (source.error) {
 		source.service.callbacks.error.call(source.service.caller, source.error);
+	} else if (source.model.messages) {
+		source.service.callbacks.error.call(source.service.caller, source.model.messages);
 	} else {
 		source.service.callbacks[source.action].call(source.service.caller, new source.$class(source.model.result));
 	}

@@ -613,9 +613,7 @@ $private.flush_initResource = function flush_initResource(source) {
 				var clazz = source.scope[source.scope.$requires[name]];
 				if (source.$context.findResource(name, clazz, true)) {
 					var handle = getResourceHandle(clazz);
-					if (handle.scope.initResource) {
-						handle.scope.initResource(source.scope, handle.resources[name]);
-					}
+					handle.scope.$protected.initResource(source.scope, handle.resources[name]);
 				}
 			}
 		}
