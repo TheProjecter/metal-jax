@@ -105,7 +105,8 @@ function requestSameDomain(source, callback) {
 	} else {
 		throwError("XHR not supported");
 	}
-	source.url = [source.base, source.module, source.path].join("/");
+	var path = source.path.charAt(0) == "/" ? source.path : "/".concat(source.path);
+	source.url = [source.base, source.module].join("/").concat(path);
 	switch (requestMethod(source)) {
 	case "GET":
 		request.open("GET", requestURL(source), true);
