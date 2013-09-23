@@ -18,9 +18,11 @@ public enum HttpContentType {
 	private HttpContentType(String... types) { this.types = types; contentType = types[0]; }
 	private static final HttpContentType[] values = HttpContentType.values();
 	public static HttpContentType typeOf(String contentType, HttpContentType defaultType) {
-		for (HttpContentType value : values) {
-			for (String type : value.types) {
-				if (type.equals(contentType)) return value;
+		if (contentType != null) {
+			for (HttpContentType value : values) {
+				for (String type : value.types) {
+					if (contentType.indexOf(type) >= 0) return value;
+				}
 			}
 		}
 		return defaultType;
