@@ -1,11 +1,10 @@
 /**
- * @class Hello
+ * @model Hello
  */
-
-//@static
-function parseModel(source) {
-}
 
 //@private
 function initObject(object, model) {
+	object.set("name1", model.name1);
+	object.set("name2", model.name2);
+	object.set("name3", model.name3);
 }

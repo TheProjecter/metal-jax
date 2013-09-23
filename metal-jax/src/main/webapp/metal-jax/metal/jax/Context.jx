@@ -303,7 +303,7 @@ $private.handleResponse = function handleResponse(source) {
 			log("error", "failed to parse '${name}:${resourceType}' from ${url}: ${error}", source);
 		}
 	} else {
-		if (!source.error) source.error = "empty content";
+		if (!source.error) source.error = "empty response content";
 		log("error", "failed to load '${name}:${resourceType}' from ${url}: ${error}", source);
 	}
 	if (source.status < 100) {

@@ -58,14 +58,19 @@ function copyArray(items) {
 var _originRE_ = /^([^\/:]+:\/\/[^\/]*)/;
 
 //@static
-function loadback(source, callback) {
-	var origin = _originRE_.exec(source.base)[1];
+function isSameDomain(url) {
+	var origin = _originRE_.exec(url)[1];
 	if (origin) {
-		var action = (origin == $("baseOrigin")) ? loadSameDomain : loadCrossDomain;
-		action.call(this, source, callback);
+		return origin == $("baseOrigin");
 	} else {
-		throwError("invalid URL: ${0}", source.base);
+		throwError("invalid URL: ${0}", url);
 	}
+}
+
+//@static
+function loadback(source, callback) {
+	var action = isSameDomain(source.base) ? loadSameDomain : loadCrossDomain;
+	action.call(this, source, callback);
 }
 
 //@private
@@ -113,7 +118,7 @@ function requestSameDomain(source, callback) {
 		break;
 	case "POST":
 		request.open("POST", source.url, true);
-		request.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+		request.setRequestHeader("Content-Type", source.contentType || "application/x-www-form-urlencoded");
 		request.setRequestHeader("Content-Length", requestInput(source).length);
 		break;
 	}

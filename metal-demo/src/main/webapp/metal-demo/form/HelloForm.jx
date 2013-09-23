@@ -2,12 +2,14 @@
  * @face HelloForm
  * @extends metal.face.Form
  * @imports service.Echo
+ * @imports metal.jax.System
  */
 
 //@private
 function initObject(form) {
 	form.echo = new Echo(form);
 	form.echo.bind("hello", update);
+	form.echo.bind("error", error);
 	form.bind("click", submit, form.nodes["submit"]);
 }
 
@@ -18,13 +20,19 @@ function submit() {
 }
 
 //@private
-function update(model, error) {
-	if (error) {
-		this.nodes.result.innerHTML = "error: " + error;
-	} else {
-		this.nodes.result.innerHTML = "updated";
-		for (var name in this.inputs) {
-			this.set(name, model.result[name]);
-		}
+function update(model) {
+	this.nodes.result.innerHTML = "updated";
+	for (var name in this.inputs) {
+		this.set(name, model.get(name));
 	}
+}
+
+//@private
+function error(messages) {
+	var message = "<ul>";
+	for (var i = 0; i < messages.length; i++) {
+		message = message.concat("<li>", System.formatText("Code: ${code}; Detail: ${detail}", messages[i]), "</li>");
+	}
+	message = message.concat("</ul>");
+	this.nodes.result.innerHTML = "error: " + message;
 }
