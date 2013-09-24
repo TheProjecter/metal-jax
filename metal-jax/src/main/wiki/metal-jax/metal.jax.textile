@@ -69,7 +69,7 @@ Source stereotypes define default base class for each type.
 
 table(grid).
 |_.Name |_.Value |_.Comments |
-| class | @metal.jax.Object@ | Class source. |
+| class | @metal.jax.BaseObject@ | Class source. |
 | context | @metal.jax.Context@ | Context source. |
 | face | @metal.jax.Face@ | Face source. |
 | html | @metal.jax.Face@ | HTML source. |

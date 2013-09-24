@@ -17,6 +17,7 @@ function initClass() {
 	Array.prototype.indexOf = Array.prototype.indexOf || indexOf;
 	System.splitPath = Context.splitPath;
 	System.resolvePath = Context.resolvePath;
+	System.isSameDomain = Context.isSameDomain;
 	System.formatText = Context.formatText;
 	System.parseBaseName = Context.parseBaseName;
 	System.parseSourceName = Context.parseSourceName;
@@ -54,22 +55,9 @@ function copyArray(items) {
 	return result;
 }
 
-//@private
-var _originRE_ = /^([^\/:]+:\/\/[^\/]*)/;
-
-//@static
-function isSameDomain(url) {
-	var origin = _originRE_.exec(url)[1];
-	if (origin) {
-		return origin == $("baseOrigin");
-	} else {
-		throwError("invalid URL: ${0}", url);
-	}
-}
-
 //@static
 function loadback(source, callback) {
-	var action = isSameDomain(source.base) ? loadSameDomain : loadCrossDomain;
+	var action = System.isSameDomain(source.base) ? loadSameDomain : loadCrossDomain;
 	action.call(this, source, callback);
 }
 

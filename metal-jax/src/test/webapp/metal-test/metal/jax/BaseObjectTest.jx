@@ -1,6 +1,6 @@
 /**
- * @test ObjectTest
- * @imports metal.jax.Object
+ * @test BaseObjectTest
+ * @imports metal.jax.BaseObject
  * @setting hello=hello
  */
 
@@ -16,12 +16,12 @@ function test_initObject() {
 
 //@public
 function test_initObjectCall() {
-	assertEquals(getName(), ObjectTest.call("getName"));
+	assertEquals(getName(), BaseObjectTest.call("getName"));
 }
 
 //@public
 function test_getClass() {
-	assertEquals(ObjectTest, this.getClass());
+	assertEquals(BaseObjectTest, this.getClass());
 }
 
 //@public
@@ -31,30 +31,30 @@ function test_getSuperClass() {
 
 //@public
 function test_getName() {
-	assertEquals("metal.jax.ObjectTest", this.getClass().getName());
+	assertEquals("metal.jax.BaseObjectTest", this.getClass().getName());
 }
 
 //@public
 function test_$() {
 	assertEquals("hello", $("hello"));
-	assertEquals("hello", ObjectTest.$("hello"));
+	assertEquals("hello", BaseObjectTest.$("hello"));
 }
 
 //@public
 function test_newObject() {
-	assertEquals(Object, new Object().getClass());
+	assertEquals(BaseObject, new BaseObject().getClass());
 }
 
 //@public
 function test_get() {
-	var object = new Object();
+	var object = new BaseObject();
 	assertEquals(undefined, object.get());
 	assertEquals(undefined, object.get("hello"));
 }
 
 //@public
 function test_set() {
-	var object = new Object();
+	var object = new BaseObject();
 	assertEquals(undefined, object.set());
 	assertEquals(undefined, object.set("hello"));
 	assertEquals(undefined, object.get("hello"));

@@ -11,7 +11,7 @@ $static.getSuperClass = function getSuperClass() { return null; };
 $static.getContext = function getContext() { return $context; };
 $static.getName = function getName() { return "metal.jax.Context"; };
 $private.Context = function Context() { return $protected.call(this, arguments); };
-$imports["Object"] = "metal.jax.Object";
+$imports["BaseObject"] = "metal.jax.BaseObject";
 $imports["Logger"] = "metal.jax.Logger";
 $imports["System"] = "metal.jax.System";
 $imports["BaseContext"] = $setting["baseContext"];
@@ -45,12 +45,12 @@ $private.initContext = function initContext() {
 };
 
 $protected.call = function call(target, args) {
-	if (target instanceof String && target in this.$static) {
+	if (args && args.length == 1 && args[0] == this.$class) {
+	} else if (target instanceof String && target in this.$static) {
 		return this.$static[target].apply(this.$static, args);
-	} else if (target instanceof Object && args && args.length == 1 && args[0] == target.getClass()) {
-	} else if (target instanceof Object) {
+	} else if (target instanceof BaseObject) {
 		Array.prototype.unshift.call(args, target);
-		callSuper("initObject", target.getClass(), this.$protected, args);
+		callSuper("initObject", this.$class, this.$protected, args);
 	}
 	return target;
 };
@@ -393,13 +393,13 @@ $private.parseModel = function parseModel(source) {
 	}
 	source.stereotype = source.stereotype || "class";
 	source.baseName = parseBaseName(source.name);
-	if (!source.superBase && source.name != $imports.Object) {
+	if (!source.superBase && source.name != $imports.BaseObject) {
 		var setting = findStereotypeSetting(source.stereotype, source.$context);
-		var superName = setting && setting["base"] || $imports.Object;
+		var superName = setting && setting["base"] || $imports.BaseObject;
 		source.superBase = parseBaseName(superName);
 		source.scope.$imports[source.superBase] = superName;
 	}
-	if (!source.superBase || source.name == $imports.Object) {
+	if (!source.superBase || source.name == $imports.BaseObject) {
 		source.superBase = "null";
 	}
 	source.content = formatText(_classHeader_, source.name).concat(
@@ -570,7 +570,7 @@ $private.flush_notifyClass = function flush_notifyClass(source) {
 			for (var name in source.scope.$imports) {
 				flush_notifyClass(getClassHandle(source.scope[name]));
 			}
-		} else if (source.name == $imports.Object) {
+		} else if (source.name == $imports.BaseObject) {
 			source.scope.$protected.throwError = $protected.throwError;
 			source.scope.$protected.call = $protected.call;
 			source.scope.$protected.log = $protected.log;

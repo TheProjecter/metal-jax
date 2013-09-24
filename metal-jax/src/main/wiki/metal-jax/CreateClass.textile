@@ -10,13 +10,13 @@ The framework makes it very easy to create class-based javascript code.
 
 h1. Summary
 
-Object sets up the base behavior inherited by all classes.
+BaseObject sets up the base behavior inherited by all classes.
 
 The framework also recognizes a few lifecycle callback methods.
 
 h1. Detail
 
-h2. Object Methods
+h2. BaseObject Methods
 
 table(grid).
 |_.Name |_.Scope |_.Comments |

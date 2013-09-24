@@ -15,5 +15,13 @@ function read(type, input) {
 
 //@static
 function write(value, format) {
-	return "<request><model><name1>hello1</name1><name2>hello2</name2><name3>hello3</name3></model></request>";
+	switch (format) {
+	case "xml":
+		var tag = value.getClass().$("xmlRootElement");
+		return "<".concat(tag, ">", marshal(value.$), "</", tag, ">");
+	case "json":
+	case "form":
+	default:
+		return "<request><model><name1>hello1</name1><name2>hello2</name2><name3>hello3</name3></model></request>";
+	}
 }

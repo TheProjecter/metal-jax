@@ -27,7 +27,7 @@
 			setting: {
 				source: [{ base:"${bootURL}", module:"${bootModule}", includes:"^metal.jax" }],
 				stereotype: [
-					{ type:"class", base:"metal.jax.Object" },
+					{ type:"class", base:"metal.jax.BaseObject" },
 					{ type:"context", base:"metal.jax.Context" },
 					{ type:"resource", base:"metal.jax.Resource" },
 					{ type:"face", base:"metal.jax.Face" },
@@ -85,6 +85,7 @@
 				source.scope.loadback = loadback;
 				source.scope.$static.splitPath = splitPath;
 				source.scope.$static.resolvePath = resolvePath;
+				source.scope.$static.isSameDomain = isSameDomain;
 				source.scope.initClass_();
 			} else {
 				throw Error("failed to load URL: " + source.url + ", error: " + source.error);
@@ -99,14 +100,18 @@
 			}
 		}
 		
-		function loadback(source, callback) {
-			var origin = _urlRE_.exec(source.base)[1];
+		function isSameDomain(url) {
+			var origin = _urlRE_.exec(url)[1];
 			if (origin) {
-				var action = (origin == $setting["baseOrigin"]) ? loadSameDomain : loadCrossDomain;
-				action.call(this, source, callback);
+				return origin == $setting["baseOrigin"];
 			} else {
-				throw Error("invalid URL: " + source.base);
+				throw Error("invalid URL: " + url);
 			}
+		}
+		
+		function loadback(source, callback) {
+			var action = isSameDomain(source.base) ? loadSameDomain : loadCrossDomain;
+			action.call(this, source, callback);
 		}
 		
 		function loadSameDomain(source, callback) {

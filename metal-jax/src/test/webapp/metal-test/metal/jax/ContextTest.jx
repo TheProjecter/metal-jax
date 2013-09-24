@@ -2,8 +2,8 @@
  * @test ContextTest
  * 
  * @imports metal.jax.Context
- * @imports metal.jax.Object
- * @imports metal.jax.Object Object2
+ * @imports metal.jax.BaseObject
+ * @imports metal.jax.BaseObject Object2
  * @imports .base baseContext
  * 
  * @setting classLoader=metal.jax.Context
@@ -11,7 +11,7 @@
  * @setting classLoader2=  ${classLoader}  ${classLoader}
  */
 
-$imports.Object3 = "metal.jax.Object";
+$imports.Object3 = "metal.jax.BaseObject";
 $setting["classLoader3"] = "${classLoader}";
 
 //@private
@@ -53,8 +53,8 @@ function test_classSetting() {
 	assertEquals($("classLoader2"), "  ".concat(Context.getName(), "  ", Context.getName()));
 	assertEquals($("classLoader3"), Context.getName());
 	
-	assertEquals(Object, Object2);
-	assertEquals(Object, Object3);
+	assertEquals(BaseObject, Object2);
+	assertEquals(BaseObject, Object3);
 }
 
 //@public
