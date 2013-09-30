@@ -14,13 +14,15 @@ function initClass() {
 	System.window = window;
 	System.document = window.document;
 	System.docHead = window.document.firstChild.firstChild;
-	Array.prototype.indexOf = Array.prototype.indexOf || indexOf;
 	System.splitPath = Context.splitPath;
 	System.resolvePath = Context.resolvePath;
 	System.isSameDomain = Context.isSameDomain;
 	System.formatText = Context.formatText;
 	System.parseBaseName = Context.parseBaseName;
 	System.parseSourceName = Context.parseSourceName;
+	Array.prototype.indexOf = Array.prototype.indexOf || indexOf;
+	Date.prototype.toISOString = Date.prototype.toISOString || toISOString;
+	
 }
 
 //@static
@@ -350,4 +352,21 @@ function formatHTML(message) {
 			return match;
 		}
 	});
+}
+
+//@static
+function toISOString() {
+	return System.formatText("${0}-${1}-${2}T${3}:${4}:${5}.${6}Z",
+			this.getUTCFullYear(), pad(this.getUTCMonth()+1, 2), pad(this.getUTCDate(), 2),
+			pad(this.getUTCHours(), 2), pad(this.getUTCMinutes(), 2), pad(this.getUTCSeconds(), 2),
+			pad(this.getUTCMilliseconds(), 3));
+}
+
+//@private
+function pad(number, digits) {
+	number = "".concat(number);
+	while (number.length < digits) {
+		number = "0" + number;
+	}
+	return number;
 }
