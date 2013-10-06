@@ -577,6 +577,8 @@ $private.flush_notifyClass = function flush_notifyClass(source) {
 		}
 		if (source.scope.initClass) {
 			source.scope.initClass();
+		} else if (source.scope.$protected.initClass) {
+			source.scope.$protected.initClass();
 		}
 		_busyCount--;
 		source.flushStatus = "endNotifyClass";

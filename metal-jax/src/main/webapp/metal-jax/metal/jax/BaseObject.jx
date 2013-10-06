@@ -11,7 +11,9 @@
 
 //@private
 function initClass() {
+	$class.$ = Context.$;
 	$static.$ = Context.$;
+	$class.extendsClass = Context.extendsClass;
 	$static.extendsClass = Context.extendsClass;
 }
 
