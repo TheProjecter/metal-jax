@@ -1,0 +1,57 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<artifactId>metal-jax-core</artifactId>
+	<packaging>war</packaging>
+
+	<parent>
+		<groupId>metal.jax</groupId>
+		<artifactId>metal-base</artifactId>
+		<version>1.0.0-SNAPSHOT</version>
+	</parent>
+
+	<dependencies>
+	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<artifactId>maven-install-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>webjar-install</id>
+						<phase>install</phase>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<artifactId>maven-jar-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>webjar-jar</id>
+						<phase>compile</phase>
+					</execution>
+					<execution>
+						<id>test-webjar-jar</id>
+						<phase>compile</phase>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<artifactId>maven-resources-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>webjar-resources</id>
+						<phase>process-resources</phase>
+					</execution>
+					<execution>
+						<id>test-webjar-resources</id>
+						<phase>process-resources</phase>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+
+</project>
