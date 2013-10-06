@@ -1,5 +1,0 @@
-legend { padding-left:16px; padding-right:4px; }
-fieldset { padding-bottom:5px; display:inline; }
-fieldset.collapsed .fieldset { display:none; }
-fieldset.collapsed legend { background: url(../../../images/plus.gif) no-repeat left 0px; }
-fieldset.expanded legend { background: url(../../../images/minus.gif) no-repeat left 0px; }

@@ -1,6 +1,0 @@
-.title { font: normal bold 30px arial,helvetica,sans-serif; }
-.author { font: normal bold 14px inherit; }
-h1 { font: normal bold 30px inherit; }
-h1, h2, h3, h4, h5, h6 { text-decoration: underline; }
-table.grid { border: 1px solid; border-collapse: collapse; }
-.grid th, .grid td { border: 1px solid; padding: 4px; }
