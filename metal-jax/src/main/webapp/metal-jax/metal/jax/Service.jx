@@ -1,8 +1,9 @@
 /**
  * @class Service
+ * @imports Request
  * @imports System
  * @imports metal.jax.mapper.XmlMapper
- * @imports Request
+ * @imports metal.jax.mapper.JsonMapper
  * 
  * @setting service.base=${baseURL}
  * @setting service.module=service
@@ -22,7 +23,8 @@
 //@private
 function initClass() {
 	this.mappers = {
-		xml: XmlMapper
+		xml: XmlMapper,
+		json: JsonMapper
 	};
 }
 

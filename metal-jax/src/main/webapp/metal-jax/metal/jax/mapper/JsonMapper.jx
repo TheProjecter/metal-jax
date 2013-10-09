@@ -1,5 +1,5 @@
 /**
- * @class XmlMapper
+ * @class JsonMapper
  * @extends Mapper
  * 
  * @copyright Jay Tang 2012
@@ -9,12 +9,9 @@
  * http://www.eclipse.org/legal/epl-v10.html
  */
 
-//@private
-var prolog = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>';
-
 //@static
 function write(value) {
-	return prolog.concat(marshalGeneric(value));
+	return marshal(value);
 }
 
 //@static
@@ -28,9 +25,11 @@ function marshal(value) {
 	case "map":
 		return marshalMap(value);
 	case "null":
-		return "";
+		return "null";
 	case "date":
-		return value.toISOString();
+		return "".concat(value.getTime());
+	case "string":
+		return "\"".concat(value, "\"");
 	default:
 		return "".concat(value);
 	}
@@ -43,47 +42,51 @@ function marshalGeneric(value) {
 	switch (type) {
 	case "object":
 		return wrap(typeName(value), result);
+	case "long":
+	case "date":
+		return wrap(type, result);
 	default:
-		return result ? wrap(type, result) : empty(type);
+		return result;
 	}
 }
 
 //@private
 function wrap(name, value) {
-	return "<".concat(name, ">", value, "</", name, ">");
-}
-
-//@private
-function empty(name) {
-	return "<".concat(name, "/>");
+	return "{\"".concat(name, "\":", value, "}");
 }
 
 //@private
 function marshalList(list) {
-	var result = "";
+	var result = "[", started;
 	for (var i = 0; i < list.length; i++) {
+		if (started) result = result.concat(",");
+		else started = true;
 		result = result.concat(marshalGeneric(list[i]));
 	}
-	return result;
+	return result.concat("]");
 }
 
 //@private
 function marshalMap(map) {
-	var result = "";
+	var result = "{", started;
 	for (var name in map) {
-		result = result.concat(wrap(name, marshalGeneric(map[name])));
+		if (started) result = result.concat(",");
+		else started = true;
+		result = result.concat("\"", name, "\":", marshalGeneric(map[name]));
 	}
-	return result;
+	return result.concat("}");
 }
 
 //@private
 function marshalObject(object) {
-	var result = "";
+	var result = "{", started;
 	for (var name in object.$) {
 		var value = object.$[name];
 		var generic = object.getClass().$("modelAttribute."+name) == "generic";
 		value = generic ? marshalGeneric(value) : marshal(value);
-		result = result.concat(wrap(name, value));
+		if (started) result = result.concat(",");
+		else started = true;
+		result = result.concat("\"", name, "\":", value);
 	}
-	return result;
+	return result.concat("}");
 }

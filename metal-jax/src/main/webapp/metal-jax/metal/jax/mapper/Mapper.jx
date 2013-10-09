@@ -1,6 +1,6 @@
 /**
  * @class Mapper
- * @imports System
+ * @imports metal.jax.System
  * 
  * @copyright Jay Tang 2012
  * All rights reserved. This program and the accompanying materials
@@ -13,11 +13,6 @@
 function initClass() {
 	this.MIN_INT = -Math.pow(2, 31);
 	this.MAX_INT = Math.pow(2, 31)-1;
-}
-
-//@static
-function read(type, input) {
-	
 }
 
 //@protected
