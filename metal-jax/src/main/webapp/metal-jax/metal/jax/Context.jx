@@ -15,8 +15,8 @@ $imports["BaseObject"] = "metal.jax.BaseObject";
 $imports["Logger"] = "metal.jax.Logger";
 $imports["System"] = "metal.jax.System";
 $imports["BaseContext"] = $setting["baseContext"];
-$imports["metal.jax.Messages"] = "metal.jax.Messages";
-$requires["metal.jax"] = "metal.jax.Messages";
+$imports["metal.jax.resource.Messages"] = "metal.jax.resource.Messages";
+$requires["metal.jax"] = "metal.jax.resource.Messages";
 
 $private.initClass_ = function initClass_() {
 	this.$source.classes[this.$source.name] = this.$source;
