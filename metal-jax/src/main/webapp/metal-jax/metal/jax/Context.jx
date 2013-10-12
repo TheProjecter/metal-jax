@@ -32,7 +32,7 @@ $private.initClass_ = function initClass_() {
 $private.initContext = function initContext() {
 	log("info", "metal.jax.init.bootContext", $setting);
 	if ($setting["baseModule"] == ".") {
-		log("warn", "metal.jax.init.baseModule.unspecified");
+		log("warn", "metal.jax.init.baseModule.default", $setting);
 	}
 	log("info", "metal.jax.init.baseContext", $setting);
 	log("info", "metal.jax.init.base", $setting);
