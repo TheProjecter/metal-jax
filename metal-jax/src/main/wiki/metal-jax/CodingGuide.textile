@@ -1,0 +1,26 @@
+<link type="text/css" rel="stylesheet" href="../styles/main.css"/>
+
+p(title). Coding Guide
+
+{toc:style=decimal}
+
+h1. Overview
+
+A laundry list of coding choices.
+
+h1. Summary
+
+Describes coding choices.
+
+See also:
+
+h1. Detail
+
+h2. Variable Naming
+
+table(grid).
+|_.Name |_.Comments |
+| _foo | private scope variable |
+| $foo | non-private scope variable |
+| &#95;FOO_ | private scope constant |
+| $FOO$ | non-private scope constant |

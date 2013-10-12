@@ -29,14 +29,14 @@
 				stereotype: [
 					{ type:"class", base:"metal.jax.BaseObject" },
 					{ type:"context", base:"metal.jax.Context" },
-					{ type:"resource", base:"metal.jax.Resource" },
 					{ type:"face", base:"metal.jax.Face" },
 					{ type:"model", base:"metal.jax.Model" },
+					{ type:"resource", base:"metal.jax.Resource" },
 					{ type:"service", base:"metal.jax.Service" }
 				]
 			}
 		};
-		var _urlRE_ = /(?:([^\/:]+:\/\/[^\/]*)?([^?#]+)?)(?:\?([^#]+))?(?:#(.+))?/;
+		var _URL_ = /(?:([^\/:]+:\/\/[^\/]*)?([^?#]+)?)(?:\?([^#]+))?(?:#(.+))?/;
 		
 		function main() {
 			parseSetting($setting);
@@ -47,13 +47,13 @@
 		}
 		
 		function parseSetting(setting) {
-			var parts = _urlRE_.exec(document.URLUnencoded||document.URL);
+			var parts = _URL_.exec(document.URLUnencoded||document.URL);
 			setting["baseOrigin"] = parts[1];
 			setting["baseScheme"] = parts[1].split(":")[0];
 			setting["baseURL"] = splitPath(parts[1] + parts[2], -1, -1);
 			var module = parts[3], base = parts[4];
 			var nodes = document.getElementsByTagName("script");
-			parts = _urlRE_.exec(resolvePath(nodes[nodes.length-1].src, setting["baseURL"] + "/"));
+			parts = _URL_.exec(resolvePath(nodes[nodes.length-1].src, setting["baseURL"] + "/"));
 			setting["bootOrigin"] = parts[1];
 			setting["bootURL"] = splitPath(parts[1] + parts[2], -2, -2);
 			setting["bootModule"] = splitPath(parts[2], -2, 1);
@@ -101,7 +101,7 @@
 		}
 		
 		function isSameDomain(url) {
-			var origin = _urlRE_.exec(url)[1];
+			var origin = _URL_.exec(url)[1];
 			if (origin) {
 				return origin == $setting["baseOrigin"];
 			} else {
@@ -185,9 +185,9 @@
 		}
 		
 		function resolvePath(path, base) {
-			if (!_urlRE_.exec(path)[1]) {
+			if (!_URL_.exec(path)[1]) {
 				if (path.charAt(0) == "/") {
-					path = _urlRE_.exec(base)[1].concat(path);
+					path = _URL_.exec(base)[1].concat(path);
 				} else {
 					base = splitPath(base, -1, -1);
 					path = base ? path ? base.concat("/", path) : base : path;
