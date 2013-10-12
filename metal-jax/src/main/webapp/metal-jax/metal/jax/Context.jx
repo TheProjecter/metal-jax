@@ -34,9 +34,13 @@ $private.initContext = function initContext() {
 	if ($setting["baseModule"] == ".") {
 		log("warn", "metal.jax.init.baseModule.default", $setting);
 	}
-	log("info", "metal.jax.init.baseContext", $setting);
+	if (BaseContext) {
+		log("info", "metal.jax.init.baseContext", $setting);
+	} else {
+		log("warn", "metal.jax.init.baseContext.fail", $setting);
+	}
 	log("info", "metal.jax.init.base", $setting);
-	if (BaseContext.main) {
+	if (BaseContext && BaseContext.main) {
 		BaseContext.main();
 	}
 };
@@ -461,7 +465,7 @@ $private.formatMember = function formatMember(match, memberTag, memberType, name
 };
 
 $private._NULL_ = {};
-$private._formatRE_ = /\$\{([^\s\}:]+)(:[^\}]*)?\}/g;
+$private._formatRE_ = /\$\{([^\s\}:|]+)([:|][^\}]*)?\}/g;
 $static.formatText = function formatText() {
 	var args = arguments;
 	var text = Array.prototype.shift.call(arguments);
@@ -471,14 +475,19 @@ $static.formatText = function formatText() {
 		var result = _NULL_;
 		if (argType != "object" && argType != "function" || args.length > 1) {
 			var idx = parseInt(name);
-			if (idx in args) return args[idx];
+			if (idx in args) return ensureValue(args[idx], value);
 		} else if (argType == "object") {
-			if (name in args[0]) return args[0][name];
+			if (name in args[0]) return ensureValue(args[0][name], value);
 		} else if (argType == "function") {
 			result = args[0].$(name, _NULL_);
 		}
-		return result != _NULL_ ? result : value ? value.substring(1) : match;
+		return result != _NULL_ ? ensureValue(result, value) : value ? value.substring(1) : match;
 	});
+};
+
+$private.ensureValue = function ensureValue(value, fallback) {
+	var solid = fallback && fallback.charAt(0) == "|";
+	return value || (solid && fallback.substring(1)) || value;
 };
 
 $private.flush = function flush() {
@@ -562,10 +571,10 @@ $private.flush_notifyClass = function flush_notifyClass(source) {
 		_busyCount++;
 		if (source.stereotype == "context") {
 			for (var name in source.scope.$imports) {
-				source.scope[name] = source.$context.findClass(source.scope.$imports[name], true);
-			}
-			for (var name in source.scope.$imports) {
-				flush_notifyClass(getClassHandle(source.scope[name]));
+				source.scope[name] = source.$context.findClass(source.scope.$imports[name]);
+				if (source.scope[name]) {
+					flush_notifyClass(getClassHandle(source.scope[name]));
+				}
 			}
 		} else if (source.name == $imports.BaseObject) {
 			source.scope.$protected.throwError = $protected.throwError;
@@ -627,7 +636,9 @@ $private.flush_initContext = function flush_initContext(source) {
 		source.flushStatus = "beginInitContext";
 		_busyCount++;
 		for (var name in source.scope.$imports) {
-			flush_initContext(getClassHandle(source.scope[name]));
+			if (source.scope[name]) {
+				flush_initContext(getClassHandle(source.scope[name]));
+			}
 		}
 		if (source.stereotype == "context") {
 			if (source.scope.initObject) {
@@ -644,7 +655,9 @@ $private.flush_notifyContext = function flush_notifyContext(source) {
 		source.flushStatus = "beginNotifyContext";
 		_busyCount++;
 		for (var name in source.scope.$imports) {
-			flush_notifyContext(getClassHandle(source.scope[name]));
+			if (source.scope[name]) {
+				flush_notifyContext(getClassHandle(source.scope[name]));
+			}
 		}
 		if (source.stereotype == "context") {
 			if (source.scope.initContext) {
