@@ -1,6 +1,5 @@
 /**
  * @context face
- * @imports metal.jax.Face
  * @requires metal.jax.Face ${base}
  * @source base=${baseURL} module=${baseModule} includes=[.]test[.]
  * @source base=${baseURL} module=${baseModule} includes=Test$
