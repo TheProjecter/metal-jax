@@ -1,7 +1,7 @@
 /**
  * @class Service
- * @imports Request
  * @imports System
+ * @imports metal.jax.core.Request
  * @imports metal.jax.mapper.XmlMapper
  * @imports metal.jax.mapper.JsonMapper
  * 
