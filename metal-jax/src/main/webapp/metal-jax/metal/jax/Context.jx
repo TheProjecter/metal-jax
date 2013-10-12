@@ -75,12 +75,12 @@ $static.extendsClass = function extendsClass(that) {
 	}
 };
 
-$static.$ = function $(name, value) {
+$static.$ = function $(name, value, solid) {
 	var clazz = this;
 	while (clazz) {
 		var source = getClassHandle(clazz);
 		if (name in source.scope.$setting) {
-			return source.scope.$setting[name];
+			return source.scope.$setting[name] || solid && value || source.scope.$setting[name];
 		}
 		clazz = clazz.getSuperClass();
 		if (clazz && this == this.getContext().getClass()) {
@@ -88,7 +88,7 @@ $static.$ = function $(name, value) {
 		}
 	}
 	if (this != this.getContext().getClass()) {
-		return arguments.callee.call(this.getContext().getClass(), name, value);
+		return arguments.callee.call(this.getContext().getClass(), name, value, solid);
 	}
 	return value;
 };
