@@ -1,6 +1,6 @@
 /**
- * @class ScopeObject
- * @extends ScopeBase
+ * @class TestScopeObject
+ * @extends TestScopeBase
  */
 
 //@public
