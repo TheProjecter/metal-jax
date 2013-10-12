@@ -9,10 +9,8 @@
  * http://www.eclipse.org/legal/epl-v10.html
  */
 
-//@private
-function initClass() {
-	$protected.document = window.document;
-}
+//@protected
+var document = window.document;
 
 //@protected
 function initResource(target, source) {

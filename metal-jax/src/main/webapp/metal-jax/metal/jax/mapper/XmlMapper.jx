@@ -10,11 +10,11 @@
  */
 
 //@private
-var prolog = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>';
+var _PROLOG_ = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>';
 
 //@static
 function write(value) {
-	return prolog.concat(marshalGeneric(value));
+	return _PROLOG_.concat(marshalGeneric(value));
 }
 
 //@static
