@@ -39,25 +39,6 @@ function callback() {
 }
 
 //@static
-function indexOf(item, index) {
-	index = index || 0;
-	for ( ; index < this.length; index++) {
-		if (index in this && this[index] === item) {
-			return index;
-		}
-	};
-	return -1;
-}
-
-//@static
-function copyArray(items) {
-	//return Array.prototype.slice.call(items, 0);
-	var result = [];
-	for (var i = 0; i < items.length; i++) result.push(items[i]);
-	return result;
-}
-
-//@static
 function loadback(source, callback) {
 	var action = System.isSameDomain(source.base) ? loadSameDomain : loadCrossDomain;
 	action.call(this, source, callback);
@@ -326,6 +307,25 @@ function formatXML(doc) {
 	} else {
 		throwError("XML serialization not supported");
 	}
+}
+
+//@static
+function indexOf(item, index) {
+	index = index || 0;
+	for ( ; index < this.length; index++) {
+		if (index in this && this[index] === item) {
+			return index;
+		}
+	};
+	return -1;
+}
+
+//@static
+function copyArray(items) {
+	//return Array.prototype.slice.call(items, 0);
+	var result = [];
+	for (var i = 0; i < items.length; i++) result.push(items[i]);
+	return result;
 }
 
 //@static
