@@ -18,7 +18,11 @@ function initContext() {
 	var base = $("base");
 	if (base) {
 		var Base = $context.findClass(base);
-		document.body.appendChild((Base||clazz).fromResource(base).node);
+		if ((Base||clazz).findResource(base)) {
+			document.body.appendChild((Base||clazz).fromResource(base).node);
+		} else {
+			log("warn", "metal.jax.init.base.fail", base);
+		}
 	} else {
 		new clazz(document.body);
 	}

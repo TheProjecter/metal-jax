@@ -620,7 +620,7 @@ $private.flush_initResource = function flush_initResource(source) {
 			if (source.resourceStatus[name] == "pendingInit") {
 				source.resourceStatus[name] = "doneInit";
 				var clazz = source.scope[source.scope.$requires[name]];
-				if (source.$context.findResource(name, clazz, true)) {
+				if (source.$context.findResource(name, clazz)) {
 					var handle = getResourceHandle(clazz);
 					handle.scope.$protected.initResource(source.scope, handle.resources[name]);
 				}
