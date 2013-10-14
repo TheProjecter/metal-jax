@@ -1,6 +1,5 @@
 /**
  * @test BootTest
- * @imports metal.jax.System
  */
 
 //@public
@@ -22,6 +21,6 @@ function test_bootSetting() {
 		"faceType"
 	];
 	for (var i = 0; i < names.length; i++) {
-		System.println("| ".concat(names[i], ": ", $(names[i])));
+		println("| ".concat(names[i], ": ", $(names[i])));
 	}
 }

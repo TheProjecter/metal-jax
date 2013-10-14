@@ -329,32 +329,6 @@ function formatXML(doc) {
 }
 
 //@static
-function println(message, color) {
-	var line = System.document.createElement("pre");
-	line.style.margin = "0px";
-	if (color) line.style.color = color;
-	line.innerHTML = formatHTML(message);
-	System.document.body.appendChild(line);
-}
-
-//@private
-var _tagRE_ = /[<>]/g;
-
-//@private
-function formatHTML(message) {
-	return message.toString().replace(_tagRE_, function(match) {
-		switch (match) {
-		case "<":
-			return "&lt;";
-		case ">":
-			return "&gt;";
-		default:
-			return match;
-		}
-	});
-}
-
-//@static
 function toISOString() {
 	return System.formatText("${0}-${1}-${2}T${3}:${4}:${5}.${6}Z",
 			this.getUTCFullYear(), pad(this.getUTCMonth()+1, 2), pad(this.getUTCDate(), 2),

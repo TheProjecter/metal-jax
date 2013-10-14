@@ -1,6 +1,5 @@
 /**
  * @test TestCaseTest
- * @imports metal.jax.System
  */
 
 var token;
@@ -8,12 +7,12 @@ var token;
 //@public
 function setUp() {
 	token = "secret";
-	System.println("--------setUp: ".concat(token));
+	println("--------setUp: ".concat(token));
 }
 
 //@public
 function tearDown() {
-	System.println("--------tearDown: ".concat(token));
+	println("--------tearDown: ".concat(token));
 }
 
 //@public

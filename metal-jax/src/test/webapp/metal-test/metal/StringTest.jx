@@ -1,6 +1,5 @@
 /**
  * @test StringTest
- * @imports metal.jax.System
  */
 
 //@private
@@ -14,12 +13,12 @@ var result0 = "";
 
 //@public
 function test_addition() {
-	System.println("count: " + count);
+	println("count: " + count);
 	var start = new Date().getTime();
 	for (var i = 0; i < count; i++) {
 		result0 = result0 + value;
 	}
-	System.println("time: " + (new Date().getTime() - start));
+	println("time: " + (new Date().getTime() - start));
 }
 
 //@public
@@ -29,6 +28,6 @@ function test_concatOne() {
 	for (var i = 0; i < count; i++) {
 		result = result.concat(value);
 	}
-	System.println("time: " + (new Date().getTime() - start));
+	println("time: " + (new Date().getTime() - start));
 	assertEquals(result0, result);
 }

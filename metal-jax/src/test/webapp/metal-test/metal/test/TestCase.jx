@@ -43,12 +43,12 @@ function failTest(name, message) {
 
 //@private
 function info(message) {
-	System.println(message, "green");
+	println(message, "green");
 }
 
 //@private
 function error(message) {
-	System.println(message, "red");
+	println(message, "red");
 }
 
 //@static
@@ -65,4 +65,30 @@ function fail(message, name) {
 function assertEquals(expected, actual, name) {
 	if (expected === actual) return;
 	fail(System.formatText("expected \"${0}\", but was \"${1}\"", expected, actual), name);
+}
+
+//@protected
+function println(message, color) {
+	var line = System.document.createElement("pre");
+	line.style.margin = "0px";
+	if (color) line.style.color = color;
+	line.innerHTML = formatHTML(message);
+	System.document.body.appendChild(line);
+}
+
+//@private
+var _tagRE_ = /[<>]/g;
+
+//@private
+function formatHTML(message) {
+	return message.toString().replace(_tagRE_, function(match) {
+		switch (match) {
+		case "<":
+			return "&lt;";
+		case ">":
+			return "&gt;";
+		default:
+			return match;
+		}
+	});
 }
