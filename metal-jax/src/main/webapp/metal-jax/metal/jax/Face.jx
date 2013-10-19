@@ -31,7 +31,7 @@ function fromResource(name) {
 	return new this(copyResource(name, this));
 }
 
-//@private
+//@protected
 function copyResource(name, clazz) {
 	return clazz.findResource(name, true).cloneNode(true);
 }
@@ -64,7 +64,9 @@ function parseNode(source, node) {
 			var className = parts.length > 1 && (parts[1]||name) || Face.getName();
 			source.$imports = source.$imports || {};
 			source.$imports[className] = className;
-			if (name) {
+			if (source.name == name) {
+				log("warn", "metal.jax.resource.cycle", name);
+			} else if (name) {
 				source.$requires = source.$requires || {};
 				source.$requires[name] = className;
 			}
@@ -108,12 +110,18 @@ function initNode(object, node) {
 			if (title) node.title = title;
 		}
 		if (childClass) {
-			object.faces = object.faces || {};
+			this.$static.initModel(object, node);
 			if (name) {
-				var child = copyResource(name, childClass);
-				System.clearHTML(node).appendChild(child);
+				System.clearHTML(node).appendChild(copyResource(name, childClass));
 			}
-			object.faces[nodeId] = new childClass(node);
+			var child = new childClass(node);
+			for (var childId in object.nodes) {
+				if (childId != nodeId && child.nodes[childId]) {
+					child.nodes[childId].appendChild(object.nodes[childId]);
+				}
+			}
+			object.faces = object.faces || {};
+			object.faces[nodeId] = child;
 			return true;
 		} else if (className) {
 			log("warn", "class not found: ${0}", className);

@@ -1,14 +1,29 @@
 #frame { width:100px; height:100px; position:absolute; }
-#frame #content { background: gray; color: white; overflow: auto; }
-#frame #topLeft { width:10px; height:2px; left:0px; top:0px; cursor:nw-resize; background:gray; position:absolute; overflow:hidden; }
-#frame #top { width:100px; height:2px; left:0px; top:0px; cursor:n-resize; background:black; position:absolute; overflow:hidden; }
-#frame #topRight { width:10px; height:2px; right:0px; top:0px; cursor:ne-resize; background:gray; position:absolute; overflow:hidden; }
-#frame #bottomLeft { width:10px; height:2px; left:0px; bottom:0px; cursor:sw-resize; background:gray; position:absolute; overflow:hidden; }
-#frame #bottom { width:100px; height:2px; left:0px; bottom:0px; cursor:s-resize; background:black; position:absolute; overflow:hidden; }
-#frame #bottomRight { width:10px; height:2px; right:0px; bottom:0px; cursor:se-resize; background:gray; position:absolute; overflow:hidden; }
-#frame #leftTop { width:2px; height:10px; left:0px; top:0px; cursor:nw-resize; background:yellow; position:absolute; overflow:hidden; }
-#frame #left { width:2px; height:100px; left:0px; top:0px; cursor:w-resize; background:orange; position:absolute; overflow:hidden; }
-#frame #leftBottom { width:2px; height:10px; left:0px; bottom:0px; cursor:sw-resize; background:yellow; position:absolute; overflow:hidden; }
-#frame #rightTop { width:2px; height:10px; right:0px; top:0px; cursor:ne-resize; background:yellow; position:absolute; overflow:hidden; }
-#frame #right { width:2px; height:100px; right:0px; top:0px; cursor:e-resize; background:orange; position:absolute; overflow:hidden; }
-#frame #rightBottom { width:2px; height:10px; right:0px; bottom:0px; cursor:se-resize; background:yellow; position:absolute; overflow:hidden; }
+#frame #content { width:96px; height:86px; margin:0px 2px 2px 2px; overflow:auto; }
+#frame #handle { background: lightgray; width:96px; height:10px; margin:2px 2px 0px 2px; cursor:move; overflow:hidden; }
+#frame #topLeft { background:lightgray; width:10px; height:2px; left:0px; top:0px; cursor:nw-resize; position:absolute; overflow:hidden; }
+#frame #top { background:lightgray; width:100px; height:2px; left:0px; top:0px; cursor:n-resize; position:absolute; overflow:hidden; }
+#frame #topRight { background:lightgray; width:10px; height:2px; right:0px; top:0px; cursor:ne-resize; position:absolute; overflow:hidden; }
+#frame #bottomLeft { background:lightgray; width:10px; height:2px; left:0px; bottom:0px; cursor:sw-resize; position:absolute; overflow:hidden; }
+#frame #bottom { background:lightgray; width:100px; height:2px; left:0px; bottom:0px; cursor:s-resize; position:absolute; overflow:hidden; }
+#frame #bottomRight { background:lightgray; width:10px; height:2px; right:0px; bottom:0px; cursor:se-resize; position:absolute; overflow:hidden; }
+#frame #leftTop { background:lightgray; width:2px; height:10px; left:0px; top:0px; cursor:nw-resize; position:absolute; overflow:hidden; }
+#frame #left { background:lightgray; width:2px; height:100px; left:0px; top:0px; cursor:w-resize; position:absolute; overflow:hidden; }
+#frame #leftBottom { background:lightgray; width:2px; height:10px; left:0px; bottom:0px; cursor:sw-resize; position:absolute; overflow:hidden; }
+#frame #rightTop { background:lightgray; width:2px; height:10px; right:0px; top:0px; cursor:ne-resize; position:absolute; overflow:hidden; }
+#frame #right { background:lightgray; width:2px; height:100px; right:0px; top:0px; cursor:e-resize; position:absolute; overflow:hidden; }
+#frame #rightBottom { background:lightgray; width:2px; height:10px; right:0px; bottom:0px; cursor:se-resize; position:absolute; overflow:hidden; }
+
+#frame.highlight #handle,
+#frame.highlight #topLeft,
+#frame.highlight #top,
+#frame.highlight #topRight,
+#frame.highlight #bottomLeft,
+#frame.highlight #bottom,
+#frame.highlight #bottomRight,
+#frame.highlight #leftTop,
+#frame.highlight #left,
+#frame.highlight #leftBottom,
+#frame.highlight #rightTop,
+#frame.highlight #right,
+#frame.highlight #rightBottom { background: darkgray; }
