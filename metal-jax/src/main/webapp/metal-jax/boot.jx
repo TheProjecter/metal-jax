@@ -11,6 +11,7 @@
 		
 		var $setting = {
 			base: "",
+			baseClass: "",
 			baseModule: ".",
 			baseContext: "base",
 			crossDomain: "xd",
@@ -51,20 +52,22 @@
 			setting["baseOrigin"] = parts[1];
 			setting["baseScheme"] = parts[1].split(":")[0];
 			setting["baseURL"] = splitPath(parts[1] + parts[2], -1, -1);
-			var module = parts[3], base = parts[4];
+			var module = parts[3] || "", base = parts[4] || "";
 			var nodes = document.getElementsByTagName("script");
 			parts = _URL_.exec(resolvePath(nodes[nodes.length-1].src, setting["baseURL"] + "/"));
 			setting["bootOrigin"] = parts[1];
 			setting["bootURL"] = splitPath(parts[1] + parts[2], -2, -2);
 			setting["bootModule"] = splitPath(parts[2], -2, 1);
-			setting["bootContext"] = splitPath(parts[2], -1, 1).split(".")[0].split("/").join(".");
+			setting["bootContext"] = splitPath(parts[2], -1, 1).split(".")[0];
 			if (parts[3] || parts[4]) {
 				module = parts[3] || module; base = parts[4] || base;
 			}
-			setting["base"] = base || setting["base"];
-			parts = (module||"").split("/");
-			setting["baseContext"] = parts.length == 1 ? parts.pop() || base || setting["baseContext"] : parts.pop() || setting["baseContext"];
-			setting["baseModule"] = parts.join("/") || setting["baseModule"];
+			parts = module.split(":");
+			setting["baseModule"] = parts[0] || setting["baseModule"];
+			setting["baseContext"] = parts[1] || setting["baseContext"];
+			parts = base.split(":");
+			setting["base"] = parts[0] || setting["base"];
+			setting["baseClass"] = parts[1] || setting["base"] || setting["baseClass"];
 		}
 		
 		function loadSource() {

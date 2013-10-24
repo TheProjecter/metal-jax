@@ -7,21 +7,22 @@
 //@private
 function initClass() {
 	Face.parseModel(this, document.body);
-	$context.loadClass($("base"));
+	$context.loadClass($("baseClass"));
 }
 
 //@private
 function initContext() {
-	var clazz = extendClass(Face);
 	var base = $("base");
+	var baseClass = $("baseClass");
+	var Face0 = extendClass(Face);
 	if (base) {
-		var Base = $context.findClass(base);
-		if ((Base||clazz).findResource(base)) {
-			document.body.appendChild((Base||clazz).fromResource(base).node);
+		var Base = $context.findClass(baseClass);
+		if ((Base||Face0).findResource(base)) {
+			document.body.appendChild((Base||Face0).fromResource(base).node);
 		} else {
 			log("warn", "metal.jax.init.base.fail", base);
 		}
 	} else {
-		new clazz(document.body);
+		new Face0(document.body);
 	}
 }
