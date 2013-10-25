@@ -70,8 +70,8 @@
 			setting["baseClass"] = parts.length > 1 ? parts[1]||setting["base"] : setting["baseClass"];
 			parts = query.split("&");
 			for (var i = 0; i < parts.length; i++) {
-				var pair = parts[i].split("=");
-				setting[pair[0]] = setting[pair[0]] || pair[1];
+				var part = parts[i].split("=");
+				setting[part[0]] = setting[part[0]] || part[1];
 			}
 		}
 		
