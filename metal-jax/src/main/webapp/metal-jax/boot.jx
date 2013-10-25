@@ -37,7 +37,7 @@
 				]
 			}
 		};
-		var _URL_ = /(?:([^\/:]+:\/\/[^\/]*)?([^?#]+)?)(?:\?([^#]+))?(?:#(.+))?/;
+		var _URL_ = /(?:([^\/:]+:\/\/[^\/]*)?([^?&#]+)?)(?:\?([^&#]+)?(?:&([^#]+))?)?(?:#(.+))?/;
 		
 		function main() {
 			parseSetting($setting);
@@ -52,22 +52,27 @@
 			setting["baseOrigin"] = parts[1];
 			setting["baseScheme"] = parts[1].split(":")[0];
 			setting["baseURL"] = splitPath(parts[1] + parts[2], -1, -1);
-			var module = parts[3] || "", base = parts[4] || "";
+			var module = parts[3]||"", query = parts[4]||"", base = parts[5]||"";
 			var nodes = document.getElementsByTagName("script");
 			parts = _URL_.exec(resolvePath(nodes[nodes.length-1].src, setting["baseURL"] + "/"));
 			setting["bootOrigin"] = parts[1];
 			setting["bootURL"] = splitPath(parts[1] + parts[2], -2, -2);
 			setting["bootModule"] = splitPath(parts[2], -2, 1);
 			setting["bootContext"] = splitPath(parts[2], -1, 1).split(".")[0];
-			if (parts[3] || parts[4]) {
-				module = parts[3] || module; base = parts[4] || base;
+			if (parts[3] || parts[4] || parts[5]) {
+				module = parts[3]||module; query = parts[4]||query; base = parts[5]||base;
 			}
 			parts = module.split(":");
 			setting["baseModule"] = parts[0] || setting["baseModule"];
 			setting["baseContext"] = parts[1] || setting["baseContext"];
 			parts = base.split(":");
 			setting["base"] = parts[0] || setting["base"];
-			setting["baseClass"] = parts.length > 1 ? parts[1] || setting["base"] : setting["baseClass"];
+			setting["baseClass"] = parts.length > 1 ? parts[1]||setting["base"] : setting["baseClass"];
+			parts = query.split("&");
+			for (var i = 0; i < parts.length; i++) {
+				var pair = parts[i].split("=");
+				setting[pair[0]] = setting[pair[0]] || pair[1];
+			}
 		}
 		
 		function loadSource() {
