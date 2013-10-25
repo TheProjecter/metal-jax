@@ -67,7 +67,7 @@
 			setting["baseContext"] = parts[1] || setting["baseContext"];
 			parts = base.split(":");
 			setting["base"] = parts[0] || setting["base"];
-			setting["baseClass"] = parts[1] || setting["base"] || setting["baseClass"];
+			setting["baseClass"] = parts.length > 1 ? parts[1] || setting["base"] : setting["baseClass"];
 		}
 		
 		function loadSource() {

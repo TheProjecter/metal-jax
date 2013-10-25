@@ -1,5 +1,6 @@
 /**
  * @context base
+ * @imports ${baseClass} Base
  * @requires metal.jax.Face ${base}
  * @source base=${bootURL} module=metal-face includes=^metal.face
  */
@@ -7,16 +8,13 @@
 //@private
 function initClass() {
 	Face.parseModel(this, document.body);
-	$context.loadClass($("baseClass"));
 }
 
 //@private
 function initContext() {
-	var base = $("base");
-	var baseClass = $("baseClass");
 	var Face0 = extendClass(Face);
+	var base = $("base");
 	if (base) {
-		var Base = $context.findClass(baseClass);
 		if ((Base||Face0).findResource(base)) {
 			document.body.appendChild((Base||Face0).fromResource(base).node);
 		} else {
