@@ -62,12 +62,12 @@
 			if (parts[3] || parts[4] || parts[5]) {
 				module = parts[3]||module; query = parts[4]||query; base = parts[5]||base;
 			}
-			parts = module.split(":");
-			setting["baseModule"] = parts[0] || setting["baseModule"];
-			setting["baseContext"] = parts[1] || setting["baseContext"];
 			parts = base.split(":");
 			setting["base"] = parts[0] || setting["base"];
 			setting["baseClass"] = parts.length > 1 ? parts[1]||setting["base"] : setting["baseClass"];
+			parts = module.split(":");
+			setting["baseModule"] = parts[0] || setting["baseModule"];
+			setting["baseContext"] = module ? parts[1]||setting["baseContext"] : setting["base"]||setting["baseContext"];
 			parts = query.split("&");
 			for (var i = 0; i < parts.length; i++) {
 				var part = parts[i].split("=");
