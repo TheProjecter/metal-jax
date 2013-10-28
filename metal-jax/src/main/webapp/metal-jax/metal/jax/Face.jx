@@ -110,14 +110,17 @@ function initNode(object, node) {
 			if (title) node.title = title;
 		}
 		if (childClass) {
-			this.$static.initModel(object, node);
-			if (name) {
+			var child;
+			if (!name) {
+				child = new childClass(node);
+			} else {
+				this.$static.initModel(object, node);
 				System.clearHTML(node).appendChild(copyResource(name, childClass));
-			}
-			var child = new childClass(node);
-			for (var childId in object.nodes) {
-				if (childId != nodeId && child.nodes[childId]) {
-					child.nodes[childId].appendChild(object.nodes[childId]);
+				child = new childClass(node);
+				for (var childId in object.nodes) {
+					if (childId != nodeId && child.nodes[childId]) {
+						child.nodes[childId].appendChild(object.nodes[childId]);
+					}
 				}
 			}
 			object.faces = object.faces || {};
