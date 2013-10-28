@@ -1,26 +1,15 @@
 /**
  * @context base
- * @imports ${baseClass} Base
- * @requires metal.jax.Face ${base}
- * @source base=${bootURL} module=metal-face includes=^metal.face
+ * @imports metal.face.base Base
+ * @requires ${baseClass|metal.jax.Face} ${base}
  */
 
 //@private
 function initClass() {
-	Face.parseModel(this, document.body);
+	Base.initClassScope(this);
 }
 
 //@private
 function initContext() {
-	var Face0 = extendClass(Face);
-	var base = $("base");
-	if (base) {
-		if ((Base||Face0).findResource(base)) {
-			document.body.appendChild((Base||Face0).fromResource(base).node);
-		} else {
-			log("warn", "metal.jax.init.base.fail", base);
-		}
-	} else {
-		new Face0(document.body);
-	}
+	Base.initContextScope(this);
 }

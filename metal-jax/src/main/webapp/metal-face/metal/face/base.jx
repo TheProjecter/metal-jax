@@ -1,0 +1,25 @@
+/**
+ * @class base
+ * @imports metal.jax.Face
+ */
+
+//@static
+function initClassScope(scope) {
+	Face.parseModel(scope, document.body);
+}
+
+//@static
+function initContextScope(scope) {
+	var Face0 = scope.$protected.extendClass(Face);
+	var baseClass = scope.$context.findClass($("baseClass")) || Face0;
+	var base = $("base");
+	if (!base) {
+		new Face0(document.body);
+	} else {
+		if (baseClass.findResource(base)) {
+			document.body.appendChild(baseClass.fromResource(base).node);
+		} else {
+			log("warn", "metal.jax.init.base.fail", base);
+		}
+	}
+}
