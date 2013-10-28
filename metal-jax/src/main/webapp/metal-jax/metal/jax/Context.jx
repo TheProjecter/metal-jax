@@ -101,6 +101,11 @@ $protected.throwError = function throwError(msg) {
 $protected.log = function log() {
 	if (Logger) {
 		Logger.log.apply(this.$class, arguments);
+	} else if (typeof console != "undefined") {
+		var level = Array.prototype.shift.call(arguments);
+		if (level != "debug") {
+			console.log(formatText.apply(null, arguments));
+		}
 	}
 };
 
@@ -351,22 +356,34 @@ $private.parseModel = function parseModel(source) {
 			case "extends":
 				name = parseSourceName(name, source.name);
 				value = parseBaseName(name, value);
-				source.scope.$imports[value] = name;
-				source.superBase = source.superBase || value;
+				if (value) {
+					source.scope.$imports[value] = name;
+					source.superBase = source.superBase || value;
+				} else {
+					log("warn", "metal.jax.class.extends", source.name);
+				}
 				break;
 			case "imports":
 				name = formatText(name, source.$context.getClass());
 				name = parseSourceName(name, source.name);
 				value = parseBaseName(name, value);
-				source.scope.$imports[value] = name;
+				if (value) {
+					source.scope.$imports[value] = name;
+				} else {
+					log("warn", "metal.jax.class.imports", source.name);
+				}
 				break;
 			case "requires":
 				name = formatText(name, source.$context.getClass());
 				name = parseSourceName(name, source.name);
 				value = formatText(value||name, source.$context.getClass());
-				source.scope.$imports[parseBaseName(name)] = name;
-				source.scope.$imports[name] = name;
-				source.scope.$requires[value] = name;
+				if (name) {
+					source.scope.$imports[parseBaseName(name)] = name;
+					source.scope.$imports[name] = name;
+					source.scope.$requires[value] = name;
+				} else {
+					log("warn", "metal.jax.class.requires", source.name);
+				}
 				break;
 			case "setting":
 				parseSetting(source.scope.$setting, match);
