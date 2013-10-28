@@ -26,7 +26,10 @@
 			scope: { $setting:$setting, $imports:{}, $requires:{}, $static:{}, $protected:{}, $public:{} },
 			classes: {},
 			setting: {
-				source: [{ base:"${bootURL}", module:"${bootModule}", includes:"^metal.jax" }],
+				source: [
+					{ base:"${bootURL}", module:"${bootModule}", includes:"^metal.jax" },
+					{ base:"${bootURL}", module:"metal-face", includes:"^metal.face" }
+				],
 				stereotype: [
 					{ type:"class", base:"metal.jax.BaseObject" },
 					{ type:"context", base:"metal.jax.Context" },
