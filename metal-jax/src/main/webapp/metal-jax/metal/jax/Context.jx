@@ -12,15 +12,14 @@ $static.getContext = function getContext() { return $context; };
 $static.getName = function getName() { return "metal.jax.Context"; };
 $private.Context = function Context() { return $protected.call(this, arguments); };
 $imports["BaseObject"] = "metal.jax.BaseObject";
-$imports["Logger"] = "metal.jax.core.Logger";
 $imports["System"] = "metal.jax.System";
+$imports["Logger"] = "metal.jax.core.Logger";
 $imports["BaseContext"] = $setting["baseContext"];
 $imports["metal.jax.resource.Messages"] = "metal.jax.resource.Messages";
 $requires["metal.jax"] = "metal.jax.resource.Messages";
 
 $private.initClass_ = function initClass_() {
 	this.$source.classes[this.$source.name] = this.$source;
-	this.Logger = null;
 	this._callbacks = [];
 	this._busyCount = 0;
 	this._pendingCount = 0;
@@ -99,12 +98,14 @@ $protected.throwError = function throwError(msg) {
 };
 
 $protected.log = function log() {
-	if (Logger) {
+	if (typeof Logger != "undefined") {
 		Logger.log.apply(this.$class, arguments);
 	} else if (typeof console != "undefined") {
 		var level = Array.prototype.shift.call(arguments);
 		if (level != "debug") {
-			console.log(formatText.apply(null, arguments));
+			var line = formatText.apply(null, arguments);
+			if (typeof console[level] != "undefined") console[level](line);
+			else console.log(line);
 		}
 	}
 };
@@ -360,7 +361,7 @@ $private.parseModel = function parseModel(source) {
 					source.scope.$imports[value] = name;
 					source.superBase = source.superBase || value;
 				} else {
-					log("warn", "metal.jax.class.extends", source.name);
+					log("warn", "incorrect @${0} format in class source: ${1}", settingTag, source.name);
 				}
 				break;
 			case "imports":
@@ -370,7 +371,7 @@ $private.parseModel = function parseModel(source) {
 				if (value) {
 					source.scope.$imports[value] = name;
 				} else {
-					log("warn", "metal.jax.class.imports", source.name);
+					log("warn", "incorrect @${0} format in class source: ${1}", settingTag, source.name);
 				}
 				break;
 			case "requires":
@@ -382,7 +383,7 @@ $private.parseModel = function parseModel(source) {
 					source.scope.$imports[name] = name;
 					source.scope.$requires[value] = name;
 				} else {
-					log("warn", "metal.jax.class.requires", source.name);
+					log("warn", "incorrect @${0} format in class source: ${1}", settingTag, source.name);
 				}
 				break;
 			case "setting":
@@ -609,6 +610,9 @@ $private.flush_notifyClass = function flush_notifyClass(source) {
 		}
 		_busyCount--;
 		source.flushStatus = "endNotifyClass";
+		if (source.stereotype != "context") {
+			flush_loadResource(source);
+		}
 	}
 };
 
