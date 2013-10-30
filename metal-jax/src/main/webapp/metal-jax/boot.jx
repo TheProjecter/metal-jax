@@ -27,8 +27,8 @@
 			classes: {},
 			setting: {
 				source: [
-					{ base:"${bootURL}", module:"${bootModule}", includes:"^metal.jax" },
-					{ base:"${bootURL}", module:"metal-face", includes:"^metal.face" }
+					{ base:"${bootURL}", module:"${bootModule}", includes:"^metal[.]jax" },
+					{ base:"${bootURL}", module:"metal-face", includes:"^metal[.]face" }
 				],
 				stereotype: [
 					{ type:"class", base:"metal.jax.BaseObject" },
