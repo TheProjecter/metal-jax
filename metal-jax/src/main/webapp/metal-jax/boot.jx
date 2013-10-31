@@ -79,6 +79,10 @@
 		}
 		
 		function loadSource() {
+			var busy = document.createElement("img");
+			busy.id = "busy";
+			busy.src = "images/busy.gif";
+			document.body.appendChild(busy);
 			$source.base = $setting["bootURL"];
 			$source.module = $setting["bootModule"];
 			$source.resourceType = $setting["classType"];
