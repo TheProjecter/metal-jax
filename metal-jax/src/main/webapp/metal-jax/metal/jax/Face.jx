@@ -148,6 +148,18 @@ function resolvePath(path, source) {
 	return System.resolvePath(path, source.module + "/");
 }
 
+//@protected
+function toggleStyle(node, style) {
+	var styles = node.className.split(" ");
+	var index = styles.indexOf(style);
+	if (index >= 0) {
+		styles.splice(index, 1);
+	} else {
+		styles.push(style);
+	}
+	node.className = styles.join(" ");
+}
+
 //@private
 var _events_ = [
 	"keydown", "keypress", "keyup",
