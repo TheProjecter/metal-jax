@@ -2,16 +2,16 @@
 #frame #content { width:96px; height:86px; margin:0px 2px 2px 2px; overflow:auto; }
 #frame #handle { background: lightgray; width:96px; height:10px; margin:2px 2px 0px 2px; cursor:move; overflow:hidden; }
 #frame #topLeft { background:lightgray; width:10px; height:2px; left:0px; top:0px; cursor:nw-resize; position:absolute; overflow:hidden; }
-#frame #top { background:lightgray; width:100px; height:2px; left:0px; top:0px; cursor:n-resize; position:absolute; overflow:hidden; }
+#frame #top { background:lightgray; width:100%; height:2px; left:0px; top:0px; cursor:n-resize; position:absolute; overflow:hidden; }
 #frame #topRight { background:lightgray; width:10px; height:2px; right:0px; top:0px; cursor:ne-resize; position:absolute; overflow:hidden; }
 #frame #bottomLeft { background:lightgray; width:10px; height:2px; left:0px; bottom:0px; cursor:sw-resize; position:absolute; overflow:hidden; }
-#frame #bottom { background:lightgray; width:100px; height:2px; left:0px; bottom:0px; cursor:s-resize; position:absolute; overflow:hidden; }
+#frame #bottom { background:lightgray; width:100%; height:2px; left:0px; bottom:0px; cursor:s-resize; position:absolute; overflow:hidden; }
 #frame #bottomRight { background:lightgray; width:10px; height:2px; right:0px; bottom:0px; cursor:se-resize; position:absolute; overflow:hidden; }
 #frame #leftTop { background:lightgray; width:2px; height:10px; left:0px; top:0px; cursor:nw-resize; position:absolute; overflow:hidden; }
-#frame #left { background:lightgray; width:2px; height:100px; left:0px; top:0px; cursor:w-resize; position:absolute; overflow:hidden; }
+#frame #left { background:lightgray; width:2px; height:100%; left:0px; top:0px; cursor:w-resize; position:absolute; overflow:hidden; }
 #frame #leftBottom { background:lightgray; width:2px; height:10px; left:0px; bottom:0px; cursor:sw-resize; position:absolute; overflow:hidden; }
 #frame #rightTop { background:lightgray; width:2px; height:10px; right:0px; top:0px; cursor:ne-resize; position:absolute; overflow:hidden; }
-#frame #right { background:lightgray; width:2px; height:100px; right:0px; top:0px; cursor:e-resize; position:absolute; overflow:hidden; }
+#frame #right { background:lightgray; width:2px; height:100%; right:0px; top:0px; cursor:e-resize; position:absolute; overflow:hidden; }
 #frame #rightBottom { background:lightgray; width:2px; height:10px; right:0px; bottom:0px; cursor:se-resize; position:absolute; overflow:hidden; }
 
 #frame.highlight #handle,
