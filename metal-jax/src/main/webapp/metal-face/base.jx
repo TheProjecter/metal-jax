@@ -2,6 +2,8 @@
  * @context base
  * @imports metal.face.base Base
  * @requires ${baseClass|metal.jax.Face} ${base}
+ * 
+ * @copyright Jay Tang 2012. All rights reserved.
  */
 
 //@private

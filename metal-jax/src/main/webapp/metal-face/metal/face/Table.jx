@@ -1,6 +1,8 @@
 /**
  * @face Table
  * @imports metal.jax.System
+ * 
+ * @copyright Jay Tang 2012. All rights reserved.
  */
 
 //@private
