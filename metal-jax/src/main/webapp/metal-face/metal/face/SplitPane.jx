@@ -79,6 +79,7 @@ function setWidth(dx) {
 	var pane2Width = this.box.pane2Width - dx;
 	if (pane1Width <= 0 || pane2Width <= 0) return;
 	this.nodes.pane1.style.width = "".concat(pane1Width, "px");
+	this.nodes.pane2.style.width = "".concat(pane2Width, "px");
 }
 
 //@private
@@ -87,6 +88,7 @@ function setHeight(dy) {
 	var pane2Height = this.box.pane2Height - dy;
 	if (pane1Height <= 0 || pane2Height <= 0) return;
 	this.nodes.pane1.style.height = "".concat(pane1Height, "px");
+	this.nodes.pane2.style.height = "".concat(pane2Height, "px");
 }
 
 //@private

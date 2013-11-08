@@ -10,5 +10,6 @@
 .split_x #divider.splitPart, #divider.splitPart { width:2px; height:100%; cursor:col-resize; }
 .split_x .splitPart, .splitPart { float:left; }
 
+#pane1.splitPart, #pane2.splitPart { overflow:auto; }
 #divider.splitPart { background: lightgray; overflow:hidden; }
 #divider.highlight { background: darkgray; }
