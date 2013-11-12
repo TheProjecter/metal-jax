@@ -100,7 +100,9 @@ function initNode(object, node) {
 		var className = parts.length && parts[1];
 		var childClass = object.getClass().getContext().findClass(className);
 		
-		object.nodes[nodeId] = node;
+		if (object.node != node) {
+			object.nodes[nodeId] = node;
+		}
 		if (node.title == nodeId) {
 			var title = object.getClass().$(nodeId+".title");
 			if (title) node.title = title;
@@ -110,12 +112,12 @@ function initNode(object, node) {
 			if (!name) {
 				child = new childClass(node);
 			} else {
-				this.$static.initModel(object, node);
+				var content = new Face(node);
 				System.clearHTML(node).appendChild(copyResource(name, childClass));
 				child = new childClass(node);
-				for (var childId in object.nodes) {
-					if (childId != nodeId && child.nodes[childId]) {
-						child.nodes[childId].appendChild(object.nodes[childId]);
+				for (var childId in content.nodes) {
+					if (child.nodes[childId]) {
+						System.clearHTML(child.nodes[childId]).appendChild(content.nodes[childId]);
 					}
 				}
 			}
@@ -145,15 +147,39 @@ function resolvePath(path, source) {
 }
 
 //@protected
-function toggleStyle(node, style) {
+function toggleStyle(node, a, b) {
+	a = a || ""; b = b || "";
 	var styles = node.className.split(" ");
-	var index = styles.indexOf(style);
-	if (index >= 0) {
-		styles.splice(index, 1);
-	} else {
-		styles.push(style);
+	var indexa = styles.indexOf(a);
+	var indexb = styles.indexOf(b);
+	if (indexa >= 0) {
+		if (b) {
+			styles.splice(indexa, 1, b);
+		} else {
+			styles.splice(indexa, 1);
+		}
+	} else if (a) {
+		if (indexb >= 0) {
+			styles.splice(indexb, 1, a);
+		} else {
+			styles.push(a);
+		}
 	}
-	node.className = styles.join(" ");
+	if (indexa >= 0 || a) {
+		node.className = styles.join(" ");
+	}
+}
+
+//@protected
+function filterStyle(node, choices, fallback) {
+	fallback = fallback || "";
+	var styles = node.className.split(" ");
+	for (var i = 0; i < choices.length; i++) {
+		if (styles.indexOf(choices[i]) >= 0) {
+			return choices[i];
+		}
+	}
+	return fallback;
 }
 
 //@private
