@@ -9,7 +9,7 @@
 function initClass() {
 	System.window = window;
 	System.document = window.document;
-	System.docHead = window.document.firstChild.firstChild;
+	System.docHead = window.document.body.parentNode.firstChild;
 	System.splitPath = Context.splitPath;
 	System.resolvePath = Context.resolvePath;
 	System.isSameDomain = Context.isSameDomain;
