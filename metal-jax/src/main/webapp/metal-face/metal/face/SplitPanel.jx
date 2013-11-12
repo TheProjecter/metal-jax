@@ -1,13 +1,20 @@
 /**
- * @face SplitPane
+ * @face SplitPanel
  * 
  * @copyright Jay Tang 2012. All rights reserved.
  */
 
 //@private
+var _splitStyles_ = ["split_x", "split_y"];
+
+//@private
+var _defaultStyle_ = "split_x";
+
+//@private
 function initObject(object) {
 	object.box = {};
 	object.bindings = {};
+	var panelStyle = filterStyle(object.node, _splitStyles_, _defaultStyle_);
 	for (var name in object.nodes) {
 		var node = object.nodes[name];
 		switch (node.id) {
@@ -15,6 +22,11 @@ function initObject(object) {
 			object.bind("mouseover", toggleHighlight, node);
 			object.bind("mouseout", toggleHighlight, node);
 			object.bindings[node.id] = object.bind("mousedown", dispatch, node);
+			// fall through
+		case "panel1":
+		case "panel2":
+			var nodeStyle = filterStyle(node, _splitStyles_, _defaultStyle_);
+			toggleStyle(node, nodeStyle, panelStyle);
 			break;
 		}
 	}
@@ -51,10 +63,10 @@ function release(node, event) {
 function startResize(node, event) {
 	this.box.x = event.clientX;
 	this.box.y = event.clientY;
-	this.box.pane1Width = this.nodes.pane1.offsetWidth;
-	this.box.pane1Height = this.nodes.pane1.offsetHeight;
-	this.box.pane2Width = this.nodes.pane2.offsetWidth;
-	this.box.pane2Height = this.nodes.pane2.offsetHeight;
+	this.box.panel1Width = this.nodes.panel1.offsetWidth;
+	this.box.panel1Height = this.nodes.panel1.offsetHeight;
+	this.box.panel2Width = this.nodes.panel2.offsetWidth;
+	this.box.panel2Height = this.nodes.panel2.offsetHeight;
 	
 	capture.call(this, node, event);
 }
@@ -64,7 +76,8 @@ function doResize(node, event) {
 	var dx = event.clientX - this.box.x;
 	var dy = event.clientY - this.box.y;
 	
-	switch (this.node.className) {
+	var style = filterStyle(this.node, _splitStyles_, _defaultStyle_);
+	switch (style) {
 	case "split_y":
 		setHeight.call(this, dy);
 		break;
@@ -77,20 +90,20 @@ function doResize(node, event) {
 
 //@private
 function setWidth(dx) {
-	var pane1Width = this.box.pane1Width + dx;
-	var pane2Width = this.box.pane2Width - dx;
-	if (pane1Width <= 0 || pane2Width <= 0) return;
-	this.nodes.pane1.style.width = "".concat(pane1Width, "px");
-	this.nodes.pane2.style.width = "".concat(pane2Width, "px");
+	var panel1Width = this.box.panel1Width + dx;
+	var panel2Width = this.box.panel2Width - dx;
+	if (panel1Width <= 0 || panel2Width <= 0) return;
+	this.nodes.panel1.style.width = "".concat(panel1Width, "px");
+	this.nodes.panel2.style.width = "".concat(panel2Width, "px");
 }
 
 //@private
 function setHeight(dy) {
-	var pane1Height = this.box.pane1Height + dy;
-	var pane2Height = this.box.pane2Height - dy;
-	if (pane1Height <= 0 || pane2Height <= 0) return;
-	this.nodes.pane1.style.height = "".concat(pane1Height, "px");
-	this.nodes.pane2.style.height = "".concat(pane2Height, "px");
+	var panel1Height = this.box.panel1Height + dy;
+	var panel2Height = this.box.panel2Height - dy;
+	if (panel1Height <= 0 || panel2Height <= 0) return;
+	this.nodes.panel1.style.height = "".concat(panel1Height, "px");
+	this.nodes.panel2.style.height = "".concat(panel2Height, "px");
 }
 
 //@private

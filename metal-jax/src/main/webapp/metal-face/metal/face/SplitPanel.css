@@ -1,0 +1,15 @@
+.split_x { float:left; }
+.split_y { float:none; }
+.split_x, .split_y { width:100%; height:100%; }
+
+#panel1.split_x,
+#panel2.split_x { width:49%; }
+#divider.split_x { width:2px; cursor:col-resize; }
+
+#panel1.split_y,
+#panel2.split_y { height:46%; }
+#divider.split_y { height:2px; cursor:row-resize; }
+
+#panel1.split_x, #panel1.split_y, #panel2.split_x, #panel2.split_y { overflow:auto; }
+#divider.split_x, #divider.split_y { background: lightgray; overflow:hidden; }
+#divider.highlight { background: darkgray; }
