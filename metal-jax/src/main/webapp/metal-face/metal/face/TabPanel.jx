@@ -1,0 +1,45 @@
+/**
+ * @face TabPanel
+ * 
+ * @copyright Jay Tang 2012. All rights reserved.
+ */
+
+//@private
+function initObject(object) {
+	for (var name in object.nodes) {
+		var node = object.nodes[name];
+		if (filterStyle(node, ["tab_label"])) {
+			object.bind("mouseover", toggleHighlight, node);
+			object.bind("mouseout", toggleHighlight, node);
+			object.bind("click", toggleSelection, node);
+			if (!object.selected) {
+				object.selected = node;
+			}
+		}
+	}
+}
+
+//@private
+function toggleHighlight(node) {
+	toggleStyle(node, "highlight");
+	return true;
+}
+
+//@private
+function toggleSelection(node) {
+	if (this.selected != node) {
+		if (this.selected) {
+			toggleStyle(this.selected, "selected");
+			toggleStyle(tabNode(this, this.selected), "selected");
+		}
+		toggleStyle(node, "selected");
+		toggleStyle(tabNode(this, node), "selected");
+		this.selected = node;
+	}
+	return true;
+}
+
+//@private
+function tabNode(panel, label) {
+	return getChildByIndex(panel.nodes.tabbody, indexOfChild(panel.nodes.tabhead, label));
+}

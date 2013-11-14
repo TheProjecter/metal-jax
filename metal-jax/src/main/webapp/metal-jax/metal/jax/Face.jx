@@ -58,6 +58,7 @@ function parseNode(source, node) {
 		if (parts.length) {
 			var name = System.parseSourceName(parts[0], source.name);
 			var className = parts.length > 1 && (parts[1]||name) || Face.getName();
+			className = className.split("_")[0];
 			source.$imports = source.$imports || {};
 			source.$imports[className] = className;
 			if (source.name == name) {
@@ -173,13 +174,35 @@ function toggleStyle(node, a, b) {
 //@protected
 function filterStyle(node, choices, fallback) {
 	fallback = fallback || "";
-	var styles = node.className.split(" ");
+	var styles = (node.className||"").split(" ");
 	for (var i = 0; i < choices.length; i++) {
 		if (styles.indexOf(choices[i]) >= 0) {
 			return choices[i];
 		}
 	}
 	return fallback;
+}
+
+//@protected
+function indexOfChild(node, child) {
+	for (var i = 0, c = 0; i < node.childNodes.length; i++) {
+		var childNode = node.childNodes[i];
+		if (childNode.nodeType == 1) {
+			if (childNode == child) return c;
+			else c++;
+		}
+	}
+}
+
+//@protected
+function getChildByIndex(node, index) {
+	for (var i = 0, c = 0; i < node.childNodes.length; i++) {
+		var childNode = node.childNodes[i];
+		if (childNode.nodeType == 1) {
+			if (c == index) return childNode;
+			else c++;
+		}
+	}
 }
 
 //@private
