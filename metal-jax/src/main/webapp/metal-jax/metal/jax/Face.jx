@@ -73,11 +73,14 @@ function parseNode(source, node) {
 }
 
 //@private
-function initObject(object, node) {
+function initObject(object, node, content) {
 	if (node) {
 		object.node = node;
 		object.nodes = {};
 		this.$static.initModel(object, node);
+		if (content) {
+			this.$protected.initContent(object, content);
+		}
 	}
 }
 
@@ -115,12 +118,7 @@ function initNode(object, node) {
 			} else {
 				var content = new Face(node);
 				System.clearHTML(node).appendChild(copyResource(name, childClass));
-				child = new childClass(node);
-				for (var childId in content.nodes) {
-					if (child.nodes[childId]) {
-						System.clearHTML(child.nodes[childId]).appendChild(content.nodes[childId]);
-					}
-				}
+				child = new childClass(node, content);
 			}
 			object.faces = object.faces || {};
 			object.faces[nodeId] = child;
@@ -132,6 +130,15 @@ function initNode(object, node) {
 			var value = object.getClass().$(nodeId+".value");
 			if (value) node.innerHTML = value;
 			return true;
+		}
+	}
+}
+
+//@protected
+function initContent(object, content) {
+	for (var nodeId in content.nodes) {
+		if (object.nodes[nodeId]) {
+			System.clearHTML(object.nodes[nodeId]).appendChild(content.nodes[nodeId]);
 		}
 	}
 }
@@ -148,9 +155,20 @@ function resolvePath(path, source) {
 }
 
 //@protected
+function resetStyle(node, style) {
+	style = style || "";
+	var styles = (node.className||"").split(" ");
+	var index = styles.indexOf(style);
+	if (index >= 0) {
+		styles.splice(index, 1);
+		node.className = styles.join(" ");
+	}
+}
+
+//@protected
 function toggleStyle(node, a, b) {
 	a = a || ""; b = b || "";
-	var styles = node.className.split(" ");
+	var styles = (node.className||"").split(" ");
 	var indexa = styles.indexOf(a);
 	var indexb = styles.indexOf(b);
 	if (indexa >= 0) {
