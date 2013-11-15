@@ -1,22 +1,68 @@
 /**
  * @face TabPanel
+ * @imports metal.jax.System
  * 
  * @copyright Jay Tang 2012. All rights reserved.
  */
 
 //@private
-function initObject(object) {
+function initObject(object, dummy, content) {
 	for (var name in object.nodes) {
 		var node = object.nodes[name];
 		if (filterStyle(node, ["tab_label"])) {
-			object.bind("mouseover", toggleHighlight, node);
-			object.bind("mouseout", toggleHighlight, node);
-			object.bind("click", toggleSelection, node);
-			if (!object.selected) {
-				object.selected = node;
+			if (!content) {
+				initTabLabel(object, node);
+			}
+			if (!object.labelNode) {
+				resetStyle(node, "selected");
+				object.labelNode = node;
+			}
+		} else if (!object.contentNode) {
+			if (filterStyle(node, ["tab_content"])) {
+				resetStyle(node, "selected");
+				object.contentNode = node;
 			}
 		}
 	}
+	if (content) {
+		initContent(object, content, true)
+	}
+	toggleSelection.call(object, getChildByIndex(object.nodes.tabhead, 0));
+}
+
+//@protected
+function initContent(object, content, ready) {
+	if (ready) {
+		System.clearHTML(object.nodes.tabhead);
+		System.clearHTML(object.nodes.tabbody);
+		for (var nodeId in content.nodes) {
+			addTabNode(object, content.nodes[nodeId]);
+		}
+	}
+}
+
+//@private
+function addTabNode(object, node) {
+	var labelNode = object.labelNode.cloneNode(false);
+	labelNode.innerHTML = node.title || node.id;
+	object.nodes.tabhead.appendChild(labelNode);
+	initTabLabel(object, labelNode);
+	
+	var contentNode = object.contentNode.cloneNode(false);
+	contentNode.appendChild(node);
+	object.nodes.tabbody.appendChild(contentNode);
+}
+
+//@private
+function getTabNode(object, label) {
+	return getChildByIndex(object.nodes.tabbody, indexOfChild(object.nodes.tabhead, label));
+}
+
+//@private
+function initTabLabel(object, node) {
+	object.bind("mouseover", toggleHighlight, node);
+	object.bind("mouseout", toggleHighlight, node);
+	object.bind("click", toggleSelection, node);
 }
 
 //@private
@@ -30,16 +76,10 @@ function toggleSelection(node) {
 	if (this.selected != node) {
 		if (this.selected) {
 			toggleStyle(this.selected, "selected");
-			toggleStyle(tabNode(this, this.selected), "selected");
+			toggleStyle(getTabNode(this, this.selected), "selected");
 		}
 		toggleStyle(node, "selected");
-		toggleStyle(tabNode(this, node), "selected");
+		toggleStyle(getTabNode(this, node), "selected");
 		this.selected = node;
 	}
-	return true;
-}
-
-//@private
-function tabNode(panel, label) {
-	return getChildByIndex(panel.nodes.tabbody, indexOfChild(panel.nodes.tabhead, label));
 }
