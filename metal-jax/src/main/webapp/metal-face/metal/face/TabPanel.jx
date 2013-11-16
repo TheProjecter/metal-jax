@@ -6,10 +6,26 @@
  */
 
 //@private
-function initObject(object, dummy, content) {
+var _panelStyles_ = [ "tab_top", "tab_bottom" ];
+
+//@private
+var _partStyles_ = [ "tab_label", "tab_content" ];
+
+//@private
+function initObject(object, panelNode, content) {
+	var panelStyle = filterStyle(object.node, _panelStyles_, true), style;
 	for (var name in object.nodes) {
 		var node = object.nodes[name];
-		if (filterStyle(node, ["tab_label"])) {
+		switch (node.id) {
+		case "tabhead":
+		case "tabbody":
+			style = filterStyle(node, _panelStyles_, true);
+			toggleStyle(node, style, panelStyle);
+			continue;
+		}
+		style = filterStyle(node, _partStyles_);
+		switch (style) {
+		case "tab_label":
 			if (!content) {
 				initTabLabel(object, node);
 			}
@@ -17,12 +33,17 @@ function initObject(object, dummy, content) {
 				resetStyle(node, "selected");
 				object.labelNode = node;
 			}
-		} else if (!object.contentNode) {
-			if (filterStyle(node, ["tab_content"])) {
+			break;
+		case "tab_content":
+			if (!object.contentNode) {
 				resetStyle(node, "selected");
 				object.contentNode = node;
 			}
+			break;
 		}
+	}
+	if (panelStyle == "tab_bottom") {
+		object.nodes.tabhead.parentNode.insertBefore(object.nodes.tabbody, object.nodes.tabhead);
 	}
 	if (content) {
 		initContent(object, content, true)
