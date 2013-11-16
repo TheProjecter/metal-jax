@@ -190,15 +190,14 @@ function toggleStyle(node, a, b) {
 }
 
 //@protected
-function filterStyle(node, choices, fallback) {
-	fallback = fallback || "";
+function filterStyle(node, choices, firstAsDefault) {
 	var styles = (node.className||"").split(" ");
 	for (var i = 0; i < choices.length; i++) {
 		if (styles.indexOf(choices[i]) >= 0) {
 			return choices[i];
 		}
 	}
-	return fallback;
+	return firstAsDefault && choices[0] || "";
 }
 
 //@protected
