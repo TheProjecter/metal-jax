@@ -5,16 +5,13 @@
  */
 
 //@private
-var _splitStyles_ = ["split_x", "split_y"];
-
-//@private
-var _defaultStyle_ = "split_x";
+var _panelStyles_ = [ "split_x", "split_y" ];
 
 //@private
 function initObject(object) {
 	object.box = {};
 	object.bindings = {};
-	var panelStyle = filterStyle(object.node, _splitStyles_, _defaultStyle_);
+	var panelStyle = filterStyle(object.node, _panelStyles_, true), style;
 	for (var name in object.nodes) {
 		var node = object.nodes[name];
 		switch (node.id) {
@@ -25,8 +22,8 @@ function initObject(object) {
 			// fall through
 		case "panel1":
 		case "panel2":
-			var nodeStyle = filterStyle(node, _splitStyles_, _defaultStyle_);
-			toggleStyle(node, nodeStyle, panelStyle);
+			style = filterStyle(node, _panelStyles_, true);
+			toggleStyle(node, style, panelStyle);
 			break;
 		}
 	}
@@ -76,7 +73,7 @@ function doResize(node, event) {
 	var dx = event.clientX - this.box.x;
 	var dy = event.clientY - this.box.y;
 	
-	var style = filterStyle(this.node, _splitStyles_, _defaultStyle_);
+	var style = filterStyle(this.node, _panelStyles_, true);
 	switch (style) {
 	case "split_y":
 		setHeight.call(this, dy);
