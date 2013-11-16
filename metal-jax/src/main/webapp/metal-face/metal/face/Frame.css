@@ -1,6 +1,6 @@
-#frame { width:100px; height:100px; position:absolute; }
-#frame #content { width:96px; height:86px; margin:0px 2px 2px 2px; overflow:auto; }
-#frame #handle { background: lightgray; width:96px; height:10px; margin:2px 2px 0px 2px; cursor:move; overflow:hidden; }
+#frame { width:100%; height:100%; top:0px; position:absolute; overflow:hidden; }
+#frame #content { width:100%; height:100%; overflow:auto; }
+#frame #handle { background: lightgray; width:100%; height:10px; cursor:move; overflow:hidden; }
 #frame #topLeft { background:lightgray; width:10px; height:2px; left:0px; top:0px; cursor:nw-resize; position:absolute; overflow:hidden; }
 #frame #top { background:lightgray; width:100%; height:2px; left:0px; top:0px; cursor:n-resize; position:absolute; overflow:hidden; }
 #frame #topRight { background:lightgray; width:10px; height:2px; right:0px; top:0px; cursor:ne-resize; position:absolute; overflow:hidden; }
@@ -27,3 +27,5 @@
 #frame.highlight #rightTop,
 #frame.highlight #right,
 #frame.highlight #rightBottom { background: darkgray; }
+
+html, body { width:100%; height:100%; margin:0px; }
