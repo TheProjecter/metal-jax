@@ -1,7 +1,7 @@
-#tabhead.tab_top { width:100%; height:auto; border-bottom:1px solid; }
-#tabbody.tab_top { width:100%; height:100%; overflow:auto; }
-#tabhead.tab_bottom { width:100%; height:auto; border-top:1px solid; }
-#tabbody.tab_bottom { width:100%; height:100%; overflow:auto; }
+#tabhead.tab_top,
+#tabhead.tab_bottom { }
+#tabbody.tab_top,
+#tabbody.tab_bottom { height:100%; padding:0px 15px 15px; border:1px solid; overflow:auto; }
 
 .tab_label { border:1px dotted; margin:0px 0px 0px 4px; cursor:default; }
 .tab_label.selected { border:1px solid; }
