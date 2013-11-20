@@ -2,7 +2,7 @@
 #tabHead.tabTop,
 #tabHead.tabBottom { height:auto; }
 #tabBody.tabTop,
-#tabBody.tabBottom { padding:0px 10px 10px; border:1px solid; overflow:auto; }
+#tabBody.tabBottom { padding:0px 10px 10px; border:1px solid; }
 
 .tabLabel { border:1px dotted; margin:0px 0px 0px 4px; cursor:default; }
 .tabLabel.selected { border:1px solid; }
