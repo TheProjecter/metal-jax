@@ -1,17 +1,18 @@
-#tabhead.tab_top,
-#tabhead.tab_bottom { }
-#tabbody.tab_top,
-#tabbody.tab_bottom { height:100%; padding:0px 15px 15px; border:1px solid; overflow:auto; }
+.tabPanel { padding:2px; }
+#tabHead.tabTop,
+#tabHead.tabBottom { height:auto; }
+#tabBody.tabTop,
+#tabBody.tabBottom { padding:0px 10px 10px; border:1px solid; overflow:auto; }
 
-.tab_label { border:1px dotted; margin:0px 0px 0px 4px; cursor:default; }
-.tab_label.selected { border:1px solid; }
-.tab_label.highlight { background:lightgray; }
-.tab_top .tab_label { border-bottom:1px none; padding:4px 4px 0px; vertical-align:text-top; }
-.tab_top .tab_label.selected { border-bottom:3px solid white; }
-.tab_bottom .tab_label { border-top:1px none; padding:0px 4px 4px; vertical-align:bottom; }
-.tab_bottom .tab_label.selected { border-top:3px solid white; }
+.tabLabel { border:1px dotted; margin:0px 0px 0px 4px; cursor:default; }
+.tabLabel.selected { border:1px solid; }
+.tabLabel.highlight { background:lightgray; }
+.tabTop .tabLabel { border-bottom:1px none; padding:4px 4px 0px; vertical-align:text-top; }
+.tabTop .tabLabel.selected { border-bottom:3px solid white; }
+.tabBottom .tabLabel { border-top:1px none; padding:0px 4px 4px; vertical-align:bottom; }
+.tabBottom .tabLabel.selected { border-top:3px solid white; }
 
-.tab_content { width:100%; height:100%; display:none; }
-.tab_content.selected { display:block; }
+.tabContent { width:100%; height:100%; display:none; }
+.tabContent.selected { display:block; }
 
 html, body { width:100%; height:100%; margin:0px; }

@@ -6,56 +6,57 @@
  */
 
 //@private
-var _panelStyles_ = [ "tab_top", "tab_bottom" ];
+var _panelStyles_ = [ "tabTop", "tabBottom" ];
 
 //@private
-var _partStyles_ = [ "tab_label", "tab_content" ];
+var _partStyles_ = [ "tabLabel", "tabContent" ];
 
 //@private
 function initObject(object, panelNode, content) {
 	var panelStyle = filterStyle(object.node, _panelStyles_, true), style;
+	setStyle(object.node, [panelStyle, "tabPanel"]);
 	for (var name in object.nodes) {
 		var node = object.nodes[name];
 		switch (node.id) {
-		case "tabhead":
-		case "tabbody":
+		case "tabHead":
+		case "tabBody":
 			style = filterStyle(node, _panelStyles_, true);
 			toggleStyle(node, style, panelStyle);
 			continue;
 		}
 		style = filterStyle(node, _partStyles_);
 		switch (style) {
-		case "tab_label":
+		case "tabLabel":
+			if (!object.tabLabel) {
+				object.tabLabel = node;
+				setStyle(node, "selected", false);
+			}
 			if (!content) {
 				initTabLabel(object, node);
 			}
-			if (!object.labelNode) {
-				resetStyle(node, "selected");
-				object.labelNode = node;
-			}
 			break;
-		case "tab_content":
-			if (!object.contentNode) {
-				resetStyle(node, "selected");
-				object.contentNode = node;
+		case "tabContent":
+			if (!object.tabContent) {
+				object.tabContent = node;
+				setStyle(node, "selected", false);
 			}
 			break;
 		}
 	}
-	if (panelStyle == "tab_bottom") {
-		object.nodes.tabhead.parentNode.insertBefore(object.nodes.tabbody, object.nodes.tabhead);
+	if (panelStyle == "tabBottom") {
+		object.nodes.tabHead.parentNode.insertBefore(object.nodes.tabBody, object.nodes.tabHead);
 	}
 	if (content) {
 		initContent(object, content, true)
 	}
-	toggleSelection.call(object, getChildByIndex(object.nodes.tabhead, 0));
+	toggleSelection.call(object, getChildByIndex(object.nodes.tabHead, 0));
 }
 
 //@protected
 function initContent(object, content, ready) {
 	if (ready) {
-		System.clearHTML(object.nodes.tabhead);
-		System.clearHTML(object.nodes.tabbody);
+		System.clearHTML(object.nodes.tabHead);
+		System.clearHTML(object.nodes.tabBody);
 		for (var nodeId in content.nodes) {
 			addTabNode(object, content.nodes[nodeId]);
 		}
@@ -64,19 +65,19 @@ function initContent(object, content, ready) {
 
 //@private
 function addTabNode(object, node) {
-	var labelNode = object.labelNode.cloneNode(false);
-	labelNode.innerHTML = node.title || node.id;
-	object.nodes.tabhead.appendChild(labelNode);
-	initTabLabel(object, labelNode);
+	var tabLabel = object.tabLabel.cloneNode(false);
+	tabLabel.innerHTML = node.title || node.id;
+	object.nodes.tabHead.appendChild(tabLabel);
+	initTabLabel(object, tabLabel);
 	
-	var contentNode = object.contentNode.cloneNode(false);
-	contentNode.appendChild(node);
-	object.nodes.tabbody.appendChild(contentNode);
+	var tabContent = object.tabContent.cloneNode(false);
+	tabContent.appendChild(node);
+	object.nodes.tabBody.appendChild(tabContent);
 }
 
 //@private
 function getTabNode(object, label) {
-	return getChildByIndex(object.nodes.tabbody, indexOfChild(object.nodes.tabhead, label));
+	return getChildByIndex(object.nodes.tabBody, indexOfChild(object.nodes.tabHead, label));
 }
 
 //@private
