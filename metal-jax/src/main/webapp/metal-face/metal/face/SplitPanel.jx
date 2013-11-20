@@ -5,13 +5,14 @@
  */
 
 //@private
-var _panelStyles_ = [ "split_x", "split_y" ];
+var _panelStyles_ = [ "splitX", "splitY" ];
 
 //@private
 function initObject(object) {
 	object.box = {};
 	object.bindings = {};
 	var panelStyle = filterStyle(object.node, _panelStyles_, true), style;
+	setStyle(object.node, panelStyle);
 	for (var name in object.nodes) {
 		var node = object.nodes[name];
 		switch (node.id) {
@@ -75,10 +76,10 @@ function doResize(node, event) {
 	
 	var style = filterStyle(this.node, _panelStyles_, true);
 	switch (style) {
-	case "split_y":
+	case "splitY":
 		setHeight.call(this, dy);
 		break;
-	case "split_x":
+	case "splitX":
 	default:
 		setWidth.call(this, dx);
 		break;
