@@ -155,49 +155,57 @@ function resolvePath(path, source) {
 }
 
 //@protected
-function resetStyle(node, style) {
-	style = style || "";
-	var styles = (node.className||"").split(" ");
-	var index = styles.indexOf(style);
-	if (index >= 0) {
-		styles.splice(index, 1);
-		node.className = styles.join(" ");
+function setStyle(node, style, positive) {
+	positive = positive || arguments.length == 2;
+	var tokens = (node.className||"").split(" ");
+	var length = tokens.length;
+	var styles = style instanceof Array ? style : [style];
+	for (var i = 0; i < styles.length; i++) {
+		var index = tokens.indexOf(styles[i]);
+		if (index >= 0 && !positive) {
+			tokens.splice(index, 1);
+		} else if (index < 0 && positive) {
+			tokens.push(styles[i]);
+		}
+	}
+	if (tokens.length != length) {
+		node.className = tokens.join(" ");
 	}
 }
 
 //@protected
 function toggleStyle(node, a, b) {
 	a = a || ""; b = b || "";
-	var styles = (node.className||"").split(" ");
-	var indexa = styles.indexOf(a);
-	var indexb = styles.indexOf(b);
+	var tokens = (node.className||"").split(" ");
+	var indexa = tokens.indexOf(a);
+	var indexb = tokens.indexOf(b);
 	if (indexa >= 0) {
-		if (b) {
-			styles.splice(indexa, 1, b);
-		} else {
-			styles.splice(indexa, 1);
+		if (b && indexb < 0) {
+			tokens.splice(indexa, 1, b);
+		} else if (indexa != indexb) {
+			tokens.splice(indexa, 1);
 		}
 	} else if (a) {
 		if (indexb >= 0) {
-			styles.splice(indexb, 1, a);
+			tokens.splice(indexb, 1, a);
 		} else {
-			styles.push(a);
+			tokens.push(a);
 		}
 	}
-	if (indexa >= 0 || a) {
-		node.className = styles.join(" ");
+	if (a) {
+		node.className = tokens.join(" ");
 	}
 }
 
 //@protected
-function filterStyle(node, choices, firstAsDefault) {
-	var styles = (node.className||"").split(" ");
-	for (var i = 0; i < choices.length; i++) {
-		if (styles.indexOf(choices[i]) >= 0) {
-			return choices[i];
+function filterStyle(node, styles, defaultToFirst) {
+	var tokens = (node.className||"").split(" ");
+	for (var i = 0; i < styles.length; i++) {
+		if (tokens.indexOf(styles[i]) >= 0) {
+			return styles[i];
 		}
 	}
-	return firstAsDefault && choices[0] || "";
+	return defaultToFirst && styles[0] || "";
 }
 
 //@protected
