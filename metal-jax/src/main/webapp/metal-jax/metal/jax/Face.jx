@@ -72,25 +72,38 @@ function parseNode(source, node) {
 	}
 }
 
+//@protected
+function parseSetting(node) {
+	var setting = {};
+	var tokens = (node.className||"").split(" ");
+	for (var i = 0; i < tokens.length; i++) {
+		var pair = tokens[i].split(":");
+		if (pair.length == 2) {
+			setting[pair[0]] = pair[1];
+		}
+	}
+	return setting;
+}
+
 //@private
 function initObject(object, node, content) {
 	if (node) {
 		object.node = node;
 		object.nodes = {};
-		this.$static.initModel(object, node);
+		this.$protected.initModel(object, node);
 		if (content) {
 			this.$protected.initContent(object, content);
 		}
 	}
 }
 
-//@static
+//@protected
 function initModel(object, model) {
 	for (var i = 0; i < model.childNodes.length; i++) {
 		var childNode = model.childNodes[i];
 		if (childNode.nodeType == 1) {
 			if (!(this.$protected||$protected).initNode(object, childNode)) {
-				(this.$static||$static).initModel(object, childNode);
+				this.$protected.initModel(object, childNode);
 			}
 		}
 	}
@@ -141,6 +154,17 @@ function initContent(object, content) {
 			System.clearHTML(object.nodes[nodeId]).appendChild(content.nodes[nodeId]);
 		}
 	}
+}
+
+//@protected
+function initFaceSettings(object, setting) {
+	for (var name in setting) {
+		this.$protected.initSetting(object, name, setting[name]);
+	}
+}
+
+//@protected
+function initSetting(object, name, value) {
 }
 
 //@private
@@ -226,6 +250,29 @@ function getChildByIndex(node, index) {
 		if (childNode.nodeType == 1) {
 			if (c == index) return childNode;
 			else c++;
+		}
+	}
+}
+
+//@protected
+function indexOfChildById(node, id) {
+	for (var i = 0, c = 0; i < node.childNodes.length; i++) {
+		var childNode = node.childNodes[i];
+		if (childNode.nodeType == 1) {
+			var tokens = (childNode.id||"").split(":");
+			if (tokens[0] == id) return c;
+			else c++;
+		}
+	}
+}
+
+//@protected
+function getChildById(node, id) {
+	for (var i = 0; i < node.childNodes.length; i++) {
+		var childNode = node.childNodes[i];
+		if (childNode.nodeType == 1) {
+			var tokens = (childNode.id||"").split(":");
+			if (tokens[0] == id) return childNode;
 		}
 	}
 }
