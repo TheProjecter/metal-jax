@@ -33,17 +33,17 @@ function copyResource(name, clazz) {
 }
 
 //@static
-function parseModel(source, model) {
-	for (var i = 0; i < model.childNodes.length; i++) {
-		var childNode = model.childNodes[i];
+function parseModel(source, node) {
+	for (var i = 0; i < node.childNodes.length; i++) {
+		var childNode = node.childNodes[i];
 		if (childNode.nodeType == 1) {
-			(this.$protected||$protected).parseNode(source, childNode);
-			(this.$static||$static).parseModel(source, childNode);
+			parseNode(source, childNode);
+			parseModel(source, childNode);
 		}
 	}
 }
 
-//@protected
+//@private
 function parseNode(source, node) {
 	if (node.parentNode.nodeName.toLowerCase() != "body" && !node.parentNode.offsetParent) {
 		if (node.nodeName.toLowerCase() == "img") {
@@ -72,7 +72,7 @@ function parseNode(source, node) {
 	}
 }
 
-//@protected
+//@private
 function parseSetting(node) {
 	var setting = {};
 	var tokens = (node.className||"").split(" ");
@@ -90,27 +90,30 @@ function initObject(object, node, content) {
 	if (node) {
 		object.node = node;
 		object.nodes = {};
-		this.$protected.initModel(object, node);
-		if (content) {
-			this.$protected.initContent(object, content);
-		}
+		initModel(this, object, node);
+		initContent_(this, object, content);
 	}
 }
 
-//@protected
-function initModel(object, model) {
-	for (var i = 0; i < model.childNodes.length; i++) {
-		var childNode = model.childNodes[i];
+//@private
+function initModel(scope, object, node) {
+	for (var i = 0; i < node.childNodes.length; i++) {
+		var childNode = node.childNodes[i];
 		if (childNode.nodeType == 1) {
-			if (!(this.$protected||$protected).initNode(object, childNode)) {
-				this.$protected.initModel(object, childNode);
+			if (!initNode_(object, childNode)) {
+				initModel(scope, object, childNode);
 			}
+			scope.$protected.initNode(object, childNode);
 		}
 	}
 }
 
 //@protected
 function initNode(object, node) {
+}
+
+//@private
+function initNode_(object, node) {
 	if (node.id) {
 		var parts = node.id.split(":"), nodeId = parts.shift();
 		var name = parts.length && parts[0];
@@ -125,16 +128,13 @@ function initNode(object, node) {
 			if (title) node.title = title;
 		}
 		if (childClass) {
-			var child;
-			if (!name) {
-				child = new childClass(node);
-			} else {
-				var content = new Face(node);
-				System.clearHTML(node).appendChild(copyResource(name, childClass));
-				child = new childClass(node, content);
+			var content;
+			if (name) {
+				content = new Face(node);
+				clearHTML(node).appendChild(copyResource(name, childClass));
 			}
 			object.faces = object.faces || {};
-			object.faces[nodeId] = child;
+			object.faces[nodeId] = new childClass(node, content);
 			return true;
 		} else if (className) {
 			log("warn", "class not found: ${0}", className);
@@ -147,24 +147,33 @@ function initNode(object, node) {
 	}
 }
 
-//@protected
-function initContent(object, content) {
-	for (var nodeId in content.nodes) {
-		if (object.nodes[nodeId]) {
-			System.clearHTML(object.nodes[nodeId]).appendChild(content.nodes[nodeId]);
+//@private
+function initContent_(scope, object, content) {
+	if (content) {
+		scope.$protected.initContent(object, content);
+		for (var nodeId in content.nodes) {
+			scope.$protected.initContentNode(object, content.nodes[nodeId], nodeId);
+		}
+		var setting = parseSetting(object.node);
+		for (var name in setting) {
+			scope.$protected.initContentSetting(object, name, setting[name]);
 		}
 	}
 }
 
 //@protected
-function initFaceSettings(object, setting) {
-	for (var name in setting) {
-		this.$protected.initSetting(object, name, setting[name]);
+function initContent(object, content) {
+}
+
+//@protected
+function initContentNode(object, node, nodeId) {
+	if (object.nodes[nodeId]) {
+		clearHTML(object.nodes[nodeId]).appendChild(node);
 	}
 }
 
 //@protected
-function initSetting(object, name, value) {
+function initContentSetting(object, name, value) {
 }
 
 //@private
@@ -275,6 +284,12 @@ function getChildById(node, id) {
 			if (tokens[0] == id) return childNode;
 		}
 	}
+}
+
+//@protected
+function clearHTML(node) {
+	while (node.firstChild) node.removeChild(node.firstChild);
+	return node;
 }
 
 //@private
