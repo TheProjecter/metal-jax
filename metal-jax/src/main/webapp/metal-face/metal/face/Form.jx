@@ -29,12 +29,11 @@ function initNode(object, node) {
 	case "select":
 	case "textarea":
 		object.inputs[node.name] = node;
+		// fall through
 	case "button":
 		node.id = object.nodes["form"].name.concat(".", node.name);
 		object.nodes[node.name] = node;
 		break;
-	default:
-		return $super.initNode(object, node);
 	}
 }
 
