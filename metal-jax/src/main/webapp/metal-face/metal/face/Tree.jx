@@ -1,0 +1,30 @@
+/**
+ * @face Tree
+ * 
+ * @copyright Jay Tang 2012. All rights reserved.
+ */
+
+//@private
+function initObject(object, node) {
+	var label = node.title || object.nodes.label.innerHTML;
+	object.nodes.label.innerHTML = label;
+}
+
+//@protected
+function initNode(object, node) {
+	switch (node.id) {
+	case "toggle":
+		object.bind("click", toggleTree, node);
+		break;
+	case "label":
+		object.bind("dblclick", toggleTree, node);
+		break;
+	}
+}
+
+//@private
+function toggleTree() {
+	toggleStyle(this.nodes.toggle, "expanded");
+	toggleStyle(this.nodes.label, "expanded");
+	toggleStyle(this.nodes.content, "expanded");
+}
