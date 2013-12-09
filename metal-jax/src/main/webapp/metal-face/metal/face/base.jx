@@ -19,7 +19,7 @@ function initContextScope(scope) {
 		new Face0(document.body);
 	} else {
 		if (baseClass.findResource(base)) {
-			document.body.appendChild(baseClass.fromResource(base).node);
+			baseClass.copyResourceTo(base, document.body);
 		} else {
 			log("warn", "metal.jax.init.base.fail", base);
 		}
