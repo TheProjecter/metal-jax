@@ -27,6 +27,11 @@ function fromResource(name) {
 	return new this(copyResource(name, this));
 }
 
+//@static
+function copyResourceTo(name, node) {
+	return new this(moveHTML(copyResource(name, this), node));
+}
+
 //@protected
 function copyResource(name, clazz) {
 	return clazz.findResource(name, true).cloneNode(true);
@@ -290,6 +295,14 @@ function getChildById(node, id) {
 function clearHTML(node) {
 	while (node.firstChild) node.removeChild(node.firstChild);
 	return node;
+}
+
+//@protected
+function moveHTML(source, target) {
+	while (source.firstChild) {
+		target.appendChild(source.firstChild);
+	}
+	return target;
 }
 
 //@private
