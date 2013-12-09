@@ -108,8 +108,12 @@ function startResize(node, event) {
 	this.box.topWidth = this.nodes.top.offsetWidth;
 	this.box.leftHeight = this.nodes.left.offsetHeight;
 	this.box.handleWidth = this.nodes.handle.offsetWidth;
+	this.box.handleHeight = this.nodes.handle.offsetHeight;
 	this.box.contentWidth = this.nodes.content.offsetWidth;
 	this.box.contentHeight = this.nodes.content.offsetHeight;
+	if (this.box.contentHeight == this.box.height) {
+		this.box.contentHeight -= this.box.handleHeight;
+	}
 	
 	capture.call(this, node, event);
 }
@@ -173,7 +177,7 @@ function setHeight(dy, isTop) {
 	if (contentHeight <= 0) return;
 	this.nodes.frame.style.height = "".concat(this.box.height + dy, "px");
 	if (isTop) this.nodes.frame.style.top = "".concat(this.box.top - dy, "px");
-	//this.nodes.content.style.height = "".concat(contentHeight, "px");
+	this.nodes.content.style.height = "".concat(contentHeight, "px");
 }
 
 //@private
