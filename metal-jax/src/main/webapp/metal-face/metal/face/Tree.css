@@ -5,5 +5,5 @@
 #label.tree.folder { background-image: url(../../../images/folder.png); }
 #label.tree.folder.expanded { background-image: url(../../../images/folder_open.png); }
 
-#content.tree { padding-left:17px; display:none; }
+#content.tree { padding-left:19px; display:none; }
 #content.tree.expanded { display:block; }

@@ -7,7 +7,7 @@
 #divider.splitX { width:2px; cursor:col-resize; }
 
 #panel1.splitY,
-#panel2.splitY { height:46%; }
+#panel2.splitY { height:47%; }
 #divider.splitY { height:2px; cursor:row-resize; }
 
 #panel1.splitX, #panel1.splitY, #panel2.splitX, #panel2.splitY { overflow:auto; }
