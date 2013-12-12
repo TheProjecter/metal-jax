@@ -49,6 +49,10 @@
 						<id>test-webjar-resources</id>
 						<phase>process-resources</phase>
 					</execution>
+					<execution>
+						<id>test-war-resources</id>
+						<phase>process-resources</phase>
+					</execution>
 				</executions>
 			</plugin>
 		</plugins>
