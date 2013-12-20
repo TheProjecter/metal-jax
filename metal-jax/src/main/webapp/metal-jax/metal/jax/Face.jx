@@ -105,10 +105,11 @@ function initModel(scope, object, node) {
 	for (var i = 0; i < node.childNodes.length; i++) {
 		var childNode = node.childNodes[i];
 		if (childNode.nodeType == 1) {
-			if (!initNode_(object, childNode)) {
+			var stop = initNode_(object, childNode);
+			scope.$protected.initNode(object, childNode);
+			if (!stop) {
 				initModel(scope, object, childNode);
 			}
-			scope.$protected.initNode(object, childNode);
 		}
 	}
 }
@@ -309,8 +310,18 @@ function moveHTML(source, target) {
 var _events_ = [
 	"keydown", "keypress", "keyup",
 	"click", "dblclick",
-	"mousedown", "mousemove", "mouseout", "mouseover", "mouseup"
+	"mousedown", "mouseup", "mousemove", "mouseout", "mouseover"
 ];
+
+//@private
+var _touchEvents_ = [
+	"touchstart", "touchend", "touchmove", "touchenter", "touchleave", "touchcancel"
+];
+
+//@protected
+function isTouchReady() {
+	return typeof TouchEvent != "undefined";
+}
 
 //@protected
 function toggleEvent(event, target, callback, positive) {
