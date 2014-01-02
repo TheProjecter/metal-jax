@@ -9,6 +9,9 @@
         <dependent-module archiveName="metal-front.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/metal-front/metal-front">
             <dependency-type>uses</dependency-type>
         </dependent-module>
+        <dependent-module archiveName="metal-safe.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/metal-safe/metal-safe">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
         <dependent-module archiveName="metal-jax.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/metal-jax/metal-jax">
             <dependency-type>uses</dependency-type>
         </dependent-module>

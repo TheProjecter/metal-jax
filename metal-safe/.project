@@ -1,14 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-	<name>metal-jax-webapp</name>
-	<comment></comment>
-	<projects>
-		<project>metal-core</project>
-		<project>metal-front</project>
-		<project>metal-safe</project>
-		<project>metal-jax</project>
-		<project>metal-demo</project>
-	</projects>
+	<name>metal-safe</name>
 	<buildSpec>
 		<buildCommand>
 			<name>org.eclipse.jdt.core.javabuilder</name>

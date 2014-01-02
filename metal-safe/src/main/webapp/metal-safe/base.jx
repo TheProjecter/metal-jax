@@ -1,0 +1,15 @@
+/**
+ * @context base
+ * @imports metal.face.base Base
+ * @requires ${baseClass|metal.jax.Face} ${base}
+ */
+
+//@private
+function initClass() {
+	Base.initClassScope(this);
+}
+
+//@private
+function initContext() {
+	Base.initContextScope(this);
+}
