@@ -168,9 +168,11 @@ $private.initClassHandle = function initClassHandle(name, context) {
 };
 
 $private.findClassHandle = function findClassHandle(name, context) {
-	name = parseSourceName(name);
-	var setting = findSourceSetting(name, context);
-	return getClassHandle(name, setting ? setting.$context : context);
+	if (name) {
+		name = parseSourceName(name);
+		var setting = findSourceSetting(name, context);
+		return getClassHandle(name, setting ? setting.$context : context);
+	}
 };
 
 $private.findSourceSetting = function findSourceSetting(name, context) {
@@ -244,7 +246,6 @@ $public.loadResource = function loadResource(name, clazz, callback) {
 };
 
 $public.findClass = function findClass(name, positive) {
-	if (!name) return;
 	var source = findClassHandle(name, this);
 	if (source) {
 		if (!source.error) {
@@ -280,8 +281,9 @@ $protected.extendClass = function extendClass(clazz) {
 	source.name = clazz.getName().concat(new Date().getTime());
 	source.superBase = parseBaseName(clazz.getName());
 	parseModel(putClassHandle(source));
+	source.scope.$imports[source.superBase] = clazz.getName();
 	source.scope[source.superBase] = clazz;
-	initClassModel(source, getClassHandle(clazz));
+	initClassModel(source);
 	return source.$class;
 };
 
@@ -549,6 +551,7 @@ $private.flush_initClass = function flush_initClass(source) {
 	if (!source.flushStatus) {
 		source.flushStatus = "beginInitClass";
 		_busyCount++;
+
 		if (source.$context) {
 			source.scope[source.superBase] = source.$context.findClass(source.scope.$imports[source.superBase], true);
 			if (source.stereotype != "context") {
@@ -557,21 +560,16 @@ $private.flush_initClass = function flush_initClass(source) {
 				}
 			}
 		}
-		var superSource;
 		var superClass = source.scope[source.superBase];
 		if (superClass) {
-			var superName = source.scope.$imports[source.superBase];
-			superSource = findClassHandle(superName, source.$context);
-			flush_initClass(superSource);
+			flush_initClass(findClassHandle(source.scope.$imports[source.superBase], source.$context));
 		}
 		if (source.stereotype != "context") {
 			for (var name in source.scope.$imports) {
-				if (source.scope.$imports[name]) {
-					flush_initClass(findClassHandle(source.scope.$imports[name], source.$context));
-				}
+				flush_initClass(findClassHandle(source.scope.$imports[name], source.$context));
 			}
 		}
-		initClassModel(source, superSource);
+		initClassModel(source);
 		if (source.stereotype == "context") {
 			for (var name in source.scope.$imports) {
 				source.$context.loadClass(source.scope.$imports[name]);
@@ -678,20 +676,20 @@ $private.flush_notifyContext = function flush_notifyContext(source) {
 		_busyCount++;
 		for (var name in source.scope.$imports) {
 			if (source.scope[name]) {
-				flush_notifyContext(getClassHandle(source.scope[name]));
+//				flush_notifyContext(getClassHandle(source.scope[name]));
 			}
 		}
-		if (source.stereotype == "context") {
+		//if (source.stereotype == "context") {
 			if (source.scope.initContext) {
 				source.scope.initContext();
 			}
-		}
+		//}
 		_busyCount--;
 		source.flushStatus = "endNotifyContext";
 	}
 };
 
-$private.initClassModel = function initClassModel(source, superSource) {
+$private.initClassModel = function initClassModel(source) {
 	source.scope.$private.$class = source.$class;
 	source.scope.$protected.$class = source.$class;
 	source.scope.$static.$class = source.$class;
@@ -703,6 +701,8 @@ $private.initClassModel = function initClassModel(source, superSource) {
 	source.scope.$static.$static = source.scope.$static;
 	source.scope.$static.$public = source.scope.$public;
 	source.scope.$super = {};
+
+	var superSource = findClassHandle(source.scope.$imports[source.superBase], source.$context);
 	if (superSource) {
 		copyMember(source.scope.$super, superSource.scope.$protected);
 		source.scope.$super.$protected = source.scope.$super;
