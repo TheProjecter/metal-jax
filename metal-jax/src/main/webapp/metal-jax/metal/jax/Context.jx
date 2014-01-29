@@ -341,7 +341,7 @@ $private._constructor_   = "$private.${0} = function ${0}() { return $protected.
 $private._memberRE_      = /^\/\/@(\S+)\s+(function|var)\s+([A-Za-z0-9_$]+)/gm;
 $private._classFooter_   = "\n//@ sourceURL=${0}\n";
 $private._classHeaderRE_ = /^\s*\/\*\*([\S\s]*?)\*\//;
-$private._classSettingRE_ = /@(setting|source|stereotype)[\t ]+([\S\t ]*\S+)[\t ]*$|@([a-zA-Z]+)[\t ]+(\S+)[\t ]*([\S\t ]+)?[\t ]*$/gm;
+$private._classSettingRE_ = /@(setting|source|stereotype)[\t ]+([\S\t ]*\S+)[\t ]*$|@(extends|imports|requires)[\t ]+(\S+)[\t ]*(\S+)?[\t ]*$|@([a-zA-Z]+)[\t ]*(\S+)?[\t ]*$/gm;
 $private.parseModel = function parseModel(source) {
 	source.scope = { $setting:{}, $imports:{}, $requires:{}, $static:{}, $protected:{}, $public:{} };
 	source.scope.$private = source.scope;
@@ -351,8 +351,8 @@ $private.parseModel = function parseModel(source) {
 		source.content = source.content.substring(match[0].length);
 		var header = match[1];
 		while (match = _classSettingRE_.exec(header)) {
-			var settingTag = match[1]||match[3], name = match[2]||match[4], value = match[5];
-			if (!settingTag || !name) continue;
+			var settingTag = match[1]||match[3]||match[6], name = match[2]||match[4]||match[7], value = match[5];
+			if (!settingTag) continue;
 			switch (settingTag) {
 			case "extends":
 				name = parseSourceName(name, source.name);
@@ -401,6 +401,7 @@ $private.parseModel = function parseModel(source) {
 			default:
 				if (source.stereotype) break;
 				source.stereotype = settingTag;
+				name = name || source.name;
 				if (source.name != parseSourceName(name, source.name)) {
 					throwError("incorrect ${stereotype} name declared: ${name}", source);
 				}
