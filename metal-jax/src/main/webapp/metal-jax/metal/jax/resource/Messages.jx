@@ -1,5 +1,5 @@
 /**
- * @resource Messages
+ * @resource
  * @extends Properties
  * 
  * @setting resource.module=messages

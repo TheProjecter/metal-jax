@@ -1,5 +1,5 @@
 /**
- * @resource Face
+ * @resource
  * @imports System
  * 
  * @copyright Jay Tang 2012. All rights reserved.
@@ -62,7 +62,7 @@ function parseNode(source, node) {
 		var parts = node.id.split(":"), nodeId = parts.shift();
 		if (parts.length) {
 			var name = System.parseSourceName(parts[0], source.name);
-			var className = parts.length > 1 && (parts[1]||name) || Face.getName();
+			var className = parts.length > 1 && (parts[1]||name) || $class.getName();
 			className = className.split("_")[0];
 			source.$imports = source.$imports || {};
 			source.$imports[className] = className;
@@ -136,7 +136,7 @@ function initNode_(object, node) {
 		if (childClass) {
 			var content;
 			if (name) {
-				content = new Face(node);
+				content = new $class(node);
 				clearHTML(node).appendChild(copyResource(name, childClass));
 			}
 			object.faces = object.faces || {};

@@ -1,5 +1,5 @@
 /**
- * @class Service
+ * @class
  * @imports System
  * @imports metal.jax.core.Request
  * @imports metal.jax.mapper.XmlMapper

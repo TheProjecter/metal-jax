@@ -1,5 +1,5 @@
 /**
- * @class System
+ * @class
  * @imports Context
  * 
  * @copyright Jay Tang 2012. All rights reserved.
@@ -7,15 +7,15 @@
 
 //@private
 function initClass() {
-	System.window = window;
-	System.document = window.document;
-	System.docHead = window.document.body.parentNode.firstChild;
-	System.splitPath = Context.splitPath;
-	System.resolvePath = Context.resolvePath;
-	System.isSameDomain = Context.isSameDomain;
-	System.formatText = Context.formatText;
-	System.parseBaseName = Context.parseBaseName;
-	System.parseSourceName = Context.parseSourceName;
+	$class.window = window;
+	$class.document = window.document;
+	$class.docHead = window.document.body.parentNode.firstChild;
+	$class.splitPath = Context.splitPath;
+	$class.resolvePath = Context.resolvePath;
+	$class.isSameDomain = Context.isSameDomain;
+	$class.formatText = Context.formatText;
+	$class.parseBaseName = Context.parseBaseName;
+	$class.parseSourceName = Context.parseSourceName;
 	Array.prototype.indexOf = Array.prototype.indexOf || indexOf;
 	Date.prototype.toISOString = Date.prototype.toISOString || toISOString;
 	
@@ -29,14 +29,14 @@ function callback() {
 	if (callback) {
 		return function() {
 			Array.prototype.unshift.apply(arguments, args);
-			return callback.apply(target === System ? this : target, arguments);
+			return callback.apply(target === $class ? this : target, arguments);
 		};
 	}
 }
 
 //@static
 function loadback(source, callback) {
-	var action = System.isSameDomain(source.base) ? loadSameDomain : loadCrossDomain;
+	var action = $class.isSameDomain(source.base) ? loadSameDomain : loadCrossDomain;
 	action.call(this, source, callback);
 }
 
@@ -113,15 +113,15 @@ function loadCrossDomain(source, callback) {
 		}
 		callback.call(caller, source);
 	});
-	System.docHead.appendChild(request.node);
+	$class.docHead.appendChild(request.node);
 }
 
 //@private
 function requestCrossDomain(source, callback) {
 	var request = {};
 	request.url = source.url = [source.base, $("crossDomain"), source.module, source.path].join("/");
-	System.window[$("bootModule")][request.url] = callback;
-	request.node = System.document.createElement("script");
+	$class.window[$("bootModule")][request.url] = callback;
+	request.node = $class.document.createElement("script");
 	request.node.src = requestURL(source);
 	request.timeout = setInterval(callback, parseInt($("crossTimeout")));
 	return request;
@@ -129,8 +129,8 @@ function requestCrossDomain(source, callback) {
 
 //@private
 function clearRequest(request) {
-	delete System.window[$("bootModule")][request.url];
-	System.docHead.removeChild(request.node);
+	delete $class.window[$("bootModule")][request.url];
+	$class.docHead.removeChild(request.node);
 	clearInterval(request.timeout);
 	delete request.node;
 }
@@ -244,8 +244,8 @@ function indexOfFirstChild(node, only) {
 
 //@static
 function parseHTML(text) {
-	var doc = System.document.createDocumentFragment();
-	var node = System.document.createElement("div");
+	var doc = $class.document.createDocumentFragment();
+	var node = $class.document.createElement("div");
 	node.innerHTML = text;
 	while (node.firstChild) {
 		doc.appendChild(node.firstChild);
@@ -315,7 +315,7 @@ function copyArray(items) {
 
 //@static
 function toISOString() {
-	return System.formatText("${0}-${1}-${2}T${3}:${4}:${5}.${6}Z",
+	return $class.formatText("${0}-${1}-${2}T${3}:${4}:${5}.${6}Z",
 			this.getUTCFullYear(), pad(this.getUTCMonth()+1, 2), pad(this.getUTCDate(), 2),
 			pad(this.getUTCHours(), 2), pad(this.getUTCMinutes(), 2), pad(this.getUTCSeconds(), 2),
 			pad(this.getUTCMilliseconds(), 3));

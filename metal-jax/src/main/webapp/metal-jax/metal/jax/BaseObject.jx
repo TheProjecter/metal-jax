@@ -1,5 +1,5 @@
 /**
- * @class BaseObject
+ * @class
  * @imports Context
  * 
  * @copyright Jay Tang 2012. All rights reserved.
@@ -7,10 +7,8 @@
 
 //@private
 function initClass() {
-	$class.$ = Context.$;
-	$static.$ = Context.$;
-	$class.extendsClass = Context.extendsClass;
-	$static.extendsClass = Context.extendsClass;
+	$class.$ = $static.$ = Context.$;
+	$class.extendsClass = $static.extendsClass = Context.extendsClass;
 }
 
 //@public
