@@ -542,15 +542,15 @@ $private.flush = function flush() {
 		flush_notifyContext(_pendingClasses[i]);
 	}
 	for (var i = 0; i < _pendingClasses.length; ) {
-		if (_pendingClasses[i].flushStatus == "endNotifyContext") {
+		if (_pendingClasses[i].flushState == "endNotifyContext") {
 			_pendingClasses.splice(i, 1);
 		} else i++;
 	}
 };
 
 $private.flush_initClass = function flush_initClass(source) {
-	if (!source.flushStatus) {
-		source.flushStatus = "beginInitClass";
+	if (!source.flushState) {
+		source.flushState = "beginInitClass";
 		_busyCount++;
 
 		if (source.$context) {
@@ -577,7 +577,7 @@ $private.flush_initClass = function flush_initClass(source) {
 			}
 		}
 		_busyCount--;
-		source.flushStatus = "endInitClass";
+		source.flushState = "endInitClass";
 		if (source.stereotype != "context") {
 			flush_notifyClass(source);
 		}
@@ -585,8 +585,8 @@ $private.flush_initClass = function flush_initClass(source) {
 };
 
 $private.flush_notifyClass = function flush_notifyClass(source) {
-	if (source.flushStatus == "endInitClass") {
-		source.flushStatus = "beginNotifyClass";
+	if (source.flushState == "endInitClass") {
+		source.flushState = "beginNotifyClass";
 		_busyCount++;
 		if (source.stereotype == "context") {
 			for (var name in source.scope.$imports) {
@@ -606,7 +606,7 @@ $private.flush_notifyClass = function flush_notifyClass(source) {
 			source.scope.$protected.initClass();
 		}
 		_busyCount--;
-		source.flushStatus = "endNotifyClass";
+		source.flushState = "endNotifyClass";
 		if (source.stereotype != "context") {
 			flush_loadResource(source);
 		}
@@ -624,21 +624,21 @@ $private.flush_loadResource = function flush_loadResource(source) {
 		}
 	}
 	if (_pendingCount) return;
-	source.resourceStatus = source.resourceStatus || {};
+	source.resourceState = source.resourceState || {};
 	for (var name in source.scope.$requires) {
-		if (!source.resourceStatus[name]) {
-			source.resourceStatus[name] = "pendingInit";
+		if (!source.resourceState[name]) {
+			source.resourceState[name] = "pendingInit";
 			source.$context.loadResource(name, source.scope[source.scope.$requires[name]]);
 		}
 	}
 };
 
 $private.flush_initResource = function flush_initResource(source) {
-	if (source.flushStatus == "endNotifyClass" || source.flushStatus == "endInitResource") {
+	if (source.flushState == "endNotifyClass" || source.flushState == "endInitResource") {
 		_busyCount++;
-		for (var name in source.resourceStatus) {
-			if (source.resourceStatus[name] == "pendingInit") {
-				source.resourceStatus[name] = "doneInit";
+		for (var name in source.resourceState) {
+			if (source.resourceState[name] == "pendingInit") {
+				source.resourceState[name] = "doneInit";
 				var clazz = source.scope[source.scope.$requires[name]];
 				if (source.$context.findResource(name, clazz)) {
 					var handle = getResourceHandle(clazz);
@@ -647,14 +647,14 @@ $private.flush_initResource = function flush_initResource(source) {
 			}
 		}
 		_busyCount--;
-		source.flushStatus = "endInitResource";
+		source.flushState = "endInitResource";
 		flush_loadResource(source);
 	}
 };
 
 $private.flush_initContext = function flush_initContext(source) {
-	if (source.flushStatus == "endInitResource") {
-		source.flushStatus = "beginInitContext";
+	if (source.flushState == "endInitResource") {
+		source.flushState = "beginInitContext";
 		_busyCount++;
 		for (var name in source.scope.$imports) {
 			if (source.scope[name]) {
@@ -667,13 +667,13 @@ $private.flush_initContext = function flush_initContext(source) {
 			}
 		}
 		_busyCount--;
-		source.flushStatus = "endInitContext";
+		source.flushState = "endInitContext";
 	}
 };
 
 $private.flush_notifyContext = function flush_notifyContext(source) {
-	if (source.flushStatus == "endInitContext") {
-		source.flushStatus = "beginNotifyContext";
+	if (source.flushState == "endInitContext") {
+		source.flushState = "beginNotifyContext";
 		_busyCount++;
 		for (var name in source.scope.$imports) {
 			if (source.scope[name]) {
@@ -686,7 +686,7 @@ $private.flush_notifyContext = function flush_notifyContext(source) {
 			}
 		//}
 		_busyCount--;
-		source.flushStatus = "endNotifyContext";
+		source.flushState = "endNotifyContext";
 	}
 };
 
