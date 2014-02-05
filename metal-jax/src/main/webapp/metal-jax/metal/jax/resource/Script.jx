@@ -1,0 +1,16 @@
+/**
+ * @resource
+ * @setting resource.url=
+ * @setting resource.object=
+ * 
+ * @copyright Jay Tang 2012. All rights reserved.
+ */
+
+//@protected
+function initResource(target, source) {
+	for (var name in source.model) {
+		if (!(name in target.$setting)) {
+			target.$setting[name] = source.model[name];
+		}
+	}
+}

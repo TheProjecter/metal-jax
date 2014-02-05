@@ -1,0 +1,34 @@
+/**
+ * @script
+ * @setting resource.url=http://ajax.googleapis.com/ajax/libs/angularjs/1.2.11/angular.js
+ * @setting resource.object=angular
+ * 
+ * @copyright Jay Tang 2012. All rights reserved.
+ */
+
+//@private
+var $modules = {};
+
+//@private
+var $controllers = {};
+
+//@static
+function addModule(name, requires) {
+	$modules[name] = angular.module(name, requires||[]);
+	var foo = $modules[name];
+}
+
+//@static
+function addController(name, module, fn) {
+	$controllers[module.concat(".", name)] = $modules[module].controller(name, fn);
+}
+
+//@private
+function initContext() {
+	log("info", "after loading DOM, ready bootstrap angular");
+	var names = [];
+	for (var i in $modules) {
+		names.push(i);
+	}
+	angular.bootstrap(document.body, names);
+}
