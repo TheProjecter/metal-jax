@@ -324,8 +324,9 @@ $private.handleResponse = function handleResponse(source) {
 $private.parseSource = function parseSource(source) {
 	parseModel(source);
 	_pendingClasses.push(source);
-	source.$context.loadClass(source.scope.$imports[source.superBase]);
-	if (source.stereotype != "context") {
+	if (source.stereotype == "context") {
+		source.$context.loadClass(source.scope.$imports[source.superBase]);
+	} else {
 		for (var name in source.scope.$imports) {
 			source.$context.loadClass(source.scope.$imports[name]);
 		}
@@ -554,8 +555,9 @@ $private.flush_initClass = function flush_initClass(source) {
 		_busyCount++;
 
 		if (source.$context) {
-			source.scope[source.superBase] = source.$context.findClass(source.scope.$imports[source.superBase], true);
-			if (source.stereotype != "context") {
+			if (source.stereotype == "context") {
+				source.scope[source.superBase] = source.$context.findClass(source.scope.$imports[source.superBase], true);
+			} else {
 				for (var name in source.scope.$imports) {
 					source.scope[name] = source.$context.findClass(source.scope.$imports[name], true);
 				}
@@ -576,6 +578,7 @@ $private.flush_initClass = function flush_initClass(source) {
 				source.$context.loadClass(source.scope.$imports[name]);
 			}
 		}
+
 		_busyCount--;
 		source.flushState = "endInitClass";
 		if (source.stereotype != "context") {
@@ -588,6 +591,7 @@ $private.flush_notifyClass = function flush_notifyClass(source) {
 	if (source.flushState == "endInitClass") {
 		source.flushState = "beginNotifyClass";
 		_busyCount++;
+
 		if (source.stereotype == "context") {
 			for (var name in source.scope.$imports) {
 				source.scope[name] = source.$context.findClass(source.scope.$imports[name]);
@@ -605,6 +609,7 @@ $private.flush_notifyClass = function flush_notifyClass(source) {
 		} else if (source.scope.$protected.initClass) {
 			source.scope.$protected.initClass();
 		}
+
 		_busyCount--;
 		source.flushState = "endNotifyClass";
 		if (source.stereotype != "context") {
@@ -636,6 +641,7 @@ $private.flush_loadResource = function flush_loadResource(source) {
 $private.flush_initResource = function flush_initResource(source) {
 	if (source.flushState == "endNotifyClass" || source.flushState == "endInitResource") {
 		_busyCount++;
+
 		for (var name in source.resourceState) {
 			if (source.resourceState[name] == "pendingInit") {
 				source.resourceState[name] = "doneInit";
@@ -647,6 +653,7 @@ $private.flush_initResource = function flush_initResource(source) {
 			}
 		}
 		_busyCount--;
+
 		source.flushState = "endInitResource";
 		flush_loadResource(source);
 	}
@@ -656,6 +663,7 @@ $private.flush_initContext = function flush_initContext(source) {
 	if (source.flushState == "endInitResource") {
 		source.flushState = "beginInitContext";
 		_busyCount++;
+
 		for (var name in source.scope.$imports) {
 			if (source.scope[name]) {
 				flush_initContext(getClassHandle(source.scope[name]));
@@ -666,6 +674,7 @@ $private.flush_initContext = function flush_initContext(source) {
 				source.scope.initObject(source.$context);
 			}
 		}
+
 		_busyCount--;
 		source.flushState = "endInitContext";
 	}
@@ -675,6 +684,7 @@ $private.flush_notifyContext = function flush_notifyContext(source) {
 	if (source.flushState == "endInitContext") {
 		source.flushState = "beginNotifyContext";
 		_busyCount++;
+
 		for (var name in source.scope.$imports) {
 			if (source.scope[name]) {
 //				flush_notifyContext(getClassHandle(source.scope[name]));
@@ -685,6 +695,7 @@ $private.flush_notifyContext = function flush_notifyContext(source) {
 				source.scope.initContext();
 			}
 		//}
+
 		_busyCount--;
 		source.flushState = "endNotifyContext";
 	}
