@@ -42,7 +42,7 @@
 			parseSetting($setting);
 			if (!this[$setting["bootModule"]]) {
 				this[$setting["bootModule"]] = {};
-				waitFor("load", loadSource);
+				callLater(loadSource, "load");
 			}
 		}
 		
@@ -103,7 +103,7 @@
 			}
 		}
 		
-		function waitFor(event, callback) {
+		function callLater(callback, event) {
 			if (this.addEventListener) {
 				this.addEventListener(event, callback, false);
 			} else if (this.attachEvent) {

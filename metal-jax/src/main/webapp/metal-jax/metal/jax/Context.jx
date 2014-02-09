@@ -10,9 +10,9 @@ $private.Context = function Context() { return $protected.call(this, arguments);
 $imports["BaseObject"] = "metal.jax.BaseObject";
 $imports["System"] = "metal.jax.System";
 $imports["Logger"] = "metal.jax.core.Logger";
-$imports["BaseContext"] = $setting["baseContext"];
 $imports["metal.jax.resource.Messages"] = "metal.jax.resource.Messages";
 $requires["metal.jax"] = "metal.jax.resource.Messages";
+$imports["BaseContext"] = $setting["baseContext"];
 
 $private.initClass_ = function initClass_() {
 	this.$source.classes[this.$source.name] = this.$source;
@@ -241,7 +241,7 @@ $public.loadResource = function loadResource(name, clazz, callback) {
 		source.error = ex.message;
 		log("error", "failed to load resource '${name}:${resourceType}': ${error}", source);
 	} finally {
-		waitFor(callback);
+		callLater(callback);
 	}
 };
 
@@ -272,7 +272,7 @@ $public.loadClass = function loadClass(name, callback) {
 		source.error = ex.message;
 		log("error", "failed to load class '${name}': ${error}", source);
 	} finally {
-		waitFor(callback);
+		callLater(callback);
 	}
 };
 
@@ -287,7 +287,7 @@ $protected.extendClass = function extendClass(clazz) {
 	return source.$class;
 };
 
-$private.waitFor = function waitFor(callback) {
+$private.callLater = function callLater(callback) {
 	if (!callback) return;
 	if (_pendingCount) {
 		_callbacks.push(callback);
@@ -325,7 +325,9 @@ $private.parseSource = function parseSource(source) {
 	parseModel(source);
 	_pendingClasses.push(source);
 	if (source.stereotype == "context") {
-		source.$context.loadClass(source.scope.$imports[source.superBase]);
+		if (source.superBase) {
+			source.$context.loadClass(source.scope.$imports[source.superBase]);
+		}
 	} else {
 		for (var name in source.scope.$imports) {
 			source.$context.loadClass(source.scope.$imports[name]);
@@ -554,24 +556,18 @@ $private.flush_initClass = function flush_initClass(source) {
 		source.flushState = "beginInitClass";
 		_busyCount++;
 
-		if (source.$context) {
-			if (source.stereotype == "context") {
+		if (source.stereotype == "context") {
+			if (source.superBase) {
 				source.scope[source.superBase] = source.$context.findClass(source.scope.$imports[source.superBase], true);
-			} else {
-				for (var name in source.scope.$imports) {
-					source.scope[name] = source.$context.findClass(source.scope.$imports[name], true);
-				}
+				flush_initClass(findClassHandle(source.scope.$imports[source.superBase], source.$context));
 			}
-		}
-		var superClass = source.scope[source.superBase];
-		if (superClass) {
-			flush_initClass(findClassHandle(source.scope.$imports[source.superBase], source.$context));
-		}
-		if (source.stereotype != "context") {
+		} else {
 			for (var name in source.scope.$imports) {
+				source.scope[name] = source.$context.findClass(source.scope.$imports[name], true);
 				flush_initClass(findClassHandle(source.scope.$imports[name], source.$context));
 			}
 		}
+		
 		initClassModel(source);
 		if (source.stereotype == "context") {
 			for (var name in source.scope.$imports) {
@@ -630,6 +626,7 @@ $private.flush_loadResource = function flush_loadResource(source) {
 	}
 	if (_pendingCount) return;
 	source.resourceState = source.resourceState || {};
+	// load self as resource
 	for (var name in source.scope.$requires) {
 		if (!source.resourceState[name]) {
 			source.resourceState[name] = "pendingInit";
