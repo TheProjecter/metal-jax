@@ -2,10 +2,10 @@
  * @class
  * @imports System
  * 
- * @setting resource.base=
- * @setting resource.module=
- * @setting resource.type=
- * @setting resource.content.delimiter=
+ * @setting resource.base
+ * @setting resource.module
+ * @setting resource.type
+ * @setting resource.content.delimiter
  * 
  * @copyright Jay Tang 2012. All rights reserved.
  */

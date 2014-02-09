@@ -1,7 +1,7 @@
 /**
  * @resource
- * @setting resource.url=
- * @setting resource.object=
+ * @setting resource.url
+ * @setting resource.object
  * 
  * @copyright Jay Tang 2012. All rights reserved.
  */
