@@ -455,7 +455,7 @@ $static.parseBaseName = function parseBaseName(name, value) {
 	return value || splitPath(name, -1, 1, ".") || "";
 };
 
-$private._settingRE_ = /([^=\t ]+)=?(.*)/;
+$private._settingRE_ = /([^=\t ]+)(?:=|\s*)(.*)/;
 $private._settingsRE_ = /([^=\t ]+)=(\S+)/g;
 $private.parseSetting = function parseSetting(setting, match) {
 	var input = match[0], settingTag = match[1], content = match[2], found;
