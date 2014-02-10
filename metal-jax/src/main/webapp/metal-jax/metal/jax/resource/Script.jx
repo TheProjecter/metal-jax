@@ -7,10 +7,10 @@
  */
 
 //@protected
-function initResource(target, source) {
-	for (var name in source.model) {
-		if (!(name in target.$setting)) {
-			target.$setting[name] = source.model[name];
-		}
+function initClass(scope) {
+	if (scope.$class.$("resource.url")) {
+		scope.$imports[$class.getName()] = $class.getName();
+		scope.$requires[scope.$class.getName()] = $class.getName();
+		log("info", "initClass scope for: " + scope.$class.getName());
 	}
 }

@@ -32,7 +32,8 @@
 					{ type:"face", base:"metal.jax.Face" },
 					{ type:"model", base:"metal.jax.Model" },
 					{ type:"resource", base:"metal.jax.Resource" },
-					{ type:"service", base:"metal.jax.Service" }
+					{ type:"service", base:"metal.jax.Service" },
+					{ type:"script", base:"metal.jax.resource.Script" }
 				]
 			}
 		};
