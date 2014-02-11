@@ -16,7 +16,8 @@ function test_bootSetting() {
 		"bootModule",
 		"bootContext",
 		"crossDomain",
-		"crossTimeout",
+		"requestTime",
+		"requestTimeout",
 		"classType",
 		"faceType"
 	];

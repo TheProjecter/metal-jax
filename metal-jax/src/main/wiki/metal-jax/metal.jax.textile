@@ -38,7 +38,8 @@ table(grid).
 | bootModule | @metal-jax@ | The folder for metal-jax. |
 | bootContext | @boot@ | The initial metal-jax context. |
 | crossDomain | @xd@ | Path segment to identify cross domain requests. |
-| crossTimeout | @3000@ | Timeout value for cross domain requests, in mili-seconds |
+| requestTime | @100@ | Initial timeout value for cross domain requests, in mili-seconds |
+| requestTimeout | @3000@ | Max timeout value for cross domain requests, in mili-seconds |
 | classType | @jx@ | File extension for jax source files. |
 | faceType | @html@ | File extension for jax face source files. |
 
