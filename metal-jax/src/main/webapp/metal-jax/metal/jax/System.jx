@@ -36,7 +36,7 @@ function callback() {
 
 //@static
 function loadback(source, callback) {
-	var action = $class.isSameDomain(source.base) ? loadSameDomain : loadCrossDomain;
+	var action = (!source.url && $class.isSameDomain(source.base)) ? loadSameDomain : loadCrossDomain;
 	action.call(this, source, callback);
 }
 
@@ -97,9 +97,21 @@ function requestSameDomain(source, callback) {
 function loadCrossDomain(source, callback) {
 	var caller = this;
 	var request = requestCrossDomain(source, function(response) {
-		if (arguments.length == 0) return;
+		var responseReady = source.checkResponse && source.checkResponse();
+		var timeout = request.time > request.timeout;
+		if (arguments.length == 0) {
+			if (!responseReady && !timeout) {
+				request.time += request.time;
+				request.timeoutId = setTimeout(request.callback, request.time);
+				return;
+			}
+		}
 		clearRequest(request);
-		if (typeof response != "object") {
+		if (responseReady) {
+			//nothing
+		} else if (timeout) {
+			source.error = "request timeout";
+		} else if (typeof response != "object") {
 			source.error = "bad response";
 		} else if (response.error) {
 			source.error = response.error;
@@ -119,11 +131,14 @@ function loadCrossDomain(source, callback) {
 //@private
 function requestCrossDomain(source, callback) {
 	var request = {};
-	request.url = source.url = [source.base, $("crossDomain"), source.module, source.path].join("/");
+	request.url = source.url = source.url || [source.base, $("crossDomain"), source.module, source.path].join("/");
 	$class.window[$("bootModule")][request.url] = callback;
+	request.callback = callback;
 	request.node = $class.document.createElement("script");
 	request.node.src = requestURL(source);
-	request.timeout = setInterval(callback, parseInt($("crossTimeout")));
+	request.time = parseInt($("requestTime"));
+	request.timeout = parseInt($("requestTimeout"));
+	request.timeoutId = setTimeout(request.callback, request.time);
 	return request;
 }
 
@@ -131,7 +146,7 @@ function requestCrossDomain(source, callback) {
 function clearRequest(request) {
 	delete $class.window[$("bootModule")][request.url];
 	$class.docHead.removeChild(request.node);
-	clearInterval(request.timeout);
+	clearTimeout(request.timeoutId);
 	delete request.node;
 }
 

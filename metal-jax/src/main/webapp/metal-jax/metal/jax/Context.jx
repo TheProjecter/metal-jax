@@ -630,7 +630,7 @@ $private.flush_loadResource = function flush_loadResource(source) {
 	for (var name in source.scope.$requires) {
 		if (!source.resourceState[name]) {
 			source.resourceState[name] = "pendingInit";
-			source.$context.loadResource(name, source.scope[source.scope.$requires[name]]);
+			source.scope[source.scope.$requires[name]].loadResource(name, source.$context);
 		}
 	}
 };

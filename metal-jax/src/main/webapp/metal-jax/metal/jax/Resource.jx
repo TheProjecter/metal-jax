@@ -15,8 +15,8 @@ function initResource(target, source) {
 }
 
 //@static
-function loadResource(name, callback) {
-	this.getContext().loadResource(name, this, callback);
+function loadResource(name, context, callback) {
+	context.loadResource(name, this, callback);
 }
 
 //@static

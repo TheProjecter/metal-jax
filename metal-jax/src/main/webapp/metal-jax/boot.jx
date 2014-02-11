@@ -11,7 +11,8 @@
 			baseModule: ".",
 			baseContext: "base",
 			crossDomain: "xd",
-			crossTimeout: "3000",
+			requestTime: "100",
+			requestTimeout: "3000",
 			classType: "jx",
 			faceType: "html"
 		};
@@ -165,9 +166,18 @@
 		function loadCrossDomain(source, callback) {
 			var caller = this;
 			var request = requestCrossDomain(source, function(response) {
-				if (arguments.length == 0) return;
+				var timeout = request.time > request.timeout;
+				if (arguments.length == 0) {
+					if (!timeout) {
+						request.time += request.time;
+						request.timeoutId = setTimeout(request.callback, request.time);
+						return;
+					}
+				}
 				clearRequest(request);
-				if (typeof response != "object") {
+				if (timeout) {
+					source.error = "request timeout";
+				} else if (typeof response != "object") {
 					source.error = "bad response";
 				} else if (response.error) {
 					source.error = response.error;
@@ -183,16 +193,19 @@
 			var request = {};
 			request.url = source.url = [source.base, $setting["crossDomain"], source.module, source.path].join("/");
 			this[$setting["bootModule"]][request.url] = callback;
+			request.callback = callback;
 			request.node = document.createElement("script");
 			request.node.src = request.url;
-			request.timeout = setInterval(callback, parseInt($setting["crossTimeout"]));
+			request.time = parseInt($setting["requestTime"]);
+			request.timeout = parseInt($setting["requestTimeout"]);
+			request.timeoutId = setTimeout(request.callback, request.time);
 			return request;
 		}
 		
 		function clearRequest(request) {
 			delete this[$setting["bootModule"]][request.url];
 			document.firstChild.firstChild.removeChild(request.node);
-			clearInterval(request.timeout);
+			clearTimeout(request.timeoutId);
 			delete request.node;
 		}
 		
