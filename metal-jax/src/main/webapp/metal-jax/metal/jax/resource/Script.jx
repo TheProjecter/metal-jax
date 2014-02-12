@@ -14,3 +14,11 @@ function initClass(scope) {
 		log("info", "initClass scope for: " + scope.$class.getName());
 	}
 }
+
+//@static
+function checkResource() {
+	var name = this.$("resource.object");
+	if (name) {
+		return typeof window[name] != "undefined";
+	}
+}

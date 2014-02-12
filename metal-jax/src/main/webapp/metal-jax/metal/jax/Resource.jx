@@ -20,6 +20,11 @@ function loadResource(name, context, callback) {
 }
 
 //@static
+function checkResource() {
+	//empty
+}
+
+//@static
 function findResource(name, positive) {
 	return this.getContext().findResource(name, this, positive);
 }

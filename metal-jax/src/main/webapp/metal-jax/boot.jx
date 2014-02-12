@@ -158,18 +158,14 @@
 			var caller = this;
 			var request = requestCrossDomain(source, function(response) {
 				var timeout = request.time > request.timeout;
-				if (arguments.length == 0) {
-					if (!timeout) {
-						request.time += request.time;
-						request.timeoutId = setTimeout(request.callback, request.time);
-						return;
-					}
+				if (arguments.length == 0 && !timeout) {
+					request.time += request.time;
+					request.timeoutId = setTimeout(request.callback, request.time);
+					return;
 				}
 				clearRequest(request);
-				if (timeout) {
-					source.error = "request timeout";
-				} else if (typeof response != "object") {
-					source.error = "bad response";
+				if (typeof response != "object") {
+					source.error = timeout ? "request timeout" : "bad response";
 				} else if (response.error) {
 					source.error = response.error;
 				} else {
