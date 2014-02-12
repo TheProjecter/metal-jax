@@ -38,8 +38,6 @@ $private.initContext = function initContext() {
 	if (BaseContext && BaseContext.main) {
 		BaseContext.main();
 	}
-	var busy = System.document.getElementById("busy");
-	if (busy) busy.style.display = "none";
 };
 
 $protected.call = function call(target, args) {
