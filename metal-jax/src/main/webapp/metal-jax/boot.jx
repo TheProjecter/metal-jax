@@ -110,12 +110,7 @@
 		}
 		
 		function isSameDomain(url) {
-			var origin = _URL_.exec(url)[1];
-			if (origin) {
-				return origin == $setting["baseOrigin"];
-			} else {
-				throw Error("invalid URL: " + url);
-			}
+			return $setting["baseOrigin"] == _URL_.exec(url)[1];
 		}
 		
 		function loadback(source, callback) {
