@@ -99,7 +99,7 @@ function loadCrossDomain(source, callback) {
 	var request = requestCrossDomain(source, function(response) {
 		var done = source.$class && source.$class.checkResource();
 		var timeout = request.time > request.timeout;
-		if ((arguments.length == 0 || typeof response != "object") && !timeout && !done) {
+		if (!done && !timeout && typeof response != "object") {
 			request.time += request.time;
 			request.timeoutId = setTimeout(request.callback, request.time);
 			return;
@@ -107,8 +107,8 @@ function loadCrossDomain(source, callback) {
 		clearRequest(request);
 		if (done) {
 			source.content = "";
-		} else if (typeof response != "object") {
-			source.error = timeout ? "request timeout" : "bad response: " + (typeof response);
+		} else if (timeout) {
+			source.error = "request timeout";
 		} else if (response.error) {
 			source.error = response.error;
 		} else {
