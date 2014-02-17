@@ -17,8 +17,8 @@
  */
 
 //@private
-function initClass() {
-	this.mappers = {
+function initClass(scope) {
+	scope.$mappers = {
 		xml: XmlMapper,
 		json: JsonMapper
 	};
@@ -69,7 +69,7 @@ function marshalRequest(source, model) {
 	var request = new Request(model);
 	var format = (source.method == "GET" || !System.isSameDomain(source.base)) ? "form" : source.resourceType;
 	source.contentType = $("contentType."+format);
-	source.input = mappers[format].write(request);
+	source.input = $mappers[format].write(request);
 }
 
 //@private

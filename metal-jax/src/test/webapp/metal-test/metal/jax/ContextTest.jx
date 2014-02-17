@@ -15,8 +15,8 @@ $imports.Object3 = "metal.jax.BaseObject";
 $setting["classLoader3"] = "${classLoader}";
 
 //@private
-function initClass() {
-	this.initClassTested = true;
+function initClass(scope) {
+	scope.initClassTested = true;
 }
 
 //@private

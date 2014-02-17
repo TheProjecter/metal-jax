@@ -7,11 +7,11 @@
  */
 
 //@private
-function initClass() {
-	Base.initClassScope(this);
+function initClass(scope) {
+	Base.initClassScope(scope);
 }
 
 //@private
-function initContext() {
-	Base.initContextScope(this);
+function initContext(scope) {
+	Base.initContextScope(scope);
 }

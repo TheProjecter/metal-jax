@@ -6,11 +6,11 @@
  */
 
 //@private
-function initClass() {
-	$private._selected_ = $("style.selected", "selected");
-	$private._sortable_ = $("style.sortable", "sortable");
-	$private._sorted_ascending_ = $("style.sorted_ascending", "sorted_ascending");
-	$private._sorted_descending_ = $("style.sorted_descending", "sorted_descending");
+function initClass(scope) {
+	scope._selected_ = $("style.selected", "selected");
+	scope._sortable_ = $("style.sortable", "sortable");
+	scope._sorted_ascending_ = $("style.sorted_ascending", "sorted_ascending");
+	scope._sorted_descending_ = $("style.sorted_descending", "sorted_descending");
 }
 
 //@private

@@ -6,8 +6,8 @@
  */
 
 //@protected
-function initClass() {
-	this.$modelAttributes = this.$class.$("modelAttributes", "").split(",");
+function initClass(scope) {
+	scope.$modelAttributes = scope.$class.$("modelAttributes", "").split(",");
 }
 
 //@private

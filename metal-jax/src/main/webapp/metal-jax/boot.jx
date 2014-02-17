@@ -95,7 +95,7 @@
 				source.scope.$static.splitPath = splitPath;
 				source.scope.$static.resolvePath = resolvePath;
 				source.scope.$static.isSameDomain = isSameDomain;
-				source.scope.initClass_();
+				source.scope.initClass_(source.scope);
 			} else {
 				throw Error("failed to load URL: " + source.url + ", error: " + source.error);
 			}

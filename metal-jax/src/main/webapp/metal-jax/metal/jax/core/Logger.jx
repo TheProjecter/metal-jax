@@ -6,8 +6,8 @@
  */
 
 //@private
-function initClass() {
-	this.levels = {
+function initClass(scope) {
+	scope.$levels = {
 		info: $("logger.info", "true"),
 		warn: $("logger.warn", "true"),
 		error: $("logger.error", "true"),
@@ -18,8 +18,8 @@ function initClass() {
 //@static
 function log(msg) {
 	if (typeof console != "undefined") {
-		var level = (msg in levels) ? Array.prototype.shift.call(arguments) : "info";
-		var enabled = this.$("logger."+level, levels[level]) == "true";
+		var level = (msg in $levels) ? Array.prototype.shift.call(arguments) : "info";
+		var enabled = this.$("logger."+level, $levels[level]) == "true";
 		if (enabled) {
 			msg = this.$(msg, msg);
 			msg = System.formatText.apply(null, arguments);

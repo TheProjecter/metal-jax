@@ -14,13 +14,13 @@ $imports["metal.jax.resource.Messages"] = "metal.jax.resource.Messages";
 $requires["metal.jax"] = "metal.jax.resource.Messages";
 $imports["BaseContext"] = $setting["baseContext"];
 
-$private.initClass_ = function initClass_() {
-	this.$source.classes[this.$source.name] = this.$source;
-	this._callbacks = [];
-	this._busyCount = 0;
-	this._pendingCount = 0;
-	this._pendingClasses = [];
-	this._pendingClasses.push(this.$source);
+$private.initClass_ = function initClass_(scope) {
+	scope.$source.classes[scope.$source.name] = scope.$source;
+	scope._callbacks = [];
+	scope._busyCount = 0;
+	scope._pendingCount = 0;
+	scope._pendingClasses = [];
+	scope._pendingClasses.push(scope.$source);
 	flush();
 };
 
@@ -692,7 +692,7 @@ $private.flush_notifyContext = function flush_notifyContext(source) {
 		}
 		//if (source.stereotype == "context") {
 			if (source.scope.initContext) {
-				source.scope.initContext();
+				source.scope.initContext(source.scope);
 			}
 		//}
 
