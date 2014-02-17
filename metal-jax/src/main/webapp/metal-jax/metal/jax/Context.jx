@@ -612,9 +612,6 @@ $private.flush_notifyClass = function flush_notifyClass(source) {
 
 		_busyCount--;
 		source.flushState = "endNotifyClass";
-		if (source.stereotype != "context") {
-			flush_loadResource(source);
-		}
 	}
 };
 

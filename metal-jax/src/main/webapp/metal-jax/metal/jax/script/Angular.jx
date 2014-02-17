@@ -15,7 +15,6 @@ var $controllers = {};
 //@static
 function addModule(name, requires) {
 	$modules[name] = angular.module(name, requires||[]);
-	var foo = $modules[name];
 }
 
 //@static

@@ -7,14 +7,6 @@
  * @copyright Jay Tang 2012. All rights reserved.
  */
 
-//@protected
-function initClass(scope) {
-	if (scope.$class.$("resource.url")) {
-		scope.$imports[scope.$class.getName()] = scope.$class.getName();
-		scope.$requires[scope.$class.getName()] = scope.$class.getName();
-	}
-}
-
 //@static
 function checkResource() {
 	var name = this.$("resource.object");
