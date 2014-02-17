@@ -8,10 +8,10 @@
  */
 
 //@protected
-function initResource(target, source) {
+function initResource(scope, source) {
 	for (var name in source.model) {
-		if (!(name in target.$setting)) {
-			target.$setting[name] = source.model[name];
+		if (!(name in scope.$setting)) {
+			scope.$setting[name] = source.model[name];
 		}
 	}
 }

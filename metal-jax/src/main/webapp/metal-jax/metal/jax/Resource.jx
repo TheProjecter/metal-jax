@@ -11,7 +11,7 @@
  */
 
 //@protected
-function initResource(target, source) {
+function initResource(scope, source) {
 }
 
 //@static

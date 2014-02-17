@@ -9,15 +9,15 @@
 var document = window.document;
 
 //@protected
-function initResource(target, source) {
+function initResource(scope, source) {
 	if (source.$imports) {
 		for (var name in source.$imports) {
-			target.$imports[name] = source.$imports[name];
+			scope.$imports[name] = source.$imports[name];
 		}
 	}
 	if (source.$requires) {
 		for (var name in source.$requires) {
-			target.$requires[name] = source.$requires[name];
+			scope.$requires[name] = source.$requires[name];
 		}
 	}
 }
