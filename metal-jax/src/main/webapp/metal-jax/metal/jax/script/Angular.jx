@@ -25,7 +25,6 @@ function addController(name, module, fn) {
 
 //@private
 function initContext() {
-	log("info", "after loading DOM, ready bootstrap angular");
 	var names = [];
 	for (var i in $modules) {
 		names.push(i);

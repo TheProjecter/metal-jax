@@ -36,7 +36,7 @@ function callback() {
 
 //@static
 function loadback(source, callback) {
-	var action = $class.isSameDomain(source.base) ? loadSameDomain : loadCrossDomain;
+	var action = $class.isSameDomain(source.url||source.base) ? loadSameDomain : loadCrossDomain;
 	action.call(this, source, callback);
 }
 
@@ -99,7 +99,7 @@ function loadCrossDomain(source, callback) {
 	var request = requestCrossDomain(source, function(response) {
 		var done = source.$class && source.$class.checkResource();
 		var timeout = request.time > request.timeout;
-		if (arguments.length == 0 && !timeout && !done) {
+		if ((arguments.length == 0 || typeof response != "object") && !timeout && !done) {
 			request.time += request.time;
 			request.timeoutId = setTimeout(request.callback, request.time);
 			return;
@@ -108,7 +108,7 @@ function loadCrossDomain(source, callback) {
 		if (done) {
 			source.content = "";
 		} else if (typeof response != "object") {
-			source.error = timeout ? "request timeout" : "bad response";
+			source.error = timeout ? "request timeout" : "bad response: " + (typeof response);
 		} else if (response.error) {
 			source.error = response.error;
 		} else {

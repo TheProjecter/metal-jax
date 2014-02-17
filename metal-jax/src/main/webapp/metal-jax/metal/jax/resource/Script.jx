@@ -2,6 +2,7 @@
  * @resource
  * @setting resource.url
  * @setting resource.object
+ * @setting resource.type=js
  * 
  * @copyright Jay Tang 2012. All rights reserved.
  */
@@ -9,9 +10,8 @@
 //@protected
 function initClass(scope) {
 	if (scope.$class.$("resource.url")) {
-		scope.$imports[$class.getName()] = $class.getName();
-		scope.$requires[scope.$class.getName()] = $class.getName();
-		log("info", "initClass scope for: " + scope.$class.getName());
+		scope.$imports[scope.$class.getName()] = scope.$class.getName();
+		scope.$requires[scope.$class.getName()] = scope.$class.getName();
 	}
 }
 

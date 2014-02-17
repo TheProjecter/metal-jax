@@ -131,6 +131,7 @@ $private.initResourceHandle = function initResourceHandle(name, clazz, context) 
 	var setting = findSourceSetting(name, context);
 	var source = { "$class": clazz };
 	source.name = name;
+	source.url = clazz.$("resource.url");
 	source.base = clazz.$("resource.base") || setting && setting.base || $("baseURL");
 	source.module = clazz.$("resource.module") || setting && setting.module || $("baseModule");
 	source.resourceType = clazz.$("resource.type") || $("faceType");
@@ -295,22 +296,27 @@ $private.callLater = function callLater(callback) {
 };
 
 $private.handleResponse = function handleResponse(source) {
-	if (source.content) {
-		log("debug", "response for '${name}:${resourceType}' from ${url}", source);
-		try {
-			if (source.$class) {
+	log("debug", "response for '${name}:${resourceType}' from ${url}", source);
+	try {
+		if (source.$class) {
+			if (source.$class.checkResource()) {
+				//nothing
+			} else if (source.content) {
 				source.$class.call("parseResource", source);
 			} else {
-				parseSource(source);
+				if (!source.error) source.error = "empty response content";
+				log("error", "failed to load '${name}:${resourceType}' from ${url}: ${error}", source);
 			}
-		} catch (ex) {
-			source.error = ex.message;
-			log("error", "failed to parse '${name}:${resourceType}' from ${url}: ${error}", source);
+		} else if (source.content) {
+			parseSource(source);
+		} else {
+			if (!source.error) source.error = "empty response content";
+			log("error", "failed to load '${name}:${resourceType}' from ${url}: ${error}", source);
 		}
-	} else {
-		if (!source.error) source.error = "empty response content";
-		log("error", "failed to load '${name}:${resourceType}' from ${url}: ${error}", source);
-	}
+	} catch (ex) {
+		source.error = ex.message;
+		log("error", "failed to parse '${name}:${resourceType}' from ${url}: ${error}", source);
+		}
 	if (source.status < 100) {
 		//error
 	} else {
@@ -624,7 +630,6 @@ $private.flush_loadResource = function flush_loadResource(source) {
 	}
 	if (_pendingCount) return;
 	source.resourceState = source.resourceState || {};
-	// load self as resource
 	for (var name in source.scope.$requires) {
 		if (!source.resourceState[name]) {
 			source.resourceState[name] = "pendingInit";
@@ -647,8 +652,11 @@ $private.flush_initResource = function flush_initResource(source) {
 				}
 			}
 		}
-		_busyCount--;
+		if (source.scope.initResource) {
+			source.scope.initResource(source.scope);
+		}
 
+		_busyCount--;
 		source.flushState = "endInitResource";
 		flush_loadResource(source);
 	}
