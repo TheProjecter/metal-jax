@@ -36,7 +36,7 @@ function callback() {
 
 //@static
 function loadback(source, callback) {
-	var action = $class.isSameDomain(source.url||source.base) ? loadSameDomain : loadCrossDomain;
+	var action = (!source.url && $class.isSameDomain(source.base)) ? loadSameDomain : loadCrossDomain;
 	action.call(this, source, callback);
 }
 

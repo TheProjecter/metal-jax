@@ -24,7 +24,7 @@ $private.initClass_ = function initClass_(scope) {
 	flush();
 };
 
-$private.initContext = function initContext() {
+$private.initContext = function initContext(scope) {
 	log("info", "metal.jax.init.bootContext", $setting);
 	if ($setting["baseModule"] == ".") {
 		log("warn", "metal.jax.init.baseModule.default", $setting);
@@ -533,7 +533,7 @@ $private.flush = function flush() {
 	}
 	for (var i = 0; i < _pendingClasses.length; i++) {
 		if (_pendingCount) return;
-		flush_initResource(_pendingClasses[i]);
+		flush_notifyResource(_pendingClasses[i]);
 	}
 	for (var i = 0; i < _pendingClasses.length; i++) {
 		if (_pendingCount) return;
@@ -635,8 +635,8 @@ $private.flush_loadResource = function flush_loadResource(source) {
 	}
 };
 
-$private.flush_initResource = function flush_initResource(source) {
-	if (source.flushState == "endNotifyClass" || source.flushState == "endInitResource") {
+$private.flush_notifyResource = function flush_notifyResource(source) {
+	if (source.flushState == "endNotifyClass" || source.flushState == "endNotifyResource") {
 		_busyCount++;
 
 		for (var name in source.resourceState) {
@@ -654,13 +654,13 @@ $private.flush_initResource = function flush_initResource(source) {
 		}
 
 		_busyCount--;
-		source.flushState = "endInitResource";
+		source.flushState = "endNotifyResource";
 		flush_loadResource(source);
 	}
 };
 
 $private.flush_initContext = function flush_initContext(source) {
-	if (source.flushState == "endInitResource") {
+	if (source.flushState == "endNotifyResource") {
 		source.flushState = "beginInitContext";
 		_busyCount++;
 
@@ -685,16 +685,9 @@ $private.flush_notifyContext = function flush_notifyContext(source) {
 		source.flushState = "beginNotifyContext";
 		_busyCount++;
 
-		for (var name in source.scope.$imports) {
-			if (source.scope[name]) {
-//				flush_notifyContext(getClassHandle(source.scope[name]));
-			}
+		if (source.scope.initContext) {
+			source.scope.initContext(source.scope);
 		}
-		//if (source.stereotype == "context") {
-			if (source.scope.initContext) {
-				source.scope.initContext(source.scope);
-			}
-		//}
 
 		_busyCount--;
 		source.flushState = "endNotifyContext";

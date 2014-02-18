@@ -12,6 +12,15 @@ var $modules = {};
 //@private
 var $controllers = {};
 
+//@private
+function initContext(scope) {
+	var names = [];
+	for (var i in $modules) {
+		names.push(i);
+	}
+	angular.bootstrap(document.body, names);
+}
+
 //@static
 function addModule(name, requires) {
 	$modules[name] = angular.module(name, requires||[]);
@@ -20,13 +29,4 @@ function addModule(name, requires) {
 //@static
 function addController(name, module, fn) {
 	$controllers[module.concat(".", name)] = $modules[module].controller(name, fn);
-}
-
-//@private
-function initContext() {
-	var names = [];
-	for (var i in $modules) {
-		names.push(i);
-	}
-	angular.bootstrap(document.body, names);
 }
