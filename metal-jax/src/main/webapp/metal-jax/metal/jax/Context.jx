@@ -384,11 +384,11 @@ $private.parseModel = function parseModel(source) {
 			case "requires":
 				name = formatText(name, source.$context.getClass());
 				name = parseSourceName(name, source.name);
-				value = formatText(value||name, source.$context.getClass());
+				value = formatText(value, source.$context.getClass());
 				if (name) {
-					source.scope.$imports[parseBaseName(name)] = name;
+					source.scope.$imports[parseBaseName(name, value)] = name;
 					source.scope.$imports[name] = name;
-					source.scope.$requires[value] = name;
+					source.scope.$requires[value||name] = name;
 				} else {
 					log("warn", "incorrect @${0} format in class source: ${1}", settingTag, source.name);
 				}
