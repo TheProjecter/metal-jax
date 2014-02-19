@@ -34,7 +34,8 @@
 					{ type:"model", base:"metal.jax.Model" },
 					{ type:"resource", base:"metal.jax.Resource" },
 					{ type:"service", base:"metal.jax.Service" },
-					{ type:"script", base:"metal.jax.resource.Script" }
+					{ type:"script", base:"metal.jax.resource.Script" },
+					{ type:"stylesheet", base:"metal.jax.resource.StyleSheet" }
 				]
 			}
 		};
@@ -163,7 +164,7 @@
 					request.timeoutId = setTimeout(request.callback, request.time);
 					return;
 				}
-				clearRequest(request);
+				clearRequest(request, source);
 				if (timeout) {
 					source.error = "request timeout";
 				} else if (response.error) {
@@ -173,27 +174,27 @@
 				}
 				callback.call(caller, source);
 			});
-			document.firstChild.firstChild.appendChild(request.node);
+			document.firstChild.firstChild.appendChild(source.node);
 		}
 		
 		function requestCrossDomain(source, callback) {
 			var request = {};
-			request.url = source.url = [source.base, $setting["crossDomain"], source.module, source.path].join("/");
-			this[$setting["bootModule"]][request.url] = callback;
+			source.url = [source.base, $setting["crossDomain"], source.module, source.path].join("/");
+			source.node = document.createElement("script");
+			source.node.src = source.url;
 			request.callback = callback;
-			request.node = document.createElement("script");
-			request.node.src = request.url;
 			request.time = parseInt($setting["requestTime"]);
 			request.timeout = parseInt($setting["requestTimeout"]);
 			request.timeoutId = setTimeout(request.callback, request.time);
+			this[$setting["bootModule"]][source.url] = request.callback;
 			return request;
 		}
 		
-		function clearRequest(request) {
-			delete this[$setting["bootModule"]][request.url];
-			document.firstChild.firstChild.removeChild(request.node);
+		function clearRequest(request, source) {
 			clearTimeout(request.timeoutId);
-			delete request.node;
+			delete this[$setting["bootModule"]][source.url];
+			document.firstChild.firstChild.removeChild(source.node);
+			delete source.node;
 		}
 		
 		function resolvePath(path, base) {

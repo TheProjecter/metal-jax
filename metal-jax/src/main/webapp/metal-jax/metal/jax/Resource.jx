@@ -10,6 +10,13 @@
  * @copyright Jay Tang 2012. All rights reserved.
  */
 
+//@private
+function initClass(scope) {
+	$class.checkResource = $static.checkResource = System.checkResource;
+	$class.initResourceHandle = $static.initResourceHandle = System.initResourceHandle;
+	$class.clearResourceHandle = $static.clearResourceHandle = System.clearResourceHandle;
+}
+
 //@protected
 function initResource(scope, source) {
 }
@@ -17,11 +24,6 @@ function initResource(scope, source) {
 //@static
 function loadResource(name, context, callback) {
 	context.loadResource(name, this, callback);
-}
-
-//@static
-function checkResource() {
-	//empty
 }
 
 //@static

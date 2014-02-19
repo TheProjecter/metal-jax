@@ -97,14 +97,14 @@ function requestSameDomain(source, callback) {
 function loadCrossDomain(source, callback) {
 	var caller = this;
 	var request = requestCrossDomain(source, function(response) {
-		var done = source.$class && source.$class.checkResource();
+		var done = (source.$class||$class).checkResource();
 		var timeout = request.time > request.timeout;
 		if (!done && !timeout && typeof response != "object") {
 			request.time += request.time;
 			request.timeoutId = setTimeout(request.callback, request.time);
 			return;
 		}
-		clearRequest(request);
+		clearRequest(request, source);
 		if (done) {
 			source.content = "";
 		} else if (timeout) {
@@ -121,29 +121,44 @@ function loadCrossDomain(source, callback) {
 		}
 		callback.call(caller, source);
 	});
-	$class.docHead.appendChild(request.node);
+	$class.docHead.appendChild(source.node);
 }
 
 //@private
 function requestCrossDomain(source, callback) {
 	var request = {};
-	request.url = source.url = source.url || [source.base, $("crossDomain"), source.module, source.path].join("/");
-	$class.window[$("bootModule")][request.url] = callback;
+	(source.$class||$class).initResourceHandle(source);
 	request.callback = callback;
-	request.node = $class.document.createElement("script");
-	request.node.src = requestURL(source);
 	request.time = parseInt($("requestTime"));
 	request.timeout = parseInt($("requestTimeout"));
 	request.timeoutId = setTimeout(request.callback, request.time);
+	$class.window[$("bootModule")][source.url] = request.callback;
 	return request;
 }
 
 //@private
-function clearRequest(request) {
-	delete $class.window[$("bootModule")][request.url];
-	$class.docHead.removeChild(request.node);
+function clearRequest(request, source) {
 	clearTimeout(request.timeoutId);
-	delete request.node;
+	delete $class.window[$("bootModule")][source.url];
+	(source.$class||$class).clearResourceHandle(source);
+}
+
+//@static
+function initResourceHandle(source) {
+	source.url = source.url || [source.base, $("crossDomain"), source.module, source.path].join("/");
+	source.node = $class.document.createElement("script");
+	source.node.src = requestURL(source);
+}
+
+//@static
+function clearResourceHandle(source) {
+	$class.docHead.removeChild(source.node);
+	delete source.node;
+}
+
+//@static
+function checkResource() {
+	//empty
 }
 
 //@private
