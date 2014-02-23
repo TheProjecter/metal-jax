@@ -1,6 +1,6 @@
 /**
  * @stylesheet
- * @setting resource.url=http://angularjs.org/css/bootstrap.min.css
+ * @setting resource.url=${angular-css.url}
  * 
  * @copyright Jay Tang 2012. All rights reserved.
  */

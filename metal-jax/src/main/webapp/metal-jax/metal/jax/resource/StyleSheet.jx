@@ -10,7 +10,7 @@
 //@static
 function initResourceHandle(source) {
 	source.node = System.document.createElement("link");
-	source.node.href = this.$("resource.url");
+	source.node.href = System.formatText(this.$("resource.url"), this);
 	source.node.rel = "stylesheet";
 }
 

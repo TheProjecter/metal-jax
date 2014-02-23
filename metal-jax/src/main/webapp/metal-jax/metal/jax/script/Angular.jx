@@ -1,6 +1,6 @@
 /**
  * @script
- * @setting resource.url=http://ajax.googleapis.com/ajax/libs/angularjs/1.2.11/angular.js
+ * @setting resource.url=${angular-js.url}
  * @setting resource.object=angular
  * 
  * @copyright Jay Tang 2012. All rights reserved.
