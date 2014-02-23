@@ -6,13 +6,14 @@
  */
 
 //@private
+var $levels = {};
+
+//@private
 function initClass(scope) {
-	scope.$levels = {
-		info: $("logger.info", "true"),
-		warn: $("logger.warn", "true"),
-		error: $("logger.error", "true"),
-		debug: $("logger.debug", "true")
-	};
+	$levels.info = $("logger.info", "true");
+	$levels.warn = $("logger.warn", "true");
+	$levels.error = $("logger.error", "true");
+	$levels.debug = $("logger.debug", "true");
 }
 
 //@static
