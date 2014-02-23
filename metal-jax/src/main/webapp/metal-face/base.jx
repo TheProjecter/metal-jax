@@ -7,7 +7,7 @@
  */
 
 //@private
-function initClass(scope) {
+function initResource(scope) {
 	Base.initClassScope(scope);
 }
 
