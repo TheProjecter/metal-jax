@@ -207,7 +207,7 @@ function parseCSV(text, delimiter) {
 }
 
 //@private
-var _settingRE_= /\s*([\w.]+)\s*=\s*(.+)(?:\r?\n)?/g;
+var _settingRE_= /\s*([-\w.]+)\s*=\s*(.+)(?:\r?\n)?/g;
 
 //@static
 function parseProperties(text) {
