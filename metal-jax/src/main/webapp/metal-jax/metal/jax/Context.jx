@@ -3,7 +3,7 @@
  * @copyright Jay Tang 2012. All rights reserved.
  */
 $public.getClass = function getClass() { return Context; };
-$static.getSuperClass = function getSuperClass() { return null; };
+$static.getSuperClass = function getSuperClass() { return undefined; };
 $static.getContext = function getContext() { return $context; };
 $static.getName = function getName() { return "metal.jax.Context"; };
 $private.Context = function Context() { return $protected.call(this, arguments); };
@@ -11,7 +11,9 @@ $imports["BaseObject"] = "metal.jax.BaseObject";
 $imports["System"] = "metal.jax.System";
 $imports["Logger"] = "metal.jax.core.Logger";
 $imports["metal.jax.resource.Messages"] = "metal.jax.resource.Messages";
-$requires["metal.jax"] = "metal.jax.resource.Messages";
+$imports["metal.jax.resource.Properties"] = "metal.jax.resource.Properties";
+$requires["metal.jax-messages"] = "metal.jax.resource.Messages";
+$requires["metal.jax-conf"] = "metal.jax.resource.Properties";
 $imports["BaseContext"] = $setting["baseContext"];
 
 $private.initClass_ = function initClass_(scope) {
@@ -131,7 +133,7 @@ $private.initResourceHandle = function initResourceHandle(name, clazz, context) 
 	var setting = findSourceSetting(name, context);
 	var source = { "$class": clazz };
 	source.name = name;
-	source.url = clazz.$("resource.url");
+	source.url = formatText(clazz.$("resource.url"), clazz);
 	source.base = clazz.$("resource.base") || setting && setting.base || $("baseURL");
 	source.module = clazz.$("resource.module") || setting && setting.module || $("baseModule");
 	source.resourceType = clazz.$("resource.type") || $("faceType");
@@ -328,15 +330,7 @@ $private.handleResponse = function handleResponse(source) {
 $private.parseSource = function parseSource(source) {
 	parseModel(source);
 	_pendingClasses.push(source);
-	if (source.stereotype == "context") {
-		if (source.superBase) {
-			source.$context.loadClass(source.scope.$imports[source.superBase]);
-		}
-	} else {
-		for (var name in source.scope.$imports) {
-			source.$context.loadClass(source.scope.$imports[name]);
-		}
-	}
+	source.$context.loadClass(source.scope.$imports[source.superBase]);
 };
 
 $private._classHeader_   = "//@ sourceURL=${0}\n";
@@ -428,9 +422,6 @@ $private.parseModel = function parseModel(source) {
 		source.superBase = parseBaseName(superName);
 		source.scope.$imports[source.superBase] = superName;
 	}
-	if (!source.superBase || source.name == $imports.BaseObject) {
-		source.superBase = "null";
-	}
 	source.content = formatText(_classHeader_, source.name).concat(
 		formatText(_getClass_, source.baseName),
 		formatText(_getSuperClass_, source.superBase),
@@ -441,7 +432,6 @@ $private.parseModel = function parseModel(source) {
 		formatText(_classFooter_, source.name)
 	);
 	compile.call(source);
-	source.$class = source.scope[source.baseName];
 };
 
 $static.parseSourceName = function parseSourceName(name, base) {
@@ -560,29 +550,19 @@ $private.flush_initClass = function flush_initClass(source) {
 		source.flushState = "beginInitClass";
 		_busyCount++;
 
-		if (source.stereotype == "context") {
-			if (source.superBase) {
-				source.scope[source.superBase] = source.$context.findClass(source.scope.$imports[source.superBase], true);
-				flush_initClass(findClassHandle(source.scope.$imports[source.superBase], source.$context));
-			}
-		} else {
-			for (var name in source.scope.$imports) {
-				source.scope[name] = source.$context.findClass(source.scope.$imports[name], true);
-				flush_initClass(findClassHandle(source.scope.$imports[name], source.$context));
-			}
+		if (source.superBase) {
+			source.scope[source.superBase] = source.$context.findClass(source.scope.$imports[source.superBase], true);
+			var superHandle = findClassHandle(source.scope.$imports[source.superBase], source.$context);
+			flush_initClass(superHandle);
+			flush_notifyClass(superHandle);
 		}
-		
 		initClassModel(source);
-		if (source.stereotype == "context") {
-			for (var name in source.scope.$imports) {
-				source.$context.loadClass(source.scope.$imports[name]);
-			}
-		}
 
 		_busyCount--;
 		source.flushState = "endInitClass";
-		if (source.stereotype != "context") {
-			flush_notifyClass(source);
+
+		for (var name in source.scope.$imports) {
+			source.$context.loadClass(source.scope.$imports[name]);
 		}
 	}
 };
@@ -592,18 +572,17 @@ $private.flush_notifyClass = function flush_notifyClass(source) {
 		source.flushState = "beginNotifyClass";
 		_busyCount++;
 
-		if (source.stereotype == "context") {
-			for (var name in source.scope.$imports) {
-				source.scope[name] = source.$context.findClass(source.scope.$imports[name]);
-				if (source.scope[name]) {
-					flush_notifyClass(getClassHandle(source.scope[name]));
-				}
-			}
-		} else if (source.name == $imports.BaseObject) {
+		for (var name in source.scope.$imports) {
+			source.scope[name] = source.$context.findClass(source.scope.$imports[name], true);
+			flush_notifyClass(findClassHandle(source.scope.$imports[name], source.$context));
+		}
+
+		if (source.name == $imports.BaseObject) {
 			source.scope.$protected.throwError = $protected.throwError;
 			source.scope.$protected.call = $protected.call;
 			source.scope.$protected.log = $protected.log;
 		}
+
 		if (source.scope.initClass) {
 			source.scope.initClass(source.scope);
 		} else if (source.scope.$protected.initClass) {
@@ -619,9 +598,9 @@ $private.flush_loadResource = function flush_loadResource(source) {
 	if (_busyCount) return;
 	for (var name in source.scope.$imports) {
 		if (name == source.scope.$imports[name] && !source.scope[name]) {
-			source.scope[name] = source.$context.findClass(name, true);
+			source.scope[name] = source.$context.findClass(source.scope.$imports[name], true);
 			if (!source.scope[name]) {
-				source.$context.loadClass(name);
+				source.$context.loadClass(source.scope.$imports[name]);
 			}
 		}
 	}
@@ -631,31 +610,28 @@ $private.flush_loadResource = function flush_loadResource(source) {
 		if (!source.resourceState[name]) {
 			source.resourceState[name] = "pendingInit";
 			source.scope[source.scope.$requires[name]].loadResource(name, source.$context);
+		} else if (source.resourceState[name] == "pendingInit") {
+			source.resourceState[name] = "doneInit";
+			var clazz = source.scope[source.scope.$requires[name]];
+			if (source.$context.findResource(name, clazz)) {
+				var handle = getResourceHandle(clazz);
+				handle.scope.$protected.initResource(source.scope, handle.resources[name]);
+			}
 		}
 	}
 };
 
 $private.flush_notifyResource = function flush_notifyResource(source) {
 	if (source.flushState == "endNotifyClass" || source.flushState == "endNotifyResource") {
+		source.flushState = "beginNotifyResource";
 		_busyCount++;
 
-		for (var name in source.resourceState) {
-			if (source.resourceState[name] == "pendingInit") {
-				source.resourceState[name] = "doneInit";
-				var clazz = source.scope[source.scope.$requires[name]];
-				if (source.$context.findResource(name, clazz)) {
-					var handle = getResourceHandle(clazz);
-					handle.scope.$protected.initResource(source.scope, handle.resources[name]);
-				}
-			}
-		}
 		if (source.scope.initResource) {
 			source.scope.initResource(source.scope);
 		}
 
 		_busyCount--;
 		source.flushState = "endNotifyResource";
-		flush_loadResource(source);
 	}
 };
 

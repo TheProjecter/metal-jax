@@ -89,7 +89,6 @@
 			if (source.content) {
 				source.scope.$private = source.scope;
 				$.call(source);
-				source.$class = source.scope.Context;
 				source.scope.compile = $;
 				source.scope.$source = source;
 				source.scope.loadback = loadback;
@@ -233,6 +232,7 @@
 				}
 			}
 		}
+		this.$class = this.scope[this.baseName];
 	}
 	
 })();
