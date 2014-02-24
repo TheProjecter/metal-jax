@@ -36,7 +36,7 @@ $private.initContext = function initContext(scope) {
 	} else {
 		log("warn", "metal.jax.init.baseContext.fail", $setting);
 	}
-	log("info", "metal.jax.init.base", $setting);
+	log("info", "metal.jax.init.baseResource", $setting);
 	if (BaseContext && BaseContext.main) {
 		BaseContext.main();
 	}

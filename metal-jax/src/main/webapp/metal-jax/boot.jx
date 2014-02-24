@@ -6,7 +6,7 @@
 	(function() {
 		
 		var $setting = {
-			base: "",
+			baseResource: "",
 			baseClass: "",
 			baseModule: ".",
 			baseContext: "base",
@@ -65,11 +65,11 @@
 				module = parts[3]||module; query = parts[4]||query; base = parts[5]||base;
 			}
 			parts = base.split(":");
-			setting["base"] = parts[0] || setting["base"];
-			setting["baseClass"] = parts.length > 1 ? parts[1]||setting["base"] : setting["baseClass"];
+			setting["baseResource"] = parts[0] || setting["baseResource"];
+			setting["baseClass"] = parts.length > 1 ? parts[1]||setting["baseResource"] : setting["baseClass"];
 			parts = module.split(":");
 			setting["baseModule"] = parts[0] || setting["baseModule"];
-			setting["baseContext"] = module ? parts[1]||setting["baseContext"] : setting["base"]||setting["baseContext"];
+			setting["baseContext"] = module ? parts[1]||setting["baseContext"] : setting["baseResource"]||setting["baseContext"];
 			parts = query.split("&");
 			for (var i = 0; i < parts.length; i++) {
 				var part = parts[i].split("=");

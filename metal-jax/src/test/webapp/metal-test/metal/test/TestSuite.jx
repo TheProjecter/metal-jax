@@ -7,7 +7,7 @@
 
 //@public
 function run(context) {
-	var runner = this, testName = $("base");
+	var runner = this, testName = $("baseResource");
 	if (!testName) {
 		runAll.call(runner, context);
 	} else {

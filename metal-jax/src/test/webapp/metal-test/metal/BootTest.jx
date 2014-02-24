@@ -10,7 +10,7 @@ function test_bootSetting() {
 		"baseOrigin",
 		"baseModule",
 		"baseContext",
-		"base",
+		"baseResource",
 		"bootURL",
 		"bootOrigin",
 		"bootModule",

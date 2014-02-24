@@ -14,14 +14,14 @@ function initClassScope(scope) {
 function initContextScope(scope) {
 	var Face0 = scope.$protected.extendClass(Face);
 	var baseClass = scope.$context.findClass($("baseClass")) || Face0;
-	var base = $("base");
-	if (!base) {
+	var baseResource = $("baseResource");
+	if (!baseResource) {
 		new Face0(document.body);
 	} else {
-		if (baseClass.findResource(base)) {
-			baseClass.copyResourceTo(base, document.body);
+		if (baseClass.findResource(baseResource)) {
+			baseClass.copyResourceTo(baseResource, document.body);
 		} else {
-			log("warn", "metal.jax.init.base.fail", base);
+			log("warn", "metal.jax.init.baseResource.fail", baseResource);
 		}
 	}
 }
