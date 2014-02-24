@@ -1,15 +1,15 @@
 /**
- * @context base
- * @imports metal.face.base Base
+ * @context
+ * @imports metal.face.Boot
  * @requires ${baseClass|metal.jax.Face} ${base}
  */
 
 //@private
 function initResource(scope) {
-	Base.initClassScope(scope);
+	Boot.initClassScope(scope);
 }
 
 //@private
 function initContext(scope) {
-	Base.initContextScope(scope);
+	Boot.initContextScope(scope);
 }
