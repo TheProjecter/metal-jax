@@ -1,5 +1,5 @@
 /**
- * @test BaseObjectTest
+ * @test
  * @imports metal.jax.BaseObject
  * @setting hello=hello
  */

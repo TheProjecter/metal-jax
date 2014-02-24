@@ -1,5 +1,5 @@
 /**
- * @context base
+ * @context
  * @imports metal.test.TestSuite
  * @source base=${baseURL} module=${baseModule} includes=[.]test[.]
  * @source base=${baseURL} module=${baseModule} includes=[.]Test

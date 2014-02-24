@@ -1,4 +1,4 @@
 /**
- * @face LoginForm
+ * @face
  * @extends metal.face.Form
  */

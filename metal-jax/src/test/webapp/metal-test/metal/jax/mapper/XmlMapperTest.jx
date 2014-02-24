@@ -1,5 +1,5 @@
 /**
- * @test XmlMapperTest
+ * @test
  * @imports XmlMapper
  * @imports TestAnnotatedObject
  * @imports TestBaseObject

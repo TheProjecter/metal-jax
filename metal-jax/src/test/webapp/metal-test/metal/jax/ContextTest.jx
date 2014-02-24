@@ -1,5 +1,5 @@
 /**
- * @test ContextTest
+ * @test
  * 
  * @imports metal.jax.Context
  * @imports metal.jax.BaseObject

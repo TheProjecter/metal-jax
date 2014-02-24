@@ -1,5 +1,5 @@
 /**
- * @test JsonMapperTest
+ * @test
  * @imports JsonMapper
  * @imports TestAnnotatedObject
  * @imports TestBaseObject

@@ -1,5 +1,5 @@
 /**
- * @face HelloForm
+ * @face
  * @extends metal.face.Form
  * @imports service.Echo
  * @imports metal.jax.System

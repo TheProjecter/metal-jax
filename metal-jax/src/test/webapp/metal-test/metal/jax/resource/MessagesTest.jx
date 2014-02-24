@@ -1,5 +1,5 @@
 /**
- * @test MessagesTest
+ * @test
  * @requires Messages hello
  */
 
