@@ -331,6 +331,11 @@ $private.parseSource = function parseSource(source) {
 	parseModel(source);
 	_pendingClasses.push(source);
 	source.$context.loadClass(source.scope.$imports[source.superBase]);
+	if (source.stereotype != "context") {
+		for (var name in source.scope.$imports) {
+			source.$context.loadClass(source.scope.$imports[name]);
+		}
+	}
 };
 
 $private._classHeader_   = "//@ sourceURL=${0}\n";
@@ -552,17 +557,30 @@ $private.flush_initClass = function flush_initClass(source) {
 
 		if (source.superBase) {
 			source.scope[source.superBase] = source.$context.findClass(source.scope.$imports[source.superBase], true);
-			var superHandle = findClassHandle(source.scope.$imports[source.superBase], source.$context);
-			flush_initClass(superHandle);
-			flush_notifyClass(superHandle);
+			flush_initClass(findClassHandle(source.scope.$imports[source.superBase], source.$context));
+		}
+		if (source.stereotype != "context") {
+			for (var name in source.scope.$imports) {
+				source.scope[name] = source.$context.findClass(source.scope.$imports[name], true);
+				flush_initClass(findClassHandle(source.scope.$imports[name], source.$context));
+			}
+		}
+		if (source.name == $imports.BaseObject) {
+			source.scope.$protected.throwError = $protected.throwError;
+			source.scope.$protected.call = $protected.call;
+			source.scope.$protected.log = $protected.log;
 		}
 		initClassModel(source);
 
 		_busyCount--;
 		source.flushState = "endInitClass";
 
-		for (var name in source.scope.$imports) {
-			source.$context.loadClass(source.scope.$imports[name]);
+		if (source.stereotype != "context") {
+			flush_notifyClass(source);
+		} else {
+			for (var name in source.scope.$imports) {
+				source.$context.loadClass(source.scope.$imports[name]);
+			}
 		}
 	}
 };
@@ -575,12 +593,6 @@ $private.flush_notifyClass = function flush_notifyClass(source) {
 		for (var name in source.scope.$imports) {
 			source.scope[name] = source.$context.findClass(source.scope.$imports[name], true);
 			flush_notifyClass(findClassHandle(source.scope.$imports[name], source.$context));
-		}
-
-		if (source.name == $imports.BaseObject) {
-			source.scope.$protected.throwError = $protected.throwError;
-			source.scope.$protected.call = $protected.call;
-			source.scope.$protected.log = $protected.log;
 		}
 
 		if (source.scope.initClass) {
