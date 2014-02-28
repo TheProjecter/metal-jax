@@ -96,7 +96,7 @@ $protected.throwError = function throwError(msg) {
 };
 
 $protected.log = function log() {
-	if (typeof Logger != "undefined") {
+	if (typeof Logger != "undefined" && Logger.log) {
 		Logger.log.apply(this.$class, arguments);
 	} else if (typeof console != "undefined") {
 		var level = Array.prototype.shift.call(arguments);
