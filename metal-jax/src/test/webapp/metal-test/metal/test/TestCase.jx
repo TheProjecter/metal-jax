@@ -65,11 +65,11 @@ function assertEquals(expected, actual, name) {
 
 //@protected
 function println(message, color) {
-	var line = System.document.createElement("pre");
+	var line = System.$document.createElement("pre");
 	line.style.margin = "0px";
 	if (color) line.style.color = color;
 	line.innerHTML = formatHTML(message);
-	System.document.body.appendChild(line);
+	System.$document.body.appendChild(line);
 }
 
 //@private

@@ -1,5 +1,6 @@
 /**
  * @script
+ * @imports metal.jax.System
  * @setting resource.url=${angular-js.url}
  * @setting resource.object=angular
  * 
@@ -18,7 +19,7 @@ function initContext(scope) {
 	for (var i in $modules) {
 		names.push(i);
 	}
-	angular.bootstrap(document.body, names);
+	angular.bootstrap(System.$document.body, names);
 }
 
 //@static

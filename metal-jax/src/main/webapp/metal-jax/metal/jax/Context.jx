@@ -572,15 +572,17 @@ $private.flush_initClass = function flush_initClass(source) {
 		}
 		initClassModel(source);
 
+		if (source.stereotype == "context") {
+			for (var name in source.scope.$imports) {
+				source.$context.loadClass(source.scope.$imports[name]);
+			}
+		}
+
 		_busyCount--;
 		source.flushState = "endInitClass";
 
 		if (source.stereotype != "context") {
 			flush_notifyClass(source);
-		} else {
-			for (var name in source.scope.$imports) {
-				source.$context.loadClass(source.scope.$imports[name]);
-			}
 		}
 	}
 };
@@ -617,6 +619,7 @@ $private.flush_loadResource = function flush_loadResource(source) {
 		}
 	}
 	if (_pendingCount) return;
+
 	source.resourceState = source.resourceState || {};
 	for (var name in source.scope.$requires) {
 		if (!source.resourceState[name]) {

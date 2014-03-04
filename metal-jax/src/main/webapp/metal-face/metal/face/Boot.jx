@@ -1,5 +1,6 @@
 /**
  * @class
+ * @imports metal.jax.System
  * @imports metal.jax.Face
  * 
  * @copyright Jay Tang 2012. All rights reserved.
@@ -7,7 +8,7 @@
 
 //@static
 function initClassScope(scope) {
-	Face.parseModel(scope, document.body);
+	Face.parseModel(scope, System.$document.body);
 }
 
 //@static
@@ -16,10 +17,10 @@ function initContextScope(scope) {
 	var baseClass = scope.$context.findClass($("baseClass")) || Face0;
 	var baseResource = $("baseResource");
 	if (!baseResource) {
-		new Face0(document.body);
+		new Face0(System.$document.body);
 	} else {
 		if (baseClass.findResource(baseResource)) {
-			baseClass.copyResourceTo(baseResource, document.body);
+			baseClass.copyResourceTo(baseResource, System.$document.body);
 		} else {
 			log("warn", "metal.jax.init.baseResource.fail", baseResource);
 		}

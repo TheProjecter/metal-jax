@@ -61,12 +61,12 @@ function toggleRow(row) {
 	if (this.selectedRow == row) {
 		this.selectedRow.className = "";
 		delete this.selectedRow;
-		toggleEvent("keydown", document, this.scroll, false);
+		toggleEvent("keydown", $document, this.scroll, false);
 	} else {
 		if (this.selectedRow) {
 			this.selectedRow.className = "";
 		} else {
-			toggleEvent("keydown", document, this.scroll);
+			toggleEvent("keydown", $document, this.scroll);
 		}
 		this.selectedRow = row;
 		this.selectedRow.className = _selected_;

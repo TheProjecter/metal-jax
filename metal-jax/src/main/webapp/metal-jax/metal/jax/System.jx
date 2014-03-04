@@ -9,9 +9,9 @@
 function initClass(scope) {
 	Array.prototype.indexOf = Array.prototype.indexOf || indexOf;
 	Date.prototype.toISOString = Date.prototype.toISOString || toISOString;
-	$class.window = window;
-	$class.document = window.document;
-	$class.docHead = window.document.body.parentNode.firstChild;
+	$class.$window = window;
+	$class.$document = window.document;
+	$class.$head = window.document.body.parentNode.firstChild;
 	// mixes
 	$class.splitPath = Context.splitPath;
 	$class.resolvePath = Context.resolvePath;
@@ -121,7 +121,7 @@ function loadCrossDomain(source, callback) {
 		}
 		callback.call(caller, source);
 	});
-	$class.docHead.appendChild(source.node);
+	$class.$head.appendChild(source.node);
 }
 
 //@private
@@ -132,27 +132,27 @@ function requestCrossDomain(source, callback) {
 	request.time = parseInt($("requestTime"));
 	request.timeout = parseInt($("requestTimeout"));
 	request.timeoutId = setTimeout(request.callback, request.time);
-	$class.window[$("bootModule")][source.url] = request.callback;
+	$class.$window[$("bootModule")][source.url] = request.callback;
 	return request;
 }
 
 //@private
 function clearRequest(request, source) {
 	clearTimeout(request.timeoutId);
-	delete $class.window[$("bootModule")][source.url];
+	delete $class.$window[$("bootModule")][source.url];
 	(source.$class||$class).clearResourceHandle(source);
 }
 
 //@static
 function initResourceHandle(source) {
 	source.url = source.url || [source.base, $("crossDomain"), source.module, source.path].join("/");
-	source.node = $class.document.createElement("script");
+	source.node = $class.$document.createElement("script");
 	source.node.src = requestURL(source);
 }
 
 //@static
 function clearResourceHandle(source) {
-	$class.docHead.removeChild(source.node);
+	$class.$head.removeChild(source.node);
 	delete source.node;
 }
 
@@ -270,8 +270,8 @@ function indexOfFirstChild(node, only) {
 
 //@static
 function parseHTML(text) {
-	var doc = $class.document.createDocumentFragment();
-	var node = $class.document.createElement("div");
+	var doc = $class.$document.createDocumentFragment();
+	var node = $class.$document.createElement("div");
 	node.innerHTML = text;
 	while (node.firstChild) {
 		doc.appendChild(node.firstChild);

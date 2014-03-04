@@ -1,5 +1,6 @@
 /**
  * @resource
+ * @imports metal.jax.System
  * @setting resource.url
  * @setting resource.object
  * @setting resource.type=js
@@ -11,6 +12,6 @@
 function checkResource() {
 	var name = this.$("resource.object");
 	if (name) {
-		return typeof window[name] != "undefined";
+		return typeof System.$window[name] != "undefined";
 	}
 }

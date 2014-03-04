@@ -47,14 +47,14 @@ function dispatch(node, event) {
 
 //@private
 function capture(node, event) {
-	toggleEvent("mousemove", document, this.bindings[node.id]);
-	toggleEvent("mouseup", document, this.bindings[node.id]);
+	toggleEvent("mousemove", $document, this.bindings[node.id]);
+	toggleEvent("mouseup", $document, this.bindings[node.id]);
 }
 
 //@private
 function release(node, event) {
-	toggleEvent("mousemove", document, this.bindings[node.id], false);
-	toggleEvent("mouseup", document, this.bindings[node.id], false);
+	toggleEvent("mousemove", $document, this.bindings[node.id], false);
+	toggleEvent("mouseup", $document, this.bindings[node.id], false);
 }
 
 //@private

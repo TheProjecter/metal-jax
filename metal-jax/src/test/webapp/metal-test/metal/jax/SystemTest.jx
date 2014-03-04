@@ -9,7 +9,7 @@ function test_callback() {
 	var callback = System.callback(function() {
 		return this;
 	});
-	assertEquals(System.window, callback());
+	assertEquals(System.$window, callback());
 	assertEquals(object, callback.call(object));
 	
 	callback = System.callback.call(object, function() {

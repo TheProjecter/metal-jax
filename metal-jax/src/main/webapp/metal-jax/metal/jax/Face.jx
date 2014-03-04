@@ -6,7 +6,12 @@
  */
 
 //@protected
-var document = window.document;
+var $document;
+
+//@private
+function initClass() {
+	$document = System.$document;
+}
 
 //@protected
 function initResource(scope, source) {
@@ -54,7 +59,7 @@ function parseNode(source, node) {
 		if (node.nodeName.toLowerCase() == "img") {
 			node.src = resolvePath(node.attributes["alt"].value||node.attributes["src"].value, source);
 		} else if (node.nodeName.toLowerCase() == "link") {
-			System.docHead.appendChild(node);
+			System.$head.appendChild(node);
 			node.href = resolvePath(node.attributes["href"].value, source);
 		}
 	}
