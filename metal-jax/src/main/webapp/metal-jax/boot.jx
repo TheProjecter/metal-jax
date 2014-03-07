@@ -6,10 +6,10 @@
 	(function() {
 		
 		var $setting = {
-			baseResource: "",
-			baseClass: "",
 			baseModule: ".",
 			baseContext: "base",
+			baseClass: "",
+			baseResource: "",
 			crossDomain: "xd",
 			requestTime: "100",
 			requestTimeout: "3000",
@@ -30,9 +30,9 @@
 				stereotype: [
 					{ type:"class", base:"metal.jax.BaseObject" },
 					{ type:"context", base:"metal.jax.Context" },
+					{ type:"resource", base:"metal.jax.Resource" },
 					{ type:"face", base:"metal.jax.Face" },
 					{ type:"model", base:"metal.jax.Model" },
-					{ type:"resource", base:"metal.jax.Resource" },
 					{ type:"service", base:"metal.jax.Service" },
 					{ type:"script", base:"metal.jax.resource.Script" },
 					{ type:"stylesheet", base:"metal.jax.resource.StyleSheet" }
