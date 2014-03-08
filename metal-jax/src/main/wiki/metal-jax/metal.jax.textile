@@ -17,7 +17,7 @@ The boot context accomplishes the following:
 
 The boot context handles source loading across domain. A few bootstrapping methods are published to class loader scope for reuse.
 
-See also: "@metal.jax.Context@":metal.jax.Context.html
+See also: "@metal.jax.core.Context@":metal.jax.core.Context.html
 
 h1. Detail
 
@@ -50,7 +50,7 @@ Source properties are source parsing results for class/context creation.
 table(grid).
 |_.Name |_.Value |_.Comments |
 | stereotype | @context@ | Type token for context creation. |
-| name | @metal.jax.Context@ | Identifies source as well as class/context. |
+| name | @metal.jax.core.Context@ | Identifies source as well as class/context. |
 | scope | $public, $protected, $static, $imports, $requires, $setting | Private scope variables. |
 | setting | source, stereotype | _More settings_. |
 
@@ -71,7 +71,7 @@ Source stereotypes define default base class for each type.
 table(grid).
 |_.Name |_.Value |_.Comments |
 | class | @metal.jax.BaseObject@ | Class source. |
-| context | @metal.jax.Context@ | Context source. |
+| context | @metal.jax.core.Context@ | Context source. |
 | face | @metal.jax.Face@ | Face source. |
 | html | @metal.jax.Face@ | HTML source. |
 | resource | @metal.jax.Resource@ | Resource source. |

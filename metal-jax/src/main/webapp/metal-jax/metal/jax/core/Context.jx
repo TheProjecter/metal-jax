@@ -1,11 +1,11 @@
-//@ sourceURL=metal.jax.Context
+//@ sourceURL=metal.jax.core.Context
 /**
  * @copyright Jay Tang 2012. All rights reserved.
  */
 $public.getClass = function getClass() { return Context; };
 $static.getSuperClass = function getSuperClass() { return undefined; };
 $static.getContext = function getContext() { return $context; };
-$static.getName = function getName() { return "metal.jax.Context"; };
+$static.getName = function getName() { return "metal.jax.core.Context"; };
 $private.Context = function Context() { return $protected.call(this, arguments); };
 $imports["BaseObject"] = "metal.jax.BaseObject";
 $imports["System"] = "metal.jax.System";
@@ -766,4 +766,4 @@ $private.initSetting = function initSetting(setting, clazz) {
 	}
 };
 
-//@ sourceURL=metal.jax.Context
+//@ sourceURL=metal.jax.core.Context

@@ -1,6 +1,6 @@
 /**
  * @class
- * @imports Context
+ * @imports metal.jax.core.Context
  * 
  * @copyright Jay Tang 2012. All rights reserved.
  */

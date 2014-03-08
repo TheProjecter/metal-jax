@@ -1,6 +1,6 @@
 <link type="text/css" rel="stylesheet" href="../styles/main.css"/>
 
-p(title). Class @metal.jax.Context@
+p(title). Class @metal.jax.core.Context@
 
 {toc:style=decimal}
 

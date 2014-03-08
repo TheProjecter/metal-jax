@@ -18,7 +18,7 @@
 		};
 		var $source = {
 			stereotype: "context",
-			name: "metal.jax.Context",
+			name: "metal.jax.core.Context",
 			baseName: "Context",
 			scope: { $setting:$setting, $imports:{}, $requires:{}, $static:{}, $protected:{}, $public:{} },
 			classes: {},
@@ -29,7 +29,7 @@
 				],
 				stereotype: [
 					{ type:"class", base:"metal.jax.BaseObject" },
-					{ type:"context", base:"metal.jax.Context" },
+					{ type:"context", base:"metal.jax.core.Context" },
 					{ type:"resource", base:"metal.jax.Resource" },
 					{ type:"face", base:"metal.jax.Face" },
 					{ type:"model", base:"metal.jax.Model" },
