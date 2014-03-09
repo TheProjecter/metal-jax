@@ -1,6 +1,6 @@
 /**
  * @test
- * @imports metal.jax.System
+ * @imports metal.jax.core.System
  */
 
 //@public

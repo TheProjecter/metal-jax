@@ -1,6 +1,6 @@
 /**
  * @script
- * @imports metal.jax.System
+ * @imports metal.jax.core.System
  * @setting resource.url=${angular-js.url}
  * @setting resource.object=angular
  * 

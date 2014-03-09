@@ -2,7 +2,7 @@
  * @face
  * @extends metal.face.Form
  * @imports service.Echo
- * @imports metal.jax.System
+ * @imports metal.jax.core.System
  */
 
 //@private

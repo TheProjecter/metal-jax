@@ -1,6 +1,6 @@
 /**
  * @resource
- * @imports metal.jax.System
+ * @imports metal.jax.core.System
  * @setting resource.url
  * @setting resource.type=css
  * 

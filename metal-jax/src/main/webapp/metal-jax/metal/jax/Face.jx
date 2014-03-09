@@ -1,6 +1,6 @@
 /**
  * @resource
- * @imports System
+ * @imports metal.jax.core.System
  * 
  * @copyright Jay Tang 2012. All rights reserved.
  */

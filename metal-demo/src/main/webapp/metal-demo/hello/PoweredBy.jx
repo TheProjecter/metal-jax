@@ -1,6 +1,6 @@
 /**
  * @face PoweredBy
- * @imports metal.jax.System
+ * @imports metal.jax.core.System
  * 
  * @setting label.value=Powered by MetalJax
  */

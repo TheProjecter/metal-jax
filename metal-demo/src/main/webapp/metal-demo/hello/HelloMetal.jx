@@ -1,7 +1,7 @@
 /**
  * @face HelloMetal
  * @imports PoweredBy
- * @imports metal.jax.System
+ * @imports metal.jax.core.System
  * 
  * @setting label.title=Hello, Metal
  * @setting label.value=Hello, Metal

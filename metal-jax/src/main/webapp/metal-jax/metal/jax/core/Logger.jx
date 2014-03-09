@@ -1,6 +1,6 @@
 /**
  * @class
- * @imports metal.jax.System
+ * @imports System
  * 
  * @copyright Jay Tang 2012. All rights reserved.
  */

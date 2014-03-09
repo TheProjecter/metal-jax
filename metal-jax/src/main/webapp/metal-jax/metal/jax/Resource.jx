@@ -1,6 +1,6 @@
 /**
  * @class
- * @imports System
+ * @imports metal.jax.core.System
  * 
  * @setting resource.base
  * @setting resource.module

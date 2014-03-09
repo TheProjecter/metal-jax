@@ -1,6 +1,6 @@
 /**
  * @class
- * @imports System
+ * @imports metal.jax.core.System
  * @imports metal.jax.core.Request
  * @imports metal.jax.mapper.XmlMapper
  * @imports metal.jax.mapper.JsonMapper

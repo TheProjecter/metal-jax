@@ -2,7 +2,7 @@
  * @face HelloTable
  * @extends metal.face.Table
  * @imports Table TableModel
- * @imports metal.jax.System
+ * @imports metal.jax.core.System
  * 
  * @setting table.header.count=4
  * @setting table.header.0=Header 0
