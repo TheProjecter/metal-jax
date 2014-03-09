@@ -31,9 +31,9 @@
 					{ type:"class", base:"metal.jax.BaseObject" },
 					{ type:"context", base:"metal.jax.core.Context" },
 					{ type:"resource", base:"metal.jax.Resource" },
-					{ type:"face", base:"metal.jax.Face" },
 					{ type:"model", base:"metal.jax.Model" },
 					{ type:"service", base:"metal.jax.Service" },
+					{ type:"face", base:"metal.jax.resource.Face" },
 					{ type:"script", base:"metal.jax.resource.Script" },
 					{ type:"stylesheet", base:"metal.jax.resource.StyleSheet" }
 				]

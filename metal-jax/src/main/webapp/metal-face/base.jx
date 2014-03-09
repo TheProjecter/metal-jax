@@ -1,7 +1,7 @@
 /**
  * @context
  * @imports metal.face.Boot
- * @requires ${baseClass|metal.jax.Face} ${baseResource}
+ * @requires ${baseClass|metal.jax.resource.Face} ${baseResource}
  * 
  * @copyright Jay Tang 2012. All rights reserved.
  */

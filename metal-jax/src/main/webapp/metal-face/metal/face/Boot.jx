@@ -1,7 +1,7 @@
 /**
  * @class
  * @imports metal.jax.core.System
- * @imports metal.jax.Face
+ * @imports metal.jax.resource.Face
  * 
  * @copyright Jay Tang 2012. All rights reserved.
  */

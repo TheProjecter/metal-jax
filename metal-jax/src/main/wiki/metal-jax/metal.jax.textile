@@ -72,8 +72,8 @@ table(grid).
 |_.Name |_.Value |_.Comments |
 | class | @metal.jax.BaseObject@ | Class source. |
 | context | @metal.jax.core.Context@ | Context source. |
-| face | @metal.jax.Face@ | Face source. |
-| html | @metal.jax.Face@ | HTML source. |
+| face | @metal.jax.resource.Face@ | Face source. |
+| html | @metal.jax.resource.Face@ | HTML source. |
 | resource | @metal.jax.Resource@ | Resource source. |
 | service | @metal.jax.Service@ | Service source. |
 
