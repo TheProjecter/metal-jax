@@ -1,17 +1,10 @@
 /**
  * @resource
+ * @imports Controller
  * @imports metal.jax.core.System
  * 
  * @copyright Jay Tang 2012. All rights reserved.
  */
-
-//@protected
-var $document;
-
-//@private
-function initClass() {
-	$document = System.$document;
-}
 
 //@protected
 function initResource(scope, source) {
@@ -28,13 +21,8 @@ function initResource(scope, source) {
 }
 
 //@static
-function fromResource(name) {
-	return new this(copyResource(name, this));
-}
-
-//@static
 function copyResourceTo(name, node) {
-	return new this(moveHTML(copyResource(name, this), node));
+	return moveHTML(copyResource(name, this), node);
 }
 
 //@protected
@@ -96,35 +84,33 @@ function parseSetting(node) {
 }
 
 //@private
-function initObject(object, node, content) {
+function initObject(object, node, controller, content) {
 	if (node) {
 		object.node = node;
 		object.nodes = {};
-		initModel(this, object, node);
+		object.controller = controller;
+		controller.bind(object, node);
+		initModel(this, object, node, controller);
 		initContent_(this, object, content);
 	}
 }
 
 //@private
-function initModel(scope, object, node) {
+function initModel(scope, object, node, controller) {
 	for (var i = 0; i < node.childNodes.length; i++) {
 		var childNode = node.childNodes[i];
 		if (childNode.nodeType == 1) {
-			var stop = initNode_(object, childNode);
-			scope.$protected.initNode(object, childNode);
+			var stop = initNode(object, childNode);
+			controller.bind(object, childNode);
 			if (!stop) {
-				initModel(scope, object, childNode);
+				initModel(scope, object, childNode, controller);
 			}
 		}
 	}
 }
 
-//@protected
-function initNode(object, node) {
-}
-
 //@private
-function initNode_(object, node) {
+function initNode(object, node) {
 	if (node.id) {
 		var parts = node.id.split(":"), nodeId = parts.shift();
 		var name = parts.length && parts[0];
@@ -142,10 +128,10 @@ function initNode_(object, node) {
 			var content;
 			if (name) {
 				content = new $class(node);
-				clearHTML(node).appendChild(copyResource(name, childClass));
+				clearHTML(node).appendChild(copyResource(name, $class));
 			}
-			object.faces = object.faces || {};
-			object.faces[nodeId] = new childClass(node, content);
+			object.views = object.views || {};
+			object.views[nodeId] = new View(node, new childClass(), content);
 			return true;
 		} else if (className) {
 			log("warn", "class not found: ${0}", className);
@@ -198,7 +184,7 @@ function resolvePath(path, source) {
 	return System.resolvePath(path, source.module + "/");
 }
 
-//@protected
+//@public
 function setStyle(node, style, positive) {
 	positive = positive || arguments.length == 2;
 	var tokens = (node.className||"").split(" ");
@@ -217,7 +203,7 @@ function setStyle(node, style, positive) {
 	}
 }
 
-//@protected
+//@public
 function toggleStyle(node, a, b) {
 	a = a || ""; b = b || "";
 	var tokens = (node.className||"").split(" ");
@@ -241,7 +227,7 @@ function toggleStyle(node, a, b) {
 	}
 }
 
-//@protected
+//@public
 function filterStyle(node, styles, defaultToFirst) {
 	var tokens = (node.className||"").split(" ");
 	for (var i = 0; i < styles.length; i++) {
@@ -328,9 +314,10 @@ function isTouchReady() {
 	return typeof TouchEvent != "undefined";
 }
 
-//@protected
-function toggleEvent(event, target, callback, positive) {
-	positive = positive || arguments.length == 3;
+//@public
+function toggleEvent(event, callback, positive, target) {
+	positive = positive || arguments.length == 2;
+	target = target || System.$document;
 	if (callback) {
 		if (target.addEventListener) {
 			if (positive) {
@@ -353,15 +340,15 @@ function toggleEvent(event, target, callback, positive) {
 }
 
 //@public
-function bind(event, callback, node) {
+function bindEvent(event, callback, node) {
 	var binding = System.callback.call(this, dispatch, callback, node);
-	if (event && node) toggleEvent(event, node, binding);
+	if (event && node) this.toggleEvent(event, binding, true, node);
 	return binding;
 }
 
 //@private
 function dispatch(callback, node, event) {
-	var status = callback.call(this, node, event);
+	var status = callback(this, node, event);
 	if (status) return true;
 	
 	/*stop propagation*/

@@ -7,14 +7,14 @@
 		
 		var $setting = {
 			baseModule: ".",
-			baseContext: "base",
+			baseContext: ".base",
 			baseClass: "",
 			baseResource: "",
 			crossDomain: "xd",
 			requestTime: "100",
 			requestTimeout: "3000",
 			classType: "jx",
-			faceType: "html"
+			viewType: "html"
 		};
 		var $source = {
 			stereotype: "context",
@@ -33,7 +33,8 @@
 					{ type:"resource", base:"metal.jax.Resource" },
 					{ type:"model", base:"metal.jax.Model" },
 					{ type:"service", base:"metal.jax.Service" },
-					{ type:"face", base:"metal.jax.resource.Face" },
+					{ type:"view", base:"metal.jax.face.View" },
+					{ type:"controller", base:"metal.jax.face.Controller" },
 					{ type:"script", base:"metal.jax.resource.Script" },
 					{ type:"stylesheet", base:"metal.jax.resource.StyleSheet" }
 				]

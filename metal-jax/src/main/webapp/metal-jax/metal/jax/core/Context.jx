@@ -136,7 +136,7 @@ $private.initResourceHandle = function initResourceHandle(name, clazz, context) 
 	source.url = formatText(clazz.$("resource.url"), clazz);
 	source.base = clazz.$("resource.base") || setting && setting.base || $("baseURL");
 	source.module = clazz.$("resource.module") || setting && setting.module || $("baseModule");
-	source.resourceType = clazz.$("resource.type") || $("faceType");
+	source.resourceType = clazz.$("resource.type") || $("viewType");
 	source.path = source.name.split(".").join("/").concat(".", source.resourceType);
 	return source;
 };
@@ -159,7 +159,7 @@ $private.putClassHandle = function putClassHandle(source) {
 $private.initClassHandle = function initClassHandle(name, context) {
 	name = parseSourceName(name);
 	var setting = findSourceSetting(name, context);
-	var source = { "$context": setting ? setting.$context : context };
+	var source = { "$context": setting ? setting.$context : $context };
 	source.name = name;
 	source.base = setting && setting.base || $("baseURL");
 	source.module = setting && setting.module || $("baseModule");
@@ -172,7 +172,7 @@ $private.findClassHandle = function findClassHandle(name, context) {
 	if (name) {
 		name = parseSourceName(name);
 		var setting = findSourceSetting(name, context);
-		return getClassHandle(name, setting ? setting.$context : context);
+		return getClassHandle(name, setting ? setting.$context : $context);
 	}
 };
 
@@ -361,6 +361,7 @@ $private.parseModel = function parseModel(source) {
 			if (!settingTag) continue;
 			switch (settingTag) {
 			case "extends":
+				name = formatText(name, source.$context.getClass());
 				name = parseSourceName(name, source.name);
 				value = parseBaseName(name, value);
 				if (value) {
@@ -385,7 +386,7 @@ $private.parseModel = function parseModel(source) {
 				name = parseSourceName(name, source.name);
 				value = formatText(value, source.$context.getClass());
 				if (name) {
-					source.scope.$imports[parseBaseName(name, value)] = name;
+					source.scope.$imports[parseBaseName(name)] = name;
 					source.scope.$imports[name] = name;
 					source.scope.$requires[value||name] = name;
 				} else {

@@ -1,0 +1,10 @@
+/**
+ * @class
+ * 
+ * @copyright Jay Tang 2012. All rights reserved.
+ */
+
+//@public
+function bind(view, node) {
+	//empty
+}

@@ -32,11 +32,6 @@ function findResource(name, positive) {
 }
 
 //@static
-function fromResource(name) {
-	return new this(this.findResource(name, true));
-}
-
-//@static
 function parseResource(source) {
 	switch (source.resourceType) {
 	case "json":
