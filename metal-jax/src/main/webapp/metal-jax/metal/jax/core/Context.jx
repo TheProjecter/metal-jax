@@ -570,6 +570,7 @@ $private.flush_initClass = function flush_initClass(source) {
 			source.scope.$protected.throwError = $protected.throwError;
 			source.scope.$protected.call = $protected.call;
 			source.scope.$protected.log = $protected.log;
+			source.scope.$protected.copy = $protected.copy;
 		}
 		initClassModel(source);
 
@@ -611,15 +612,6 @@ $private.flush_notifyClass = function flush_notifyClass(source) {
 
 $private.flush_loadResource = function flush_loadResource(source) {
 	if (_busyCount) return;
-	for (var name in source.scope.$imports) {
-		if (name == source.scope.$imports[name] && !source.scope[name]) {
-			source.scope[name] = source.$context.findClass(source.scope.$imports[name], true);
-			if (!source.scope[name]) {
-				source.$context.loadClass(source.scope.$imports[name]);
-			}
-		}
-	}
-	if (_pendingCount) return;
 
 	source.resourceState = source.resourceState || {};
 	for (var name in source.scope.$requires) {
@@ -632,6 +624,15 @@ $private.flush_loadResource = function flush_loadResource(source) {
 			if (source.$context.findResource(name, clazz)) {
 				var handle = getResourceHandle(clazz);
 				handle.scope.$protected.initResource(source.scope, handle.resources[name]);
+			}
+		}
+	}
+	if (_pendingCount) return;
+	for (var name in source.scope.$imports) {
+		if (name == source.scope.$imports[name] && !source.scope[name]) {
+			source.scope[name] = source.$context.findClass(source.scope.$imports[name], true);
+			if (!source.scope[name]) {
+				source.$context.loadClass(source.scope.$imports[name]);
 			}
 		}
 	}
@@ -701,21 +702,21 @@ $private.initClassModel = function initClassModel(source) {
 
 	var superSource = findClassHandle(source.scope.$imports[source.superBase], source.$context);
 	if (superSource) {
-		copyMember(source.scope.$super, superSource.scope.$protected);
+		copy(source.scope.$super, superSource.scope.$protected);
 		source.scope.$super.$protected = source.scope.$super;
-		source.scope.$super.$static = copyMember({}, superSource.scope.$static);
-		source.scope.$super.$public = copyMember({}, superSource.scope.$public);
-		copyMember(source.scope.$protected, source.scope.$super.$protected);
-		copyMember(source.scope.$static, source.scope.$super.$static);
+		source.scope.$super.$static = copy({}, superSource.scope.$static);
+		source.scope.$super.$public = copy({}, superSource.scope.$public);
+		copy(source.scope.$protected, source.scope.$super.$protected);
+		copy(source.scope.$static, source.scope.$super.$static);
 		source.$class.prototype = new superSource.$class(superSource.$class);
-		copyMember(source.$class.prototype, source.scope.$super.$public);
+		copy(source.$class.prototype, source.scope.$super.$public);
 		source.scope.$protected.$super = source.scope.$super.$protected;
 		source.scope.$static.$super = source.scope.$super.$static;
 		source.scope.$public.$super = source.scope.$super.$public;
 	}
-	copyMember(source.$class, source.scope.$static);
-	copyMember(source.$class.prototype, source.scope.$public, true);
-	copyMember(source.scope.$public, source.scope.$super.$public);
+	copy(source.$class, source.scope.$static);
+	copy(source.$class.prototype, source.scope.$public, true);
+	copy(source.scope.$public, source.scope.$super.$public);
 	if (source.stereotype == "context") {
 		source.$context = source.scope.$context = new source.$class(source.$class);
 		putClassHandle(source);
@@ -747,7 +748,7 @@ $private.initClassSettings = function initClassSettings(source) {
 	}
 };
 
-$private.copyMember = function copyMember(target, source, override) {
+$protected.copy = function copy(target, source, override) {
 	if (source && target) {
 		for (var name in source) {
 			if (name.length > 1 && name.charAt(0) == "$") {
