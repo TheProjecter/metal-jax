@@ -1,12 +1,12 @@
 /**
- * @face
+ * @controller
  */
 
 //@private
 function initObject(object, node) {
 	object.nodes.button;
 	object.nodes.label.innerHTML += " - Button.jx";
-	object.bind("click", hello, object.nodes.button);
+	object.bindEvent("click", hello, object.nodes.button);
 }
 
 //@private

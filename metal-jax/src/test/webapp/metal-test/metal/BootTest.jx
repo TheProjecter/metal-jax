@@ -19,7 +19,7 @@ function test_bootSetting() {
 		"requestTime",
 		"requestTimeout",
 		"classType",
-		"faceType"
+		"viewType"
 	];
 	for (var i = 0; i < names.length; i++) {
 		println("| ".concat(names[i], ": ", $(names[i])));

@@ -2,7 +2,7 @@
  * @test
  */
 
-var token;
+var token = null;
 
 //@public
 function setUp() {

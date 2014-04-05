@@ -1,11 +1,11 @@
 /**
- * @face
+ * @controller
  * @requires metal.jax.script.Angular
  * @requires metal.jax.stylesheet.Angular AngularStyleSheet
  */
 
 //@private
-var $scope;
+var $scope = null;
 
 //@private
 function initResource(scope) {
