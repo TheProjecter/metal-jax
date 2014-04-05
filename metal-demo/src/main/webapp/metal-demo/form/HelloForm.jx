@@ -1,5 +1,5 @@
 /**
- * @face
+ * @controller
  * @extends metal.face.Form
  * @imports service.Echo
  * @imports metal.jax.core.System
@@ -10,7 +10,11 @@ function initObject(form) {
 	form.echo = new Echo(form);
 	form.echo.bind("hello", update);
 	form.echo.bind("error", error);
-	form.bind("click", submit, form.nodes["submit"]);
+}
+
+//@public
+function bind(view, node) {
+	form.bindEvent("click", submit, form.nodes["submit"]);
 }
 
 //@private

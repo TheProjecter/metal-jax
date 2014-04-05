@@ -1,5 +1,5 @@
 /**
- * @face PoweredBy
+ * @controller PoweredBy
  * @imports metal.jax.core.System
  * 
  * @setting label.value=Powered by MetalJax

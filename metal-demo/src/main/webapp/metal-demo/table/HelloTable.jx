@@ -1,5 +1,5 @@
 /**
- * @face HelloTable
+ * @controller HelloTable
  * @extends metal.face.Table
  * @imports Table TableModel
  * @imports metal.jax.core.System
