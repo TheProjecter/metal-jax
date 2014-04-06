@@ -10,6 +10,11 @@ function init(view) {
 }
 
 //@public
+function afterInit(view) {
+	//empty
+}
+
+//@public
 function bind(view, node) {
 	//empty
 }

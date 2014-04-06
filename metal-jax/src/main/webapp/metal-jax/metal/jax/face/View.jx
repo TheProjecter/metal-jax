@@ -75,6 +75,7 @@ function initObject(view, node, controller, setting) {
 	view.setting = setting || {};
 	controller.init(view);
 	initModel(view, node);
+	controller.afterInit(view);
 }
 
 //@private
@@ -180,7 +181,7 @@ function filterSetting(setting, names, defaultToFirst) {
 	return defaultToFirst && names[0] || "";
 }
 
-//@protected
+//@public
 function indexOfChild(node, child) {
 	for (var i = 0, c = 0; i < node.childNodes.length; i++) {
 		var childNode = node.childNodes[i];
@@ -207,20 +208,18 @@ function indexOfChildById(node, id) {
 	for (var i = 0, c = 0; i < node.childNodes.length; i++) {
 		var childNode = node.childNodes[i];
 		if (childNode.nodeType == 1) {
-			var tokens = (childNode.id||"").split(":");
-			if (tokens[0] == id) return c;
+			if (childNode.id == id) return c;
 			else c++;
 		}
 	}
 }
 
-//@protected
+//@public
 function getChildById(node, id) {
 	for (var i = 0; i < node.childNodes.length; i++) {
 		var childNode = node.childNodes[i];
 		if (childNode.nodeType == 1) {
-			var tokens = (childNode.id||"").split(":");
-			if (tokens[0] == id) return childNode;
+			if (childNode.id == id) return childNode;
 		}
 	}
 }
