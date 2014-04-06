@@ -1,17 +1,6 @@
 /**
  * @context
- * @imports metal.face.Boot
- * @requires ${baseClass|metal.jax.resource.Face} ${baseResource}
+ * @imports metal.face.root
  * 
  * @copyright Jay Tang 2012. All rights reserved.
  */
-
-//@private
-function initResource(scope) {
-	Boot.initClassScope(scope);
-}
-
-//@private
-function initContext(scope) {
-	Boot.initContextScope(scope);
-}

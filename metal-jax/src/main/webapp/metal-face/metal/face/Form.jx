@@ -1,5 +1,5 @@
 /**
- * @face
+ * @controller
  * @imports metal.jax.core.System
  * 
  * @copyright Jay Tang 2012. All rights reserved.
@@ -8,57 +8,54 @@
 //@private
 var $count = 0;
 
-//@protected
-function initNode(object, node) {
-	object.inputs = object.inputs || {};
+//@public
+function init(view) {
+	view.inputs = {};
+}
+
+//@public
+function bind(view, node) {
 	switch (node.nodeName.toLowerCase()) {
 	case "form":
-		node.name = System.parseBaseName(object.getClass().getName()).concat($count++);
-		object.nodes["form"] = node;
+		node.name = System.parseBaseName(this.getClass().getName()).concat($count++);
+		view.nodes["form"] = node;
 		break;
 	case "fieldset":
-		object.nodes["fieldset"] = node;
+		view.nodes["fieldset"] = node;
 		break;
 	case "legend":
-		object.bind("click", toggleForm, node);
+		view.bindEvent("click", toggleForm, node);
 		break;
 	case "label":
-		node.htmlFor = object.nodes["form"].name.concat(".", node.htmlFor);
+		node.htmlFor = view.nodes["form"].name.concat(".", node.htmlFor);
 		break;
 	case "input":
 	case "select":
 	case "textarea":
-		object.inputs[node.name] = node;
+		view.inputs[node.name] = node;
 		// fall through
 	case "button":
-		node.id = object.nodes["form"].name.concat(".", node.name);
-		object.nodes[node.name] = node;
+		node.id = view.nodes["form"].name.concat(".", node.name);
+		view.nodes[node.name] = node;
 		break;
 	}
 }
 
-//@public
-function get(name) {
-	if (this.inputs[name]) {
-		return this.inputs[name].value;
-	}
-	return $super.$public.get.apply(this, arguments);
-}
-
-//@public
-function set(name, value) {
-	if (this.inputs[name]) {
-		return this.inputs[name].value = value;
-	}
-	return $super.$public.set.apply(this, arguments);
-}
-
 //@private
-function toggleForm() {
-	var fieldset = this.nodes["fieldset"];
-	if (fieldset.className == "expanded") {
-		fieldset.className = "collapsed";
-	} else {
-		fieldset.className = "expanded";
+function toggleForm(view, node, event) {
+	view.toggleStyle(view.nodes.fieldset, "collapsed", "expanded");
+}
+
+//@public
+function get(view, name) {
+	if (view.inputs[name]) {
+		return view.inputs[name].value;
+	}
+}
+
+//@public
+function set(view, name, value) {
+	if (view.inputs[name]) {
+		return view.inputs[name].value = value;
 	}
 }

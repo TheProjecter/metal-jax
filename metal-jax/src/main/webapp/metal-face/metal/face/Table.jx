@@ -1,5 +1,5 @@
 /**
- * @face
+ * @controller
  * @imports metal.jax.core.System
  * 
  * @copyright Jay Tang 2012. All rights reserved.
@@ -15,17 +15,17 @@ function initClass(scope) {
 
 //@private
 function initObject(object) {
-	object.scroll = object.bind(null, scroll);
+	object.scroll = object.bindEvent(null, scroll);
 	object.compare = System.callback.call(object, compare);
 	object.rows = System.copyArray(object.nodes["contentRows"].rows);
 	for (var i = 0; i < object.rows.length; i++) {
-		object.bind("click", toggleRow, object.rows[i]);
+		object.bindEvent("click", toggleRow, object.rows[i]);
 	}
 	for (var i = 0; i < object.nodes["headerRow"].cells.length; i++) {
 		var headerCell = object.nodes["headerRow"].cells[i];
 		if (headerCell.className) {
 			headerCell.firstChild.className = _sortable_;
-			object.bind("click", sortColumn, headerCell);
+			object.bindEvent("click", sortColumn, headerCell);
 		}
 	}
 }
@@ -61,12 +61,12 @@ function toggleRow(row) {
 	if (this.selectedRow == row) {
 		this.selectedRow.className = "";
 		delete this.selectedRow;
-		toggleEvent("keydown", $document, this.scroll, false);
+		toggleEvent("keydown", this.scroll, false);
 	} else {
 		if (this.selectedRow) {
 			this.selectedRow.className = "";
 		} else {
-			toggleEvent("keydown", $document, this.scroll);
+			toggleEvent("keydown", this.scroll);
 		}
 		this.selectedRow = row;
 		this.selectedRow.className = _selected_;

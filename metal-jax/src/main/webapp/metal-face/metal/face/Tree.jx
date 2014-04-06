@@ -1,5 +1,5 @@
 /**
- * @face
+ * @controller
  * 
  * @copyright Jay Tang 2012. All rights reserved.
  */
@@ -10,14 +10,14 @@ function initObject(object, node) {
 	object.nodes.label.innerHTML = label;
 }
 
-//@protected
-function initNode(object, node) {
+//@public
+function bind(view, node) {
 	switch (node.id) {
 	case "toggle":
-		object.bind("click", toggleTree, node);
+		view.bindEvent("click", toggleTree, node);
 		break;
 	case "label":
-		object.bind("dblclick", toggleTree, node);
+		view.bindEvent("dblclick", toggleTree, node);
 		break;
 	}
 }

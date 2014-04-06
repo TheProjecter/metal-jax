@@ -1,5 +1,5 @@
 /**
- * @face
+ * @controller
  * 
  * @copyright Jay Tang 2012. All rights reserved.
  */
@@ -7,105 +7,104 @@
 //@private
 var _panelStyles_ = [ "splitX", "splitY" ];
 
-//@private
-function initObject(object) {
-	object.box = {};
-	object.bindings = {};
-	var panelStyle = filterStyle(object.node, _panelStyles_, true), style;
-	setStyle(object.node, panelStyle);
-	for (var name in object.nodes) {
-		var node = object.nodes[name];
-		switch (node.id) {
-		case "divider":
-			object.bind("mouseover", toggleHighlight, node);
-			object.bind("mouseout", toggleHighlight, node);
-			object.bindings[node.id] = object.bind("mousedown", dispatch, node);
-			// fall through
-		case "panel1":
-		case "panel2":
-			style = filterStyle(node, _panelStyles_, true);
-			toggleStyle(node, style, panelStyle);
-			break;
-		}
+//@public
+function init(view) {
+	view.setting.style = view.filterSetting(view.setting, _panelStyles_, true);
+	view.toggleStyle(view.node, view.setting.style, "splitPanel");
+	view.bindings = {};
+}
+
+//@public
+function bind(view, node) {
+	switch (node.id) {
+	case "handle":
+		view.bindEvent("mouseover", toggleHighlight, node);
+		view.bindEvent("mouseout", toggleHighlight, node);
+		view.bindings[node.id] = view.bindEvent("mousedown", dispatch, node);
+		// fall through
+	case "panel1":
+	case "panel2":
+		var style = view.filterStyle(node, _panelStyles_, true);
+		view.toggleStyle(node, style, view.setting.style);
+		break;
 	}
 }
 
 //@private
-function dispatch(node, event) {
+function dispatch(view, node, event) {
 	switch (event.type) {
 	case "mousedown":
-		startResize.call(this, node, event);
+		startResize(view, node, event);
 		break;
 	case "mousemove":
-		doResize.call(this, node, event);
+		doResize(view, node, event);
 		break;
 	case "mouseup":
-		release.call(this, node, event);
+		release(view, node, event);
 		break;
 	}
 }
 
 //@private
-function capture(node, event) {
-	toggleEvent("mousemove", $document, this.bindings[node.id]);
-	toggleEvent("mouseup", $document, this.bindings[node.id]);
+function toggleHighlight(view, node, event) {
+	view.toggleStyle(node, "highlight");
+	return true;
 }
 
 //@private
-function release(node, event) {
-	toggleEvent("mousemove", $document, this.bindings[node.id], false);
-	toggleEvent("mouseup", $document, this.bindings[node.id], false);
+function capture(view, node, event) {
+	view.toggleEvent("mousemove", view.bindings[node.id], true);
+	view.toggleEvent("mouseup", view.bindings[node.id], true);
 }
 
 //@private
-function startResize(node, event) {
-	this.box.x = event.clientX;
-	this.box.y = event.clientY;
-	this.box.panel1Width = this.nodes.panel1.offsetWidth;
-	this.box.panel1Height = this.nodes.panel1.offsetHeight;
-	this.box.panel2Width = this.nodes.panel2.offsetWidth;
-	this.box.panel2Height = this.nodes.panel2.offsetHeight;
+function release(view, node, event) {
+	view.toggleEvent("mousemove", view.bindings[node.id], false);
+	view.toggleEvent("mouseup", view.bindings[node.id], false);
+}
+
+//@private
+function startResize(view, node, event) {
+	view.setting.x = event.clientX;
+	view.setting.y = event.clientY;
+	view.setting.panel1Width = view.nodes.panel1.offsetWidth;
+	view.setting.panel1Height = view.nodes.panel1.offsetHeight;
+	view.setting.panel2Width = view.nodes.panel2.offsetWidth;
+	view.setting.panel2Height = view.nodes.panel2.offsetHeight;
 	
-	capture.call(this, node, event);
+	capture(view, node, event);
 }
 
 //@private
-function doResize(node, event) {
-	var dx = event.clientX - this.box.x;
-	var dy = event.clientY - this.box.y;
+function doResize(view, node, event) {
+	var dx = event.clientX - view.setting.x;
+	var dy = event.clientY - view.setting.y;
 	
-	var style = filterStyle(this.node, _panelStyles_, true);
-	switch (style) {
+	switch (view.setting.style) {
 	case "splitY":
-		setHeight.call(this, dy);
+		setHeight(view, dy);
 		break;
 	case "splitX":
 	default:
-		setWidth.call(this, dx);
+		setWidth(view, dx);
 		break;
 	}
 }
 
 //@private
-function setWidth(dx) {
-	var panel1Width = this.box.panel1Width + dx;
-	var panel2Width = this.box.panel2Width - dx;
+function setWidth(view, dx) {
+	var panel1Width = view.setting.panel1Width + dx;
+	var panel2Width = view.setting.panel2Width - dx;
 	if (panel1Width <= 0 || panel2Width <= 0) return;
-	this.nodes.panel1.style.width = "".concat(panel1Width, "px");
-	this.nodes.panel2.style.width = "".concat(panel2Width, "px");
+	view.nodes.panel1.style.width = "".concat(panel1Width, "px");
+	view.nodes.panel2.style.width = "".concat(panel2Width, "px");
 }
 
 //@private
-function setHeight(dy) {
-	var panel1Height = this.box.panel1Height + dy;
-	var panel2Height = this.box.panel2Height - dy;
+function setHeight(view, dy) {
+	var panel1Height = view.setting.panel1Height + dy;
+	var panel2Height = view.setting.panel2Height - dy;
 	if (panel1Height <= 0 || panel2Height <= 0) return;
-	this.nodes.panel1.style.height = "".concat(panel1Height, "px");
-	this.nodes.panel2.style.height = "".concat(panel2Height, "px");
-}
-
-//@private
-function toggleHighlight() {
-	toggleStyle(this.nodes.divider, "highlight");
-	return true;
+	view.nodes.panel1.style.height = "".concat(panel1Height, "px");
+	view.nodes.panel2.style.height = "".concat(panel2Height, "px");
 }

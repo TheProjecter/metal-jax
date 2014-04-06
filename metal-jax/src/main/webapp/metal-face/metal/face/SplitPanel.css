@@ -1,17 +1,11 @@
-.splitX { float:left; }
-.splitY { float:none; }
-.splitX, .splitY { width:100%; height:100%; }
+.splitX, .splitY { overflow:auto; }
+.splitX { float:left; width:49%; height:100%; white-space:nowrap; }
+.splitY { float:none; width:100%; height:49%; }
+.splitPanel { height:100%; }
 
-#panel1.splitX,
-#panel2.splitX { width:49%; white-space:nowrap; }
-#divider.splitX { width:2px; cursor:col-resize; }
-
-#panel1.splitY,
-#panel2.splitY { height:47%; }
-#divider.splitY { height:2px; cursor:row-resize; }
-
-#panel1.splitX, #panel1.splitY, #panel2.splitX, #panel2.splitY { overflow:auto; }
-#divider.splitX, #divider.splitY { background: lightgray; overflow:hidden; }
-#divider.highlight { background: darkgray; }
+#handle.splitX, #handle.splitY { overflow:hidden; background:lightgray; }
+#handle.splitX { width:2px; cursor:col-resize; }
+#handle.splitY { height:2px; cursor:row-resize; }
+#handle.highlight { background: darkgray; }
 
 html, body { width:100%; height:100%; margin:0px; }
