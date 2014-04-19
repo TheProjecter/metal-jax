@@ -1,0 +1,57 @@
+<link type="text/css" rel="stylesheet" href="../styles/main.css"/>
+
+p(title). Concepts
+
+{toc:style=decimal}
+
+h1. Overview
+
+Brainstorming concepts/ideas.
+
+App organization:
+# Need to build/package/deploy apps: _*WAR*_ files, with dependencies declared in maven _*POM*_ files
+# Need to organize apps/libraries per *war* file: _*Modules*_, external dependencies in _*POM*_
+# Need to organize app sources per *module*: _*Classes*_(defined), _*Resources*_(undefined)
+# Need to declare (loadtime/runtime) *dependencies* among *sources* with *annotations*: _*Extends*_, _*Imports*_, _*Requires*_
+
+Class stereotypes:
+# Every class is marked with a _*stereotype*_: indicates focus on specific app *aspects*
+# Need to support *stereotype* specific class annotations in stereotyped subclasses: _*Stereotyped Class Model Elements*_
+# Dependency on *stereotyped classes* may affect dependent classes with *effect/config injection*
+
+# Class runtime representation is class handle @source@: may be affected by imported/required stereotyped classes
+## @source@: @name@, @url@, @content@ / @error@, for source loading
+## @source.$*@: @$context@, @$scope@, @$class@, runtime internal variables
+## @source.$scope.$*@: @$imports@, @$setting@, @$private@, runtime framework variables
+
+# Need to load/bootstrap all sources during app loading:
+## load/parse/load until no more pending requests
+## init standalone properties by traversing the dependency tree if no pending requests
+## init cross-reference properties, notify resource event
+## init/notify context event
+# Need to process specialty resources: _*Properties*_, _*Messages*_, _*Faces/templates*_, _*Scripts*_, _*Services*_, _*Models*_
+# Need to organize runtime objects into named scopes: _*Contexts*_
+
+
+h1. App Deployment Structure
+
+The app organization when stored in war or file system.
+# Modules. Top level folders in war, representing either libraries or apps.
+# Resources. Files of various kinds in the module folders:
+## Classes. jx files.
+## Non-classes. Non-jx files.
+
+h1. App Runtime Structure
+
+The app organization after runtime bootstrap:
+# Contexts. Top level objects, including the default context. Singletons, store other objects.
+# Objects. Stored in contexts
+
+h2. Variable Naming
+
+table(grid).
+|_.Name |_.Comments |
+| _foo | private scope variable |
+| $foo | non-private scope variable |
+| &#95;FOO_ | private scope constant |
+| $FOO$ | non-private scope constant |
