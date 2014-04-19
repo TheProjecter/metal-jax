@@ -28,8 +28,4 @@ xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns
 		<param-name>contextConfigLocation</param-name>
 		<param-value>classpath*:conf/spring/*.xml</param-value>
 	</context-param>
-	<mime-mapping>
-		<extension>jx</extension>
-		<mime-type>application/javascript</mime-type>
-	</mime-mapping>
 </web-app>

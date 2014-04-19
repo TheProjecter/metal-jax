@@ -38,8 +38,8 @@ h1. App Deployment Structure
 The app organization when stored in war or file system.
 # Modules. Top level folders in war, representing either libraries or apps.
 # Resources. Files of various kinds in the module folders:
-## Classes. jx files.
-## Non-classes. Non-jx files.
+## Classes. js files.
+## Non-classes. Non-js files.
 
 h1. App Runtime Structure
 

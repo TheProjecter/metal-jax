@@ -21,7 +21,7 @@ function test_callback() {
 
 //@public
 function test_loadback() {
-	var source = { base:$("bootURL"), module:$("bootModule"), path:"boot.jx" };
+	var source = { base:$("bootURL"), module:$("bootModule"), path:"boot.js" };
 	System.loadback(source, function(source) {
 		assertEquals(true, source.content.length>0, "test_loadback");
 	});

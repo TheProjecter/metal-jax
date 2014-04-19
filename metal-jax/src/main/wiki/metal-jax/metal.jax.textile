@@ -40,7 +40,7 @@ table(grid).
 | crossDomain | @xd@ | Path segment to identify cross domain requests. |
 | requestTime | @100@ | Initial timeout value for cross domain requests, in mili-seconds |
 | requestTimeout | @3000@ | Max timeout value for cross domain requests, in mili-seconds |
-| classType | @jx@ | File extension for jax source files. |
+| classType | @js@ | File extension for jax source files. |
 | faceType | @html@ | File extension for jax face source files. |
 
 h2. Source Properties

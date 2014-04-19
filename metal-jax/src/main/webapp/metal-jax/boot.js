@@ -13,7 +13,7 @@
 			crossDomain: "xd",
 			requestTime: "100",
 			requestTimeout: "3000",
-			classType: "jx",
+			classType: "js",
 			viewType: "html"
 		};
 		var $source = {

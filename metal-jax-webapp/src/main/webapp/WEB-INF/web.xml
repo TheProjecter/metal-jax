@@ -38,8 +38,4 @@ xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns
 		<url-pattern>/security/*</url-pattern>
 		<url-pattern>/security-*</url-pattern>
 	</filter-mapping>
-	<mime-mapping>
-		<extension>jx</extension>
-		<mime-type>application/javascript</mime-type>
-	</mime-mapping>
 </web-app>
