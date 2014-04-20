@@ -12,7 +12,7 @@
         <dependent-module archiveName="metal-safe.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/metal-safe/metal-safe">
             <dependency-type>uses</dependency-type>
         </dependent-module>
-        <dependent-module archiveName="metal-jax.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/metal-jax/metal-jax">
+        <dependent-module archiveName="modusjs.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/modusjs/modusjs">
             <dependency-type>uses</dependency-type>
         </dependent-module>
         <dependent-module archiveName="metal-demo.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/metal-demo/metal-demo">

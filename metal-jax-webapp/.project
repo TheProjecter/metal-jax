@@ -6,7 +6,7 @@
 		<project>metal-core</project>
 		<project>metal-front</project>
 		<project>metal-safe</project>
-		<project>metal-jax</project>
+		<project>modusjs</project>
 		<project>metal-demo</project>
 	</projects>
 	<buildSpec>

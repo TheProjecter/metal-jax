@@ -28,13 +28,13 @@
 		</dependency>
 		<dependency>
 			<groupId>${project.groupId}</groupId>
-			<artifactId>metal-jax</artifactId>
+			<artifactId>modusjs</artifactId>
 			<type>war</type>
 			<version>${project.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>${project.groupId}</groupId>
-			<artifactId>metal-jax</artifactId>
+			<artifactId>modusjs</artifactId>
 			<version>${project.version}</version>
 			<classifier>tests</classifier>
 		</dependency>
@@ -70,7 +70,7 @@
 					<overlays>
 						<overlay>
 							<groupId>${project.groupId}</groupId>
-							<artifactId>metal-jax</artifactId>
+							<artifactId>modusjs</artifactId>
 						</overlay>
 						<overlay>
 							<groupId>${project.groupId}</groupId>
@@ -78,7 +78,7 @@
 						</overlay>
 						<overlay>
 							<groupId>${project.groupId}</groupId>
-							<artifactId>metal-jax</artifactId>
+							<artifactId>modusjs</artifactId>
 							<type>jar</type>
 							<classifier>tests</classifier>
 						</overlay>
