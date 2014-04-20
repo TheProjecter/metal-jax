@@ -1,6 +1,6 @@
 <link type="text/css" rel="stylesheet" href="../styles/main.css"/>
 
-p(title). Class @metal.jax.core.Context@
+p(title). Class @modus.core.Context@
 
 {toc:style=decimal}
 
@@ -8,7 +8,7 @@ h1. Overview
 
 Context is responsible to load/compile class sources.
 
-See also: "@metal.jax@":metal.jax.html
+See also: "@modus@":modus.html
 
 h1. Summary
 
