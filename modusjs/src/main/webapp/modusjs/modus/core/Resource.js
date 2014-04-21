@@ -1,6 +1,6 @@
 /**
  * @class
- * @imports modus.core.System
+ * @imports System
  * 
  * @setting resource.base
  * @setting resource.module

@@ -1,7 +1,7 @@
 /**
  * @class
- * @imports modus.core.System
- * @imports modus.core.Request
+ * @imports System
+ * @imports Request
  * @imports modus.mapper.XmlMapper
  * @imports modus.mapper.JsonMapper
  * 

@@ -1,6 +1,6 @@
 /**
  * @class
- * @imports modus.core.Context
+ * @imports Context
  * 
  * @copyright Jay Tang 2012. All rights reserved.
  */
