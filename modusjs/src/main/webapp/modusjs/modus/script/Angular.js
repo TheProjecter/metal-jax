@@ -1,7 +1,7 @@
 /**
  * @script
  * @imports modus.core.System
- * @setting resource.url=${angular-js.url}
+ * @setting resource.url=${angular.js.url}
  * @setting resource.object=angular
  * 
  * @copyright Jay Tang 2012. All rights reserved.
