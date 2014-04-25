@@ -1,14 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-	<name>metal-jax-webapp</name>
-	<comment></comment>
-	<projects>
-		<project>modus-core</project>
-		<project>modus-front</project>
-		<project>metal-safe</project>
-		<project>modusjs</project>
-		<project>modus-demo</project>
-	</projects>
+	<name>modus-demo</name>
 	<buildSpec>
 		<buildCommand>
 			<name>org.eclipse.jdt.core.javabuilder</name>

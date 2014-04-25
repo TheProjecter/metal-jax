@@ -18,7 +18,7 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/ma
 		<module>modus-front</module>
 		<module>metal-safe</module>
 		<module>modusjs</module>
-		<module>metal-demo</module>
+		<module>modus-demo</module>
 		<module>metal-jax-webapp</module>
 		<module>metal-jax-appengine</module>
 	</modules>

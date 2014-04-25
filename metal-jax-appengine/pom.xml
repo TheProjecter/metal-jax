@@ -40,7 +40,7 @@
 		</dependency>
 		<dependency>
 			<groupId>${project.groupId}</groupId>
-			<artifactId>metal-demo</artifactId>
+			<artifactId>modus-demo</artifactId>
 			<type>war</type>
 			<version>${project.version}</version>
 		</dependency>
@@ -74,7 +74,7 @@
 						</overlay>
 						<overlay>
 							<groupId>${project.groupId}</groupId>
-							<artifactId>metal-demo</artifactId>
+							<artifactId>modus-demo</artifactId>
 						</overlay>
 						<overlay>
 							<groupId>${project.groupId}</groupId>

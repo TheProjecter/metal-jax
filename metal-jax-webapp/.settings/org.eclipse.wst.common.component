@@ -15,7 +15,7 @@
         <dependent-module archiveName="modusjs.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/modusjs/modusjs">
             <dependency-type>uses</dependency-type>
         </dependent-module>
-        <dependent-module archiveName="metal-demo.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/metal-demo/metal-demo">
+        <dependent-module archiveName="modus-demo.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/modus-demo/modus-demo">
             <dependency-type>uses</dependency-type>
         </dependent-module>
         <property name="context-root" value="/metal-jax"/>
