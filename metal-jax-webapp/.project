@@ -5,7 +5,7 @@
 	<projects>
 		<project>modus-core</project>
 		<project>modus-front</project>
-		<project>metal-safe</project>
+		<project>modus-safe</project>
 		<project>modusjs</project>
 		<project>modus-demo</project>
 	</projects>

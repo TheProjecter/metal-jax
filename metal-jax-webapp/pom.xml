@@ -24,7 +24,7 @@
 		</dependency>
 		<dependency>
 			<groupId>${project.groupId}</groupId>
-			<artifactId>metal-safe</artifactId>
+			<artifactId>modus-safe</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 		<dependency>

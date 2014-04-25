@@ -14,7 +14,7 @@ http://www.springframework.org/schema/security http://www.springframework.org/sc
 	<authentication-manager>
 		<authentication-provider>
 			<user-service>
-				<user name="metal-jax" password="1234" authorities="ROLE_USER"/>
+				<user name="modus" password="1234" authorities="ROLE_USER"/>
 			</user-service>
 		</authentication-provider>
 	</authentication-manager>

@@ -9,7 +9,7 @@
         <dependent-module archiveName="modus-front.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/modus-front/modus-front">
             <dependency-type>uses</dependency-type>
         </dependent-module>
-        <dependent-module archiveName="metal-safe.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/metal-safe/metal-safe">
+        <dependent-module archiveName="modus-safe.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/modus-safe/modus-safe">
             <dependency-type>uses</dependency-type>
         </dependent-module>
         <dependent-module archiveName="modusjs.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/modusjs/modusjs">
