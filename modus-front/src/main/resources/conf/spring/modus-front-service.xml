@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+
+	<bean id="modus.front.common.DisplayMessageMapper" class="modus.front.common.DisplayMessageMapper"/>
+	
+	<bean id="modus.front.crossdomain.CrossDomainRequestHandler" class="modus.front.crossdomain.CrossDomainRequestHandler">
+		<property name="version" value="modus"/>
+	</bean>
+	
+	<bean id="modus.front.service.ServiceRequestHandler" class="modus.front.service.ServiceRequestHandler">
+		<property name="serviceMap">
+			<map>
+				<entry key="/service"><bean class="modus.front.service.ServiceSetting"/></entry>
+				<entry key="/model">
+					<bean class="modus.front.service.ServiceSetting">
+						<property name="servicePath" value="/modus/model"/>
+						<property name="methodMap">
+							<map>
+								<entry key="GET" value="load"/>
+							</map>
+						</property>
+					</bean>
+				</entry>
+			</map>
+		</property>
+    </bean>
+	
+</beans>

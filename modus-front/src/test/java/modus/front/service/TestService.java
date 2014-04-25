@@ -6,16 +6,15 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package metal.demo.service;
+package modus.front.service;
 
 import modus.core.mop.annotation.Method;
 import modus.core.mop.annotation.Service;
-import metal.demo.model.Hello;
 
-@Service(path="/metal/demo/Echo")
-public interface EchoService {
-	
-	@Method(params={"model"})
-	Hello hello(Hello model);
+@Service(path="/modus/front/Test")
+public interface TestService {
+
+	@Method(params={"message","from"})
+	String hello(Long message, String from);
 	
 }

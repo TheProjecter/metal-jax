@@ -6,16 +6,16 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package metal.demo.service;
+package modus.front.common;
 
-import modus.core.mop.annotation.Method;
-import modus.core.mop.annotation.Service;
-import metal.demo.model.Hello;
-
-@Service(path="/metal/demo/Echo")
-public interface EchoService {
+public enum HttpHeaderField {
+	CacheControl("Cache-Control", "public,max-age=300");
 	
-	@Method(params={"model"})
-	Hello hello(Hello model);
+	public final String name;
+	public final String value;
+	private HttpHeaderField(String name, String value) {
+		this.name = name; 
+		this.value = value;
+	}
 	
 }
