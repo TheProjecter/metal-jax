@@ -1,13 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-	<name>metal-jax-appengine</name>
-	<comment></comment>
-	<projects>
-		<project>modus-core</project>
-		<project>metal-front</project>
-		<project>modusjs</project>
-		<project>metal-demo</project>
-	</projects>
+	<name>modus-core</name>
 	<buildSpec>
 		<buildCommand>
 			<name>org.eclipse.jdt.core.javabuilder</name>
@@ -20,24 +13,21 @@
 			</arguments>
 		</buildCommand>
 		<buildCommand>
-			<name>com.google.gdt.eclipse.core.webAppProjectValidator</name>
+			<name>org.eclipse.wst.common.project.facet.core.builder</name>
 			<arguments>
 			</arguments>
 		</buildCommand>
 		<buildCommand>
-			<name>com.google.appengine.eclipse.core.gaeProjectChangeNotifier</name>
-			<arguments>
-			</arguments>
-		</buildCommand>
-		<buildCommand>
-			<name>com.google.appengine.eclipse.core.projectValidator</name>
+			<name>org.eclipse.wst.validation.validationbuilder</name>
 			<arguments>
 			</arguments>
 		</buildCommand>
 	</buildSpec>
 	<natures>
+		<nature>org.eclipse.jem.workbench.JavaEMFNature</nature>
 		<nature>org.eclipse.jdt.core.javanature</nature>
 		<nature>org.eclipse.m2e.core.maven2Nature</nature>
-		<nature>com.google.appengine.eclipse.core.gaeNature</nature>
+		<nature>org.eclipse.wst.common.project.facet.core.nature</nature>
+		<nature>org.eclipse.wst.common.modulecore.ModuleCoreNature</nature>
 	</natures>
 </projectDescription>

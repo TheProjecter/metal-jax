@@ -3,7 +3,7 @@
     <wb-module deploy-name="metal-jax-webapp">
         <wb-resource deploy-path="/" source-path="/src/main/webapp" tag="defaultRootSource"/>
         <wb-resource deploy-path="/WEB-INF/classes" source-path="/src/main/webapp"/>
-        <dependent-module archiveName="metal-core.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/metal-core/metal-core">
+        <dependent-module archiveName="modus-core.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/modus-core/modus-core">
             <dependency-type>uses</dependency-type>
         </dependent-module>
         <dependent-module archiveName="metal-front.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/metal-front/metal-front">

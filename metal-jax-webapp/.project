@@ -3,7 +3,7 @@
 	<name>metal-jax-webapp</name>
 	<comment></comment>
 	<projects>
-		<project>metal-core</project>
+		<project>modus-core</project>
 		<project>metal-front</project>
 		<project>metal-safe</project>
 		<project>modusjs</project>
