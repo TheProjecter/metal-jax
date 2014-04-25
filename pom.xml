@@ -3,15 +3,15 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	
-	<groupId>metal.jax</groupId>
-	<artifactId>metal-base</artifactId>
+	<groupId>modus</groupId>
+	<artifactId>modus-base</artifactId>
 	<version>1.0.0-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	
-	<name>metal-base</name>
-	<description>metal-jax</description>
+	<name>modus-base</name>
+	<description>modus</description>
 	<inceptionYear>2012</inceptionYear>
-	<url>http://metal-jax.googlecode.com</url>
+	<url>http://modus.googlecode.com</url>
 	
 	<modules>
 		<module>modus-core</module>
@@ -19,8 +19,8 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/ma
 		<module>modus-safe</module>
 		<module>modusjs</module>
 		<module>modus-demo</module>
-		<module>metal-jax-webapp</module>
-		<module>metal-jax-appengine</module>
+		<module>modus-webapp</module>
+		<module>modus-appengine</module>
 	</modules>
 	
 	<properties>

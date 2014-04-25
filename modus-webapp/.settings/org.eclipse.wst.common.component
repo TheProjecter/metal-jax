@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project-modules id="moduleCoreId" project-version="1.5.0">
-    <wb-module deploy-name="metal-jax-webapp">
+    <wb-module deploy-name="modus-webapp">
         <wb-resource deploy-path="/" source-path="/src/main/webapp" tag="defaultRootSource"/>
         <wb-resource deploy-path="/WEB-INF/classes" source-path="/src/main/webapp"/>
         <dependent-module archiveName="modus-core.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/modus-core/modus-core">
@@ -18,7 +18,7 @@
         <dependent-module archiveName="modus-demo.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/modus-demo/modus-demo">
             <dependency-type>uses</dependency-type>
         </dependent-module>
-        <property name="context-root" value="/metal-jax"/>
-        <property name="java-output-path" value="/metal-jax-webapp/target/classes"/>
+        <property name="context-root" value="/modus"/>
+        <property name="java-output-path" value="/modus-webapp/target/classes"/>
     </wb-module>
 </project-modules>

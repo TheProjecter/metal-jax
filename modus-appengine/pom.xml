@@ -6,8 +6,8 @@
 	<packaging>war</packaging>
 
 	<parent>
-		<groupId>metal.jax</groupId>
-		<artifactId>metal-base</artifactId>
+		<groupId>modus</groupId>
+		<artifactId>modus-base</artifactId>
 		<version>1.0.0-SNAPSHOT</version>
 	</parent>
 

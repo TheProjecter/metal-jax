@@ -1,6 +1,6 @@
 <link type="text/css" rel="stylesheet" href="../styles/main.css"/>
 
-p(title). Context @metal.jax@
+p(title). Context @modus.core@
 
 {toc:style=decimal}
 
@@ -17,7 +17,7 @@ The boot context accomplishes the following:
 
 The boot context handles source loading across domain. A few bootstrapping methods are published to class loader scope for reuse.
 
-See also: "@metal.jax.core.Context@":metal.jax.core.Context.html
+See also: "@modus.core.Context@":modus.core.Context.html
 
 h1. Detail
 
@@ -33,10 +33,10 @@ table(grid).
 | baseModule | _Required_ | The folder for baseContext. |
 | baseContext | @base@ | The initial app context. |
 | base | _Default empty_ | The fallback for baseContext. Specified with fragment in the base URL. |
-| bootURL | _Readonly_ | The URL to load metal-jax boot context. |
+| bootURL | _Readonly_ | The URL to load modus boot context. |
 | bootOrigin | _Readonly_ | The boot URL origin. |
-| bootModule | @metal-jax@ | The folder for metal-jax. |
-| bootContext | @boot@ | The initial metal-jax context. |
+| bootModule | @modusjs@ | The folder for modusjs. |
+| bootContext | @boot@ | The initial modusjs context. |
 | crossDomain | @xd@ | Path segment to identify cross domain requests. |
 | requestTime | @100@ | Initial timeout value for cross domain requests, in mili-seconds |
 | requestTimeout | @3000@ | Max timeout value for cross domain requests, in mili-seconds |
@@ -50,7 +50,7 @@ Source properties are source parsing results for class/context creation.
 table(grid).
 |_.Name |_.Value |_.Comments |
 | stereotype | @context@ | Type token for context creation. |
-| name | @metal.jax.core.Context@ | Identifies source as well as class/context. |
+| name | @modus.core.Context@ | Identifies source as well as class/context. |
 | scope | $public, $protected, $static, $imports, $requires, $setting | Private scope variables. |
 | setting | source, stereotype | _More settings_. |
 
@@ -62,7 +62,7 @@ table(grid).
 |_.Name |_.Value |_.Comments |
 | base | ${bootURL} | Base path to load context sources. |
 | module | ${bootModule} | Module folder to load context sources. |
-| includes | ^metal.jax | Regexp for source names. |
+| includes | ^modus | Regexp for source names. |
 
 h2. Source Stereotypes
 
@@ -70,12 +70,12 @@ Source stereotypes define default base class for each type.
 
 table(grid).
 |_.Name |_.Value |_.Comments |
-| class | @metal.jax.BaseObject@ | Class source. |
-| context | @metal.jax.core.Context@ | Context source. |
-| face | @metal.jax.resource.Face@ | Face source. |
-| html | @metal.jax.resource.Face@ | HTML source. |
-| resource | @metal.jax.Resource@ | Resource source. |
-| service | @metal.jax.Service@ | Service source. |
+| class | @modus.core.BaseObject@ | Class source. |
+| context | @modus.core.Context@ | Context source. |
+| face | @modus.resource.Face@ | Face source. |
+| html | @modus.resource.Face@ | HTML source. |
+| resource | @modus.core.Resource@ | Resource source. |
+| service | @modus.core.Service@ | Service source. |
 
 h2. Bootstrapping Methods
 
