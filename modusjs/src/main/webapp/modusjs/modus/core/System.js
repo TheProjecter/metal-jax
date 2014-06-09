@@ -270,11 +270,16 @@ function indexOfFirstChild(node, only) {
 
 //@static
 function parseHTML(text) {
-	var doc = $class.$document.createDocumentFragment();
 	var node = $class.$document.createElement("div");
 	node.innerHTML = text;
-	while (node.firstChild) {
-		doc.appendChild(node.firstChild);
+	return toDocFrag(node);
+}
+
+//@static
+function toDocFrag(source) {
+	var doc = $class.$document.createDocumentFragment();
+	while (source.firstChild) {
+		doc.appendChild(source.firstChild);
 	}
 	return doc;
 }
