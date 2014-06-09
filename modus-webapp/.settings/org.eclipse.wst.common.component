@@ -3,19 +3,19 @@
     <wb-module deploy-name="modus-webapp">
         <wb-resource deploy-path="/" source-path="/src/main/webapp" tag="defaultRootSource"/>
         <wb-resource deploy-path="/WEB-INF/classes" source-path="/src/main/webapp"/>
-        <dependent-module archiveName="modus-core.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/modus-core/modus-core">
+        <dependent-module archiveName="modus-core-1.0.0-SNAPSHOT.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/modus-core/modus-core">
             <dependency-type>uses</dependency-type>
         </dependent-module>
-        <dependent-module archiveName="modus-front.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/modus-front/modus-front">
+        <dependent-module archiveName="modus-front-1.0.0-SNAPSHOT.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/modus-front/modus-front">
             <dependency-type>uses</dependency-type>
         </dependent-module>
-        <dependent-module archiveName="modus-safe.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/modus-safe/modus-safe">
+        <dependent-module archiveName="modus-safe-1.0.0-SNAPSHOT.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/modus-safe/modus-safe">
             <dependency-type>uses</dependency-type>
         </dependent-module>
-        <dependent-module archiveName="modusjs.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/modusjs/modusjs">
+        <dependent-module archiveName="modusjs-1.0.0-SNAPSHOT.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/modusjs/modusjs">
             <dependency-type>uses</dependency-type>
         </dependent-module>
-        <dependent-module archiveName="modus-demo.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/modus-demo/modus-demo">
+        <dependent-module archiveName="modus-demo-1.0.0-SNAPSHOT.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/modus-demo/modus-demo">
             <dependency-type>uses</dependency-type>
         </dependent-module>
         <property name="context-root" value="/modus"/>
