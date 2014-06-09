@@ -616,16 +616,19 @@ $private.flush_loadResource = function flush_loadResource(source) {
 
 	source.resourceState = source.resourceState || {};
 	for (var name in source.scope.$requires) {
-		if (!source.resourceState[name]) {
-			source.resourceState[name] = "pendingInit";
-			source.scope[source.scope.$requires[name]].loadResource(name, source.$context);
-		} else if (source.resourceState[name] == "pendingInit") {
+		if (source.resourceState[name] == "pendingInit") {
 			source.resourceState[name] = "doneInit";
 			var clazz = source.scope[source.scope.$requires[name]];
 			if (source.$context.findResource(name, clazz)) {
 				var handle = getResourceHandle(clazz);
 				handle.scope.$protected.initResource(source.scope, handle.resources[name]);
 			}
+		}
+	}
+	for (var name in source.scope.$requires) {
+		if (!source.resourceState[name]) {
+			source.resourceState[name] = "pendingInit";
+			source.scope[source.scope.$requires[name]].loadResource(name, source.$context);
 		}
 	}
 	if (_pendingCount) return;
