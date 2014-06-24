@@ -40,20 +40,19 @@ function parseResource(source) {
 	case "xml":
 		source.model = System.parseJSONFromXML(source.content.documentElement);
 		break;
-	case "html":
-		source.model = System.parseHTML(source.content);
-		break;
 	case "csv":
 		source.model = System.parseCSV(source.content, source.$class.$("resource.content.delimiter", "\t"));
 		break;
-	case "properties":
-		source.model = System.parseProperties(source.content);
-		break;
 	default:
-		source.model = source.content;
+		this.$static.parseSource(source);
 	}
 	this.$static.parseModel(source, source.model);
 	delete source.content;
+}
+
+//@static
+function parseSource(source) {
+	source.model = source.content;
 }
 
 //@static

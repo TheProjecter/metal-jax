@@ -269,22 +269,6 @@ function indexOfFirstChild(node, only) {
 }
 
 //@static
-function parseHTML(text) {
-	var node = $class.$document.createElement("div");
-	node.innerHTML = text;
-	return toDocFrag(node);
-}
-
-//@static
-function toDocFrag(source) {
-	var doc = $class.$document.createDocumentFragment();
-	while (source.firstChild) {
-		doc.appendChild(source.firstChild);
-	}
-	return doc;
-}
-
-//@static
 function parseXML(text) {
 	if (typeof DOMParser != "undefined") {
 		return checkXML(new DOMParser().parseFromString(text, "text/xml"));
