@@ -46,7 +46,7 @@ function parseResource(source) {
 	default:
 		this.$static.parseSource(source);
 	}
-	this.$static.parseModel(source, source.model);
+	this.$static.parseModel(source);
 	delete source.content;
 }
 

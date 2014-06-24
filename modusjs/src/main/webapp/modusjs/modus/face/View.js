@@ -21,6 +21,7 @@ function initResource(scope, source) {
 
 //@static
 function parseModel(source, node) {
+	node = node || source.model;
 	source.$imports = source.$imports || {};
 	source.$requires = source.$requires || {};
 	for (var i = 0; i < node.childNodes.length; i++) {
