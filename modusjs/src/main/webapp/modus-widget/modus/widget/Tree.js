@@ -4,10 +4,10 @@
  * @copyright Jay Tang 2012. All rights reserved.
  */
 
-//@private
-function initObject(object, node) {
-	var label = node.title || object.nodes.label.innerHTML;
-	object.nodes.label.innerHTML = label;
+//@public
+function afterInit(view) {
+	var label = view.node.title || view.nodes.label.innerHTML;
+	view.nodes.label.innerHTML = label;
 }
 
 //@public
@@ -23,8 +23,8 @@ function bind(view, node) {
 }
 
 //@private
-function toggleTree() {
-	toggleStyle(this.nodes.toggle, "expanded");
-	toggleStyle(this.nodes.label, "expanded");
-	toggleStyle(this.nodes.content, "expanded");
+function toggleTree(view, node, event) {
+	view.toggleStyle(view.nodes.toggle, "open");
+	view.toggleStyle(view.nodes.label, "open");
+	view.toggleStyle(view.nodes.content, "open");
 }
