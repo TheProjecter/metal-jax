@@ -10,25 +10,28 @@ function init(view) {
 }
 
 //@public
+function afterInit(view) {
+	view.toggleStyle(view.node, "frame");
+	view.bindEvent("mouseover", toggleHighlight, view.node);
+	view.bindEvent("mouseout", toggleHighlight, view.node);
+}
+
+//@public
 function bind(view, node) {
 	switch (node.id) {
-	case "frame":
-		view.bindEvent("mouseover", toggleHighlight, node);
-		view.bindEvent("mouseout", toggleHighlight, node);
-		break;
-	case "handle":
-	case "topLeft":
 	case "top":
+	case "topLeft":
 	case "topRight":
-	case "bottomLeft":
 	case "bottom":
+	case "bottomLeft":
 	case "bottomRight":
-	case "leftTop":
 	case "left":
+	case "leftTop":
 	case "leftBottom":
-	case "rightTop":
 	case "right":
+	case "rightTop":
 	case "rightBottom":
+	case "handle":
 		view.bindings[node.id] = view.bindEvent("mousedown", dispatch, node);
 		break;
 	}
@@ -75,8 +78,8 @@ function release(view, node, event) {
 function startMove(view, node, event) {
 	view.setting.x = event.clientX;
 	view.setting.y = event.clientY;
-	view.setting.top = view.nodes.frame.offsetTop;
-	view.setting.left = view.nodes.frame.offsetLeft;
+	view.setting.top = parseInt(view.node.style.top) || view.node.offsetTop;
+	view.setting.left = parseInt(view.node.style.left) || view.node.offsetLeft;
 	
 	capture(view, node, event);
 }
@@ -85,8 +88,8 @@ function startMove(view, node, event) {
 function doMove(view, node, event) {
 	var dx = event.clientX - view.setting.x;
 	var dy = event.clientY - view.setting.y;
-	view.nodes.frame.style.top = "".concat(view.setting.top + dy, "px");
-	view.nodes.frame.style.left = "".concat(view.setting.left + dx, "px");
+	view.node.style.top = "".concat(view.setting.top + dy, "px");
+	view.node.style.left = "".concat(view.setting.left + dx, "px");
 }
 
 /**
@@ -98,10 +101,10 @@ function doMove(view, node, event) {
 function startResize(view, node, event) {
 	view.setting.x = event.clientX;
 	view.setting.y = event.clientY;
-	view.setting.top = view.nodes.frame.offsetTop;
-	view.setting.left = view.nodes.frame.offsetLeft;
-	view.setting.width = view.nodes.frame.offsetWidth;
-	view.setting.height = view.nodes.frame.offsetHeight;
+	view.setting.top = parseInt(view.node.style.top) || view.node.offsetTop;
+	view.setting.left = parseInt(view.node.style.left) || view.node.offsetLeft;
+	view.setting.width = parseInt(view.node.style.width) || view.node.offsetWidth;
+	view.setting.height = parseInt(view.node.style.height) || view.node.offsetHeight;
 	view.setting.topWidth = view.nodes.top.offsetWidth;
 	view.setting.leftHeight = view.nodes.left.offsetHeight;
 	view.setting.handleWidth = view.nodes.handle.offsetWidth;
@@ -161,8 +164,8 @@ function setWidth(view, dx, isLeft) {
 	var handleWidth = view.setting.handleWidth + dx;
 	var contentWidth = view.setting.contentWidth + dx;
 	if (contentWidth <= 0) return;
-	view.nodes.frame.style.width = "".concat(view.setting.width + dx, "px");
-	if (isLeft) view.nodes.frame.style.left = "".concat(view.setting.left - dx, "px");
+	view.node.style.width = "".concat(view.setting.width + dx, "px");
+	if (isLeft) view.node.style.left = "".concat(view.setting.left - dx, "px");
 	view.nodes.handle.style.width = "".concat(handleWidth, "px");
 	view.nodes.content.style.width = "".concat(contentWidth, "px");
 }
@@ -172,7 +175,7 @@ function setHeight(view, dy, isTop) {
 	var leftHeight = view.setting.leftHeight + dy;
 	var contentHeight = view.setting.contentHeight + dy;
 	if (contentHeight <= 0) return;
-	view.nodes.frame.style.height = "".concat(view.setting.height + dy, "px");
-	if (isTop) view.nodes.frame.style.top = "".concat(view.setting.top - dy, "px");
+	view.node.style.height = "".concat(view.setting.height + dy, "px");
+	if (isTop) view.node.style.top = "".concat(view.setting.top - dy, "px");
 	view.nodes.content.style.height = "".concat(contentHeight, "px");
 }
