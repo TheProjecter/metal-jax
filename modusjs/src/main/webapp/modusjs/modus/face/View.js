@@ -85,6 +85,7 @@ function parseViewSetting(node, view) {
 		setting.controller = System.parseSourceName(setting.controller, view);
 		if ("view" in setting) {
 			setting.view = setting.view || setting.controller;
+			setting.controller = setting.controller || setting.view;
 		} else {
 			setting.view = "";
 		}
@@ -137,7 +138,12 @@ function initNode(view, node) {
 		
 		if (setting.view) {
 			var resource = $class.findResource(setting.view, true).cloneNode(true);
-			node.insertBefore(resource, node.childNodes[0]);
+			if (resource) {
+				var part = toDocFrag(node, System.$document.createElement("div"));
+				part.className = "part";
+				node.appendChild(resource);
+				node.appendChild(part);
+			}
 		}
 		view.views = view.views || {};
 		view.views[node.id] = new $class(node, controller, setting);
@@ -162,12 +168,14 @@ function replace(placeholder, part) {
 	part.count--;
 	var partNode = part.count ? part.node.cloneNode(true) : part.node;
 	var parts = toArray(partNode);
-	var frag = toDocFrag(placeholder.node);
-	for (var i = 0; i < parts.length; i++) {
-		var count = parts.length-i-1;
-		var placemark = count ? frag.cloneNode(true) : frag;
-		findPlacemark(placemark).appendChild(parts[i]);
-		placeholder.node.appendChild(placemark);
+	if (parts.length) {
+		var frag = toDocFrag(placeholder.node);
+		for (var i = 0; i < parts.length; i++) {
+			var count = parts.length-i-1;
+			var placemark = count ? frag.cloneNode(true) : frag;
+			findPlacemark(placemark).appendChild(parts[i]);
+			placeholder.node.appendChild(placemark);
+		}
 	}
 }
 
@@ -186,10 +194,14 @@ function findNodeByStyles(node, styles) {
 }
 
 //@static
-function toDocFrag(source) {
-	var doc = System.$document.createDocumentFragment();
+function toDocFrag(source, doc) {
+	var doc = doc || System.$document.createDocumentFragment();
 	while (source.firstChild) {
-		doc.appendChild(source.firstChild);
+		if (source.firstChild.nodeType === 1) {
+			doc.appendChild(source.firstChild);
+		} else {
+			source.removeChild(source.firstChild);
+		}
 	}
 	return doc;
 }
