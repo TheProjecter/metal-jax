@@ -27,3 +27,8 @@ function refresh(view, content) {
 		}
 	}
 }
+
+//@public
+function initPart(view, placeholder, part) {
+	//empty
+}

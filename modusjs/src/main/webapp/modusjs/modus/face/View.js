@@ -103,8 +103,8 @@ function initObject(view, node, controller, setting) {
 	view.placeholders = [];
 	controller.init(view);
 	initModel(view, node);
-	afterInit(view);
 	controller.afterInit(view);
+	afterInit(view);
 }
 
 //@private
@@ -158,13 +158,13 @@ function afterInit(view) {
 		var part = view.parts[placeholder.part];
 		if (part && part.node) {
 			if (part.node.parentNode) part.node.parentNode.removeChild(part.node);
-			replace(placeholder, part);
+			replace(view, placeholder, part);
 		}
 	}
 }
 
 //@private
-function replace(placeholder, part) {
+function replace(view, placeholder, part) {
 	part.count--;
 	var partNode = part.count ? part.node.cloneNode(true) : part.node;
 	var parts = toArray(partNode);
@@ -173,8 +173,9 @@ function replace(placeholder, part) {
 		for (var i = 0; i < parts.length; i++) {
 			var count = parts.length-i-1;
 			var placemark = count ? frag.cloneNode(true) : frag;
-			findPlacemark(placemark).appendChild(parts[i]);
+			clearHTML(findPlacemark(placemark)).appendChild(parts[i]);
 			placeholder.node.appendChild(placemark);
+			view.controller.initPart(view, placeholder, parts[i]);
 		}
 	}
 }
@@ -301,6 +302,7 @@ function indexOfChild(node, child) {
 
 //@public
 function getChildByIndex(node, index) {
+	index = index || 0;
 	for (var i = 0, c = 0; i < node.childNodes.length; i++) {
 		var childNode = node.childNodes[i];
 		if (childNode.nodeType == 1) {
