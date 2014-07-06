@@ -13,11 +13,11 @@ var _partStyles_ = [ "tabLabel", "tabContent" ];
 //@public
 function init(view) {
 	view.setting.style = view.filterSetting(view.setting, _panelStyles_, true);
-	view.toggleStyle(view.node, view.setting.style, "tabPanel");
 }
 
 //@public
 function afterInit(view) {
+	view.toggleStyle(view.node, view.setting.style, "tabPanel");
 	view.tabLabel = view.nodes.tabHead.removeChild(view.getChildByIndex(view.nodes.tabHead));
 	view.clear("tabHead");
 	if (view.setting.style == "tabBottom") {
@@ -27,13 +27,12 @@ function afterInit(view) {
 
 //@public
 function bind(view, node) {
-	var style;
 	switch (node.id) {
 	case "tabHead":
 	case "tabBody":
-		style = view.filterStyle(node, _panelStyles_, true);
+		var style = view.filterStyle(node, _panelStyles_, true);
 		view.toggleStyle(node, style, view.setting.style);
-		return;
+		break;
 	}
 }
 
