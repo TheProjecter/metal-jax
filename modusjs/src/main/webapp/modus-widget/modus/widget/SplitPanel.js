@@ -9,9 +9,13 @@ var _panelStyles_ = [ "splitX", "splitY" ];
 
 //@public
 function init(view) {
-	view.setting.style = view.filterSetting(view.setting, _panelStyles_, true);
-	view.toggleStyle(view.node, view.setting.style, "splitPanel");
 	view.bindings = {};
+	view.setting.style = view.filterSetting(view.setting, _panelStyles_, true);
+}
+
+//@public
+function afterInit(view) {
+	view.toggleStyle(view.node, view.setting.style, "splitPanel");
 }
 
 //@public
@@ -67,10 +71,10 @@ function release(view, node, event) {
 function startResize(view, node, event) {
 	view.setting.x = event.clientX;
 	view.setting.y = event.clientY;
-	view.setting.panel1Width = view.nodes.panel1.offsetWidth;
-	view.setting.panel1Height = view.nodes.panel1.offsetHeight;
-	view.setting.panel2Width = view.nodes.panel2.offsetWidth;
-	view.setting.panel2Height = view.nodes.panel2.offsetHeight;
+	view.setting.panel1Width = parseInt(view.nodes.panel1.style.width) || view.nodes.panel1.offsetWidth;
+	view.setting.panel1Height = parseInt(view.nodes.panel1.style.height) || view.nodes.panel1.offsetHeight;
+	view.setting.panel2Width = parseInt(view.nodes.panel2.style.width) || view.nodes.panel2.offsetWidth;
+	view.setting.panel2Height = parseInt(view.nodes.panel2.style.height) || view.nodes.panel2.offsetHeight;
 	
 	capture(view, node, event);
 }

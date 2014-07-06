@@ -1,7 +1,7 @@
 .splitX, .splitY { overflow:auto; }
 .splitX { float:left; width:49%; height:100%; white-space:nowrap; }
 .splitY { float:none; width:100%; height:49%; }
-.splitPanel { height:100%; }
+.splitPanel { }
 
 #handle.splitX, #handle.splitY { overflow:hidden; background:lightgray; }
 #handle.splitX { width:2px; cursor:col-resize; }
