@@ -109,11 +109,6 @@ function startResize(view, node, event) {
 	view.setting.leftHeight = view.nodes.left.offsetHeight;
 	view.setting.handleWidth = view.nodes.handle.offsetWidth;
 	view.setting.handleHeight = view.nodes.handle.offsetHeight;
-	view.setting.contentWidth = view.nodes.content.offsetWidth;
-	view.setting.contentHeight = view.nodes.content.offsetHeight;
-	if (view.setting.contentHeight == view.setting.height) {
-		view.setting.contentHeight -= view.setting.handleHeight;
-	}
 	
 	capture(view, node, event);
 }
@@ -162,19 +157,17 @@ function doResize(view, node, event) {
 function setWidth(view, dx, isLeft) {
 	var topWidth = view.setting.topWidth + dx;
 	var handleWidth = view.setting.handleWidth + dx;
-	var contentWidth = view.setting.contentWidth + dx;
-	if (contentWidth <= 0) return;
+	if (handleWidth <= 10) return;
 	view.node.style.width = "".concat(view.setting.width + dx, "px");
 	if (isLeft) view.node.style.left = "".concat(view.setting.left - dx, "px");
 	view.nodes.handle.style.width = "".concat(handleWidth, "px");
-	view.nodes.content.style.width = "".concat(contentWidth, "px");
 }
 
 //@private
 function setHeight(view, dy, isTop) {
 	var leftHeight = view.setting.leftHeight + dy;
-	var contentHeight = view.setting.contentHeight + dy;
-	if (contentHeight <= 0) return;
+	if (leftHeight <= 20) return;
+	var contentHeight = view.setting.height + dy - view.setting.handleHeight - 5;
 	view.node.style.height = "".concat(view.setting.height + dy, "px");
 	if (isTop) view.node.style.top = "".concat(view.setting.top - dy, "px");
 	view.nodes.content.style.height = "".concat(contentHeight, "px");

@@ -12,7 +12,7 @@
 #rightBottom.frame_ { width:2px; height:10px; right:0px; bottom:0px; cursor:se-resize; }
 
 #handle.frame_ { width:100%; height:10px; cursor:move; position:static; }
-#content.frame_ { background:transparent; height:100%; padding:2px; overflow:auto; white-space:nowrap; position:static; }
+#content.frame_ { background:transparent; padding:2px; overflow:auto; white-space:nowrap; position:static; }
 .frame { position:absolute; overflow:hidden; }
 .frame_ { background:lightgray; position:absolute; overflow:hidden; }
 .frame.highlight .frame_ { background: darkgray; }
