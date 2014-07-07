@@ -1,32 +1,28 @@
-<div id="frame:Frame:">
-	<div id="content:SplitPanel:">
-		<div id="panel1">
-			<div id="test:Tree:" title="title 1">
-				<div id="content:Tree:" title="title 2">
-					<div id="content:Tree:" title="title 3">
-						<div id="content:Tree:" title="title 4"></div>
-					</div>
-				</div>
+<div id="test" class="view:Frame controller">
+	<div class="view:SplitPanel controller">
+		<div class="part:panel1">
+			<div class="view:Tree controller" title="title 1">
+				<div class="view:Tree" title="title 1"></div>
+				<div class="view:Tree" title="title 2"></div>
+				<div class="view:Tree" title="title 3"></div>
 			</div>
-			<div id="test:Tree:" title="title 1">
-				<div id="content:Tree:" title="title 2">
-					<div id="content:Tree:" title="title 3">
-						<div id="content:Tree:" title="title 4"></div>
-					</div>
-				</div>
+			<div class="view:Tree controller" title="title 2">
+				<div class="view:Tree" title="title 1"></div>
+				<div class="view:Tree" title="title 2"></div>
+				<div class="view:Tree" title="title 3"></div>
 			</div>
 		</div>
-		<div id="panel2:SplitPanel:" class="splitY">
-			<div id="panel1">
-				<div id="tab1:TabPanel:" title="Hello World" class="select:tab1">
-					<div id="tab1" title="Hello World">
-						Tab 1 - Hello World
+		<div class="part:panel2">
+			<div class="view:SplitPanel controller splitY">
+				<div class="part:panel1">
+					<div id="tab1" title="Hello World" class="view:TabPanel controller">
+						<div id="tab1" title="Hello World" class="selected">Tab 1 - Hello World</div>
+						<div id="tab2" title="Foo Bar">Tab 2 - Foo Bar</div>
+						<div id="tab3">Tab 3</div>
 					</div>
-					<div id="tab2" title="Foo Bar">Tab 2 - Foo Bar</div>
-					<div id="tab3">Tab 3</div>
 				</div>
+				<div class="part:panel2"><span>panel1 - panel2 - hello bar</span></div>
 			</div>
-			<div id="panel2">panel1 - panel2 - hello bar</div>
 		</div>
 	</div>
 </div>

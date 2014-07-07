@@ -1,25 +1,17 @@
-<div id="test" class="view:Frame controller">
-	<div id="content" class="view:TabPanel controller select:tab2">
-		<div id="tab1" title="Hello World" class="view:TabPanel controller select:tab1">
-			<div id="tab1" title="Hello World">
-				Tab 1 - Hello World
-			</div>
-			<div id="tab2" title="Foo Bar">Tab 2 - Foo Bar</div>
-			<div id="tab3">Tab 3</div>
-		</div>
-		<div id="tab2" title="Foo Bar" class="view:TabPanel controller select:tab2">
-			<div id="tab1" title="Hello World">
-				Tab 1 - Hello Hello Hello
-			</div>
-			<div id="tab2" title="Foo Bar">Tab 2 - Foo Bar</div>
-			<div id="tab3">Tab 3</div>
-		</div>
-		<div id="tab3" title="tab3" class="view:TabPanel controller select:tab3">
-			<div id="tab1" title="Hello World">
-				Tab 1 - World World World
-			</div>
-			<div id="tab2" title="Foo Bar">Tab 2 - Foo Bar</div>
-			<div id="tab3">Tab 3</div>
-		</div>
+<div class="view:TabPanel controller">
+	<div id="tab1" title="Hello World" class="view:TabPanel controller">
+		<div id="tab1" title="Hello World" class="selected">Tab 1 - Hello World</div>
+		<div id="tab2" title="Foo Bar">Tab 2 - Foo Bar</div>
+		<div id="tab3">Tab 3</div>
+	</div>
+	<div id="tab2" title="Foo Bar" class="view:TabPanel controller selected">
+		<div id="tab1" title="Hello World">Tab 1 - Hello Hello Hello</div>
+		<div id="tab2" title="Foo Bar" class="selected">Tab 2 - Foo Bar</div>
+		<div id="tab3">Tab 3</div>
+	</div>
+	<div id="tab3" class="view:TabPanel controller">
+		<div id="tab1" title="Hello World">Tab 1 - World World World</div>
+		<div id="tab2" title="Foo Bar">Tab 2 - Foo Bar</div>
+		<div id="tab3" class="selected">Tab 3</div>
 	</div>
 </div>
