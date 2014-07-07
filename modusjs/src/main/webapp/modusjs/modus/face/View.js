@@ -157,9 +157,12 @@ function afterInit(view) {
 		var placeholder = view.placeholders[i];
 		var part = view.parts[placeholder.part];
 		if (part && part.node) {
-			if (part.node.parentNode) part.node.parentNode.removeChild(part.node);
 			replace(view, placeholder, part);
 		}
+	}
+	for (var id in view.parts) {
+		var part = view.parts[id];
+		part.node.parentNode.removeChild(part.node);
 	}
 }
 
