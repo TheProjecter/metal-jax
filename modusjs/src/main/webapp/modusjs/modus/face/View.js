@@ -105,6 +105,10 @@ function initObject(view, node, controller, setting) {
 	initModel(view, node);
 	controller.afterInit(view);
 	afterInit(view);
+	var style = System.parseBaseName(view.setting.view);
+	if (style) {
+		view.toggleStyle(view.node, style);
+	}
 }
 
 //@private
@@ -162,7 +166,9 @@ function afterInit(view) {
 	}
 	for (var id in view.parts) {
 		var part = view.parts[id];
-		part.node.parentNode.removeChild(part.node);
+		if (part.node) {
+			part.node.parentNode.removeChild(part.node);
+		}
 	}
 }
 

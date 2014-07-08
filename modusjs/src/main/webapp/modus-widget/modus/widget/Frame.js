@@ -11,7 +11,6 @@ function init(view) {
 
 //@public
 function afterInit(view) {
-	view.toggleStyle(view.node, "frame");
 	view.bindEvent("mouseover", toggleHighlight, view.node);
 	view.bindEvent("mouseout", toggleHighlight, view.node);
 }

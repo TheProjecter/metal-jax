@@ -1,18 +1,19 @@
-#top.frame_ { width:100%; height:2px; left:0px; top:0px; cursor:n-resize; }
-#topLeft.frame_ { width:10px; height:2px; left:0px; top:0px; cursor:nw-resize; }
-#topRight.frame_ { width:10px; height:2px; right:0px; top:0px; cursor:ne-resize; }
-#bottom.frame_ { width:100%; height:2px; left:0px; bottom:0px; cursor:s-resize; }
-#bottomLeft.frame_ { width:10px; height:2px; left:0px; bottom:0px; cursor:sw-resize; }
-#bottomRight.frame_ { width:10px; height:2px; right:0px; bottom:0px; cursor:se-resize; }
-#left.frame_ { width:2px; height:100%; left:0px; top:0px; cursor:w-resize; }
-#leftTop.frame_ { width:2px; height:10px; left:0px; top:0px; cursor:nw-resize; }
-#leftBottom.frame_ { width:2px; height:10px; left:0px; bottom:0px; cursor:sw-resize; }
-#right.frame_ { width:2px; height:100%; right:0px; top:0px; cursor:e-resize; }
-#rightTop.frame_ { width:2px; height:10px; right:0px; top:0px; cursor:ne-resize; }
-#rightBottom.frame_ { width:2px; height:10px; right:0px; bottom:0px; cursor:se-resize; }
+#top.Frame_ { width:100%; height:2px; left:0px; top:0px; cursor:n-resize; }
+#topLeft.Frame_ { width:10px; height:2px; left:0px; top:0px; cursor:nw-resize; }
+#topRight.Frame_ { width:10px; height:2px; right:0px; top:0px; cursor:ne-resize; }
+#bottom.Frame_ { width:100%; height:2px; left:0px; bottom:0px; cursor:s-resize; }
+#bottomLeft.Frame_ { width:10px; height:2px; left:0px; bottom:0px; cursor:sw-resize; }
+#bottomRight.Frame_ { width:10px; height:2px; right:0px; bottom:0px; cursor:se-resize; }
+#left.Frame_ { width:2px; height:100%; left:0px; top:0px; cursor:w-resize; }
+#leftTop.Frame_ { width:2px; height:10px; left:0px; top:0px; cursor:nw-resize; }
+#leftBottom.Frame_ { width:2px; height:10px; left:0px; bottom:0px; cursor:sw-resize; }
+#right.Frame_ { width:2px; height:100%; right:0px; top:0px; cursor:e-resize; }
+#rightTop.Frame_ { width:2px; height:10px; right:0px; top:0px; cursor:ne-resize; }
+#rightBottom.Frame_ { width:2px; height:10px; right:0px; bottom:0px; cursor:se-resize; }
 
-#handle.frame_ { width:100%; height:10px; cursor:move; position:static; }
-#content.frame_ { background:transparent; padding:2px; overflow:auto; white-space:nowrap; position:static; }
-.frame { position:absolute; overflow:hidden; }
-.frame_ { background:lightgray; position:absolute; overflow:hidden; }
-.frame.highlight .frame_ { background: darkgray; }
+#handle.Frame_ { width:100%; height:10px; cursor:move; position:static; }
+#content.Frame_ { background:transparent; padding:2px; overflow:auto; white-space:nowrap; position:static; }
+
+.Frame, .Frame_ { position:absolute; overflow:hidden; }
+.Frame_ { background:lightgray; }
+.Frame.highlight .Frame_ { background: darkgray; }
