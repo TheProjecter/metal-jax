@@ -14,6 +14,6 @@
 #handle.frame { width:100%; height:10px; cursor:move; position:static; }
 #content.frame { background:transparent; padding:2px; overflow:auto; white-space:nowrap; position:static; }
 
-.Frame, .frame { position:absolute; overflow:hidden; }
 .frame { background:lightgray; }
+.Frame, .frame { position:absolute; overflow:hidden; }
 .Frame.highlight .frame { background: darkgray; }
