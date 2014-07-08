@@ -5,7 +5,7 @@
  */
 
 //@private
-var _panelStyles_ = [ "splitX", "splitY" ];
+var _panelStyles_ = [ "x", "y" ];
 
 //@public
 function init(view) {
@@ -15,7 +15,6 @@ function init(view) {
 
 //@public
 function afterInit(view) {
-	view.toggleStyle(view.node, view.setting.style, "splitPanel");
 }
 
 //@public
@@ -28,8 +27,7 @@ function bind(view, node) {
 		// fall through
 	case "panel1":
 	case "panel2":
-		var style = view.filterStyle(node, _panelStyles_, true);
-		view.toggleStyle(node, style, view.setting.style);
+		view.toggleStyle(node, view.setting.style);
 		break;
 	}
 }
@@ -85,10 +83,10 @@ function doResize(view, node, event) {
 	var dy = event.clientY - view.setting.y;
 	
 	switch (view.setting.style) {
-	case "splitY":
+	case "y":
 		setHeight(view, dy);
 		break;
-	case "splitX":
+	case "x":
 	default:
 		setWidth(view, dx);
 		break;
