@@ -1,9 +1,9 @@
-#toggle.tree_ { width:16px; height:16px; display:inline-block; background: url(../../../images/plus.gif) no-repeat 1px 1px; }
-#toggle.tree_.open { background-image: url(../../../images/minus.gif); }
+#toggle.tree { width:16px; height:16px; display:inline-block; background: url(../../../images/plus.gif) no-repeat 1px 1px; }
+#toggle.tree.open { background-image: url(../../../images/minus.gif); }
 
-#label.tree_ { padding-left:20px; background: no-repeat 0px 1px; }
-#label.tree_.folder { background-image: url(../../../images/folder.png); }
-#label.tree_.folder.open { background-image: url(../../../images/folder_open.png); }
+#label.tree { padding-left:20px; background: no-repeat 0px 1px; }
+#label.tree.folder { background-image: url(../../../images/folder.png); }
+#label.tree.folder.open { background-image: url(../../../images/folder_open.png); }
 
-#content.tree_ { padding-left:19px; display:none; }
-#content.tree_.open { display:block; }
+#content.tree { padding-left:19px; display:none; }
+#content.tree.open { display:block; }
