@@ -10,11 +10,7 @@ var _panelStyles_ = [ "x", "y" ];
 //@public
 function init(view) {
 	view.bindings = {};
-	view.setting.style = view.filterSetting(view.setting, _panelStyles_, true);
-}
-
-//@public
-function afterInit(view) {
+	view.setting.style = view.filterStyle(view.node, _panelStyles_, true);
 }
 
 //@public
@@ -73,6 +69,7 @@ function startResize(view, node, event) {
 	view.setting.panel1Height = parseInt(view.nodes.panel1.style.height) || view.nodes.panel1.offsetHeight;
 	view.setting.panel2Width = parseInt(view.nodes.panel2.style.width) || view.nodes.panel2.offsetWidth;
 	view.setting.panel2Height = parseInt(view.nodes.panel2.style.height) || view.nodes.panel2.offsetHeight;
+	view.setting.style = view.filterStyle(view.nodes.handle, _panelStyles_, true);
 	
 	capture(view, node, event);
 }

@@ -1,15 +1,15 @@
-#handle.SplitPanel_,
-#handle.SplitPanel_.x { width:2px; height:100%; cursor:col-resize; }
-#handle.SplitPanel_.y { width:100%; height:2px; cursor:row-resize; }
-#handle.SplitPanel_.highlight { background: darkgray; }
-#handle.SplitPanel_ { overflow:hidden; background:lightgray; }
+#handle.splitPanel,
+#handle.splitPanel.x { width:2px; height:100%; cursor:col-resize; }
+#handle.splitPanel.y { width:100%; height:2px; cursor:row-resize; }
+#handle.splitPanel.highlight { background: darkgray; }
+#handle.splitPanel { overflow:hidden; background:lightgray; }
 
-.SplitPanel_,
-.SplitPanel_.x { float:left; width:49%; height:100%; }
-.SplitPanel_.y { float:none; width:100%; height:49%; }
-.SplitPanel_.x { white-space:nowrap; }
-.SplitPanel_ { overflow:auto; }
+.splitPanel,
+.splitPanel.x { float:left; width:49%; height:100%; }
+.splitPanel.y { float:none; width:100%; height:49%; }
+.splitPanel.x { white-space:nowrap; }
+.splitPanel { overflow:auto; }
 
-.SplitPanel { height:100%; }
+.SplitPanel { height:100%; margin:0px; }
 
 html, body { height:100%; }
