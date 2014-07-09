@@ -1,16 +1,14 @@
-.tabPanel { padding:10px; overflow:hidden; }
-#tabHead.tabTop,
-#tabHead.tabBottom { height:auto; }
-#tabBody.tabTop,
-#tabBody.tabBottom { padding:10px; border:1px solid; }
+#head.tabPanel { position:relative; }
+#body.tabPanel { position:relative; padding:10px; border:4px solid lightgray; }
 
-.tabLabel { border:1px dotted; margin:0px 0px 0px 4px; cursor:default; }
-.tabLabel.selected { border:1px solid; }
-.tabLabel.highlight { background:lightgray; }
-.tabTop .tabLabel { border-bottom:1px none; padding:4px 4px 0px; vertical-align:text-top; }
-.tabTop .tabLabel.selected { border-bottom:3px solid white; }
-.tabBottom .tabLabel { border-top:1px none; padding:0px 4px 4px; vertical-align:bottom; }
-.tabBottom .tabLabel.selected { border-top:3px solid white; }
+.tabPanel.tab { display:none; }
+.tabPanel.tab.selected { display:block; }
 
-.tabContent { width:100%; display:none; }
-.tabContent.selected { display:block; }
+.tabPanel.label { border:2px solid lightgray; margin:4px; padding:0px 4px; cursor:default; display:inline; }
+.tabPanel.label.selected,
+.tabPanel.label.highlight { background:lightgray; }
+
+#head.tabPanel.bottom { top:44px; }
+#body.tabPanel.bottom { bottom:20px; }
+
+.TabPanel { padding:10px; overflow:hidden; }

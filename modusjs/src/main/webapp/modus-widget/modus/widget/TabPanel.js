@@ -5,31 +5,24 @@
  */
 
 //@private
-var _panelStyles_ = [ "tabTop", "tabBottom" ];
-
-//@private
-var _partStyles_ = [ "tabLabel", "tabContent" ];
+var _panelStyles_ = [ "top", "bottom" ];
 
 //@public
 function init(view) {
-	view.setting.style = view.filterSetting(view.setting, _panelStyles_, true);
+	view.setting.style = view.filterStyle(view.node, _panelStyles_, true);
 }
 
 //@public
 function afterInit(view) {
-	view.toggleStyle(view.node, view.setting.style, "tabPanel");
-	view.tabLabel = view.nodes.tabHead.removeChild(view.getChildByIndex(view.nodes.tabHead));
-	view.clear("tabHead");
-	if (view.setting.style == "tabBottom") {
-		view.nodes.tabHead.parentNode.insertBefore(view.nodes.tabBody, view.nodes.tabHead);
-	}
+	view.tabLabel = view.nodes.head.removeChild(view.getChildByIndex(view.nodes.head));
+	view.clear("head");
 }
 
 //@public
 function bind(view, node) {
 	switch (node.id) {
-	case "tabHead":
-	case "tabBody":
+	case "head":
+	case "body":
 		var style = view.filterStyle(node, _panelStyles_, true);
 		view.toggleStyle(node, style, view.setting.style);
 		break;
@@ -44,7 +37,7 @@ function initPart(view, placeholder, part) {
 	tabLabel.id = part.id;
 	tabLabel.title = part.title || part.id;
 	tabLabel.innerHTML = part.title || part.id;
-	view.nodes.tabHead.appendChild(tabLabel);
+	view.nodes.head.appendChild(tabLabel);
 	initTabLabel(view, tabLabel);
 	if (selected) {
 		toggleTabSelection(view, tabLabel);
@@ -79,6 +72,6 @@ function toggleTabSelection(view, tabLabel) {
 
 //@private
 function getTabContent(view, tabLabel) {
-	var index = view.indexOfChild(view.nodes.tabHead, tabLabel);
-	return view.getChildByIndex(view.nodes.tabBody, index);
+	var index = view.indexOfChild(view.nodes.head, tabLabel);
+	return view.getChildByIndex(view.nodes.body, index);
 }
