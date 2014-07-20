@@ -11,6 +11,11 @@ function initClass(scope) {
 	$class.extendsClass = $static.extendsClass = Context.extendsClass;
 }
 
+//@private
+function initObject(object) {
+	object.$ = {};
+}
+
 //@public
 function get(name) {
 	return valueOf.call(this, name);
@@ -23,7 +28,6 @@ function set(name, value) {
 
 //@private
 function valueOf() {
-	this.$ = this.$ || {};
 	switch (arguments.length) {
 	case 0: return this.$;
 	case 1: return this.$[arguments[0]];
