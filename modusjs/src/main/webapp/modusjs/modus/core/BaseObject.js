@@ -34,3 +34,25 @@ function valueOf() {
 	case 2: return this.$[arguments[0]] = arguments[1];
 	}
 }
+
+//@protected
+function forEach(/*items, callback*/) {
+	var items = arguments[0];
+	var callback = arguments[1];
+	if (typeof items.length == "number") {
+		for (var i = 0; i < items.length; i++) {
+			iterate(i, items[i], arguments, callback, this);
+		}
+	} else {
+		for (var i in items) {
+			iterate(i, items[i], arguments, callback, this);
+		}
+	}
+}
+
+//@private
+function iterate(key, value, args, callback, context) {
+	args[0] = key;
+	args[1] = value;
+	callback.apply(context, args);
+}
