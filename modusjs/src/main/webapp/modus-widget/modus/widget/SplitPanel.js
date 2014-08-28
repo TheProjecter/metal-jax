@@ -8,8 +8,7 @@
 var _panelStyles_ = [ "x", "y" ];
 
 //@public
-function init(view) {
-	view.bindings = {};
+function initView(view) {
 	view.setting.style = view.filterStyle(view.node, _panelStyles_, true);
 }
 

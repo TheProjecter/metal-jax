@@ -5,30 +5,26 @@
  */
 
 //@public
-function init(view) {
+function initView(view, node) {
 	//empty
 }
 
 //@public
-function afterInit(view) {
+function initModel(view, node) {
+	//empty
+}
+
+//@public
+function initPart(view, placeholder, part) {
+	//empty
+}
+
+//@public
+function initScope(view) {
 	//empty
 }
 
 //@public
 function bind(view, node) {
-	//empty
-}
-
-//@public
-function refresh(view, content) {
-	for (var name in content.nodes) {
-		if (view.nodes[name]) {
-			view.clear(name).appendChild(content.nodes[name]);
-		}
-	}
-}
-
-//@public
-function initPart(view, placeholder, part) {
 	//empty
 }

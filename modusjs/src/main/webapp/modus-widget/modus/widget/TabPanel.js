@@ -8,12 +8,12 @@
 var _panelStyles_ = [ "top", "bottom" ];
 
 //@public
-function init(view) {
+function initView(view) {
 	view.setting.style = view.filterStyle(view.node, _panelStyles_, true);
 }
 
 //@public
-function afterInit(view) {
+function initModel(view) {
 	view.tabLabel = view.nodes.head.removeChild(view.getChildByIndex(view.nodes.head));
 	view.clear("head");
 }

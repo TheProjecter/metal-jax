@@ -5,7 +5,7 @@
  */
 
 //@public
-function afterInit(view) {
+function initModel(view) {
 	var label = view.node.title || view.nodes.label.innerHTML;
 	view.nodes.label.innerHTML = label;
 }

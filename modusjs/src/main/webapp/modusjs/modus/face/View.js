@@ -1,6 +1,7 @@
 /**
  * @resource
  * @imports Controller
+ * @imports Handler
  * @imports modus.core.System
  * 
  * @copyright Jay Tang 2012. All rights reserved.
@@ -8,9 +9,7 @@
 
 //@static
 function parseSource(source) {
-	var node = System.$document.createElement("div");
-	node.innerHTML = source.content;
-	source.model = toDocFrag(node);
+	source.model = Handler.toDocFrag(source.content);
 }
 
 //@protected
@@ -70,7 +69,12 @@ function parseResourceNode(source, node) {
 var _settingRE_ = /([^:]+)(?::|\s*)(.*)/;
 
 //@private
-function parseViewSetting(node, view) {
+var _nodeTypes_ = [
+	"view", "placeholder", "part", "scope"
+];
+
+//@private
+function parseViewSetting(node, base) {
 	var setting = {}, match;
 	var tokens = node.className && node.className.split(" ") || [];
 	for (var i = 0; i < tokens.length; i++) {
@@ -79,16 +83,25 @@ function parseViewSetting(node, view) {
 		}
 	}
 	if ("view" in setting) {
-		setting.view = System.parseSourceName(setting.view, view);
+		setting.view = System.parseSourceName(setting.view, base);
 	}
 	if ("controller" in setting) {
-		setting.controller = System.parseSourceName(setting.controller, view);
+		setting.controller = System.parseSourceName(setting.controller, base);
 		if ("view" in setting) {
 			setting.view = setting.view || setting.controller;
 			setting.controller = setting.controller || setting.view;
 		} else {
 			setting.view = "";
 		}
+	}
+	setting.nodeType = "";
+	for (var i = 0; i < _nodeTypes_.length; i++) {
+		if (_nodeTypes_[i] in setting) {
+			setting.nodeType = _nodeTypes_[i];
+		}
+	}
+	if (!setting.nodeType && node.nodeName.toLowerCase() == "script" && node.type == "text/json") {
+		setting.nodeType = "json";
 	}
 	return setting;
 }
@@ -98,13 +111,119 @@ function initObject(view, node, controller, setting) {
 	view.node = node;
 	view.controller = controller;
 	view.setting = setting || {};
+
+	view.views = {};
 	view.nodes = {};
 	view.parts = {};
-	view.placeholders = [];
-	controller.init(view);
-	initModel(view, node);
-	controller.afterInit(view);
-	afterInit(view);
+	view.placeholders = {};
+	view.scopes = [];
+	view.bindings = [];
+	
+	// resolve view references
+	view.controller.initView(view);
+	forEach(node.childNodes, initView, view, Handler.newScope(view, node, setting));
+	
+	// resolve placeholder references
+	view.controller.initModel(view);
+	initModel(view);
+
+	// resolve scope references
+	view.controller.initScope(view);
+	forEach(view.scopes, initScope, view);
+	for (var id in view.nodes) {
+		view.controller.bind(view, view.nodes[id]);
+	}
+}
+
+//traverse content nodes: element, text
+//@private
+function initView(index, node, view, scope) {
+	if (node.id) view.nodes[node.id] = node;
+	switch (node.nodeType) {
+	case 1:
+		var setting = parseViewSetting(node, view.setting.view);
+		switch (setting.nodeType) {
+		case "view":
+			Handler.newView(view, node, setting);
+			initContent(index, node, scope, setting);
+			break;
+		case "placeholder":
+			Handler.newPlaceholder(view, node, setting);
+			initContent(index, node, scope, setting);
+			forEach(node.childNodes, initView, view, scope);
+			break;
+		case "part":
+			Handler.newPart(view, node, setting);
+			forEach(node.childNodes, initView, view, scope);
+			break;
+		case "scope":
+			setting.scope = Handler.newScope(view, node, setting);
+			initContent(index, node, scope, setting);
+			forEach(node.childNodes, initView, view, setting.scope);
+			break;
+		case "json":
+			Handler.newJson(view, node, setting);
+			break;
+		default:
+			initContent(index, node, scope, setting);
+			forEach(node.childNodes, initView, view, scope);
+			break;
+		}
+		break;
+	case 3:
+		initContent(index, node, scope);
+		break;
+	}
+}
+
+//handle: template, input, event
+//@private
+function initContent(index, node, scope, setting, bean) {
+	bean = bean || scope.beans[0];
+	initTemplate(index, node, scope, bean);
+	if (node.nodeType == 1) {
+		initInput(bean, node);
+		forEach(setting, initBinding, scope, node);
+	}
+}
+
+//handle: element, attr, text
+//@private
+function initTemplate(index, node, scope, bean) {
+	switch (node.nodeType) {
+	case 1: // element node
+		forEach(node.attributes, initTemplate, scope, bean);
+		break;
+	case 2: // attr node
+	case 3: // text node
+		if (_templateRE_.test(node.nodeValue)) {
+			Handler.newTemplate(scope, node, bean);
+		}
+		break;
+	}
+}
+
+//@private
+function initInput(bean, node) {
+	if (_inputs_.indexOf(node.type) >= 0) {
+		Handler.newInput(bean, node);
+	}
+}
+
+//@private
+function initBinding(event, action, scope, node) {
+	if (_events_.indexOf(event) >= 0) {
+		Handler.newBinding(scope, node, event, action);
+	}
+}
+
+//@private
+function initModel(view) {
+	forEach(view.placeholders, initPlaceholder, view);
+	for (var id in view.parts) {
+		var part = view.parts[id];
+		part.node.parentNode.removeChild(part.node);
+	}
 	var style = System.parseBaseName(view.setting.view);
 	if (style) {
 		view.toggleStyle(view.node, style);
@@ -112,81 +231,132 @@ function initObject(view, node, controller, setting) {
 }
 
 //@private
-function initModel(view, node) {
-	for (var i = 0; i < node.childNodes.length; i++) {
-		var childNode = node.childNodes[i];
-		if (childNode.nodeType == 1) {
-			var done = initNode(view, childNode);
-			view.controller.bind(view, childNode);
-			if (!done) {
-				initModel(view, childNode);
+function initPlaceholder(name, placeholder, view) {
+	var part = view.parts[name];
+	if (part) {
+		var parts = toArray(part.node);
+		if (parts.length) {
+			var placemark = findPlacemark(placeholder.node);
+			for (var i = 0; i < parts.length; i++) {
+				placemark.appendChild(parts[i]);
+				view.controller.initPart(view, placeholder, parts[i]);
+				if (placeholder.repeat && i < parts.length-1) {
+					var holderNode = Handler.toDocFrag(placeholder.repeat);
+					if (placemark != placeholder.node) {
+						placemark = findPlacemark(holderNode);
+					}
+					placeholder.node.appendChild(holderNode);
+				}
 			}
 		}
 	}
 }
 
 //@private
-function initNode(view, node) {
-	var setting = parseViewSetting(node, view.setting.view);
-	if (node.id) view.nodes[node.id] = node;
-	if ("part" in setting) {
-		view.parts[setting.part] = view.parts[setting.part] || {count:0};
-		view.parts[setting.part].node = node;
-	} else if ("placeholder" in setting) {
-		view.placeholders.push({part:setting.placeholder, node:node});
-		view.parts[setting.placeholder] = view.parts[setting.placeholder] || {count:0};
-		view.parts[setting.placeholder].count++;
-	} else if ("view" in setting) {
-		var controllerClass = view.getClass().getContext().findClass(setting.controller);
-		var controller = controllerClass ? new controllerClass() : view.controller;
-		
-		if (setting.view) {
-			var resource = $class.findResource(setting.view, true).cloneNode(true);
-			if (resource) {
-				var part = toDocFrag(node, System.$document.createElement("div"));
-				part.className = "part";
-				node.appendChild(resource);
-				node.appendChild(part);
+function initScope(index, scope, view) {
+	var model = scope.name && view.get(scope.name) || view.$;
+	if (!scope.repeat || !(model instanceof Array)) {
+		formatBean(scope.beans[0], model, scope, view);
+		formatBinding(scope.beans[0], scope, view);
+	} else { // scope.repeat && model instanceof Array
+		for (var i = 0; i < model.length; i++) {
+			formatBean(scope.beans[i], model[i], scope, view);
+			formatBinding(scope.beans[i], scope, view);
+			if (i < model.length-1) {
+				// add bean
+				var node = Handler.toDocFrag(scope.repeat);
+				forEach(node.childNodes, initBean, view, scope, Handler.newBean(scope));
+				scope.node.appendChild(node);
 			}
 		}
-		view.views = view.views || {};
-		view.views[node.id] = new $class(node, controller, setting);
-		return true;
 	}
 }
 
-//@private
-function afterInit(view) {
-	for (var i = 0; i < view.placeholders.length; i++) {
-		var placeholder = view.placeholders[i];
-		var part = view.parts[placeholder.part];
-		if (part && part.node) {
-			replace(view, placeholder, part);
-		}
-	}
-	for (var id in view.parts) {
-		var part = view.parts[id];
-		if (part.node) {
-			part.node.parentNode.removeChild(part.node);
+//@static
+function updateScope(view, name, index) {
+	var model = name && view.get(name) || view.$;
+	var scope = view.scopes[2];
+	if (!scope.repeat || !(model instanceof Array)) {
+		formatBean(scope.beans[0], model, scope, view);
+	} else { // scope.repeat && model instanceof Array
+		for (var i = 0; i < model.length; i++) {
+			formatBean(scope.beans[i], model[i], scope, view);
 		}
 	}
 }
 
 //@private
-function replace(view, placeholder, part) {
-	part.count--;
-	var partNode = part.count ? part.node.cloneNode(true) : part.node;
-	var parts = toArray(partNode);
-	if (parts.length) {
-		var frag = toDocFrag(placeholder.node);
-		for (var i = 0; i < parts.length; i++) {
-			var count = parts.length-i-1;
-			var placemark = count ? frag.cloneNode(true) : frag;
-			clearHTML(findPlacemark(placemark)).appendChild(parts[i]);
-			placeholder.node.appendChild(placemark);
-			view.controller.initPart(view, placeholder, parts[i]);
-		}
+function initBean(index, node, view, scope, bean) {
+	switch (node.nodeType) {
+	case 1:
+		var setting = parseViewSetting(node, view.setting.view);
+		initContent(index, node, scope, setting, bean);
+		forEach(node.childNodes, initBean, view, scope, bean);
+		break;
+	case 3:
+		initContent(index, node, scope, null, bean);
+		break;
 	}
+}
+
+//@private
+function formatBean(bean, model, scope, view) {
+	forEach(bean.templates, formatTemplate, model, view);
+	forEach(bean.inputs, formatInput, model, view);
+}
+
+//@private
+function formatBinding(bean, scope, view) {
+	for (var i = 0; i < bean.bindings.length; i++) {
+		bind(view, scope, bean.bindings[i]);
+	}
+	
+}
+
+//@private
+var _inputs_ = [ "text", "checkbox", "password", "radio", "submit", "textarea" ];
+
+//@private
+function formatInput(index, input, model, view) {
+	switch (input.type) {
+	case "checkbox":
+		input.node.checked = model[input.name] == true;
+		break;
+	}
+}
+
+//@private
+function formatTemplate(index, template, model, view) {
+	template.node.nodeValue = format(template.text, model, view);
+}
+
+
+//@private
+function bind(view, scope, binding) {
+	if (binding.event && view.controller[binding.action]) {
+		view.bindEvent(binding.event, view.controller[binding.action], binding.node);
+	}
+}
+
+//@private
+var _templateRE_ = /\$\{([^\s\}:|]+)([:|][^\}]*)?\}/;
+
+//@private
+var _formatRE_ = /\$\{([^\s\}:|]+)([:|][^\}]*)?\}/g;
+
+//@private
+function format(text, bean, view) {
+	return text.replace(_formatRE_, function(match, name, value) {
+		var result = bean[name] || view.get(name);
+		result = (typeof result == "function") ? result() : result;
+		return result ? ensureValue(result, value) : value ? value.substring(1) : match;
+	});
+}
+
+//@private
+function ensureValue(value, fallback) {
+	var solid = fallback && fallback.charAt(0) == "|";
+	return value || (solid && fallback.substring(1)) || value;
 }
 
 //@private
@@ -203,19 +373,6 @@ function findNodeByStyles(node, styles) {
 	}
 }
 
-//@static
-function toDocFrag(source, doc) {
-	var doc = doc || System.$document.createDocumentFragment();
-	while (source.firstChild) {
-		if (source.firstChild.nodeType === 1) {
-			doc.appendChild(source.firstChild);
-		} else {
-			source.removeChild(source.firstChild);
-		}
-	}
-	return doc;
-}
-
 //@private
 function toArray(source) {
 	var result = [];
@@ -225,14 +382,6 @@ function toArray(source) {
 		}
 	}
 	return result;
-}
-
-//@public
-function refresh(content) {
-	if (this.controller && content) {
-		this.controller.refresh(this, content);
-	}
-	return this;
 }
 
 //@private
@@ -359,7 +508,8 @@ function clearHTML(node) {
 var _events_ = [
 	"keydown", "keypress", "keyup",
 	"click", "dblclick",
-	"mousedown", "mouseup", "mousemove", "mouseout", "mouseover"
+	"mousedown", "mouseup", "mousemove", "mouseout", "mouseover",
+	"change"
 ];
 
 //@private

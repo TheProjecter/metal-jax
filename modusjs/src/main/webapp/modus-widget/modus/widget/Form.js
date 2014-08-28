@@ -9,7 +9,7 @@
 var $count = 0;
 
 //@public
-function init(view) {
+function initView(view) {
 	view.inputs = {};
 }
 

@@ -5,12 +5,7 @@
  */
 
 //@public
-function init(view) {
-	view.bindings = {};
-}
-
-//@public
-function afterInit(view) {
+function initView(view) {
 	view.bindEvent("mouseover", toggleHighlight, view.node);
 	view.bindEvent("mouseout", toggleHighlight, view.node);
 }
