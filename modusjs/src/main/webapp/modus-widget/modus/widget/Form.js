@@ -14,7 +14,7 @@ function initView(view) {
 }
 
 //@public
-function bind(view, node) {
+function initNode(view, node) {
 	switch (node.nodeName.toLowerCase()) {
 	case "form":
 		node.name = System.parseBaseName(this.getClass().getName()).concat($count++);

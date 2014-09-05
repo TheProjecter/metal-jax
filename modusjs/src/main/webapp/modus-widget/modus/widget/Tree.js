@@ -11,7 +11,7 @@ function initModel(view) {
 }
 
 //@public
-function bind(view, node) {
+function initNode(view, node) {
 	switch (node.id) {
 	case "toggle":
 		view.bindEvent("click", toggleTree, node);

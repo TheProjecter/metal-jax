@@ -13,7 +13,7 @@ function initView(view) {
 }
 
 //@public
-function bind(view, node) {
+function initNode(view, node) {
 	switch (node.id) {
 	case "handle":
 		view.bindEvent("mouseover", toggleHighlight, node);

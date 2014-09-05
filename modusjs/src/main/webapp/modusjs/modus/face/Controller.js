@@ -5,17 +5,17 @@
  */
 
 //@public
-function initView(view, node) {
+function initView(view) {
 	//empty
 }
 
 //@public
-function initModel(view, node) {
+function initModel(view) {
 	//empty
 }
 
 //@public
-function initPart(view, placeholder, part) {
+function initPlaceholder(view, placeholder, part) {
 	//empty
 }
 
@@ -25,6 +25,6 @@ function initScope(view) {
 }
 
 //@public
-function bind(view, node) {
+function initNode(view, node) {
 	//empty
 }

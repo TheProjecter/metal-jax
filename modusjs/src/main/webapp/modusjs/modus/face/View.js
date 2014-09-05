@@ -1,7 +1,7 @@
 /**
  * @resource
  * @imports Controller
- * @imports Handler
+ * @imports Internal
  * @imports modus.core.System
  * 
  * @copyright Jay Tang 2012. All rights reserved.
@@ -9,7 +9,7 @@
 
 //@static
 function parseSource(source) {
-	source.model = Handler.toDocFrag(source.content);
+	source.model = Internal.toDocFrag(source.content);
 }
 
 //@protected
@@ -39,7 +39,7 @@ function parseNode(source, node) {
 	if (parseResourceNode(source, node)) {
 		return true;
 	}
-	var setting = parseViewSetting(node, source.name);
+	var setting = Internal.parseNodeSetting(node, source.name);
 	if (setting.controller) {
 		source.$imports[setting.controller] = setting.controller;
 	}
@@ -66,62 +66,12 @@ function parseResourceNode(source, node) {
 }
 
 //@private
-var _settingRE_ = /([^:]+)(?::|\s*)(.*)/;
-
-//@private
-var _nodeTypes_ = [
-	"view", "placeholder", "part", "scope"
-];
-
-//@private
-function parseViewSetting(node, base) {
-	var setting = {}, match;
-	var tokens = node.className && node.className.split(" ") || [];
-	for (var i = 0; i < tokens.length; i++) {
-		if (match = _settingRE_.exec(tokens[i])) {
-			setting[match[1]] = match[2];
-		}
-	}
-	if ("view" in setting) {
-		setting.view = System.parseSourceName(setting.view, base);
-	}
-	if ("controller" in setting) {
-		setting.controller = System.parseSourceName(setting.controller, base);
-		if ("view" in setting) {
-			setting.view = setting.view || setting.controller;
-			setting.controller = setting.controller || setting.view;
-		} else {
-			setting.view = "";
-		}
-	}
-	setting.nodeType = "";
-	for (var i = 0; i < _nodeTypes_.length; i++) {
-		if (_nodeTypes_[i] in setting) {
-			setting.nodeType = _nodeTypes_[i];
-		}
-	}
-	if (!setting.nodeType && node.nodeName.toLowerCase() == "script" && node.type == "text/json") {
-		setting.nodeType = "json";
-	}
-	return setting;
-}
-
-//@private
-function initObject(view, node, controller, setting) {
-	view.node = node;
-	view.controller = controller;
-	view.setting = setting || {};
-
-	view.views = {};
-	view.nodes = {};
-	view.parts = {};
-	view.placeholders = {};
-	view.scopes = [];
-	view.bindings = [];
+function initObject(view, node, setting, controller) {
+	Internal.initView(view, node, setting, controller);
 	
 	// resolve view references
 	view.controller.initView(view);
-	forEach(node.childNodes, initView, view, Handler.newScope(view, node, setting));
+	forEach(node.childNodes, initView, view.scope);
 	
 	// resolve placeholder references
 	view.controller.initModel(view);
@@ -129,75 +79,85 @@ function initObject(view, node, controller, setting) {
 
 	// resolve scope references
 	view.controller.initScope(view);
-	forEach(view.scopes, initScope, view);
-	for (var id in view.nodes) {
-		view.controller.bind(view, view.nodes[id]);
-	}
+	forEach(view.scopes, initScope);
+	
+	// custom node init
+	forEach(view.nodes, initNode, view);
+}
+
+//@private
+function initNode(id, node, view) {
+	view.controller.initNode(view, node);
 }
 
 //traverse content nodes: element, text
 //@private
-function initView(index, node, view, scope) {
-	if (node.id) view.nodes[node.id] = node;
+function initView(index, node, scope) {
+	var hasContent = false, setting = null, nextScope = null;
+	if (node.id) scope.view.nodes[node.id] = node;
 	switch (node.nodeType) {
 	case 1:
-		var setting = parseViewSetting(node, view.setting.view);
+		setting = Internal.parseNodeSetting(node, scope.view.setting.view);
 		switch (setting.nodeType) {
 		case "view":
-			Handler.newView(view, node, setting);
-			initContent(index, node, scope, setting);
+			hasContent = true;
+			Internal.newView(scope.view, node, setting);
 			break;
 		case "placeholder":
-			Handler.newPlaceholder(view, node, setting);
-			initContent(index, node, scope, setting);
-			forEach(node.childNodes, initView, view, scope);
+			hasContent = true;
+			nextScope = scope;
+			Internal.newPlaceholder(scope.view, node, setting);
 			break;
 		case "part":
-			Handler.newPart(view, node, setting);
-			forEach(node.childNodes, initView, view, scope);
+			nextScope = scope;
+			Internal.newPart(scope.view, node, setting);
 			break;
 		case "scope":
-			setting.scope = Handler.newScope(view, node, setting);
-			initContent(index, node, scope, setting);
-			forEach(node.childNodes, initView, view, setting.scope);
+			hasContent = true;
+			nextScope = Internal.newScope(scope.view, node, setting);
 			break;
 		case "json":
-			Handler.newJson(view, node, setting);
+			Internal.newJson(scope.view, node, setting);
 			break;
 		default:
-			initContent(index, node, scope, setting);
-			forEach(node.childNodes, initView, view, scope);
+			hasContent = true;
+			nextScope = scope;
 			break;
 		}
 		break;
 	case 3:
-		initContent(index, node, scope);
+		hasContent = true;
 		break;
 	}
-}
-
-//handle: template, input, event
-//@private
-function initContent(index, node, scope, setting, bean) {
-	bean = bean || scope.beans[0];
-	initTemplate(index, node, scope, bean);
-	if (node.nodeType == 1) {
-		initInput(bean, node);
-		forEach(setting, initBinding, scope, node);
+	if (hasContent) {
+		initContent(index, node, scope.bean, setting);
+	}
+	if (nextScope) {
+		forEach(node.childNodes, initView, nextScope);
 	}
 }
 
-//handle: element, attr, text
+//init: template, input, event
 //@private
-function initTemplate(index, node, scope, bean) {
+function initContent(index, node, bean, setting) {
+	initTemplate(index, node, bean);
+	if (node.nodeType == 1) {
+		initInput(bean, node);
+		forEach(setting, initBinding, bean, node);
+	}
+}
+
+//init: element, attr, text
+//@private
+function initTemplate(index, node, bean) {
 	switch (node.nodeType) {
 	case 1: // element node
-		forEach(node.attributes, initTemplate, scope, bean);
+		forEach(node.attributes, initTemplate, bean);
 		break;
 	case 2: // attr node
 	case 3: // text node
 		if (_templateRE_.test(node.nodeValue)) {
-			Handler.newTemplate(scope, node, bean);
+			Internal.newTemplate(bean, node);
 		}
 		break;
 	}
@@ -206,24 +166,21 @@ function initTemplate(index, node, scope, bean) {
 //@private
 function initInput(bean, node) {
 	if (_inputs_.indexOf(node.type) >= 0) {
-		Handler.newInput(bean, node);
+		Internal.newInput(bean, node);
 	}
 }
 
 //@private
-function initBinding(event, action, scope, node) {
+function initBinding(event, action, bean, node) {
 	if (_events_.indexOf(event) >= 0) {
-		Handler.newBinding(scope, node, event, action);
+		Internal.newBinding(bean, node, event, action);
 	}
 }
 
 //@private
 function initModel(view) {
-	forEach(view.placeholders, initPlaceholder, view);
-	for (var id in view.parts) {
-		var part = view.parts[id];
-		part.node.parentNode.removeChild(part.node);
-	}
+	forEach(view.placeholders, initPlaceholder);
+	forEach(view.parts, clearPart);
 	var style = System.parseBaseName(view.setting.view);
 	if (style) {
 		view.toggleStyle(view.node, style);
@@ -231,17 +188,22 @@ function initModel(view) {
 }
 
 //@private
-function initPlaceholder(name, placeholder, view) {
-	var part = view.parts[name];
+function clearPart(id, part) {
+	part.node.parentNode.removeChild(part.node);
+}
+
+//@private
+function initPlaceholder(name, placeholder) {
+	var part = placeholder.view.parts[name];
 	if (part) {
-		var parts = toArray(part.node);
-		if (parts.length) {
+		var nodes = toArray(part.node);
+		if (nodes.length) {
 			var placemark = findPlacemark(placeholder.node);
-			for (var i = 0; i < parts.length; i++) {
-				placemark.appendChild(parts[i]);
-				view.controller.initPart(view, placeholder, parts[i]);
-				if (placeholder.repeat && i < parts.length-1) {
-					var holderNode = Handler.toDocFrag(placeholder.repeat);
+			for (var i = 0; i < nodes.length; i++) {
+				placemark.appendChild(nodes[i]);
+				placeholder.view.controller.initPlaceholder(placeholder.view, placeholder, nodes[i]);
+				if (placeholder.repeat && i < nodes.length-1) {
+					var holderNode = Internal.toDocFrag(placeholder.repeat);
 					if (placemark != placeholder.node) {
 						placemark = findPlacemark(holderNode);
 					}
@@ -253,19 +215,19 @@ function initPlaceholder(name, placeholder, view) {
 }
 
 //@private
-function initScope(index, scope, view) {
-	var model = scope.name && view.get(scope.name) || view.$;
+function initScope(index, scope) {
+	var model = scope.name && scope.view.get(scope.name) || scope.view.$;
 	if (!scope.repeat || !(model instanceof Array)) {
-		formatBean(scope.beans[0], model, scope, view);
-		formatBinding(scope.beans[0], scope, view);
+		formatBean(scope.bean, model);
+		forEach(scope.bean.bindings, formatBinding);
 	} else { // scope.repeat && model instanceof Array
 		for (var i = 0; i < model.length; i++) {
-			formatBean(scope.beans[i], model[i], scope, view);
-			formatBinding(scope.beans[i], scope, view);
+			formatBean(scope.beans[i], model[i]);
+			forEach(scope.beans[i].bindings, formatBinding);
 			if (i < model.length-1) {
 				// add bean
-				var node = Handler.toDocFrag(scope.repeat);
-				forEach(node.childNodes, initBean, view, scope, Handler.newBean(scope));
+				var node = Internal.toDocFrag(scope.repeat);
+				forEach(node.childNodes, initBean, Internal.newBean(scope));
 				scope.node.appendChild(node);
 			}
 		}
@@ -275,49 +237,55 @@ function initScope(index, scope, view) {
 //@static
 function updateScope(view, name, index) {
 	var model = name && view.get(name) || view.$;
-	var scope = view.scopes[2];
-	if (!scope.repeat || !(model instanceof Array)) {
-		formatBean(scope.beans[0], model, scope, view);
-	} else { // scope.repeat && model instanceof Array
-		for (var i = 0; i < model.length; i++) {
-			formatBean(scope.beans[i], model[i], scope, view);
+	forEach(view.scopes, updateScope2, name, model, index);
+}
+
+//@private
+function updateScope2(index, scope, name, model, bindex) {
+	if ((!name && !scope.name) || scope.name == name) {
+		if (!scope.repeat || !(model instanceof Array)) {
+			formatBean(scope.bean, model);
+		} else { // scope.repeat && model instanceof Array
+			for (var i = 0; i < model.length; i++) {
+				formatBean(scope.beans[i], model[i]);
+			}
 		}
 	}
 }
 
 //@private
-function initBean(index, node, view, scope, bean) {
+function initBean(index, node, bean) {
+	var setting = null;
 	switch (node.nodeType) {
 	case 1:
-		var setting = parseViewSetting(node, view.setting.view);
-		initContent(index, node, scope, setting, bean);
-		forEach(node.childNodes, initBean, view, scope, bean);
+		setting = Internal.parseNodeSetting(node, bean.view.setting.view);
+		initContent(index, node, bean, setting);
+		forEach(node.childNodes, initBean, bean);
 		break;
 	case 3:
-		initContent(index, node, scope, null, bean);
+		initContent(index, node, bean, setting);
 		break;
 	}
 }
 
 //@private
-function formatBean(bean, model, scope, view) {
-	forEach(bean.templates, formatTemplate, model, view);
-	forEach(bean.inputs, formatInput, model, view);
+function formatBean(bean, model) {
+	forEach(bean.templates, formatTemplate, model);
+	forEach(bean.inputs, formatInput, model);
 }
 
 //@private
-function formatBinding(bean, scope, view) {
-	for (var i = 0; i < bean.bindings.length; i++) {
-		bind(view, scope, bean.bindings[i]);
+function formatBinding(index, binding) {
+	if (binding.event && binding.view.controller[binding.action]) {
+		binding.view.bindEvent(binding.event, binding.view.controller[binding.action], binding.node);
 	}
-	
 }
 
 //@private
 var _inputs_ = [ "text", "checkbox", "password", "radio", "submit", "textarea" ];
 
 //@private
-function formatInput(index, input, model, view) {
+function formatInput(index, input, model) {
 	switch (input.type) {
 	case "checkbox":
 		input.node.checked = model[input.name] == true;
@@ -326,16 +294,8 @@ function formatInput(index, input, model, view) {
 }
 
 //@private
-function formatTemplate(index, template, model, view) {
-	template.node.nodeValue = format(template.text, model, view);
-}
-
-
-//@private
-function bind(view, scope, binding) {
-	if (binding.event && view.controller[binding.action]) {
-		view.bindEvent(binding.event, view.controller[binding.action], binding.node);
-	}
+function formatTemplate(index, template, model) {
+	template.node.nodeValue = format(template.text, model, template.view);
 }
 
 //@private
@@ -345,18 +305,17 @@ var _templateRE_ = /\$\{([^\s\}:|]+)([:|][^\}]*)?\}/;
 var _formatRE_ = /\$\{([^\s\}:|]+)([:|][^\}]*)?\}/g;
 
 //@private
-function format(text, bean, view) {
+function format(text, model, view) {
 	return text.replace(_formatRE_, function(match, name, value) {
-		var result = bean[name] || view.get(name);
+		var result = null, exists = false;
+		if (name in model) {
+			result = model[name]; exists = true;
+		} else if (name in view.$) {
+			result = view.get(name); exists = true;
+		}
 		result = (typeof result == "function") ? result() : result;
-		return result ? ensureValue(result, value) : value ? value.substring(1) : match;
+		return exists ? result : value ? value.substring(1) : match;
 	});
-}
-
-//@private
-function ensureValue(value, fallback) {
-	var solid = fallback && fallback.charAt(0) == "|";
-	return value || (solid && fallback.substring(1)) || value;
 }
 
 //@private
@@ -374,11 +333,11 @@ function findNodeByStyles(node, styles) {
 }
 
 //@private
-function toArray(source) {
+function toArray(node) {
 	var result = [];
-	for (var i = 0; i < source.childNodes.length; i++) {
-		if (source.childNodes[i].nodeType === 1) {
-			result.push(source.childNodes[i]);
+	for (var i = 0; i < node.childNodes.length; i++) {
+		if (node.childNodes[i].nodeType === 1) {
+			result.push(node.childNodes[i]);
 		}
 	}
 	return result;

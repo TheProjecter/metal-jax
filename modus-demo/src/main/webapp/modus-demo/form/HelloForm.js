@@ -13,7 +13,7 @@ function initObject(form) {
 }
 
 //@public
-function bind(view, node) {
+function initNode(view, node) {
 	form.bindEvent("click", submit, form.nodes["submit"]);
 }
 

@@ -1,7 +1,6 @@
 /**
  * @context
  * @extends ${baseContext}
- * @imports ${baseClass|modus.face.Controller} Controller
  * @imports modus.core.System
  * @requires modus.face.View ${baseResource}
  * 
@@ -26,5 +25,5 @@ function initContext(scope) {
 	} else if (baseResource) {
 		log("warn", "modus.init.baseResource.fail", baseResource);
 	}
-	$root = new View0(System.$document.body, new Controller(), {view:baseResource});
+	$root = new View0(System.$document.body, {view:baseResource, controller:$("baseClass", "modus.face.Controller", true)});
 }

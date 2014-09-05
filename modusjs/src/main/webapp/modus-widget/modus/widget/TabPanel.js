@@ -19,7 +19,7 @@ function initModel(view) {
 }
 
 //@public
-function bind(view, node) {
+function initNode(view, node) {
 	switch (node.id) {
 	case "head":
 	case "body":
@@ -30,7 +30,7 @@ function bind(view, node) {
 }
 
 //@public
-function initPart(view, placeholder, part) {
+function initPlaceholder(view, placeholder, part) {
 	part.parentNode.id = part.id;
 	var selected = view.filterStyle(part, ["selected"]);
 	var tabLabel = view.tabLabel.cloneNode(false);
