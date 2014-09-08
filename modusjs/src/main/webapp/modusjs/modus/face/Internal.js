@@ -38,7 +38,7 @@ function initView(view, node, setting, controller) {
 //@static
 function newPlaceholder(view, node, setting) {
 	var placeholder = { name:setting.placeholder, view:view, node:node };
-	if ("repeat" in setting) placeholder.repeat = node.innerHTML;
+	if ("repeat" in setting) placeholder.repeatText = node.innerHTML;
 	view.placeholders[placeholder.name] = placeholder;
 	return placeholder;
 }
@@ -66,7 +66,7 @@ function newJson(view, node, setting) {
 //@static
 function newScope(view, node, setting) {
 	var scope = { name:setting.scope, view:view, node:node, beans:[] };
-	if ("repeat" in setting) scope.repeat = node.innerHTML;
+	if ("repeat" in setting) scope.repeatText = node.innerHTML;
 	scope.bean = newBean(scope);
 	view.scopes.push(scope);
 	return scope;
@@ -74,7 +74,7 @@ function newScope(view, node, setting) {
 
 //@static
 function newBean(scope) {
-	var bean = { scope:scope, view:scope.view, templates:[], inputs:[], bindings:[] };
+	var bean = { scope:scope, view:scope.view, index:scope.beans.length, templates:[], inputs:[], bindings:[] };
 	scope.beans.push(bean);
 	return bean;
 }
@@ -153,7 +153,7 @@ function parseNodeSetting(node, base) {
 			setting.nodeType = _nodeTypes_[i];
 		}
 	}
-	if (!setting.nodeType && node.nodeName.toLowerCase() == "script" && node.type == "text/json") {
+	if (!setting.nodeType && node.nodeName.toLowerCase() == "script" && node.type == "application/json") {
 		setting.nodeType = "json";
 	}
 	return setting;

@@ -50,11 +50,3 @@ function archive() {
 		if (!todo.done) $scope.todos.push(todo);
 	});
 }
-
-//@public
-function change(view, node) {
-	var i = view.indexOfChild(node.parentNode.parentNode, node.parentNode);
-	var todos = view.get("todos");
-	todos[i].done = node.checked;
-	View.updateScope(view, "todos", i);
-}

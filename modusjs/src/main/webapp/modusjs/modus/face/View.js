@@ -1,7 +1,9 @@
 /**
  * @resource
- * @imports Controller
  * @imports Internal
+ * @imports Input
+ * @imports Template
+ * @imports Binding
  * @imports modus.core.System
  * 
  * @copyright Jay Tang 2012. All rights reserved.
@@ -140,40 +142,10 @@ function initView(index, node, scope) {
 //init: template, input, event
 //@private
 function initContent(index, node, bean, setting) {
-	initTemplate(index, node, bean);
+	Template.initTemplate(index, node, bean);
 	if (node.nodeType == 1) {
-		initInput(bean, node);
-		forEach(setting, initBinding, bean, node);
-	}
-}
-
-//init: element, attr, text
-//@private
-function initTemplate(index, node, bean) {
-	switch (node.nodeType) {
-	case 1: // element node
-		forEach(node.attributes, initTemplate, bean);
-		break;
-	case 2: // attr node
-	case 3: // text node
-		if (_templateRE_.test(node.nodeValue)) {
-			Internal.newTemplate(bean, node);
-		}
-		break;
-	}
-}
-
-//@private
-function initInput(bean, node) {
-	if (_inputs_.indexOf(node.type) >= 0) {
-		Internal.newInput(bean, node);
-	}
-}
-
-//@private
-function initBinding(event, action, bean, node) {
-	if (_events_.indexOf(event) >= 0) {
-		Internal.newBinding(bean, node, event, action);
+		Input.initInput(bean, node);
+		forEach(setting, Binding.initBinding, bean, node);
 	}
 }
 
@@ -202,8 +174,8 @@ function initPlaceholder(name, placeholder) {
 			for (var i = 0; i < nodes.length; i++) {
 				placemark.appendChild(nodes[i]);
 				placeholder.view.controller.initPlaceholder(placeholder.view, placeholder, nodes[i]);
-				if (placeholder.repeat && i < nodes.length-1) {
-					var holderNode = Internal.toDocFrag(placeholder.repeat);
+				if (placeholder.repeatText && i < nodes.length-1) {
+					var holderNode = Internal.toDocFrag(placeholder.repeatText);
 					if (placemark != placeholder.node) {
 						placemark = findPlacemark(holderNode);
 					}
@@ -217,16 +189,18 @@ function initPlaceholder(name, placeholder) {
 //@private
 function initScope(index, scope) {
 	var model = scope.name && scope.view.get(scope.name) || scope.view.$;
-	if (!scope.repeat || !(model instanceof Array)) {
+	if (!scope.repeatText || !(model instanceof Array)) {
 		formatBean(scope.bean, model);
-		forEach(scope.bean.bindings, formatBinding);
-	} else { // scope.repeat && model instanceof Array
+		forEach(scope.bean.inputs, Input.bindInput);
+		forEach(scope.bean.bindings, Binding.formatBinding);
+	} else { // scope.repeatText && model instanceof Array
 		for (var i = 0; i < model.length; i++) {
 			formatBean(scope.beans[i], model[i]);
-			forEach(scope.beans[i].bindings, formatBinding);
+			forEach(scope.beans[i].inputs, Input.bindInput);
+			forEach(scope.beans[i].bindings, Binding.formatBinding);
 			if (i < model.length-1) {
 				// add bean
-				var node = Internal.toDocFrag(scope.repeat);
+				var node = Internal.toDocFrag(scope.repeatText);
 				forEach(node.childNodes, initBean, Internal.newBean(scope));
 				scope.node.appendChild(node);
 			}
@@ -243,9 +217,9 @@ function updateScope(view, name, index) {
 //@private
 function updateScope2(index, scope, name, model, bindex) {
 	if ((!name && !scope.name) || scope.name == name) {
-		if (!scope.repeat || !(model instanceof Array)) {
+		if (!scope.repeatText || !(model instanceof Array)) {
 			formatBean(scope.bean, model);
-		} else { // scope.repeat && model instanceof Array
+		} else { // scope.repeatText && model instanceof Array
 			for (var i = 0; i < model.length; i++) {
 				formatBean(scope.beans[i], model[i]);
 			}
@@ -270,52 +244,8 @@ function initBean(index, node, bean) {
 
 //@private
 function formatBean(bean, model) {
-	forEach(bean.templates, formatTemplate, model);
-	forEach(bean.inputs, formatInput, model);
-}
-
-//@private
-function formatBinding(index, binding) {
-	if (binding.event && binding.view.controller[binding.action]) {
-		binding.view.bindEvent(binding.event, binding.view.controller[binding.action], binding.node);
-	}
-}
-
-//@private
-var _inputs_ = [ "text", "checkbox", "password", "radio", "submit", "textarea" ];
-
-//@private
-function formatInput(index, input, model) {
-	switch (input.type) {
-	case "checkbox":
-		input.node.checked = model[input.name] == true;
-		break;
-	}
-}
-
-//@private
-function formatTemplate(index, template, model) {
-	template.node.nodeValue = format(template.text, model, template.view);
-}
-
-//@private
-var _templateRE_ = /\$\{([^\s\}:|]+)([:|][^\}]*)?\}/;
-
-//@private
-var _formatRE_ = /\$\{([^\s\}:|]+)([:|][^\}]*)?\}/g;
-
-//@private
-function format(text, model, view) {
-	return text.replace(_formatRE_, function(match, name, value) {
-		var result = null, exists = false;
-		if (name in model) {
-			result = model[name]; exists = true;
-		} else if (name in view.$) {
-			result = view.get(name); exists = true;
-		}
-		result = (typeof result == "function") ? result() : result;
-		return exists ? result : value ? value.substring(1) : match;
-	});
+	forEach(bean.templates, Template.formatTemplate, model);
+	forEach(bean.inputs, Input.formatInput, model);
 }
 
 //@private
@@ -463,19 +393,6 @@ function clearHTML(node) {
 	}
 }
 
-//@private
-var _events_ = [
-	"keydown", "keypress", "keyup",
-	"click", "dblclick",
-	"mousedown", "mouseup", "mousemove", "mouseout", "mouseover",
-	"change"
-];
-
-//@private
-var _touchEvents_ = [
-	"touchstart", "touchend", "touchmove", "touchenter", "touchleave", "touchcancel"
-];
-
 //@protected
 function isTouchReady() {
 	return typeof TouchEvent != "undefined";
@@ -507,15 +424,16 @@ function toggleEvent(event, callback, positive, target) {
 }
 
 //@public
-function bindEvent(event, callback, node) {
-	var binding = System.callback.call(this, dispatch, callback, node);
+function bindEvent(event, callback, node, bean) {
+	bean = bean || this.scope.bean;
+	var binding = System.callback.call(this, dispatch, callback, node, bean);
 	if (event && node) this.toggleEvent(event, binding, true, node);
 	return binding;
 }
 
 //@private
-function dispatch(callback, node, event) {
-	var status = callback(this, node, event);
+function dispatch(callback, node, bean, event) {
+	var status = callback(this, node, event, bean);
 	if (status) return true;
 	
 	/*stop propagation*/
