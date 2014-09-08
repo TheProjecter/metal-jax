@@ -26,12 +26,18 @@ function set(name, value) {
 	return valueOf.call(this, name, value);
 }
 
+//@public
+function isSet(name) {
+	return valueOf.call(this, name, null, null);
+}
+
 //@private
 function valueOf() {
 	switch (arguments.length) {
 	case 0: return this.$;
 	case 1: return this.$[arguments[0]];
 	case 2: return this.$[arguments[0]] = arguments[1];
+	case 3: return arguments[0] in this.$;
 	}
 }
 
