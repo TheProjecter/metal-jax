@@ -16,6 +16,11 @@ function initObject(object) {
 	object.$ = {};
 }
 
+//@static
+function newObject() {
+	return this.apply(new this(this), arguments);
+}
+
 //@public
 function get(name) {
 	return valueOf.call(this, name);
