@@ -1,7 +1,7 @@
 /**
  * @class
  * @imports Internal
- * @imports View
+ * @imports Scope
  * 
  * @copyright Jay Tang 2014. All rights reserved.
  */
@@ -10,14 +10,14 @@
 var _inputs_ = [ "text", "checkbox", "password", "radio", "submit", "textarea" ];
 
 //@static
-function initInput(bean, node) {
+function scanInput(bean, node) {
 	if (_inputs_.indexOf(node.type) >= 0) {
 		Internal.newInput(bean, node);
 	}
 }
 
 //@static
-function formatInput(index, input, model) {
+function initInput(index, input, model) {
 	switch (input.type) {
 	case "checkbox":
 		input.node.checked = model[input.name] == true;
@@ -29,7 +29,7 @@ function formatInput(index, input, model) {
 function bindInput(index, input) {
 	switch (input.type) {
 	case "checkbox":
-		input.bean.view.bindEvent("change", changeCheckbox, input.node, input);
+		input.callback = input.bean.view.bindEvent("click", changeCheckbox, input.node, input);
 		break;
 	}
 }
@@ -38,5 +38,6 @@ function bindInput(index, input) {
 function changeCheckbox(view, node, event, input) {
 	var model = view.get(input.bean.scope.name);
 	model[input.bean.index][input.name] = node.checked;
-	View.updateScope(view, input.bean.scope.name, input.bean.index);
+	Scope.updateScope(view, input.bean.scope.name, input.bean.index);
+	return true;
 }

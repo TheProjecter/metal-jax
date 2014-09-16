@@ -1,6 +1,6 @@
 <h2>Todo</h2>
 <div class="controller:ModusTodo">
-	<script type="application/json">
+	<div class="json">
 	{
 		"todoText": "",
 		"todos": [
@@ -8,7 +8,7 @@
 			{ "text": "build an angular app", "done": false }
 		]
 	}
-	</script>
+	</div>
 	<span class="scope:todos">${remaining} of ${length} remaining</span>
 	[ <a href="" class="click:archive">archive</a> ]
 	<ul class="scope:todos repeat unstyled">
@@ -17,7 +17,7 @@
 			<span class="done-${done}">${text}</span>
 		</li>
 	</ul>
-	<form class="scope">
+	<form>
 		<input type="text" name="todoText" size="30" placeholder="add new todo here">
 		<input class="btn-primary click:addTodo" type="submit" value="add">
 	</form>

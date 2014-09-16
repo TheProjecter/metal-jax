@@ -1,7 +1,6 @@
 /**
  * @class
  * @imports Internal
- * @imports View
  * 
  * @copyright Jay Tang 2014. All rights reserved.
  */
@@ -9,25 +8,38 @@
 //@private
 var _templateRE_ = /\$\{([^\s\}:|]+)([:|][^\}]*)?\}/;
 
-//init: element, attr, text
 //@static
-function initTemplate(index, node, bean) {
+function scanTemplate(index, node, bean) {
+	var text = null;
 	switch (node.nodeType) {
-	case 1: // element node
-		forEach(node.attributes, initTemplate, bean);
+	case 1: // element
+		forEach(node.attributes, scanTemplate, bean);
+		return;
+	case 2: // attr
+		text = node.value;
 		break;
-	case 2: // attr node
-	case 3: // text node
-		if (_templateRE_.test(node.nodeValue)) {
-			Internal.newTemplate(bean, node);
-		}
+	case 3: // text
+		text = node.data;
 		break;
+	default:
+		return;
+	}
+	if (_templateRE_.test(text)) {
+		Internal.newTemplate(bean, node, text);
 	}
 }
 
 //@static
-function formatTemplate(index, template, model) {
-	template.node.nodeValue = format(template.text, model, template.view);
+function normalize(index, template, model) {
+	var text = format(template.text, model, template.view);
+	switch (template.node.nodeType) {
+	case 2:
+		template.node.value = text;
+		break;
+	case 3:
+		template.node.data = text;
+		break;
+	}
 }
 
 //@private

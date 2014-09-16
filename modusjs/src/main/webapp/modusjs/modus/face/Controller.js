@@ -4,6 +4,11 @@
  * @copyright Jay Tang 2012. All rights reserved.
  */
 
+//@private
+function initObject(controller, view) {
+	controller.view = view;
+}
+
 //@public
 function initView(view) {
 	//empty

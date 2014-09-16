@@ -1,0 +1,15 @@
+<body>
+<script id="test" type="text/json">
+	{ "hello": "worldd" }
+</script>
+<script type="text/javascript">
+	var test = document.getElementById("test");
+	alert(test.text);
+	
+	var test2 = document.createElement("div");
+	document.body.appendChild(test2);
+	var string = '<' + 'script type="text/json"' + '>' + '{ "hello": "worldd" }' + '<' + '/script' + '>';
+	test2.innerHTML = string;
+//	alert(test2.firstChild.text);
+</script>
+</body>

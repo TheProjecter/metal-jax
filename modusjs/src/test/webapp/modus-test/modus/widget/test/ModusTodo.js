@@ -1,6 +1,7 @@
 /**
  * @controller
  * @imports modus.face.View
+ * 
  * @requires modus.script.Angular
  * @requires modus.stylesheet.Angular AngularStyleSheet
  */
@@ -31,6 +32,7 @@ function TodoCtrl($scope) {
 function addTodo() {
 	$scope.todos.push({ text: $scope.todoText, done: false });
 	$scope.todoText = '';
+	return true;
 }
 
 //@public
@@ -49,4 +51,5 @@ function archive() {
 	angular.forEach(oldTodos, function(todo) {
 		if (!todo.done) $scope.todos.push(todo);
 	});
+	return true;
 }

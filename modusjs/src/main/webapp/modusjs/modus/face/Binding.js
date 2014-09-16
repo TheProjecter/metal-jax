@@ -1,7 +1,6 @@
 /**
  * @class
  * @imports Internal
- * @imports View
  * 
  * @copyright Jay Tang 2014. All rights reserved.
  */
@@ -20,15 +19,23 @@ var _touchEvents_ = [
 ];
 
 //@static
-function initBinding(event, action, bean, node) {
+function scanBinding(event, action, bean, node) {
 	if (_events_.indexOf(event) >= 0) {
 		Internal.newBinding(bean, node, event, action);
 	}
 }
 
 //@static
-function formatBinding(index, binding) {
+function initBinding(index, binding) {
 	if (binding.event && binding.view.controller[binding.action]) {
-		binding.view.bindEvent(binding.event, binding.view.controller[binding.action], binding.node, binding.bean);
+		binding.callback = binding.view.bindEvent(binding.event, binding.view.controller[binding.action], binding.node, binding.bean);
+	}
+}
+
+//@static
+function resetBinding(index, binding) {
+	if (binding.callback) {
+		binding.view.toggleEvent(binding.event, binding.callback, false, binding.node);
+		delete binding.callback;
 	}
 }

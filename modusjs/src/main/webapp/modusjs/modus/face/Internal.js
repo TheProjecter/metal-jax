@@ -1,6 +1,6 @@
 /**
  * @class
- * @imports View
+ * @imports Controller
  * @imports modus.core.System
  * 
  * @copyright Jay Tang 2014. All rights reserved.
@@ -17,27 +17,44 @@ function newView(view, node, setting) {
 			node.appendChild(part);
 		}
 	}
-	return view.views[node.id] = new (view.getClass())(node, setting, view.controller);
+	var child = view.getClass().newObject(node, setting, view.controller);
+	view.views[node.id] = child;
+	return child;
 }
 
 //@static
 function initView(view, node, setting, controller) {
 	var ccls = view.getClass().getContext().findClass(setting.controller);
-	view.controller = ccls ? new ccls() : controller;
+	view.controller = ccls ? new ccls(view) : controller || new Controller(view);
 	view.node = node;
 	view.setting = setting;
 	view.views = {};
 	view.nodes = {};
 	view.parts = {};
 	view.placeholders = {};
-	view.bindings = [];
+	view.bindings = {};
 	view.scopes = [];
 	view.scope = newScope(view, node, setting);
 }
 
 //@static
+function afterInit(view) {
+	forEach(view.nodes, initNode, view);
+	
+	var style = System.parseBaseName(view.setting.view);
+	if (style) {
+		view.toggleStyle(view.node, style);
+	}
+}
+
+//@private
+function initNode(id, node, view) {
+	view.controller.initNode(view, node);
+}
+
+//@static
 function newPlaceholder(view, node, setting) {
-	var placeholder = { name:setting.placeholder, view:view, node:node };
+	var placeholder = { name:setting.placeholder||"", view:view, node:node };
 	if ("repeat" in setting) placeholder.repeatText = node.innerHTML;
 	view.placeholders[placeholder.name] = placeholder;
 	return placeholder;
@@ -45,27 +62,30 @@ function newPlaceholder(view, node, setting) {
 
 //@static
 function newPart(view, node, setting) {
-	var part = { name:setting.part, view:view, node:node };
+	var part = { name:setting.part||"", view:view, node:node };
 	view.parts[part.name] = part;
 	return part;
 }
 
 //@static
 function newJson(view, node, setting) {
-	var json = System.parseJSONFromText(node.text);
+	var json = System.parseJSONFromText(node.innerHTML);
 	if (setting.scope) {
-		view.set(setting.scope, json);
+		setValue(setting.scope, json, view);
 	} else {
-		for (var key in json) {
-			view.set(key, json[key]);
-		}
+		forEach(json, setValue, view);
 	}
 	return json;
 }
 
+//@private
+function setValue(key, value, view) {
+	view.set(key, value);
+}
+
 //@static
 function newScope(view, node, setting) {
-	var scope = { name:setting.scope, view:view, node:node, beans:[] };
+	var scope = { name:setting.scope||"", view:view, node:node, beans:[] };
 	if ("repeat" in setting) scope.repeatText = node.innerHTML;
 	scope.bean = newBean(scope);
 	view.scopes.push(scope);
@@ -80,8 +100,8 @@ function newBean(scope) {
 }
 
 //@static
-function newTemplate(bean, node) {
-	var template = { bean:bean, node:node, view:bean.view, text:node.nodeValue };
+function newTemplate(bean, node, text) {
+	var template = { bean:bean, node:node, view:bean.view, text:text };
 	bean.templates.push(template);
 	return template;
 }
@@ -118,13 +138,25 @@ function toDocFrag(source, doc) {
 	return doc;
 }
 
+//@static
+function toArray(node) {
+	var result = [];
+	for (var i = 0; i < node.childNodes.length; i++) {
+		if (node.childNodes[i].nodeType === 1) {
+			result.push(node.childNodes[i]);
+		}
+	}
+	return result;
+}
+
 //@private
 var _settingRE_ = /([^:]+)(?::|\s*)(.*)/;
 
 //@private
-var _nodeTypes_ = [
-	"view", "placeholder", "part", "scope"
-];
+var _settingTypes_ = [ "view", "placeholder", "part", "scope" ];
+
+//@private
+var _jsonTypes_ = [ "json", "text/json", "application/json" ];
 
 //@static
 function parseNodeSetting(node, base) {
@@ -147,14 +179,37 @@ function parseNodeSetting(node, base) {
 			setting.view = "";
 		}
 	}
-	setting.nodeType = "";
-	for (var i = 0; i < _nodeTypes_.length; i++) {
-		if (_nodeTypes_[i] in setting) {
-			setting.nodeType = _nodeTypes_[i];
+	setting.type = "";
+	for (var i = 0; i < _settingTypes_.length; i++) {
+		if (_settingTypes_[i] in setting) {
+			setting.type = _settingTypes_[i];
+			break;
 		}
 	}
-	if (!setting.nodeType && node.nodeName.toLowerCase() == "script" && node.type == "application/json") {
-		setting.nodeType = "json";
+	if (!setting.type) {
+		if (node.nodeName.toLowerCase() == "script" && _jsonTypes_.indexOf(node.type) >= 0 || "json" in setting) {
+			setting.type = "json";
+		}
 	}
 	return setting;
+}
+
+//@static
+function findNodeByStyles(node, styles) {
+	if (filterStyle(node, styles)) return node;
+	for (var i = 0; i < node.childNodes.length; i++) {
+		var found = findNodeByStyles(node.childNodes[i], styles);
+		if (found) return found;
+	}
+}
+
+//@static
+function filterStyle(node, styles, defaultToFirst) {
+	var tokens = node.className && node.className.split(" ") || [];
+	for (var i = 0; i < styles.length; i++) {
+		if (tokens.indexOf(styles[i]) >= 0) {
+			return styles[i];
+		}
+	}
+	return defaultToFirst && styles[0] || "";
 }
