@@ -24,9 +24,9 @@ Unordered points:
 
 See also: "@wiki.template@":wiki.template.html
 
-h1. Detail
+h1. Details
 
-Describes implementation detail.
+Describes implementation details.
 
 table(grid).
 |_.Name |_.Value |_.Comments |

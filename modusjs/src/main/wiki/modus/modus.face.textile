@@ -1,0 +1,80 @@
+<link type="text/css" rel="stylesheet" href="../styles/main.css"/>
+
+p(title). Package @modus.face@
+
+{toc:style=decimal}
+
+h1. Overview
+
+Classes within this package handle UI concerns.
+
+h1. Summary
+
+In a webapp, UI component can be broken down into visual and behavioral aspects.
+With modus, visual aspects are delivered via HTML/CSS artifacts, and behavioral aspects are delivered via JavaScript artifacts.
+
+h1. Details
+
+Modus structures HTML artifacts into template files called views.
+
+Modus structures JS artifacts into modus classes, called controllers, extending from a base class @modus.face.Controller@.
+
+h2. View
+
+UI visual elements can be abstracted and partitioned into logical structures called _Views_, and optionally with view content in separate HTML fragment files, identified with qualified resource names. View makes UI components modular and reusable.
+
+View may have internal substructures, declared with markings inside HTML element @class@ attribute.
+
+Steps to initialize view:
+# scan view content for markings/macros, normalize external view contents at the same time.
+# normalize placeholders
+# normalize repeatable scopes
+# bind events/inputs to actions
+# normalize templates/inputs
+
+Steps to update view:
+# remove content (unbind events, remove nodes)
+# add content (add nodes, scan, bind events)
+# normalize templates/inputs
+
+h3. Inline/External
+
+View is declared by marking @view@. View content can be either inline or external, with inline as default.
+
+For external content the marking is @view:name@. Modus will resolve external contents and include them into UI at runtime.
+
+h3. Placeholder/Part
+
+View supports static template with placeholders, where placeholder are template openings that can be later filled by part with the same name at runtime.
+
+Placeholder is declared by marking @placeholder:name@, and part declared by @part:name@. Name is only necessary for multiple placeholders.
+
+Placeholders are resolved/replaced after external view contents are resolved.
+
+h3. Macro/Scope/Bean
+
+View also supports dynamic template with macros in attributes and texts. Macros are resolved/replaced by view or bean attributes. For macros that resolve against bean attributes, the containing element is scoped by the bean name by marking @scope:name@. Without the marking, macros are resolved against view attributes directly.
+
+Order of resolution for macro is bean, view, controller.
+
+Macro replacements can be refreshed when view/bean attributes changed.
+
+h3. repeat Marking
+
+If for bean that is an array, a referencing scope can be marked as @repeat@. So the scoped element content will repeat for each array item, or be blank for empty array.
+
+Repeat elements can be added/removed when bean array items are added/removed.
+
+h3. Event Binding
+
+Binding can be declared by marking @event:action@, action is resolved to be a controller method.
+
+h3. Input Value
+
+Initial values for input elements default to macros with the same name, scoped by view or bean.
+
+h3. Input Event
+
+Input elements by default imply a change event binding as @change:change@.
+
+h2. Controller

@@ -19,7 +19,7 @@ The boot context handles source loading across domain. A few bootstrapping metho
 
 See also: "@modus.core.Context@":modus.core.Context.html
 
-h1. Detail
+h1. Details
 
 h2. Context Settings
 

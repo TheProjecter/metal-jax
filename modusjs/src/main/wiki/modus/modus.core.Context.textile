@@ -14,7 +14,7 @@ h1. Summary
 
 Class loader summary.
 
-h1. Detail
+h1. Details
 
 Class loader details.
 

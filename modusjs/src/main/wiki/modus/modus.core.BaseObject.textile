@@ -14,7 +14,7 @@ BaseObject sets up the base behavior inherited by all classes.
 
 The framework also recognizes a few lifecycle callback methods.
 
-h1. Detail
+h1. Details
 
 h2. BaseObject Methods
 
