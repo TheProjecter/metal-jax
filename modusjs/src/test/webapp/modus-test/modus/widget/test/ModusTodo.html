@@ -10,16 +10,16 @@
 	}
 	</div>
 	<span class="scope:todos">${remaining} of ${length} remaining</span>
-	[ <a href="" class="click:archive">archive</a> ]
+	[ <a href="" class="scope:todos click:archive">archive</a> ]
 	<ul class="scope:todos repeat unstyled">
 		<li>
 			<input type="checkbox" name="done"/>
 			<span class="done-${done}">${text}</span>
 		</li>
 	</ul>
-	<form>
-		<input type="text" name="todoText" size="30" placeholder="add new todo here">
-		<input class="btn-primary click:addTodo" type="submit" value="add">
+	<form class="scope:todos submit:addTodo">
+		<input type="text" name="todoText" size="30" placeholder="add new todo here"/>
+		<input class="btn-primary" type="submit" value="add"/>
 	</form>
 </div>
 <link rel="stylesheet" href="Todo.css"/>

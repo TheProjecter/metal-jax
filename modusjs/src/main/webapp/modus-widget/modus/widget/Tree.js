@@ -4,13 +4,13 @@
  * @copyright Jay Tang 2012. All rights reserved.
  */
 
-//@public
+//@static
 function initModel(view) {
 	var label = view.node.title || view.nodes.label.innerHTML;
 	view.nodes.label.innerHTML = label;
 }
 
-//@public
+//@static
 function initNode(view, node) {
 	switch (node.id) {
 	case "toggle":

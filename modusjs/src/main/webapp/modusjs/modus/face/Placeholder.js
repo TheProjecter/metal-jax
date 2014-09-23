@@ -6,7 +6,7 @@
  */
 
 //@static
-function normalize(view) {
+function normalizePlaceholder(view) {
 	forEach(view.placeholders, initPlaceholder);
 	forEach(view.parts, clearPart);
 }
@@ -20,7 +20,7 @@ function initPlaceholder(name, placeholder) {
 			var placemark = findPlacemark(placeholder.node);
 			for (var i = 0; i < nodes.length; i++) {
 				placemark.appendChild(nodes[i]);
-				placeholder.view.controller.initPlaceholder(placeholder.view, placeholder, nodes[i]);
+				placeholder.view.controller.getClass().initPlaceholder(placeholder, nodes[i]);
 				if (placeholder.repeatText && i < nodes.length-1) {
 					var holderNode = Internal.toDocFrag(placeholder.repeatText);
 					if (placemark != placeholder.node) {

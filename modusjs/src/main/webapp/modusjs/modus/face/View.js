@@ -70,14 +70,14 @@ function parseResourceNode(source, node) {
 function initObject(view, node, setting, controller) {
 	Internal.initView(view, node, setting, controller);
 	
-	view.controller.initView(view);
+	view.controller.getClass().initView(view);
 	forEach(view.node.childNodes, Scope.scanScope, view.scope);
 	
-	view.controller.initModel(view);
-	Placeholder.normalize(view);
+	view.controller.getClass().initModel(view);
+	Placeholder.normalizePlaceholder(view);
 
-	view.controller.initScope(view);
-	Scope.normalize(view);
+	view.controller.getClass().initScope(view);
+	forEach(view.scopes, Scope.initScope);
 	
 	Internal.afterInit(view);
 }
@@ -180,15 +180,7 @@ function getChildById(node, id) {
 
 //@public
 function clear(nodeId) {
-	return clearHTML(this.nodes[nodeId]);
-}
-
-//@protected
-function clearHTML(node) {
-	if (node) {
-		while (node.firstChild) node.removeChild(node.firstChild);
-		return node;
-	}
+	return this.nodes[nodeId].innerHTML = "";
 }
 
 //@protected

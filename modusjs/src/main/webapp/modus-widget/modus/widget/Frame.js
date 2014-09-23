@@ -4,13 +4,13 @@
  * @copyright Jay Tang 2012. All rights reserved.
  */
 
-//@public
+//@static
 function initView(view) {
 	view.bindEvent("mouseover", toggleHighlight, view.node);
 	view.bindEvent("mouseout", toggleHighlight, view.node);
 }
 
-//@public
+//@static
 function initNode(view, node) {
 	switch (node.id) {
 	case "top":

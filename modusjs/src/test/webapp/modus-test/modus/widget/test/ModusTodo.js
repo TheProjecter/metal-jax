@@ -1,44 +1,19 @@
 /**
  * @controller
- * @imports modus.face.View
- * 
- * @requires modus.script.Angular
- * @requires modus.stylesheet.Angular AngularStyleSheet
+ * @requires modus.stylesheet.Angular
  */
-
-//@private
-var $scope = null;
-
-//@private
-function initResource(scope) {
-	Angular.addModule('todo');
-	Angular.addController('TodoCtrl', "todo", TodoCtrl);
-}
-
-//@public
-function initScope(view) {
-	TodoCtrl(view.$);
-}
-
-//@private
-function TodoCtrl($scope) {
-	$private.$scope = $scope;
-	$scope.addTodo = $public.addTodo;
-	$scope.remaining = $public.remaining;
-	$scope.archive = $public.archive;
-}
 
 //@public
 function addTodo() {
-	$scope.todos.push({ text: $scope.todoText, done: false });
-	$scope.todoText = '';
+	this.view.get("todos").push({ text: this.view.get("todoText"), done: false });
+	this.view.set("todoText", "");
 	return true;
 }
 
 //@public
 function remaining() {
 	var count = 0;
-	angular.forEach($scope.todos, function(todo) {
+	forEach(this.view.get("todos"), function(index, todo) {
 		count += todo.done ? 0 : 1;
 	});
 	return count;
@@ -46,10 +21,12 @@ function remaining() {
 
 //@public
 function archive() {
-	var oldTodos = $scope.todos;
-	$scope.todos = [];
-	angular.forEach(oldTodos, function(todo) {
-		if (!todo.done) $scope.todos.push(todo);
+	var todos = [];
+	forEach(this.view.get("todos"), function(index, todo) {
+		if (!todo.done) todos.push(todo);
 	});
-	return true;
+	if (this.view.get("todos").length != todos.length) {
+		this.view.set("todos", todos);
+		return true;
+	}
 }

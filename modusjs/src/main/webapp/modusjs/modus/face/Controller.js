@@ -5,31 +5,31 @@
  */
 
 //@private
-function initObject(controller, view) {
-	controller.view = view;
+function initObject(object, view) {
+	object.view = view;
 }
 
-//@public
+//@static
 function initView(view) {
 	//empty
 }
 
-//@public
+//@static
 function initModel(view) {
 	//empty
 }
 
-//@public
-function initPlaceholder(view, placeholder, part) {
+//@static
+function initPlaceholder(placeholder, node) {
 	//empty
 }
 
-//@public
+//@static
 function initScope(view) {
 	//empty
 }
 
-//@public
+//@static
 function initNode(view, node) {
 	//empty
 }

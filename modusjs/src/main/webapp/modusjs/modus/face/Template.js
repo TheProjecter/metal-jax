@@ -1,12 +1,13 @@
 /**
  * @class
- * @imports Internal
- * 
  * @copyright Jay Tang 2014. All rights reserved.
  */
 
 //@private
-var _templateRE_ = /\$\{([^\s\}:|]+)([:|][^\}]*)?\}/;
+var _macroRE_ = /\$\{([^\s\}:|]+)([:|][^\}]*)?\}/;
+
+//@private
+var _macrosRE_ = /\$\{([^\s\}:|]+)([:|][^\}]*)?\}/g;
 
 //@static
 function scanTemplate(index, node, bean) {
@@ -24,37 +25,47 @@ function scanTemplate(index, node, bean) {
 	default:
 		return;
 	}
-	if (_templateRE_.test(text)) {
-		Internal.newTemplate(bean, node, text);
+	if (text && _macroRE_.test(text)) {
+		newTemplate(bean, node, text);
 	}
 }
 
+//@private
+function newTemplate(bean, node, text) {
+	var template = { bean:bean, node:node, view:bean.view, text:text };
+	bean.templates.push(template);
+	return template;
+}
+
 //@static
-function normalize(index, template, model) {
-	var text = format(template.text, model, template.view);
+function normalizeTemplate(index, template, model) {
+	var text = format(template, model);
 	switch (template.node.nodeType) {
-	case 2:
+	case 2: // attr
 		template.node.value = text;
 		break;
-	case 3:
+	case 3: // text
 		template.node.data = text;
 		break;
 	}
 }
 
 //@private
-var _formatRE_ = /\$\{([^\s\}:|]+)([:|][^\}]*)?\}/g;
+function format(template, model) {
+	return template.text.replace(_macrosRE_, function(match, name, value) {
+		return resolve(name, model, template.view, value ? value.substring(1) : match);
+	});
+}
 
 //@private
-function format(text, model, view) {
-	return text.replace(_formatRE_, function(match, name, value) {
-		var result = null, exists = false;
-		if (name in model) {
-			result = model[name]; exists = true;
-		} else if (name in view.$) {
-			result = view.get(name); exists = true;
-		}
-		result = (typeof result == "function") ? result() : result;
-		return exists ? result : value ? value.substring(1) : match;
-	});
+function resolve(name, model, view, value) {
+	var result = null, exists = false;
+	if (name in model) {
+		result = model[name]; exists = true;
+	} else if (view.isSet(name)) {
+		result = view.get(name); exists = true;
+	} else if (typeof view.controller[name] == "function") {
+		result = view.controller[name](); exists = true;
+	}
+	return exists ? result : value;
 }

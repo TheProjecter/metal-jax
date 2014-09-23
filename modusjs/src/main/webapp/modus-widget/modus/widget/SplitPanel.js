@@ -7,12 +7,12 @@
 //@private
 var _panelStyles_ = [ "x", "y" ];
 
-//@public
+//@static
 function initView(view) {
 	view.setting.style = view.filterStyle(view.node, _panelStyles_, true);
 }
 
-//@public
+//@static
 function initNode(view, node) {
 	switch (node.id) {
 	case "handle":

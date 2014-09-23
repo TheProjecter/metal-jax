@@ -1,9 +1,7 @@
 /**
  * @class
  * @imports Internal
- * @imports Template
- * @imports Binding
- * @imports Input
+ * @imports Bean
  * 
  * @copyright Jay Tang 2014. All rights reserved.
  */
@@ -12,7 +10,7 @@
 function scanScope(index, node, scope) {
 	var hasContent = false, nextScope = null, setting = null;
 	switch (node.nodeType) {
-	case 1: // element
+	case 1: // elem
 		setting = Internal.parseNodeSetting(node, scope.view.setting.view);
 		switch (setting.type) {
 		case "view":
@@ -52,85 +50,43 @@ function scanScope(index, node, scope) {
 	}
 	if (hasContent) {
 		if (node.id) scope.view.nodes[node.id] = node;
-		scanContent(index, node, scope.bean, setting);
+		Bean.scanContent(index, node, (nextScope||scope).bean, setting);
 	}
 	if (nextScope) {
 		forEach(node.childNodes, scanScope, nextScope);
 	}
 }
 
-//@private
-function scanContent(index, node, bean, setting) {
-	Template.scanTemplate(index, node, bean);
-	if (node.nodeType == 1) {
-		Input.scanInput(bean, node);
-		forEach(setting, Binding.scanBinding, bean, node);
-	}
-}
-
-//@private
-function scanBean(index, node, bean) {
-	var setting = null;
-	switch (node.nodeType) {
-	case 1: // elem
-		setting = Internal.parseNodeSetting(node, bean.view.setting.view);
-		scanContent(index, node, bean, setting);
-		forEach(node.childNodes, scanBean, bean);
-		break;
-	case 3: // text
-		scanContent(index, node, bean, setting);
-		break;
-	}
-}
-
 //@static
-function normalize(view) {
-	forEach(view.scopes, initScope);
-}
-
-//@private
 function initScope(index, scope) {
-	var model = scope.name && scope.view.get(scope.name) || scope.view.$;
-	if (!scope.repeatText || !(model instanceof Array)) {
-		initBean(scope.bean, model);
-		forEach(scope.bean.inputs, Input.bindInput);
-		forEach(scope.bean.bindings, Binding.initBinding);
-	} else { // scope.repeatText && model instanceof Array
-		for (var i = 0; i < model.length; i++) {
-			initBean(scope.beans[i], model[i]);
-			forEach(scope.beans[i].inputs, Input.bindInput);
-			forEach(scope.beans[i].bindings, Binding.initBinding);
-			if (i < model.length-1) {
-				// add bean
-				var node = Internal.toDocFrag(scope.repeatText);
-				forEach(node.childNodes, scanBean, Internal.newBean(scope));
-				scope.node.appendChild(node);
-			}
+	var model = getModel(scope);
+	if (scope.repeatText) {
+		forEach(model, Bean.newBean, scope);
+		forEach(scope.beans, Bean.bindBean);
+		forEach(scope.beans, Bean.normalizeBean, model);
+	} else {
+		Bean.bindBean(-1, scope.bean);
+		Bean.normalizeBean(-1, scope.bean, model);
+	}
+}
+
+//@static
+function updateScope(index, scope, name, model) {
+	if (!scope.name && !name || scope.name == name) {
+		if (scope.repeatText) {
+			scope.node.innerHTML = "";
+			Internal.clearArray(scope.beans);
+			
+			forEach(model, Bean.newBean, scope);
+			forEach(scope.beans, Bean.bindBean);
+			forEach(scope.beans, Bean.normalizeBean, model);
+		} else {
+			Bean.normalizeBean(-1, scope.bean, model);
 		}
 	}
 }
 
 //@static
-function updateScope(view, name, index) {
-	var model = name && view.get(name) || view.$;
-	forEach(view.scopes, updateScope2, name, model, index);
-}
-
-//@private
-function updateScope2(index, scope, name, model, bindex) {
-	if ((!name && !scope.name) || scope.name == name) {
-		if (!scope.repeatText || !(model instanceof Array)) {
-			initBean(scope.bean, model);
-		} else { // scope.repeatText && model instanceof Array
-			for (var i = 0; i < model.length; i++) {
-				initBean(scope.beans[i], model[i]);
-			}
-		}
-	}
-}
-
-//@private
-function initBean(bean, model) {
-	forEach(bean.templates, Template.normalize, model);
-	forEach(bean.inputs, Input.initInput, model);
+function getModel(scope) {
+	return scope.name ? scope.view.get(scope.name) : scope.view.get();
 }

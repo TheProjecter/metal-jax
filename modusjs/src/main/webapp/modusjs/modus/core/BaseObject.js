@@ -23,7 +23,7 @@ function newObject() {
 
 //@public
 function get(name) {
-	return valueOf.call(this, name);
+	return arguments.length ? valueOf.call(this, name) : valueOf.call(this);
 }
 
 //@public

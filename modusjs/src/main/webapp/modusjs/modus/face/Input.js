@@ -1,43 +1,95 @@
 /**
  * @class
- * @imports Internal
- * @imports Scope
+ * @imports Bean
  * 
  * @copyright Jay Tang 2014. All rights reserved.
  */
 
 //@private
-var _inputs_ = [ "text", "checkbox", "password", "radio", "submit", "textarea" ];
+var _inputTypes_ = {
+	"checkbox": { event: "click", status: false },
+	"password": { event: "change", status: false },
+	"radio": { event: "change", status: false },
+	"submit": { event: "change", status: false },
+	"text": { event: "change", status: false },
+	"textarea": { event: "change", status: false }
+};
 
 //@static
 function scanInput(bean, node) {
-	if (_inputs_.indexOf(node.type) >= 0) {
-		Internal.newInput(bean, node);
-	}
-}
-
-//@static
-function initInput(index, input, model) {
-	switch (input.type) {
-	case "checkbox":
-		input.node.checked = model[input.name] == true;
-		break;
-	}
-}
-
-//@static
-function bindInput(index, input) {
-	switch (input.type) {
-	case "checkbox":
-		input.callback = input.bean.view.bindEvent("click", changeCheckbox, input.node, input);
-		break;
+	if (node.type in _inputTypes_) {
+		newInput(bean, node, _inputTypes_[node.type]);
 	}
 }
 
 //@private
-function changeCheckbox(view, node, event, input) {
-	var model = view.get(input.bean.scope.name);
-	model[input.bean.index][input.name] = node.checked;
-	Scope.updateScope(view, input.bean.scope.name, input.bean.index);
-	return true;
+function newInput(bean, node, type) {
+	if (node.name) {
+		var input = { bean:bean, node:node, view:bean.view, name:node.name, type:node.type, event:type.event, status:type.status };
+		bean.inputs.push(input);
+		return input;
+	}
+}
+
+//@static
+function normalizeInput(index, input, model) {
+	valueOf(input, format(input, model));
+}
+
+//@private
+function format(input, model) {
+	var result = null;
+	if (input.name in model) {
+		result = model[input.name];
+	} else if (input.view.isSet(input.name)) {
+		result = input.view.get(input.name);
+	}
+	return result;
+}
+
+//@static
+function bindInput(index, input) {
+	if (input.event) {
+		input.callback = input.view.bindEvent(input.event, dispatch, input.node, input);
+	}
+}
+
+//@static
+function unbindInput(index, input) {
+	if (input.callback) {
+		input.view.toggleEvent(input.event, input.callback, false, input.node);
+		delete input.callback;
+	}
+}
+
+//@private
+function dispatch(view, node, event, input) {
+	var value = valueOf(input);
+	var model = Bean.getModel(input.bean, input.name);
+	if (model && model[input.name] != value) {
+		model[input.name] = value;
+		Bean.updateBean(input.bean);
+	}
+}
+
+//@private
+function valueOf(input, value) {
+	var old = null, set = arguments.length == 2;
+	switch (input.type) {
+	case "checkbox":
+		old = input.node.checked;
+		if (set) input.node.checked = value;
+		break;
+	case "text":
+		old = input.node.value;
+		if (set) input.node.value = value;
+		break;
+	case "submit":
+		old = input.node.value;
+		break;
+	default:
+		log("warn", "Input type '${0}' not supported yet", input.type);
+		break;
+	}
+	return old;
 }

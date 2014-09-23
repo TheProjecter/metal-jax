@@ -9,6 +9,7 @@
 //@static
 function newView(view, node, setting) {
 	if (setting.view) {
+		//TODO: check cyclic reference before proceeding
 		var resource = view.getClass().findResource(setting.view, true).cloneNode(true);
 		if (resource) {
 			var part = toDocFrag(node, System.$document.createElement("div"));
@@ -49,7 +50,7 @@ function afterInit(view) {
 
 //@private
 function initNode(id, node, view) {
-	view.controller.initNode(view, node);
+	view.controller.getClass().initNode(view, node);
 }
 
 //@static
@@ -86,8 +87,12 @@ function setValue(key, value, view) {
 //@static
 function newScope(view, node, setting) {
 	var scope = { name:setting.scope||"", view:view, node:node, beans:[] };
-	if ("repeat" in setting) scope.repeatText = node.innerHTML;
-	scope.bean = newBean(scope);
+	if ("repeat" in setting) {
+		scope.repeatText = node.innerHTML;
+		node.innerHTML = "";
+	} else {
+		scope.bean = newBean(scope);
+	}
 	view.scopes.push(scope);
 	return scope;
 }
@@ -97,27 +102,6 @@ function newBean(scope) {
 	var bean = { scope:scope, view:scope.view, index:scope.beans.length, templates:[], inputs:[], bindings:[] };
 	scope.beans.push(bean);
 	return bean;
-}
-
-//@static
-function newTemplate(bean, node, text) {
-	var template = { bean:bean, node:node, view:bean.view, text:text };
-	bean.templates.push(template);
-	return template;
-}
-
-//@static
-function newInput(bean, node) {
-	var input = { bean:bean, node:node, name:node.name, type:node.type };
-	bean.inputs.push(input);
-	return input;
-}
-
-//@static
-function newBinding(bean, node, event, action) {
-	var binding = { bean:bean, node:node, view:bean.view, event:event, action:action };
-	bean.bindings.push(binding);
-	return binding;
 }
 
 //@static
@@ -147,6 +131,11 @@ function toArray(node) {
 		}
 	}
 	return result;
+}
+
+//@static
+function clearArray(array) {
+	while (array.length) array.pop();
 }
 
 //@private

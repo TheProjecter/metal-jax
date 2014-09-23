@@ -377,8 +377,6 @@ $private.parseModel = function parseModel(source) {
 				value = parseBaseName(name, value);
 				if (value) {
 					source.scope.$imports[value] = name;
-				} else {
-					log("warn", "incorrect @${0} format in class source: ${1}", settingTag, source.name);
 				}
 				break;
 			case "requires":

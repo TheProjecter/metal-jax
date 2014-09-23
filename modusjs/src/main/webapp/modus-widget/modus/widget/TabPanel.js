@@ -7,18 +7,18 @@
 //@private
 var _panelStyles_ = [ "top", "bottom" ];
 
-//@public
+//@static
 function initView(view) {
 	view.setting.style = view.filterStyle(view.node, _panelStyles_, true);
 }
 
-//@public
+//@static
 function initModel(view) {
 	view.tabLabel = view.nodes.head.removeChild(view.getChildByIndex(view.nodes.head));
 	view.clear("head");
 }
 
-//@public
+//@static
 function initNode(view, node) {
 	switch (node.id) {
 	case "head":
@@ -29,18 +29,18 @@ function initNode(view, node) {
 	}
 }
 
-//@public
-function initPlaceholder(view, placeholder, part) {
-	part.parentNode.id = part.id;
-	var selected = view.filterStyle(part, ["selected"]);
-	var tabLabel = view.tabLabel.cloneNode(false);
-	tabLabel.id = part.id;
-	tabLabel.title = part.title || part.id;
-	tabLabel.innerHTML = part.title || part.id;
-	view.nodes.head.appendChild(tabLabel);
-	initTabLabel(view, tabLabel);
+//@static
+function initPlaceholder(placeholder, node) {
+	node.parentNode.id = node.id;
+	var selected = placeholder.view.filterStyle(node, ["selected"]);
+	var tabLabel = placeholder.view.tabLabel.cloneNode(false);
+	tabLabel.id = node.id;
+	tabLabel.title = node.title || node.id;
+	tabLabel.innerHTML = node.title || node.id;
+	placeholder.view.nodes.head.appendChild(tabLabel);
+	initTabLabel(placeholder.view, tabLabel);
 	if (selected) {
-		toggleTabSelection(view, tabLabel);
+		toggleTabSelection(placeholder.view, tabLabel);
 	}
 }
 

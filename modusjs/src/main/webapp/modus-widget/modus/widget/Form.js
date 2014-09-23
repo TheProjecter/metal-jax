@@ -8,12 +8,12 @@
 //@private
 var $count = 0;
 
-//@public
+//@static
 function initView(view) {
 	view.inputs = {};
 }
 
-//@public
+//@static
 function initNode(view, node) {
 	switch (node.nodeName.toLowerCase()) {
 	case "form":

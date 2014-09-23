@@ -12,7 +12,7 @@ function initObject(form) {
 	form.echo.bind("error", error);
 }
 
-//@public
+//@static
 function initNode(view, node) {
 	form.bindEvent("click", submit, form.nodes["submit"]);
 }
