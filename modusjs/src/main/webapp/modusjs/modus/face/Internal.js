@@ -162,7 +162,8 @@ var _jsonTypes_ = [ "json", "text/json", "application/json" ];
 //@static
 function parseNodeSetting(node, base) {
 	var setting = {}, match;
-	var tokens = node.className && node.className.split(" ") || [];
+	var text = node.getAttribute("data-modus") || node.className;
+	var tokens = text && text.split(" ") || [];
 	for (var i = 0; i < tokens.length; i++) {
 		if (match = _settingRE_.exec(tokens[i])) {
 			setting[match[1]] = match[2];
