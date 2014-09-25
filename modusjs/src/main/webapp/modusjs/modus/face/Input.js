@@ -7,12 +7,12 @@
 
 //@private
 var _inputTypes_ = {
-	"checkbox": { event: "click", status: false },
-	"password": { event: "change", status: false },
-	"radio": { event: "change", status: false },
-	"submit": { event: "change", status: false },
 	"text": { event: "change", status: false },
-	"textarea": { event: "change", status: false }
+	"textarea": { event: "change", status: false },
+	"password": { event: "change", status: false },
+	"checkbox": { event: "click", status: false },
+	"radio": { event: "change", status: false },
+	"submit": { event: "change", status: false }
 };
 
 //@static
@@ -81,6 +81,8 @@ function valueOf(input, value) {
 		if (set) input.node.checked = value;
 		break;
 	case "text":
+	case "textarea":
+	case "password":
 		old = input.node.value;
 		if (set) input.node.value = value;
 		break;

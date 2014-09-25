@@ -99,7 +99,6 @@ function startResize(view, node, event) {
 	view.setting.left = parseInt(view.node.style.left) || view.node.offsetLeft;
 	view.setting.width = parseInt(view.node.style.width) || view.node.offsetWidth;
 	view.setting.height = parseInt(view.node.style.height) || view.node.offsetHeight;
-	view.setting.topWidth = view.nodes.top.offsetWidth;
 	view.setting.leftHeight = view.nodes.left.offsetHeight;
 	view.setting.handleWidth = view.nodes.handle.offsetWidth;
 	view.setting.handleHeight = view.nodes.handle.offsetHeight;
@@ -149,7 +148,6 @@ function doResize(view, node, event) {
 
 //@private
 function setWidth(view, dx, isLeft) {
-	var topWidth = view.setting.topWidth + dx;
 	var handleWidth = view.setting.handleWidth + dx;
 	if (handleWidth <= 10) return;
 	view.node.style.width = "".concat(view.setting.width + dx, "px");

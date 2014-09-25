@@ -20,9 +20,9 @@ function scanContent(index, node, bean, setting) {
 
 //@static
 function newBean(index, model, scope) {
-	var node = Internal.toDocFrag(scope.repeatText);
+	var node = Internal.toNode(scope.repeatText, scope.repeatDiv);
 	forEach(node.childNodes, scanBean, Internal.newBean(scope));
-	scope.node.appendChild(node);
+	Internal.moveNode(scope.node, node);
 }
 
 //@private

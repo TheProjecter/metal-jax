@@ -88,6 +88,7 @@ function setValue(key, value, view) {
 function newScope(view, node, setting) {
 	var scope = { name:setting.scope||"", view:view, node:node, beans:[] };
 	if ("repeat" in setting) {
+		scope.repeatDiv = node.nodeName.toLowerCase();
 		scope.repeatText = node.innerHTML;
 		node.innerHTML = "";
 	} else {
@@ -108,18 +109,29 @@ function newBean(scope) {
 function toDocFrag(source, doc) {
 	var node = source;
 	if (typeof source == "string") {
-		node = System.$document.createElement("div");
-		node.innerHTML = source;
+		node = toNode(source, "div");
 	}
 	doc = doc || System.$document.createDocumentFragment();
-	while (node.firstChild) {
-		if (node.firstChild.nodeType === 1) {
-			doc.appendChild(node.firstChild);
+	return moveNode(doc, node);
+}
+
+//@static
+function toNode(innerHTML, div) {
+	var node = System.$document.createElement(div);
+	node.innerHTML = innerHTML;
+	return node;
+}
+
+//@static
+function moveNode(target, source) {
+	while (source.firstChild) {
+		if (source.firstChild.nodeType === 1) {
+			target.appendChild(source.firstChild);
 		} else {
-			node.removeChild(node.firstChild);
+			source.removeChild(source.firstChild);
 		}
 	}
-	return doc;
+	return target;
 }
 
 //@static
