@@ -180,7 +180,7 @@ function getChildById(node, id) {
 
 //@public
 function clear(nodeId) {
-	return this.nodes[nodeId].innerHTML = "";
+	Internal.clearHTML(this.nodes[nodeId]);
 }
 
 //@protected

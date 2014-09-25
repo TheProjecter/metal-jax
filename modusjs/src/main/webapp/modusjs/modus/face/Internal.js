@@ -90,7 +90,7 @@ function newScope(view, node, setting) {
 	if ("repeat" in setting) {
 		scope.repeatDiv = node.nodeName.toLowerCase();
 		scope.repeatText = node.innerHTML;
-		node.innerHTML = "";
+		clearHTML(node);
 	} else {
 		scope.bean = newBean(scope);
 	}
@@ -148,6 +148,13 @@ function toArray(node) {
 //@static
 function clearArray(array) {
 	while (array.length) array.pop();
+}
+
+//@static
+function clearHTML(node) {
+	while (node.firstChild) {
+		node.removeChild(node.firstChild);
+	}
 }
 
 //@private

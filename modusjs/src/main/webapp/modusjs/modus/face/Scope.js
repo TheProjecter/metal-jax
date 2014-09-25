@@ -74,7 +74,7 @@ function initScope(index, scope) {
 function updateScope(index, scope, name, model) {
 	if (!scope.name && !name || scope.name == name) {
 		if (scope.repeatText) {
-			scope.node.innerHTML = "";
+			Internal.clearHTML(scope.node);
 			Internal.clearArray(scope.beans);
 			
 			forEach(model, Bean.newBean, scope);
