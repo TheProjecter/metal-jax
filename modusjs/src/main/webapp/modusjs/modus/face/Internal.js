@@ -12,7 +12,7 @@ function newView(view, node, setting) {
 		//TODO: check cyclic reference before proceeding
 		var resource = view.getClass().findResource(setting.view, true).cloneNode(true);
 		if (resource) {
-			var part = toDocFrag(node, System.$document.createElement("div"));
+			var part = toNode("div", node);
 			part.className = "part";
 			node.appendChild(resource);
 			node.appendChild(part);
@@ -106,24 +106,23 @@ function newBean(scope) {
 }
 
 //@static
-function toDocFrag(source, doc) {
-	var node = source;
-	if (typeof source == "string") {
-		node = toNode(source, "div");
-	}
-	doc = doc || System.$document.createDocumentFragment();
-	return moveNode(doc, node);
+function toDocFrag(html) {
+	return moveContent(System.$document.createDocumentFragment(), toNode("div", html));
 }
 
 //@static
-function toNode(innerHTML, div) {
-	var node = System.$document.createElement(div);
-	node.innerHTML = innerHTML;
+function toNode(tagName, html) {
+	var node = System.$document.createElement(tagName);
+	if (typeof html == "string") {
+		node.innerHTML = html;
+	} else {
+		moveContent(node, html);
+	}
 	return node;
 }
 
 //@static
-function moveNode(target, source) {
+function moveContent(target, source) {
 	while (source.firstChild) {
 		if (source.firstChild.nodeType === 1) {
 			target.appendChild(source.firstChild);
