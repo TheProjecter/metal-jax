@@ -1,6 +1,7 @@
 /**
  * @controller
  * @imports modus.core.System
+ * @imports modus.face.Node
  * 
  * @copyright Jay Tang 2012. All rights reserved.
  */
@@ -43,7 +44,7 @@ function initNode(view, node) {
 
 //@private
 function toggleForm(view, node, event) {
-	view.toggleStyle(view.nodes.fieldset, "collapsed", "expanded");
+	Node.toggleStyle(view.nodes.fieldset, "collapsed", "expanded");
 }
 
 //@public

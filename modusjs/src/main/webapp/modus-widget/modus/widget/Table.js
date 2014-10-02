@@ -1,5 +1,6 @@
 /**
  * @controller
+ * @imports modus.face.Node
  * @imports modus.core.System
  * 
  * @copyright Jay Tang 2012. All rights reserved.
@@ -61,12 +62,12 @@ function toggleRow(row) {
 	if (this.selectedRow == row) {
 		this.selectedRow.className = "";
 		delete this.selectedRow;
-		toggleEvent("keydown", this.scroll, false);
+		Node.toggleEvent("keydown", this.scroll, false);
 	} else {
 		if (this.selectedRow) {
 			this.selectedRow.className = "";
 		} else {
-			toggleEvent("keydown", this.scroll);
+			Node.toggleEvent("keydown", this.scroll);
 		}
 		this.selectedRow = row;
 		this.selectedRow.className = _selected_;

@@ -1,5 +1,6 @@
 /**
  * @controller
+ * @imports modus.face.Node
  * 
  * @copyright Jay Tang 2012. All rights reserved.
  */
@@ -9,7 +10,7 @@ var _panelStyles_ = [ "x", "y" ];
 
 //@static
 function initView(view) {
-	view.setting.style = view.filterStyle(view.node, _panelStyles_, true);
+	view.setting.style = Node.filterStyle(view.node, _panelStyles_, true);
 }
 
 //@static
@@ -22,7 +23,7 @@ function initNode(view, node) {
 		// fall through
 	case "panel1":
 	case "panel2":
-		view.toggleStyle(node, view.setting.style);
+		Node.toggleStyle(node, view.setting.style);
 		break;
 	}
 }
@@ -44,20 +45,20 @@ function dispatch(view, node, event) {
 
 //@private
 function toggleHighlight(view, node, event) {
-	view.toggleStyle(node, "highlight");
+	Node.toggleStyle(node, "highlight");
 	return true;
 }
 
 //@private
 function capture(view, node, event) {
-	view.toggleEvent("mousemove", view.bindings[node.id], true);
-	view.toggleEvent("mouseup", view.bindings[node.id], true);
+	Node.toggleEvent("mousemove", view.bindings[node.id], true);
+	Node.toggleEvent("mouseup", view.bindings[node.id], true);
 }
 
 //@private
 function release(view, node, event) {
-	view.toggleEvent("mousemove", view.bindings[node.id], false);
-	view.toggleEvent("mouseup", view.bindings[node.id], false);
+	Node.toggleEvent("mousemove", view.bindings[node.id], false);
+	Node.toggleEvent("mouseup", view.bindings[node.id], false);
 }
 
 //@private
@@ -68,7 +69,7 @@ function startResize(view, node, event) {
 	view.setting.panel1Height = parseInt(view.nodes.panel1.style.height) || view.nodes.panel1.offsetHeight;
 	view.setting.panel2Width = parseInt(view.nodes.panel2.style.width) || view.nodes.panel2.offsetWidth;
 	view.setting.panel2Height = parseInt(view.nodes.panel2.style.height) || view.nodes.panel2.offsetHeight;
-	view.setting.style = view.filterStyle(view.nodes.handle, _panelStyles_, true);
+	view.setting.style = Node.filterStyle(view.nodes.handle, _panelStyles_, true);
 	
 	capture(view, node, event);
 }

@@ -1,5 +1,6 @@
 /**
  * @controller
+ * @imports modus.face.Node
  * 
  * @copyright Jay Tang 2012. All rights reserved.
  */
@@ -9,13 +10,13 @@ var _panelStyles_ = [ "top", "bottom" ];
 
 //@static
 function initView(view) {
-	view.setting.style = view.filterStyle(view.node, _panelStyles_, true);
+	view.setting.style = Node.filterStyle(view.node, _panelStyles_, true);
 }
 
 //@static
 function initModel(view) {
-	view.tabLabel = view.nodes.head.removeChild(view.getChildByIndex(view.nodes.head));
-	view.clear("head");
+	view.tabLabel = view.nodes.head.removeChild(Node.getChildByIndex(view.nodes.head));
+	view.nodes["head"].innerHTML = "";
 }
 
 //@static
@@ -23,8 +24,8 @@ function initNode(view, node) {
 	switch (node.id) {
 	case "head":
 	case "body":
-		var style = view.filterStyle(node, _panelStyles_, true);
-		view.toggleStyle(node, style, view.setting.style);
+		var style = Node.filterStyle(node, _panelStyles_, true);
+		Node.toggleStyle(node, style, view.setting.style);
 		break;
 	}
 }
@@ -32,7 +33,7 @@ function initNode(view, node) {
 //@static
 function initPlaceholder(placeholder, node) {
 	node.parentNode.id = node.id;
-	var selected = placeholder.view.filterStyle(node, ["selected"]);
+	var selected = Node.filterStyle(node, ["selected"]);
 	var tabLabel = placeholder.view.tabLabel.cloneNode(false);
 	tabLabel.id = node.id;
 	tabLabel.title = node.title || node.id;
@@ -53,7 +54,7 @@ function initTabLabel(view, tabLabel) {
 
 //@private
 function toggleHighlight(view, tabLabel) {
-	view.toggleStyle(tabLabel, "highlight");
+	Node.toggleStyle(tabLabel, "highlight");
 	return true;
 }
 
@@ -61,17 +62,17 @@ function toggleHighlight(view, tabLabel) {
 function toggleTabSelection(view, tabLabel) {
 	if (view.selectedLabel != tabLabel) {
 		if (view.selectedLabel) {
-			view.toggleStyle(view.selectedLabel, "selected");
-			view.toggleStyle(getTabContent(view, view.selectedLabel), "selected");
+			Node.toggleStyle(view.selectedLabel, "selected");
+			Node.toggleStyle(getTabContent(view, view.selectedLabel), "selected");
 		}
-		view.toggleStyle(tabLabel, "selected");
-		view.toggleStyle(getTabContent(view, tabLabel), "selected");
+		Node.toggleStyle(tabLabel, "selected");
+		Node.toggleStyle(getTabContent(view, tabLabel), "selected");
 		view.selectedLabel = tabLabel;
 	}
 }
 
 //@private
 function getTabContent(view, tabLabel) {
-	var index = view.indexOfChild(view.nodes.head, tabLabel);
-	return view.getChildByIndex(view.nodes.body, index);
+	var index = Node.indexOfChild(view.nodes.head, tabLabel);
+	return Node.getChildByIndex(view.nodes.body, index);
 }

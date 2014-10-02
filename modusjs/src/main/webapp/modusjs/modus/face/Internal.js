@@ -1,5 +1,6 @@
 /**
  * @class
+ * @imports Node
  * @imports Controller
  * @imports modus.core.System
  * 
@@ -44,7 +45,7 @@ function afterInit(view) {
 	
 	var style = System.parseBaseName(view.setting.view);
 	if (style) {
-		view.toggleStyle(view.node, style);
+		Node.toggleStyle(view.node, style);
 	}
 }
 
@@ -204,7 +205,7 @@ function parseNodeSetting(node, base) {
 
 //@static
 function findNodeByStyles(node, styles) {
-	if (filterStyle(node, styles)) return node;
+	if (Node.filterStyle(node, styles)) return node;
 	for (var i = 0; i < node.childNodes.length; i++) {
 		var found = findNodeByStyles(node.childNodes[i], styles);
 		if (found) return found;
@@ -212,12 +213,12 @@ function findNodeByStyles(node, styles) {
 }
 
 //@static
-function filterStyle(node, styles, defaultToFirst) {
-	var tokens = node.className && node.className.split(" ") || [];
-	for (var i = 0; i < styles.length; i++) {
-		if (tokens.indexOf(styles[i]) >= 0) {
-			return styles[i];
-		}
+function resolvePath(path, source) {
+	var fromBase = path && path.indexOf("../") == 0;
+	if (fromBase) {
+		path = System.splitPath(path, 0, 1 - source.path.split("/").length);
+	} else {
+		path = System.resolvePath(path, source.path);
 	}
-	return defaultToFirst && styles[0] || "";
+	return System.resolvePath(path, source.module + "/");
 }

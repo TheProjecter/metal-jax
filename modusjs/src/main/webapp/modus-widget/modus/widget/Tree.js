@@ -1,5 +1,6 @@
 /**
  * @controller
+ * @imports modus.face.Node
  * 
  * @copyright Jay Tang 2012. All rights reserved.
  */
@@ -24,7 +25,7 @@ function initNode(view, node) {
 
 //@private
 function toggleTree(view, node, event) {
-	view.toggleStyle(view.nodes.toggle, "open");
-	view.toggleStyle(view.nodes.label, "open");
-	view.toggleStyle(view.nodes.content, "open");
+	Node.toggleStyle(view.nodes.toggle, "open");
+	Node.toggleStyle(view.nodes.label, "open");
+	Node.toggleStyle(view.nodes.content, "open");
 }

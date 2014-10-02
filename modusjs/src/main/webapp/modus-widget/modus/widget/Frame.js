@@ -1,5 +1,6 @@
 /**
  * @controller
+ * @imports modus.face.Node
  * 
  * @copyright Jay Tang 2012. All rights reserved.
  */
@@ -48,19 +49,19 @@ function dispatch(view, node, event) {
 
 //@private
 function toggleHighlight(view, node, event) {
-	view.toggleStyle(node, "highlight");
+	Node.toggleStyle(node, "highlight");
 }
 
 //@private
 function capture(view, node, event) {
-	view.toggleEvent("mousemove", view.bindings[node.id], true);
-	view.toggleEvent("mouseup", view.bindings[node.id], true);
+	Node.toggleEvent("mousemove", view.bindings[node.id], true);
+	Node.toggleEvent("mouseup", view.bindings[node.id], true);
 }
 
 //@private
 function release(view, node, event) {
-	view.toggleEvent("mousemove", view.bindings[node.id], false);
-	view.toggleEvent("mouseup", view.bindings[node.id], false);
+	Node.toggleEvent("mousemove", view.bindings[node.id], false);
+	Node.toggleEvent("mouseup", view.bindings[node.id], false);
 }
 
 /**

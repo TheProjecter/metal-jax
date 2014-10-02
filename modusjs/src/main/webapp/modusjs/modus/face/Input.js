@@ -1,6 +1,7 @@
 /**
  * @class
  * @imports Bean
+ * @imports Node
  * 
  * @copyright Jay Tang 2014. All rights reserved.
  */
@@ -57,7 +58,7 @@ function bindInput(index, input) {
 //@static
 function unbindInput(index, input) {
 	if (input.callback) {
-		input.view.toggleEvent(input.event, input.callback, false, input.node);
+		Node.toggleEvent(input.event, input.callback, false, input.node);
 		delete input.callback;
 	}
 }
