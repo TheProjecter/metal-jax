@@ -91,7 +91,7 @@ function newScope(view, node, setting) {
 	if ("repeat" in setting) {
 		scope.repeatDiv = node.nodeName.toLowerCase();
 		scope.repeatText = node.innerHTML;
-		clearHTML(node);
+		Node.clearContent(node);
 	} else {
 		scope.bean = newBean(scope);
 	}
@@ -107,54 +107,8 @@ function newBean(scope) {
 }
 
 //@static
-function toDocFrag(html) {
-	return moveContent(System.$document.createDocumentFragment(), toNode("div", html));
-}
-
-//@static
-function toNode(tagName, html) {
-	var node = System.$document.createElement(tagName);
-	if (typeof html == "string") {
-		node.innerHTML = html;
-	} else {
-		moveContent(node, html);
-	}
-	return node;
-}
-
-//@static
-function moveContent(target, source) {
-	while (source.firstChild) {
-		if (source.firstChild.nodeType === 1) {
-			target.appendChild(source.firstChild);
-		} else {
-			source.removeChild(source.firstChild);
-		}
-	}
-	return target;
-}
-
-//@static
-function toArray(node) {
-	var result = [];
-	for (var i = 0; i < node.childNodes.length; i++) {
-		if (node.childNodes[i].nodeType === 1) {
-			result.push(node.childNodes[i]);
-		}
-	}
-	return result;
-}
-
-//@static
 function clearArray(array) {
 	while (array.length) array.pop();
-}
-
-//@static
-function clearHTML(node) {
-	while (node.firstChild) {
-		node.removeChild(node.firstChild);
-	}
 }
 
 //@private
@@ -201,15 +155,6 @@ function parseNodeSetting(node, base) {
 		}
 	}
 	return setting;
-}
-
-//@static
-function findNodeByStyles(node, styles) {
-	if (Node.filterStyle(node, styles)) return node;
-	for (var i = 0; i < node.childNodes.length; i++) {
-		var found = findNodeByStyles(node.childNodes[i], styles);
-		if (found) return found;
-	}
 }
 
 //@static

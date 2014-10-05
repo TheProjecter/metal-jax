@@ -5,6 +5,7 @@
  * @imports Binding
  * @imports Input
  * @imports Scope
+ * @imports Node
  * 
  * @copyright Jay Tang 2014. All rights reserved.
  */
@@ -20,9 +21,9 @@ function scanContent(index, node, bean, setting) {
 
 //@static
 function newBean(index, model, scope) {
-	var node = Internal.toNode(scope.repeatDiv, scope.repeatText);
+	var node = Node.toNode(scope.repeatDiv, scope.repeatText);
 	forEach(node.childNodes, scanBean, Internal.newBean(scope));
-	Internal.moveContent(scope.node, node);
+	Node.moveContent(scope.node, node);
 }
 
 //@private

@@ -1,6 +1,5 @@
 /**
  * @class
- * @imports Controller
  * @imports modus.core.System
  * 
  * @copyright Jay Tang 2014. All rights reserved.
@@ -29,6 +28,15 @@ function toggleEvent(event, callback, positive, target) {
 		}
 	}
 	return callback;
+}
+
+//@static
+function findNodeByStyles(node, styles) {
+	if (Node.filterStyle(node, styles)) return node;
+	for (var i = 0; i < node.childNodes.length; i++) {
+		var found = findNodeByStyles(node.childNodes[i], styles);
+		if (found) return found;
+	}
 }
 
 //@static
@@ -89,4 +97,46 @@ function getChildByIndex(node, index) {
 			else c++;
 		}
 	}
+}
+
+//@static
+function moveContent(target, source) {
+	while (source.firstChild) {
+		target.appendChild(source.firstChild);
+	}
+	return target;
+}
+
+//@static
+function clearContent(node) {
+	while (node.firstChild) {
+		node.removeChild(node.firstChild);
+	}
+}
+
+//@static
+function toArray(node) {
+	var result = [];
+	for (var i = 0; i < node.childNodes.length; i++) {
+		if (node.childNodes[i].nodeType === 1) {
+			result.push(node.childNodes[i]);
+		}
+	}
+	return result;
+}
+
+//@static
+function toDocFrag(html) {
+	return moveContent(System.$document.createDocumentFragment(), toNode("div", html));
+}
+
+//@static
+function toNode(tagName, html) {
+	var node = System.$document.createElement(tagName);
+	if (typeof html == "string") {
+		node.innerHTML = html;
+	} else {
+		moveContent(node, html);
+	}
+	return node;
 }

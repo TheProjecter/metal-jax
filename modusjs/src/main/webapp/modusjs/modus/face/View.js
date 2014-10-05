@@ -2,6 +2,7 @@
  * @resource
  * @imports Node
  * @imports Internal
+ * @imports Node
  * @imports Scope
  * @imports Placeholder
  * @imports modus.core.System
@@ -11,7 +12,7 @@
 
 //@static
 function parseSource(source) {
-	source.model = Internal.toDocFrag(source.content);
+	source.model = Node.toDocFrag(source.content);
 }
 
 //@protected

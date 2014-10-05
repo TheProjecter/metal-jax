@@ -2,6 +2,7 @@
  * @class
  * @imports Internal
  * @imports Bean
+ * @imports Node
  * 
  * @copyright Jay Tang 2014. All rights reserved.
  */
@@ -74,7 +75,7 @@ function initScope(index, scope) {
 function updateScope(index, scope, name, model) {
 	if (!scope.name && !name || scope.name == name) {
 		if (scope.repeatText) {
-			Internal.clearHTML(scope.node);
+			Node.clearContent(scope.node);
 			Internal.clearArray(scope.beans);
 			
 			forEach(model, Bean.newBean, scope);
