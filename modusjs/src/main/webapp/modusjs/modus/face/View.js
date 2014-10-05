@@ -12,7 +12,7 @@
 
 //@static
 function parseSource(source) {
-	source.model = Node.toDocFrag(source.content);
+	source.model = Node.toFrag(source.content);
 }
 
 //@protected

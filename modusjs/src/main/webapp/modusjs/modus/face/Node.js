@@ -126,8 +126,9 @@ function toArray(node) {
 }
 
 //@static
-function toDocFrag(html) {
-	return moveContent(System.$document.createDocumentFragment(), toNode("div", html));
+function toFrag(html) {
+	var node = (typeof html == "string") ? toNode("div", html) : html;
+	return moveContent(System.$document.createDocumentFragment(), node);
 }
 
 //@static

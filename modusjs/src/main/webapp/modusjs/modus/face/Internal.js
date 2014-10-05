@@ -13,7 +13,7 @@ function newView(view, node, setting) {
 		//TODO: check cyclic reference before proceeding
 		var resource = view.getClass().findResource(setting.view, true).cloneNode(true);
 		if (resource) {
-			var part = toNode("div", node);
+			var part = Node.toNode("div", node);
 			part.className = "part";
 			node.appendChild(resource);
 			node.appendChild(part);
@@ -57,7 +57,10 @@ function initNode(id, node, view) {
 //@static
 function newPlaceholder(view, node, setting) {
 	var placeholder = { name:setting.placeholder||"", view:view, node:node };
-	if ("repeat" in setting) placeholder.repeatText = node.innerHTML;
+	if ("list" in setting) {
+		placeholder.type = "list";
+		placeholder.frag = Node.toFrag(node);
+	}
 	view.placeholders[placeholder.name] = placeholder;
 	return placeholder;
 }

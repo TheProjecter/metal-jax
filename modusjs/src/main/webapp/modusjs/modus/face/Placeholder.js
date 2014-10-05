@@ -18,19 +18,25 @@ function initPlaceholder(name, placeholder) {
 		var nodes = Node.toArray(part.node);
 		if (nodes.length) {
 			var placemark = findPlacemark(placeholder.node);
-			for (var i = 0; i < nodes.length; i++) {
-				placemark.appendChild(nodes[i]);
-				placeholder.view.controller.getClass().initPlaceholder(placeholder, nodes[i]);
-				if (placeholder.repeatText && i < nodes.length-1) {
-					var frag = Node.toDocFrag(placeholder.repeatText);
-					if (placemark != placeholder.node) {
-						placemark = findPlacemark(frag);
-					}
-					placeholder.node.appendChild(frag);
-				}
-			}
+			forEach(nodes, initPlacemark, placeholder, placemark);
 		}
 	}
+}
+
+//@private
+function initPlacemark(index, node, placeholder, placemark) {
+	switch (placeholder.type) {
+	case "list":
+		var frag = placeholder.frag.cloneNode(true);
+		placemark = findPlacemark(frag);
+		if (placemark == frag) {
+			placemark = placeholder.node;
+		}
+		placeholder.node.appendChild(frag);
+		break;
+	}
+	placemark.appendChild(node);
+	placeholder.view.controller.getClass().initPlaceholder(placeholder, node);
 }
 
 //@private
