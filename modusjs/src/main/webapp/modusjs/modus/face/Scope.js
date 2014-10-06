@@ -61,11 +61,13 @@ function scanScope(index, node, scope) {
 //@static
 function initScope(index, scope) {
 	var model = getModel(scope);
-	if (scope.repeatText) {
+	switch (scope.type) {
+	case "list":
 		forEach(model, Bean.newBean, scope);
 		forEach(scope.beans, Bean.bindBean);
 		forEach(scope.beans, Bean.normalizeBean, model);
-	} else {
+		break;
+	default:
 		Bean.bindBean(-1, scope.bean);
 		Bean.normalizeBean(-1, scope.bean, model);
 	}
@@ -74,14 +76,16 @@ function initScope(index, scope) {
 //@static
 function updateScope(index, scope, name, model) {
 	if (!scope.name && !name || scope.name == name) {
-		if (scope.repeatText) {
+		switch (scope.type) {
+		case "list":
 			Node.clearContent(scope.node);
 			Internal.clearArray(scope.beans);
 			
 			forEach(model, Bean.newBean, scope);
 			forEach(scope.beans, Bean.bindBean);
 			forEach(scope.beans, Bean.normalizeBean, model);
-		} else {
+			break;
+		default:
 			Bean.normalizeBean(-1, scope.bean, model);
 		}
 	}

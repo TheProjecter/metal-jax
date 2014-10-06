@@ -21,9 +21,9 @@ function scanContent(index, node, bean, setting) {
 
 //@static
 function newBean(index, model, scope) {
-	var node = Node.toNode(scope.repeatDiv, scope.repeatText);
-	forEach(node.childNodes, scanBean, Internal.newBean(scope));
-	Node.moveContent(scope.node, node);
+	var frag = scope.frag.cloneNode(true);
+	forEach(frag.childNodes, scanBean, Internal.newBean(scope));
+	scope.node.appendChild(frag);
 }
 
 //@private
@@ -63,7 +63,7 @@ function updateBean(bean) {
 //@static
 function getModel(bean, name) {
 	var model = Scope.getModel(bean.scope);
-	if (bean.scope.repeatText) {
+	if (bean.scope.type == "list") {
 		model = model[bean.index];
 	}
 	if (name && !(name in model)) {

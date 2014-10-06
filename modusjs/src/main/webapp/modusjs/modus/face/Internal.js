@@ -91,10 +91,9 @@ function setValue(key, value, view) {
 //@static
 function newScope(view, node, setting) {
 	var scope = { name:setting.scope||"", view:view, node:node, beans:[] };
-	if ("repeat" in setting) {
-		scope.repeatDiv = node.nodeName.toLowerCase();
-		scope.repeatText = node.innerHTML;
-		Node.clearContent(node);
+	if ("list" in setting) {
+		scope.type = "list";
+		scope.frag = Node.toFrag(node);
 	} else {
 		scope.bean = newBean(scope);
 	}
