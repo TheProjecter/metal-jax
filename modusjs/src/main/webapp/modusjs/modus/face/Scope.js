@@ -63,13 +63,23 @@ function initScope(index, scope) {
 	var model = getModel(scope);
 	switch (scope.type) {
 	case "list":
-		forEach(model, Bean.newBean, scope);
-		forEach(scope.beans, Bean.bindBean);
-		forEach(scope.beans, Bean.normalizeBean, model);
+		initList(model, scope);
 		break;
 	default:
 		Bean.bindBean(-1, scope.bean);
 		Bean.normalizeBean(-1, scope.bean, model);
+	}
+}
+
+//@private
+function initList(items, scope) {
+	if (items.length) {
+		forEach(items, Bean.newBean, scope);
+		forEach(scope.beans, Bean.bindBean);
+		forEach(scope.beans, Bean.normalizeBean, items);
+	} else if (scope["default"]){
+		var node = scope["default"].cloneNode(true);
+		scope.node.appendChild(node);
 	}
 }
 
@@ -80,10 +90,7 @@ function updateScope(index, scope, name, model) {
 		case "list":
 			Node.clearContent(scope.node);
 			Internal.clearArray(scope.beans);
-			
-			forEach(model, Bean.newBean, scope);
-			forEach(scope.beans, Bean.bindBean);
-			forEach(scope.beans, Bean.normalizeBean, model);
+			initList(model, scope);
 			break;
 		default:
 			Bean.normalizeBean(-1, scope.bean, model);

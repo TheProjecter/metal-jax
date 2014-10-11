@@ -5,6 +5,22 @@
  * @copyright Jay Tang 2014. All rights reserved.
  */
 
+//@private
+var _settingRE_ = /([^:]+)(?::|\s*)(.*)/;
+
+//@static
+function parseSetting(node) {
+	var setting = {}, match;
+	var text = node.getAttribute("data-modus") || node.className;
+	var tokens = text && text.split(" ") || [];
+	for (var i = 0; i < tokens.length; i++) {
+		if (match = _settingRE_.exec(tokens[i])) {
+			setting[match[1]] = match[2];
+		}
+	}
+	return setting;
+}
+
 //@static
 function toggleEvent(event, callback, positive, target) {
 	positive = positive || arguments.length == 2;
@@ -100,9 +116,13 @@ function getChildByIndex(node, index) {
 }
 
 //@static
-function moveContent(target, source) {
+function moveContent(target, source, elementOnly) {
 	while (source.firstChild) {
-		target.appendChild(source.firstChild);
+		if (elementOnly && source.firstChild.nodeType != 1) {
+			source.removeChild(source.firstChild);
+		} else {
+			target.appendChild(source.firstChild);
+		}
 	}
 	return target;
 }
@@ -128,7 +148,7 @@ function toArray(node) {
 //@static
 function toFrag(html) {
 	var node = (typeof html == "string") ? toNode("div", html) : html;
-	return moveContent(System.$document.createDocumentFragment(), node);
+	return moveContent(System.$document.createDocumentFragment(), node, true);
 }
 
 //@static
@@ -140,4 +160,20 @@ function toNode(tagName, html) {
 		moveContent(node, html);
 	}
 	return node;
+}
+
+//@static
+function split(node, name) {
+	var nodes = [];
+	forEach(node.childNodes, filter, name, nodes);
+	for (var i = 0; i < nodes.length; i++) {
+		node.removeChild(nodes[i]);
+	}
+	return nodes;
+}
+
+//@private
+function filter(index, node, name, nodes) {
+	var setting = parseSetting(node);
+	if (name in setting) nodes.push(node);
 }

@@ -94,6 +94,7 @@ function newScope(view, node, setting) {
 	if ("list" in setting) {
 		scope.type = "list";
 		scope.frag = Node.toFrag(node);
+		scope["default"] = Node.split(scope.frag, "default")[0];
 	} else {
 		scope.bean = newBean(scope);
 	}
@@ -114,9 +115,6 @@ function clearArray(array) {
 }
 
 //@private
-var _settingRE_ = /([^:]+)(?::|\s*)(.*)/;
-
-//@private
 var _settingTypes_ = [ "view", "placeholder", "part", "scope" ];
 
 //@private
@@ -124,14 +122,7 @@ var _jsonTypes_ = [ "json", "text/json", "application/json" ];
 
 //@static
 function parseNodeSetting(node, base) {
-	var setting = {}, match;
-	var text = node.getAttribute("data-modus") || node.className;
-	var tokens = text && text.split(" ") || [];
-	for (var i = 0; i < tokens.length; i++) {
-		if (match = _settingRE_.exec(tokens[i])) {
-			setting[match[1]] = match[2];
-		}
-	}
+	var setting = Node.parseSetting(node);
 	if ("view" in setting) {
 		setting.view = System.parseSourceName(setting.view, base);
 	}
