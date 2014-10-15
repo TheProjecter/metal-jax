@@ -11,7 +11,7 @@ var _settingRE_ = /([^:]+)(?::|\s*)(.*)/;
 //@static
 function parseSetting(node) {
 	var setting = {}, match;
-	var text = node.getAttribute("data-modus") || node.className;
+	var text = node.getAttribute("data-modus-face") || node.className;
 	var tokens = text && text.split(" ") || [];
 	for (var i = 0; i < tokens.length; i++) {
 		if (match = _settingRE_.exec(tokens[i])) {

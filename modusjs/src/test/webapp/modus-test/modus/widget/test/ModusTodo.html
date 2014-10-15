@@ -1,5 +1,5 @@
 <h2>Todo</h2>
-<div data-modus="controller:ModusTodo">
+<div data-modus-face="controller:ModusTodo">
 	<div class="json">
 	{
 		"todoText": "",
@@ -9,18 +9,18 @@
 		]
 	}
 	</div>
-	<span data-modus="scope:todos">${remaining} of ${length} remaining</span>
-	[ <a href="" data-modus="scope:todos click:archive">archive</a> ]
-	<ul data-modus="scope:todos list" class="unstyled">
+	<span data-modus-face="scope:todos">${remaining} of ${length} remaining</span>
+	[ <a href="" data-modus-face="scope:todos click:archive">archive</a> ]
+	<ul data-modus-face="scope:todos list" class="unstyled">
 		<li>
 			<input type="checkbox" name="done"/>
 			<span class="done-${done}">${text}</span>
 		</li>
-		<li data-modus="default">
+		<li data-modus-face="default">
 			<span>No more todos.</span>
 		</li>
 	</ul>
-	<form data-modus="scope:todos submit:addTodo">
+	<form data-modus-face="scope:todos submit:addTodo">
 		<input type="text" name="todoText" size="30" placeholder="add new todo here"/>
 		<input class="btn-primary" type="submit" value="add"/>
 	</form>
