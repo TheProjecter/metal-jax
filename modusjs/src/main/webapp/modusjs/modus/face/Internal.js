@@ -93,6 +93,7 @@ function newScope(view, node, setting) {
 	var scope = { name:setting.scope||"", view:view, node:node, beans:[] };
 	if ("list" in setting) {
 		scope.type = "list";
+		scope.list = setting.list;
 		scope.frag = Node.toFrag(node);
 		scope["default"] = Node.split(scope.frag, "default")[0];
 	} else {
@@ -146,6 +147,9 @@ function parseNodeSetting(node, base) {
 		if (node.nodeName.toLowerCase() == "script" && _jsonTypes_.indexOf(node.type) >= 0 || "json" in setting) {
 			setting.type = "json";
 		}
+	}
+	if ("list" in setting) {
+		setting.type = setting.type || "scope";
 	}
 	return setting;
 }

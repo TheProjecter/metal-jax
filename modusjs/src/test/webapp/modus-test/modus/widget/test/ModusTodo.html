@@ -2,7 +2,6 @@
 <div data-modus-face="controller:ModusTodo">
 	<div class="json">
 	{
-		"todoText": "",
 		"todos": [
 			{ "text": "learn angular", "done": true },
 			{ "text": "build an angular app", "done": false }
@@ -10,8 +9,8 @@
 	}
 	</div>
 	<span data-modus-face="scope:todos">${remaining} of ${length} remaining</span>
-	[ <a href="" data-modus-face="scope:todos click:archive">archive</a> ]
-	<ul data-modus-face="scope:todos list" class="unstyled">
+	[ <a href="" data-modus-face="click:archive">archive</a> ]
+	<ul data-modus-face="list:todos" class="unstyled">
 		<li>
 			<input type="checkbox" name="done"/>
 			<span class="done-${done}">${text}</span>
@@ -20,7 +19,7 @@
 			<span>No more todos.</span>
 		</li>
 	</ul>
-	<form data-modus-face="scope:todos submit:addTodo">
+	<form data-modus-face="submit:addTodo">
 		<input type="text" name="todoText" size="30" placeholder="add new todo here"/>
 		<input class="btn-primary" type="submit" value="add"/>
 	</form>

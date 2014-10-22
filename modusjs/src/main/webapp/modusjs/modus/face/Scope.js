@@ -63,7 +63,7 @@ function initScope(index, scope) {
 	var model = getModel(scope);
 	switch (scope.type) {
 	case "list":
-		initList(model, scope);
+		initList(model[scope.list], scope);
 		break;
 	default:
 		Bean.bindBean(-1, scope.bean);
@@ -90,7 +90,7 @@ function updateScope(index, scope, name, model) {
 		case "list":
 			Node.clearContent(scope.node);
 			Internal.clearArray(scope.beans);
-			initList(model, scope);
+			initList(model[scope.list], scope);
 			break;
 		default:
 			Bean.normalizeBean(-1, scope.bean, model);
