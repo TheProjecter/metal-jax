@@ -85,7 +85,10 @@ function initList(items, scope) {
 
 //@static
 function updateScope(index, scope, name, model) {
-	if (!scope.name && !name || scope.name == name) {
+	if (!name || scope.name == name) {
+		if (scope.name != name) {
+			model = model[scope.name];
+		}
 		switch (scope.type) {
 		case "list":
 			Node.clearContent(scope.node);
