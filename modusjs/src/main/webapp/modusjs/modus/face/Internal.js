@@ -93,7 +93,7 @@ function newScope(view, node, setting) {
 	var scope = { name:setting.scope||"", view:view, node:node, beans:[] };
 	if ("list" in setting) {
 		scope.type = "list";
-		scope.list = setting.list;
+		scope.model = setting.list;
 		scope.frag = Node.toFrag(node);
 		scope["default"] = Node.split(scope.frag, "default")[0];
 	} else {

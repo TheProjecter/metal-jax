@@ -64,7 +64,7 @@ function updateBean(bean) {
 function getModel(bean, name) {
 	var model = Scope.getModel(bean.scope);
 	if (bean.scope.type == "list") {
-		model = model[bean.scope.list][bean.index];
+		model = model[bean.scope.model][bean.index];
 	}
 	if (name && !(name in model)) {
 		model = bean.view.get();
