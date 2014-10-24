@@ -1,6 +1,7 @@
 /**
  * @class
  * @imports Node
+ * @imports Scope
  * @imports Controller
  * @imports modus.core.System
  * 
@@ -36,7 +37,7 @@ function initView(view, node, setting, controller) {
 	view.placeholders = {};
 	view.bindings = {};
 	view.scopes = [];
-	view.scope = newScope(view, node, setting);
+	view.scope = Scope.newScope(view, node, setting);
 }
 
 //@static
@@ -86,28 +87,6 @@ function newJson(view, node, setting) {
 //@private
 function setValue(key, value, view) {
 	view.set(key, value);
-}
-
-//@static
-function newScope(view, node, setting) {
-	var scope = { name:setting.scope||"", view:view, node:node, beans:[] };
-	if ("list" in setting) {
-		scope.type = "list";
-		scope.model = setting.list;
-		scope.frag = Node.toFrag(node);
-		scope["default"] = Node.split(scope.frag, "default")[0];
-	} else {
-		scope.bean = newBean(scope);
-	}
-	view.scopes.push(scope);
-	return scope;
-}
-
-//@static
-function newBean(scope) {
-	var bean = { scope:scope, view:scope.view, index:scope.beans.length, templates:[], inputs:[], bindings:[] };
-	scope.beans.push(bean);
-	return bean;
 }
 
 //@static

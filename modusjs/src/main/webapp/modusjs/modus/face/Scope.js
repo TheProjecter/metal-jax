@@ -31,7 +31,7 @@ function scanScope(index, node, scope) {
 			break;
 		case "scope":
 			hasContent = true;
-			nextScope = Internal.newScope(scope.view, node, setting);
+			nextScope = newScope(scope.view, node, setting);
 			break;
 		case "json":
 			hasContent = false;
@@ -56,6 +56,28 @@ function scanScope(index, node, scope) {
 	if (nextScope) {
 		forEach(node.childNodes, scanScope, nextScope);
 	}
+}
+
+//@static
+function newScope(view, node, setting) {
+	var scope = { name:setting.scope||"", view:view, node:node, beans:[] };
+	if ("list" in setting) {
+		scope.type = "list";
+		scope.model = setting.list;
+		scope.frag = Node.toFrag(node);
+		scope["default"] = Node.split(scope.frag, "default")[0];
+	} else {
+		scope.bean = Scope.newBean(scope);
+	}
+	view.scopes.push(scope);
+	return scope;
+}
+
+//@static
+function newBean(scope) {
+	var bean = { scope:scope, view:scope.view, index:scope.beans.length, templates:[], inputs:[], bindings:[] };
+	scope.beans.push(bean);
+	return bean;
 }
 
 //@static

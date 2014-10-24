@@ -22,7 +22,7 @@ function scanContent(index, node, bean, setting) {
 //@static
 function newBean(index, model, scope) {
 	var frag = scope.frag.cloneNode(true);
-	forEach(frag.childNodes, scanBean, Internal.newBean(scope));
+	forEach(frag.childNodes, scanBean, Scope.newBean(scope));
 	scope.node.appendChild(frag);
 }
 
