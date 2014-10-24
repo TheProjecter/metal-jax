@@ -106,11 +106,9 @@ function initList(items, scope) {
 }
 
 //@static
-function updateScope(index, scope, name, model) {
+function updateScope(index, scope, name) {
 	if (!name || scope.name == name) {
-		if (scope.name != name) {
-			model = model[scope.name];
-		}
+		var model = Scope.getModel(scope);
 		switch (scope.type) {
 		case "list":
 			Node.clearContent(scope.node);

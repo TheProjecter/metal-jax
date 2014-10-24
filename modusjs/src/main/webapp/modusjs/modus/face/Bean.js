@@ -56,8 +56,7 @@ function bindBean(index, bean) {
 
 //@static
 function notifyBean(bean) {
-	var model = Scope.getModel(bean.scope);
-	forEach(bean.view.scopes, Scope.updateScope, bean.scope.name, model);
+	forEach(bean.view.scopes, Scope.updateScope, bean.scope.name);
 }
 
 //@static
