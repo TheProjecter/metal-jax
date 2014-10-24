@@ -69,7 +69,7 @@ function dispatch(view, node, event, input) {
 	var model = Bean.getModel(input.bean, input.name);
 	if (model && model[input.name] != value) {
 		model[input.name] = value;
-		Bean.updateBean(input.bean);
+		Bean.notifyBean(input.bean);
 	}
 }
 

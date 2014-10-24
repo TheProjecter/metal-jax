@@ -53,7 +53,7 @@ function dispatch(view, node, event, binding) {
 	var action = binding.view.controller[binding.action];
 	if (typeof action == "function") {
 		if (action.call(binding.view.controller)) {
-			Bean.updateBean(binding.bean);
+			Bean.notifyBean(binding.bean);
 		}
 	}
 }
