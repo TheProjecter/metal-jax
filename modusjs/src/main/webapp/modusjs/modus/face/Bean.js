@@ -64,6 +64,8 @@ function getModel(bean, name) {
 	var model = Scope.getModel(bean.scope);
 	if (bean.scope.type == "list") {
 		model = model[bean.scope.model][bean.index];
+	} else if (bean.scope.type == "model") {
+		model = model[bean.scope.model];
 	}
 	if (name && !(name in model)) {
 		model = bean.view.get();

@@ -127,7 +127,7 @@ function parseNodeSetting(node, base) {
 			setting.type = "json";
 		}
 	}
-	if ("list" in setting) {
+	if ("list" in setting || "model" in setting) {
 		setting.type = setting.type || "scope";
 	}
 	return setting;

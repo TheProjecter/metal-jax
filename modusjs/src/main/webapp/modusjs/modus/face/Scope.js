@@ -66,6 +66,10 @@ function newScope(view, node, setting) {
 		scope.model = setting.list;
 		scope.frag = Node.toFrag(node);
 		scope["default"] = Node.split(scope.frag, "default")[0];
+	} else if ("model" in setting) {
+		scope.type = "model";
+		scope.model = setting.model;
+		scope.bean = Scope.newBean(scope);
 	} else {
 		scope.bean = Scope.newBean(scope);
 	}
@@ -86,6 +90,10 @@ function initScope(index, scope) {
 	switch (scope.type) {
 	case "list":
 		initList(model[scope.model], scope);
+		break;
+	case "model":
+		Bean.bindBean(-1, scope.bean);
+		Bean.normalizeBean(-1, scope.bean, model[scope.model]);
 		break;
 	default:
 		Bean.bindBean(-1, scope.bean);
@@ -114,6 +122,9 @@ function updateScope(index, scope, name) {
 			Node.clearContent(scope.node);
 			Internal.clearArray(scope.beans);
 			initList(model[scope.model], scope);
+			break;
+		case "model":
+			Bean.normalizeBean(-1, scope.bean, model[scope.model]);
 			break;
 		default:
 			Bean.normalizeBean(-1, scope.bean, model);
