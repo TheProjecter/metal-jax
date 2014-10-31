@@ -10,7 +10,7 @@ Context is responsible to load/compile class sources.
 
 See also: "@modus@":modus.html
 
-h1. Summary
+h1. Design
 
 Class loader summary.
 

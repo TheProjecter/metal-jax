@@ -8,7 +8,7 @@ h1. Overview
 
 This is the boot context. Its loading will bootstrap the application.
 
-h1. Summary
+h1. Design
 
 The boot context accomplishes the following:
 * Configures initial context settings.

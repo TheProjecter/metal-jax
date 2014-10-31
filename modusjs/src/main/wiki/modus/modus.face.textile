@@ -8,11 +8,45 @@ h1. Overview
 
 Contains classes for implementing features of Modus Face UI framework.
 
-h1. Summary
+h1. Design
 
-Modus Face UI framework provides a small set of modifiers and markings in HTML content to build and refine HTML based UI.
+Modus Face UI framework follows the MVC pattern and deals with only client-side components, represented by HTML, JavaScript, and CSS artifacts.
 
-Modus follows the MVC pattern with all client-side components, represented with HTML, JavaScript, and CSS artifacts.
+Modus Face UI framework provides a small set of modifiers and markings in HTML content to build and refine HTML based UI. All features are introduced incrementally, each offering certain incremental refinement.
+
+UI static visual is defined by views in HTML, and dynamic content is contributed by models in javascript objects, and behavior defined by controller in javascript classes.
+
+h2. Model
+
+# Model is an object with properties.
+# Property values can be simple, another object, or array of simple/objects.
+# Property names can be referenced in view to control how view content is rendered.
+# Property names are resolved against a current model, then a default model.
+
+# Property names can be referenced in view content as follows:
+## a macro reference as ${name} in node attributes and text nodes. Macro name is resolved against the current model. The
+## indicate model to resolve against: model:name
+## selective rendering based on conditions: test:name
+## repetitive rendering for array property value: list:name
+
+# The property names can also indicate which property values are to be replaced by user inputs.
+
+Model stores UI state.
+
+h2. Controller
+
+Controller is an object with methods. The method names can be referenced in view HTML to control when methods are called, and how the method results are used as property values to affect view content.
+
+Controller defines UI behavior.
+
+h2. View
+
+View is an HTML fragment with references to model properties and controller methods:
+# For macro ${name}, name is resolved to a property/method name, and the result replaces the macro occurrence.
+# For list:name, name is resolved to a property name with array value, and the list content is repeated for each array element.
+# For test:name, name is resolved to a property name, and the content is selectively rendered based on property value.
+# For input:name, name is resolved to a property name, input original value is sourced from the property value, and upon change input value will replace the property value.
+# For event:name, name is resolved to a method name, method is called triggered by given event.
 
 h1. Details
 

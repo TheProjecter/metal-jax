@@ -8,7 +8,7 @@ h1. Overview
 
 BaseObject is the default base class for all classes.
 
-h1. Summary
+h1. Design
 
 BaseObject sets up the base behavior inherited by all classes.
 
