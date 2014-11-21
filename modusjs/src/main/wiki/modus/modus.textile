@@ -35,8 +35,8 @@ table(grid).
 | base | _Default empty_ | The fallback for baseContext. Specified with fragment in the base URL. |
 | bootURL | _Readonly_ | The URL to load modus boot context. |
 | bootOrigin | _Readonly_ | The boot URL origin. |
-| bootModule | @modusjs@ | The folder for modusjs. |
-| bootContext | @boot@ | The initial modusjs context. |
+| bootModule | @modus@ | The folder for modus. |
+| bootContext | @boot@ | The initial modus context. |
 | crossDomain | @xd@ | Path segment to identify cross domain requests. |
 | requestTime | @100@ | Initial timeout value for cross domain requests, in mili-seconds |
 | requestTimeout | @3000@ | Max timeout value for cross domain requests, in mili-seconds |
