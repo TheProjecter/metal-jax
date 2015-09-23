@@ -1,0 +1,3 @@
+**metal-jax** is a JavaScript OOP framework with a simple and intuitive programming model. The framework promotes OOP practices in JavaScript such as encapsulation and inheritance, which result in more understandable and reusable code. The framework provides a small set of base API and annotations to aid creation of modular JavaScript code, and even modular HTML code in a webapp.
+
+Now head over to [the developer guide](MetalJaxDevGuide#Getting_Started.md) for more details.

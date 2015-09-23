@@ -1,0 +1,1 @@
+&lt;wiki:gadget url="http://metal-jax.googlecode.com/git/metal-jax/src/main/webapp/metal-demo.xml"/&gt;
